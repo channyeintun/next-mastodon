@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { MastodonClient } from '@/api/client';
 import { useAuthStore } from '@/hooks/useStores';
 import { getRedirectURI } from '@/utils/oauth';
 
-export default function CallbackPage() {
+function CallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const authStore = useAuthStore();
@@ -97,5 +97,27 @@ export default function CallbackPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function CallbackPage() {
+  return (
+    <Suspense fallback={
+      <div className="container" style={{ maxWidth: '500px', marginTop: 'var(--size-8)', textAlign: 'center' }}>
+        <div
+          className="spinner"
+          style={{
+            margin: '0 auto var(--size-6)',
+            width: 'var(--size-8)',
+            height: 'var(--size-8)',
+          }}
+        />
+        <h1 style={{ fontSize: 'var(--font-size-5)', marginBottom: 'var(--size-4)' }}>
+          Loading...
+        </h1>
+      </div>
+    }>
+      <CallbackContent />
+    </Suspense>
   );
 }

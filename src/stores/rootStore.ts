@@ -3,19 +3,24 @@
  * Combines all MobX stores
  */
 
-import { AuthStore } from './authStore'
+import { AuthStore, type AuthState } from './authStore'
 import { UserStore } from './userStore'
-import { UIStore } from './uiStore'
+import { UIStore, type Theme } from './uiStore'
+
+export interface RootStoreInitialState {
+  auth?: Partial<AuthState>
+  theme?: Theme
+}
 
 export class RootStore {
   authStore: AuthStore
   userStore: UserStore
   uiStore: UIStore
 
-  constructor() {
-    this.authStore = new AuthStore()
+  constructor(initialState?: RootStoreInitialState) {
+    this.authStore = new AuthStore(initialState?.auth)
     this.userStore = new UserStore()
-    this.uiStore = new UIStore()
+    this.uiStore = new UIStore(initialState?.theme)
   }
 
   // Helper method to reset all stores (e.g., on logout)
@@ -26,17 +31,23 @@ export class RootStore {
   }
 }
 
-// Singleton instance
+// Singleton instance - only for client
 let rootStore: RootStore | null = null
 
-export function getRootStore(): RootStore {
+export function getRootStore(initialState?: RootStoreInitialState): RootStore {
+  // Server-side: always create new instance for each request
+  if (typeof window === 'undefined') {
+    return new RootStore(initialState)
+  }
+
+  // Client-side: use singleton, initialize on first call
   if (!rootStore) {
-    rootStore = new RootStore()
+    rootStore = new RootStore(initialState)
   }
   return rootStore
 }
 
-export function initRootStore(): RootStore {
-  rootStore = new RootStore()
+export function initRootStore(initialState?: RootStoreInitialState): RootStore {
+  rootStore = new RootStore(initialState)
   return rootStore
 }
