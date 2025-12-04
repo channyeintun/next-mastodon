@@ -3,18 +3,66 @@
  * Includes optimistic updates for better UX
  */
 
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient, type QueryClient, type InfiniteData } from '@tanstack/react-query'
 import { getMastodonClient } from './client'
 import { queryKeys } from './queryKeys'
 import type { CreateStatusParams, Status } from '../types/mastodon'
 
+// Helper function to update status in all infinite query caches
+function updateStatusInCaches(
+  queryClient: QueryClient,
+  statusId: string,
+  updateFn: (status: Status) => Status
+) {
+  // Update timelines
+  queryClient.setQueriesData<InfiniteData<Status[]>>(
+    { queryKey: queryKeys.timelines.all },
+    (old) => {
+      if (!old?.pages) return old
+      return {
+        ...old,
+        pages: old.pages.map((page) =>
+          page.map((status) => (status.id === statusId ? updateFn(status) : status))
+        ),
+      }
+    }
+  )
+
+  // Update bookmarks
+  queryClient.setQueriesData<InfiniteData<Status[]>>(
+    { queryKey: queryKeys.bookmarks.all() },
+    (old) => {
+      if (!old?.pages) return old
+      return {
+        ...old,
+        pages: old.pages.map((page) =>
+          page.map((status) => (status.id === statusId ? updateFn(status) : status))
+        ),
+      }
+    }
+  )
+
+  // Update account statuses
+  queryClient.setQueriesData<InfiniteData<Status[]>>(
+    { queryKey: ['accounts'] },
+    (old) => {
+      if (!old?.pages) return old
+      return {
+        ...old,
+        pages: old.pages.map((page) =>
+          page.map((status) => (status.id === statusId ? updateFn(status) : status))
+        ),
+      }
+    }
+  )
+}
+
 // Status mutations
 export function useCreateStatus() {
-  const client = getMastodonClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (params: CreateStatusParams) => client.createStatus(params),
+    mutationFn: (params: CreateStatusParams) => getMastodonClient().createStatus(params),
     onSuccess: () => {
       // Invalidate home timeline to fetch new post
       queryClient.invalidateQueries({ queryKey: queryKeys.timelines.home() })
@@ -23,11 +71,10 @@ export function useCreateStatus() {
 }
 
 export function useDeleteStatus() {
-  const client = getMastodonClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => client.deleteStatus(id),
+    mutationFn: (id: string) => getMastodonClient().deleteStatus(id),
     onSuccess: (_data, id) => {
       // Remove from cache
       queryClient.removeQueries({ queryKey: queryKeys.statuses.detail(id) })
@@ -38,21 +85,15 @@ export function useDeleteStatus() {
 }
 
 export function useFavouriteStatus() {
-  const client = getMastodonClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => client.favouriteStatus(id),
+    mutationFn: (id: string) => getMastodonClient().favouriteStatus(id),
     onMutate: async (id) => {
-      // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
 
-      // Snapshot previous value
-      const previous = queryClient.getQueryData<Status>(
-        queryKeys.statuses.detail(id),
-      )
+      const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
 
-      // Optimistically update
       if (previous) {
         queryClient.setQueryData<Status>(queryKeys.statuses.detail(id), {
           ...previous,
@@ -61,36 +102,38 @@ export function useFavouriteStatus() {
         })
       }
 
+      // Update all caches using helper
+      updateStatusInCaches(queryClient, id, (status) => ({
+        ...status,
+        favourited: true,
+        favourites_count: status.favourites_count + 1,
+      }))
+
       return { previous, id }
     },
     onError: (_err, _id, context) => {
-      // Rollback on error
-      if (context?.previous) {
-        queryClient.setQueryData(
-          queryKeys.statuses.detail(context.id),
-          context.previous,
-        )
+      if (context?.id) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(context.id) })
+        queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
+        queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
+        queryClient.invalidateQueries({ queryKey: ['accounts'] })
       }
     },
     onSettled: (_data, _error, id) => {
-      // Refetch after mutation
       queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(id) })
     },
   })
 }
 
 export function useUnfavouriteStatus() {
-  const client = getMastodonClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => client.unfavouriteStatus(id),
+    mutationFn: (id: string) => getMastodonClient().unfavouriteStatus(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
 
-      const previous = queryClient.getQueryData<Status>(
-        queryKeys.statuses.detail(id),
-      )
+      const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
 
       if (previous) {
         queryClient.setQueryData<Status>(queryKeys.statuses.detail(id), {
@@ -100,14 +143,20 @@ export function useUnfavouriteStatus() {
         })
       }
 
+      updateStatusInCaches(queryClient, id, (status) => ({
+        ...status,
+        favourited: false,
+        favourites_count: Math.max(0, status.favourites_count - 1),
+      }))
+
       return { previous, id }
     },
     onError: (_err, _id, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(
-          queryKeys.statuses.detail(context.id),
-          context.previous,
-        )
+      if (context?.id) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(context.id) })
+        queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
+        queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
+        queryClient.invalidateQueries({ queryKey: ['accounts'] })
       }
     },
     onSettled: (_data, _error, id) => {
@@ -117,17 +166,14 @@ export function useUnfavouriteStatus() {
 }
 
 export function useReblogStatus() {
-  const client = getMastodonClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => client.reblogStatus(id),
+    mutationFn: (id: string) => getMastodonClient().reblogStatus(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
 
-      const previous = queryClient.getQueryData<Status>(
-        queryKeys.statuses.detail(id),
-      )
+      const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
 
       if (previous) {
         queryClient.setQueryData<Status>(queryKeys.statuses.detail(id), {
@@ -137,14 +183,20 @@ export function useReblogStatus() {
         })
       }
 
+      updateStatusInCaches(queryClient, id, (status) => ({
+        ...status,
+        reblogged: true,
+        reblogs_count: status.reblogs_count + 1,
+      }))
+
       return { previous, id }
     },
     onError: (_err, _id, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(
-          queryKeys.statuses.detail(context.id),
-          context.previous,
-        )
+      if (context?.id) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(context.id) })
+        queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
+        queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
+        queryClient.invalidateQueries({ queryKey: ['accounts'] })
       }
     },
     onSettled: (_data, _error, id) => {
@@ -154,17 +206,14 @@ export function useReblogStatus() {
 }
 
 export function useUnreblogStatus() {
-  const client = getMastodonClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => client.unreblogStatus(id),
+    mutationFn: (id: string) => getMastodonClient().unreblogStatus(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
 
-      const previous = queryClient.getQueryData<Status>(
-        queryKeys.statuses.detail(id),
-      )
+      const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
 
       if (previous) {
         queryClient.setQueryData<Status>(queryKeys.statuses.detail(id), {
@@ -174,14 +223,20 @@ export function useUnreblogStatus() {
         })
       }
 
+      updateStatusInCaches(queryClient, id, (status) => ({
+        ...status,
+        reblogged: false,
+        reblogs_count: Math.max(0, status.reblogs_count - 1),
+      }))
+
       return { previous, id }
     },
     onError: (_err, _id, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(
-          queryKeys.statuses.detail(context.id),
-          context.previous,
-        )
+      if (context?.id) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(context.id) })
+        queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
+        queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
+        queryClient.invalidateQueries({ queryKey: ['accounts'] })
       }
     },
     onSettled: (_data, _error, id) => {
@@ -191,17 +246,14 @@ export function useUnreblogStatus() {
 }
 
 export function useBookmarkStatus() {
-  const client = getMastodonClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => client.bookmarkStatus(id),
+    mutationFn: (id: string) => getMastodonClient().bookmarkStatus(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
 
-      const previous = queryClient.getQueryData<Status>(
-        queryKeys.statuses.detail(id),
-      )
+      const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
 
       if (previous) {
         queryClient.setQueryData<Status>(queryKeys.statuses.detail(id), {
@@ -210,14 +262,19 @@ export function useBookmarkStatus() {
         })
       }
 
+      updateStatusInCaches(queryClient, id, (status) => ({
+        ...status,
+        bookmarked: true,
+      }))
+
       return { previous, id }
     },
     onError: (_err, _id, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(
-          queryKeys.statuses.detail(context.id),
-          context.previous,
-        )
+      if (context?.id) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(context.id) })
+        queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
+        queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
+        queryClient.invalidateQueries({ queryKey: ['accounts'] })
       }
     },
     onSettled: (_data, _error, id) => {
@@ -228,17 +285,14 @@ export function useBookmarkStatus() {
 }
 
 export function useUnbookmarkStatus() {
-  const client = getMastodonClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => client.unbookmarkStatus(id),
+    mutationFn: (id: string) => getMastodonClient().unbookmarkStatus(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
 
-      const previous = queryClient.getQueryData<Status>(
-        queryKeys.statuses.detail(id),
-      )
+      const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
 
       if (previous) {
         queryClient.setQueryData<Status>(queryKeys.statuses.detail(id), {
@@ -247,14 +301,19 @@ export function useUnbookmarkStatus() {
         })
       }
 
+      updateStatusInCaches(queryClient, id, (status) => ({
+        ...status,
+        bookmarked: false,
+      }))
+
       return { previous, id }
     },
     onError: (_err, _id, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(
-          queryKeys.statuses.detail(context.id),
-          context.previous,
-        )
+      if (context?.id) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(context.id) })
+        queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
+        queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
+        queryClient.invalidateQueries({ queryKey: ['accounts'] })
       }
     },
     onSettled: (_data, _error, id) => {
@@ -266,11 +325,10 @@ export function useUnbookmarkStatus() {
 
 // Account mutations
 export function useFollowAccount() {
-  const client = getMastodonClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => client.followAccount(id),
+    mutationFn: (id: string) => getMastodonClient().followAccount(id),
     onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(id) })
       queryClient.invalidateQueries({
@@ -281,11 +339,10 @@ export function useFollowAccount() {
 }
 
 export function useUnfollowAccount() {
-  const client = getMastodonClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => client.unfollowAccount(id),
+    mutationFn: (id: string) => getMastodonClient().unfollowAccount(id),
     onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(id) })
       queryClient.invalidateQueries({

@@ -245,7 +245,7 @@ Components are organized by complexity:
 
 ## Features Status
 
-### Completed Infrastructure
+### Completed Infrastructure & Features
 - [x] Next.js 16 project with App Router
 - [x] TanStack Query with provider
 - [x] MobX stores ported from TanStack Start
@@ -258,20 +258,23 @@ Components are organized by complexity:
 - [x] View Transitions utilities
 - [x] Authentication flow (OAuth) with Next.js
 - [x] Next.js proxy for route protection
-- [x] UI atoms (Button, Input, etc.)
-- [ ] UI molecules (PostCard, UserCard, etc.)[skip - do incrementally]
+- [x] UI atoms (Button, Input, Avatar, Card, etc.)
+- [x] UI molecules (PostCard, UserCard)
+- [x] Timeline page with infinite scroll (TanStack Virtual)
+- [x] Status detail page with full thread context
+- [x] Bookmarks page with infinite scroll
+- [x] Account page with profile & posts timeline
+- [x] Search page with tabs (accounts, statuses, hashtags)
+- [x] Optimistic updates for all mutations
 
 ### To Be Implemented
 - [ ] Tiptap editor setup for compose
-- [ ] Timeline page with infinite scroll (TanStack Virtual)
-- [ ] Compose page with Tiptap
-- [ ] Status detail page with thread
-- [ ] Bookmarks page
-- [ ] Account page
-- [ ] Search page
-- [ ] Settings page
-- [ ] Activity component
+- [ ] Compose page with Tiptap (rich text, media, polls, etc.)
+- [ ] Settings page (profile editing)
+- [ ] Activity component (visibility toggling)
 - [ ] Motion animations
+- [ ] Custom emoji rendering
+- [ ] Link preview cards
 
 ## Development Workflow
 

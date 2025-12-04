@@ -29,27 +29,27 @@ A minimal, performant social media frontend for Mastodon with modern React patte
 
 ### Phase 4: Component Library
 - ✅ Task 10: Build Base UI Atoms
-- ⏳ Task 11: Build Molecules (incremental as features are added)
+- 🚧 Task 11: Build Molecules (PostCard ✅, UserCard ✅ - incremental as features are added)
 - ⏳ Task 12: Setup Tiptap Editor
 
 ### Phase 5: Feature Pages
-- ⏳ Task 13: Implement Article List Page (Timeline)
-- ⏳ Task 14: Implement Create Article Page
-- ⏳ Task 15: Implement Article Detail Page
-- ⏳ Task 16: Implement Bookmarks Page
-- ⏳ Task 17: Implement Account Detail Page
-- ⏳ Task 18: Implement Search Page
+- ✅ Task 13: Implement Article List Page (Timeline with infinite scroll)
+- ⏳ Task 14: Implement Create Article Page (Compose with Tiptap)
+- ✅ Task 15: Implement Article Detail Page (Status with full thread context)
+- ✅ Task 16: Implement Bookmarks Page (with infinite scroll)
+- ✅ Task 17: Implement Account Detail Page (with profile & posts)
+- ✅ Task 18: Implement Search Page (with tabs for accounts, statuses, hashtags)
 - ⏳ Task 19: Implement Account Settings Page
 
 ### Phase 6: Polish & Optimization
 - ⏳ Task 20: Setup Activity Component (for toggling visibility which is React's official way now)
-- ⏳ Task 21: Implement Optimistic Updates (for article actions, must do this)
+- ✅ Task 21: Implement Optimistic Updates (for article actions - completed in mutations.ts)
 - ⏳ Task 22: Add Motion Animations
 - ⏳ Task 23: Optimize with useEffectEvent (if necessary)
-- ⏳ Task 24: Update CLAUDE.md Documentation
+- ✅ Task 24: Update CLAUDE.md Documentation (initial version completed)
 
-**Overall Progress: 1/24 tasks completed (4.2%)**
-**Status: Restarting with Next.js due to TanStack Start CSS/SSR issues**
+**Overall Progress: 16/24 tasks completed (67%)**
+**Status: Core features implemented - Compose page with Tiptap and Settings remaining**
 
 ## Tech Stack
 
