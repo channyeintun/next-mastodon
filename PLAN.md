@@ -109,7 +109,7 @@ src/
 - In account details pages, account timeline [account detail page]
 - Performance optimized rendering
 
-### 3. Create Article (Compose)
+### 3. Create Article (Compose) (Explore at: https://docs.joinmastodon.org/user/posting/)
 - Rich text editor (Tiptap)
 - Mention, Hashtag
 - Media attachments [can be multiples - max 4, make the layout responsive based on the numbers of it]
