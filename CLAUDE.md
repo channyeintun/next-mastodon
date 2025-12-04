@@ -258,23 +258,26 @@ Components are organized by complexity:
 - [x] View Transitions utilities
 - [x] Authentication flow (OAuth) with Next.js
 - [x] Next.js proxy for route protection
-- [x] UI atoms (Button, Input, Avatar, Card, etc.)
+- [x] UI atoms (Button, Input, Avatar, Card, IconButton, Spinner, TextArea, Badge)
 - [x] UI molecules (PostCard, UserCard)
+- [x] UI organisms (ComposerPanel with Tiptap, Header, AuthGuard)
 - [x] Timeline page with infinite scroll (TanStack Virtual)
 - [x] Status detail page with full thread context
 - [x] Bookmarks page with infinite scroll
 - [x] Account page with profile & posts timeline
 - [x] Search page with tabs (accounts, statuses, hashtags)
-- [x] Optimistic updates for all mutations
+- [x] Compose page with Tiptap editor (visibility, content warnings, character count)
+- [x] Optimistic updates for all mutations (favorite, reblog, bookmark)
 
 ### To Be Implemented
-- [ ] Tiptap editor setup for compose
-- [ ] Compose page with Tiptap (rich text, media, polls, etc.)
+- [ ] Media upload functionality (images, videos, up to 4 attachments)
+- [ ] Poll creation in composer
 - [ ] Settings page (profile editing)
 - [ ] Activity component (visibility toggling)
 - [ ] Motion animations
 - [ ] Custom emoji rendering
 - [ ] Link preview cards
+- [ ] Mention suggestions in composer
 
 ## Development Workflow
 

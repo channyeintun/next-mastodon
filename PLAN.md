@@ -29,12 +29,12 @@ A minimal, performant social media frontend for Mastodon with modern React patte
 
 ### Phase 4: Component Library
 - ✅ Task 10: Build Base UI Atoms
-- 🚧 Task 11: Build Molecules (PostCard ✅, UserCard ✅ - incremental as features are added)
-- ⏳ Task 12: Setup Tiptap Editor
+- ✅ Task 11: Build Molecules (PostCard ✅, UserCard ✅)
+- ✅ Task 12: Setup Tiptap Editor (with StarterKit & Placeholder)
 
 ### Phase 5: Feature Pages
 - ✅ Task 13: Implement Article List Page (Timeline with infinite scroll)
-- ⏳ Task 14: Implement Create Article Page (Compose with Tiptap)
+- ✅ Task 14: Implement Create Article Page (Compose with Tiptap, visibility, CW)
 - ✅ Task 15: Implement Article Detail Page (Status with full thread context)
 - ✅ Task 16: Implement Bookmarks Page (with infinite scroll)
 - ✅ Task 17: Implement Account Detail Page (with profile & posts)
@@ -48,8 +48,8 @@ A minimal, performant social media frontend for Mastodon with modern React patte
 - ⏳ Task 23: Optimize with useEffectEvent (if necessary)
 - ✅ Task 24: Update CLAUDE.md Documentation (initial version completed)
 
-**Overall Progress: 16/24 tasks completed (67%)**
-**Status: Core features implemented - Compose page with Tiptap and Settings remaining**
+**Overall Progress: 18/24 tasks completed (75%)**
+**Status: Core features complete - Settings page and polish remaining**
 
 ## Tech Stack
 
