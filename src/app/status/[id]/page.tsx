@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { useStatus, useStatusContext } from '@/api/queries';
 import { PostCard } from '@/components/molecules/PostCard';
-import { PostCardSkeleton } from '@/components/atoms/PostCardSkeleton';
+import { PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
 import { Button } from '@/components/atoms/Button';
 import { IconButton } from '@/components/atoms/IconButton';
 

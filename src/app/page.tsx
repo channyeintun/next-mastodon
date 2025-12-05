@@ -6,7 +6,7 @@ import { useAuthStore } from '@/hooks/useStores';
 import { useInfiniteHomeTimeline } from '@/api/queries';
 import { PostCard } from '@/components/molecules/PostCard';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { PostCardSkeletonList, PostCardSkeleton } from '@/components/atoms/PostCardSkeleton';
+import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
 import { Button } from '@/components/atoms/Button';
 import { Plus } from 'lucide-react';
 import type { Status } from '@/types/mastodon';
@@ -18,7 +18,7 @@ const HomePage = observer(() => {
     return (
       <div className="container" style={{ maxWidth: '600px', marginTop: 'var(--size-8)', textAlign: 'center' }}>
         <h1 style={{ fontSize: 'var(--font-size-7)', marginBottom: 'var(--size-4)' }}>
-          Welcome to Mastodon Client
+          Welcome to Mastodon
         </h1>
         <p style={{ color: 'var(--text-2)', marginBottom: 'var(--size-6)', fontSize: 'var(--font-size-3)' }}>
           A minimal, performant social media frontend for Mastodon

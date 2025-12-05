@@ -1,7 +1,7 @@
 'use client';
 
 import { Card as CardType } from '@/types/mastodon';
-import { Card } from './Card';
+import { Card } from '../atoms/Card';
 import { ExternalLink } from 'lucide-react';
 
 interface LinkPreviewProps {

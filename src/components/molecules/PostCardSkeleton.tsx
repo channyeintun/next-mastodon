@@ -1,6 +1,6 @@
 'use client';
 
-import { Card } from './Card';
+import { Card } from '../atoms/Card';
 
 interface PostCardSkeletonProps {
   style?: React.CSSProperties;

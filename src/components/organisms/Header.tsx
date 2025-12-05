@@ -41,7 +41,7 @@ const Header = observer(() => {
               color: 'var(--text-1)',
             }}
           >
-            Mastodon Client
+            Mastodon
           </Link>
 
           {authStore.isAuthenticated && (

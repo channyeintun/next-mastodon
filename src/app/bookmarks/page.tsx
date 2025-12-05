@@ -5,7 +5,7 @@ import { ArrowLeft, Bookmark as BookmarkIcon } from 'lucide-react';
 import { useInfiniteBookmarks } from '@/api/queries';
 import { PostCard } from '@/components/molecules/PostCard';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { PostCardSkeletonList, PostCardSkeleton } from '@/components/atoms/PostCardSkeleton';
+import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
 import { Button } from '@/components/atoms/Button';
 import { IconButton } from '@/components/atoms/IconButton';
 import type { Status } from '@/types/mastodon';

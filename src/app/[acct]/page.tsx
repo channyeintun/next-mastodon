@@ -7,8 +7,8 @@ import { useLookupAccount, useInfiniteAccountStatuses, useRelationships, useCurr
 import { useFollowAccount, useUnfollowAccount } from '@/api/mutations';
 import { PostCard } from '@/components/molecules/PostCard';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { PostCardSkeletonList, PostCardSkeleton } from '@/components/atoms/PostCardSkeleton';
-import { AccountProfileSkeleton } from '@/components/atoms/AccountProfileSkeleton';
+import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
+import { AccountProfileSkeleton } from '@/components/molecules/AccountProfileSkeleton';
 import { Avatar } from '@/components/atoms/Avatar';
 import { Button } from '@/components/atoms/Button';
 import { IconButton } from '@/components/atoms/IconButton';

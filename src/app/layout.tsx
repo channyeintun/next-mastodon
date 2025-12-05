@@ -7,7 +7,7 @@ import { ScrollRestorationProvider } from "@/components/providers/ScrollRestorat
 import Header from "@/components/organisms/Header";
 
 export const metadata: Metadata = {
-  title: "Mastodon Client",
+  title: "Mastodon",
   description: "A minimal, performant social media frontend for Mastodon",
 };
 

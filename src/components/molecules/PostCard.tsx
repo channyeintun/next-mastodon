@@ -18,8 +18,8 @@ import { Card } from '../atoms/Card';
 import { IconButton } from '../atoms/IconButton';
 import { Button } from '../atoms/Button';
 import { EmojiText } from '../atoms/EmojiText';
-import { StatusContent } from '../atoms/StatusContent';
-import { LinkPreview } from '../atoms/LinkPreview';
+import { StatusContent } from './StatusContent';
+import { LinkPreview } from './LinkPreview';
 import type { Status } from '@/types/mastodon';
 import {
   useFavouriteStatus,
