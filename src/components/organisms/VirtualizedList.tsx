@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect, type CSSProperties, type ReactNode } from 'react';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 
 interface VirtualizedListProps<T> {
   /**
@@ -85,6 +85,12 @@ interface VirtualizedListProps<T> {
   scrollRestorationKey?: string;
 }
 
+// Global cache for scroll restoration
+const scrollStateCache = new Map<string, {
+  offset: number;
+  measurements: VirtualItem[];
+}>();
+
 /**
  * Reusable virtualized list component with infinite scroll and scroll restoration
  */
@@ -106,23 +112,34 @@ export function VirtualizedList<T>({
   scrollRestorationKey,
 }: VirtualizedListProps<T>) {
   const parentRef = useRef<HTMLDivElement>(null);
-  const scrollPositionSaved = useRef(false);
 
-  // Setup virtualizer
+  // Get saved scroll state if available
+  const savedState = scrollRestorationKey
+    ? scrollStateCache.get(scrollRestorationKey)
+    : undefined;
+
+  // Setup virtualizer with scroll restoration
   const virtualizer = useVirtualizer({
     count: items.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => estimateSize,
     overscan,
     lanes: 1,
+    // Scroll restoration: restore initial offset and measurements
+    initialOffset: savedState?.offset,
+    initialMeasurementsCache: savedState?.measurements,
+    // Save scroll state when scrolling stops
+    onChange: (instance) => {
+      if (scrollRestorationKey && !instance.isScrolling) {
+        scrollStateCache.set(scrollRestorationKey, {
+          offset: instance.scrollOffset || 0,
+          measurements: instance.measurementsCache,
+        });
+      }
+    },
   });
 
   const virtualItems = virtualizer.getVirtualItems();
-
-  // Remeasure when items change
-  useEffect(() => {
-    virtualizer.measure();
-  }, [items.length, virtualizer]);
 
   // Infinite scroll - fetch next page when near bottom
   useEffect(() => {
@@ -142,61 +159,6 @@ export function VirtualizedList<T>({
     virtualItems,
     loadMoreThreshold,
   ]);
-
-  // Scroll restoration - save scroll position before unmount
-  useEffect(() => {
-    if (!scrollRestorationKey) return;
-
-    const element = parentRef.current;
-    if (!element) return;
-
-    const saveScrollPosition = () => {
-      const scrollTop = element.scrollTop;
-      sessionStorage.setItem(
-        `scroll-${scrollRestorationKey}`,
-        scrollTop.toString()
-      );
-      scrollPositionSaved.current = true;
-    };
-
-    // Save scroll position on scroll (debounced)
-    let timeoutId: NodeJS.Timeout;
-    const handleScroll = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(saveScrollPosition, 150);
-    };
-
-    element.addEventListener('scroll', handleScroll);
-
-    // Save on unmount
-    return () => {
-      element.removeEventListener('scroll', handleScroll);
-      saveScrollPosition();
-    };
-  }, [scrollRestorationKey]);
-
-  // Scroll restoration - restore scroll position on mount
-  useEffect(() => {
-    if (!scrollRestorationKey || scrollPositionSaved.current) return;
-
-    const element = parentRef.current;
-    if (!element) return;
-
-    // Wait for items to be measured before restoring scroll
-    const timeoutId = setTimeout(() => {
-      const savedPosition = sessionStorage.getItem(
-        `scroll-${scrollRestorationKey}`
-      );
-
-      if (savedPosition) {
-        const scrollTop = parseInt(savedPosition, 10);
-        element.scrollTop = scrollTop;
-        scrollPositionSaved.current = true;
-      }
-    }, 100);
-
-    return () => clearTimeout(timeoutId);
-  }, [scrollRestorationKey, items.length]);
 
   // Show empty state if no items
   if (items.length === 0 && emptyState) {
