@@ -42,7 +42,7 @@ A minimal, performant social media frontend for Mastodon with modern React patte
 - ⏳ Task 19: Implement Account Settings Page
 
 ### Phase 6: Polish & Optimization
-- ⏳ Task 20: Setup Activity Component (for toggling visibility which is React's official way now)
+- ⏳ Task 20: Use Activity Component (for toggling visibility which is React's official way now)
 - ✅ Task 21: Implement Optimistic Updates (for article actions - completed in mutations.ts)
 - ⏳ Task 22: Add Motion Animations
 - ⏳ Task 23: Optimize with useEffectEvent (if necessary)
