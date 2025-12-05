@@ -11,6 +11,7 @@ import type {
   CreateStatusParams,
   Emoji,
   MediaAttachment,
+  Poll,
   Relationship,
   SearchParams,
   SearchResults,
@@ -350,6 +351,18 @@ export class MastodonClient {
     }
 
     return response.json()
+  }
+
+  // Polls
+  async getPoll(id: string): Promise<Poll> {
+    return this.request<Poll>(`/api/v1/polls/${id}`)
+  }
+
+  async votePoll(id: string, choices: number[]): Promise<Poll> {
+    return this.request<Poll>(`/api/v1/polls/${id}/votes`, {
+      method: 'POST',
+      body: JSON.stringify({ choices }),
+    })
   }
 }
 

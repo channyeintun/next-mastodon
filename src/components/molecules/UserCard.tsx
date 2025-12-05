@@ -59,7 +59,7 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
   const isLoading = followMutation.isPending || unfollowMutation.isPending;
 
   return (
-    <Card padding="medium" hoverable style={style}>
+    <Card padding="medium" hoverable style={{ ...style, opacity: 0 }} ref={cardRef}>
       <Link
         href={`/accounts/${account.id}`}
         style={{ textDecoration: 'none', display: 'block' }}

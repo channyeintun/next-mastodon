@@ -384,3 +384,29 @@ export function useUpdateAccount() {
     },
   })
 }
+
+// Poll mutations
+export function useVotePoll() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ pollId, choices }: { pollId: string; choices: number[] }) =>
+      getMastodonClient().votePoll(pollId, choices),
+    onSuccess: (updatedPoll, { pollId }) => {
+      // Update the poll in all cached statuses that contain it
+      updateStatusInCaches(queryClient, pollId, (status) => {
+        if (status.poll?.id === pollId) {
+          return {
+            ...status,
+            poll: updatedPoll,
+          }
+        }
+        return status
+      })
+
+      // Invalidate all relevant queries to ensure consistency
+      queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
+      queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
+    },
+  })
+}

@@ -28,6 +28,7 @@ import {
   useBookmarkStatus,
   useUnbookmarkStatus,
   useDeleteStatus,
+  useVotePoll,
 } from '@/api/mutations';
 import { useCurrentAccount } from '@/api/queries';
 
@@ -54,12 +55,15 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
   const router = useRouter();
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showCWContent, setShowCWContent] = useState(false);
+  const [selectedPollChoices, setSelectedPollChoices] = useState<number[]>([]);
   const cardRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const { data: currentAccount } = useCurrentAccount();
+  const votePollMutation = useVotePoll();
 
   // Animate card entrance
   useEffect(() => {
@@ -157,6 +161,34 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
   const handleEdit = () => {
     setShowMenu(false);
     router.push(`/status/${displayStatus.id}/edit`);
+  };
+
+  const handlePollChoiceToggle = (index: number) => {
+    if (!displayStatus.poll) return;
+
+    if (displayStatus.poll.multiple) {
+      // Multiple choice - toggle selection
+      setSelectedPollChoices((prev) =>
+        prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+      );
+    } else {
+      // Single choice - replace selection
+      setSelectedPollChoices([index]);
+    }
+  };
+
+  const handlePollVote = async () => {
+    if (!displayStatus.poll || selectedPollChoices.length === 0) return;
+
+    try {
+      await votePollMutation.mutateAsync({
+        pollId: displayStatus.poll.id,
+        choices: selectedPollChoices,
+      });
+      setSelectedPollChoices([]);
+    } catch (error) {
+      console.error('Failed to vote on poll:', error);
+    }
   };
 
   return (
@@ -356,29 +388,55 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
           {displayStatus.spoiler_text && (
             <div style={{
               marginTop: 'var(--size-2)',
-              padding: 'var(--size-2)',
+              padding: 'var(--size-3)',
               background: 'var(--orange-2)',
               borderRadius: 'var(--radius-2)',
-              fontSize: 'var(--font-size-1)',
-              fontWeight: 'var(--font-weight-6)',
             }}>
-              CW: {displayStatus.spoiler_text}
+              <div style={{
+                fontSize: 'var(--font-size-1)',
+                fontWeight: 'var(--font-weight-6)',
+                color: 'var(--text-1)',
+                marginBottom: 'var(--size-2)',
+              }}>
+                Content Warning: {displayStatus.spoiler_text}
+              </div>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowCWContent(!showCWContent);
+                }}
+                style={{
+                  padding: 'var(--size-2) var(--size-3)',
+                  background: 'var(--orange-6)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 'var(--radius-2)',
+                  cursor: 'pointer',
+                  fontSize: 'var(--font-size-1)',
+                  fontWeight: 'var(--font-weight-6)',
+                }}
+              >
+                {showCWContent ? 'Hide content' : 'Show content'}
+              </button>
             </div>
           )}
 
-          {/* Post content */}
-          <div
-            style={{
-              marginTop: 'var(--size-3)',
-              color: 'var(--text-1)',
-              lineHeight: '1.5',
-              wordBreak: 'break-word',
-            }}
-            dangerouslySetInnerHTML={{ __html: displayStatus.content }}
-          />
+          {/* Post content - hidden if CW active and not revealed */}
+          {(!displayStatus.spoiler_text || showCWContent) && (
+            <div
+              style={{
+                marginTop: 'var(--size-3)',
+                color: 'var(--text-1)',
+                lineHeight: '1.5',
+                wordBreak: 'break-word',
+              }}
+              dangerouslySetInnerHTML={{ __html: displayStatus.content }}
+            />
+          )}
 
-          {/* Media attachments */}
-          {displayStatus.media_attachments.length > 0 && (
+          {/* Media attachments - hidden if CW active and not revealed */}
+          {(!displayStatus.spoiler_text || showCWContent) && displayStatus.media_attachments.length > 0 && (
             <div style={{
               marginTop: 'var(--size-3)',
               display: 'grid',
@@ -438,56 +496,170 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
             </div>
           )}
 
-          {/* Poll (if exists) */}
-          {displayStatus.poll && (
+          {/* Poll - hidden if CW active and not revealed */}
+          {(!displayStatus.spoiler_text || showCWContent) && displayStatus.poll && (
             <div style={{
               marginTop: 'var(--size-3)',
               padding: 'var(--size-3)',
               background: 'var(--surface-3)',
               borderRadius: 'var(--radius-2)',
             }}>
-              {displayStatus.poll.options.map((option, index) => (
-                <div
-                  key={index}
-                  style={{
-                    marginBottom: 'var(--size-2)',
-                    padding: 'var(--size-2)',
-                    background: 'var(--surface-2)',
-                    borderRadius: 'var(--radius-2)',
-                    position: 'relative',
-                  }}
-                >
+              {/* Show voting interface if not voted and not expired */}
+              {!displayStatus.poll.voted && !displayStatus.poll.expired ? (
+                <>
+                  {displayStatus.poll.options.map((option, index) => (
+                    <label
+                      key={index}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'var(--size-2)',
+                        padding: 'var(--size-2)',
+                        marginBottom: 'var(--size-2)',
+                        background: selectedPollChoices.includes(index)
+                          ? 'var(--blue-2)'
+                          : 'var(--surface-2)',
+                        borderRadius: 'var(--radius-2)',
+                        cursor: 'pointer',
+                        border: selectedPollChoices.includes(index)
+                          ? '2px solid var(--blue-6)'
+                          : '2px solid transparent',
+                        transition: 'all 0.2s ease',
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                    >
+                      <input
+                        type={displayStatus.poll.multiple ? 'checkbox' : 'radio'}
+                        name={`poll-${displayStatus.poll.id}`}
+                        checked={selectedPollChoices.includes(index)}
+                        onChange={() => handlePollChoiceToggle(index)}
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                          width: '18px',
+                          height: '18px',
+                          cursor: 'pointer',
+                        }}
+                      />
+                      <span style={{
+                        flex: 1,
+                        color: 'var(--text-1)',
+                        fontSize: 'var(--font-size-1)',
+                      }}>
+                        {option.title}
+                      </span>
+                    </label>
+                  ))}
                   <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    height: '100%',
-                    background: 'var(--blue-3)',
-                    borderRadius: 'var(--radius-2)',
-                    width: displayStatus.poll.votes_count > 0
-                      ? `${((option.votes_count || 0) / displayStatus.poll.votes_count) * 100}%`
-                      : '0%',
-                    transition: 'width 0.3s ease',
-                  }} />
-                  <div style={{
-                    position: 'relative',
                     display: 'flex',
                     justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginTop: 'var(--size-3)',
                   }}>
-                    <span>{option.title}</span>
-                    <span style={{ color: 'var(--text-2)' }}>
-                      {option.votes_count || 0} votes
-                    </span>
+                    <div style={{
+                      fontSize: 'var(--font-size-0)',
+                      color: 'var(--text-2)',
+                    }}>
+                      {displayStatus.poll.votes_count} votes · {displayStatus.poll.multiple ? 'Multiple choice' : 'Single choice'}
+                    </div>
+                    <Button
+                      size="small"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handlePollVote();
+                      }}
+                      disabled={selectedPollChoices.length === 0 || votePollMutation.isPending}
+                      isLoading={votePollMutation.isPending}
+                    >
+                      Vote
+                    </Button>
                   </div>
-                </div>
-              ))}
-              <div style={{
-                marginTop: 'var(--size-2)',
-                fontSize: 'var(--font-size-0)',
-                color: 'var(--text-2)',
-              }}>
-                {displayStatus.poll.votes_count} votes · {displayStatus.poll.expired ? 'Closed' : 'Active'}
-              </div>
+                </>
+              ) : (
+                <>
+                  {/* Show results if voted or expired */}
+                  {displayStatus.poll.options.map((option, index) => {
+                    const percentage = displayStatus.poll!.votes_count > 0
+                      ? ((option.votes_count || 0) / displayStatus.poll!.votes_count) * 100
+                      : 0;
+                    const isOwnVote = displayStatus.poll!.own_votes?.includes(index);
+
+                    return (
+                      <div
+                        key={index}
+                        style={{
+                          marginBottom: 'var(--size-2)',
+                          padding: 'var(--size-2)',
+                          background: 'var(--surface-2)',
+                          borderRadius: 'var(--radius-2)',
+                          position: 'relative',
+                          border: isOwnVote ? '2px solid var(--blue-6)' : '2px solid transparent',
+                        }}
+                      >
+                        <div style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          height: '100%',
+                          background: isOwnVote ? 'var(--blue-4)' : 'var(--blue-3)',
+                          borderRadius: 'var(--radius-2)',
+                          width: `${percentage}%`,
+                          transition: 'width 0.5s ease',
+                        }} />
+                        <div style={{
+                          position: 'relative',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          gap: 'var(--size-2)',
+                        }}>
+                          <span style={{
+                            flex: 1,
+                            color: 'var(--text-1)',
+                            fontWeight: isOwnVote ? 'var(--font-weight-6)' : 'normal',
+                          }}>
+                            {option.title}
+                            {isOwnVote && (
+                              <span style={{
+                                marginLeft: 'var(--size-2)',
+                                fontSize: 'var(--font-size-0)',
+                                color: 'var(--blue-6)',
+                              }}>
+                                ✓
+                              </span>
+                            )}
+                          </span>
+                          <span style={{
+                            color: 'var(--text-2)',
+                            fontSize: 'var(--font-size-0)',
+                            fontWeight: 'var(--font-weight-6)',
+                          }}>
+                            {percentage.toFixed(1)}%
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <div style={{
+                    marginTop: 'var(--size-2)',
+                    fontSize: 'var(--font-size-0)',
+                    color: 'var(--text-2)',
+                  }}>
+                    {displayStatus.poll.votes_count.toLocaleString()} votes
+                    {displayStatus.poll.voters_count !== null &&
+                      ` · ${displayStatus.poll.voters_count.toLocaleString()} voters`}
+                    {' · '}
+                    {displayStatus.poll.expired ? (
+                      <span style={{ color: 'var(--red-6)' }}>Closed</span>
+                    ) : (
+                      `Closes ${new Date(displayStatus.poll.expires_at!).toLocaleString()}`
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           )}
 
