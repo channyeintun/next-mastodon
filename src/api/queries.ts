@@ -3,7 +3,7 @@
  */
 
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
-import { getMastodonClient } from './client'
+import { getMastodonClient, MastodonClient } from './client'
 import { queryKeys } from './queryKeys'
 import type { TimelineParams, SearchParams } from '../types/mastodon'
 
@@ -188,5 +188,25 @@ export function useCustomEmojis() {
     queryKey: ['customEmojis'],
     queryFn: () => getMastodonClient().getCustomEmojis(),
     staleTime: 1000 * 60 * 60, // Cache for 1 hour
+  })
+}
+
+// Trends
+export function useInfiniteTrendingStatuses() {
+  return useInfiniteQuery({
+    queryKey: queryKeys.trends.statuses(),
+    queryFn: ({ pageParam }) => {
+      // Use mastodon.social for trending statuses (public API, no auth required)
+      const trendingClient = new MastodonClient('https://mastodon.social')
+      const params = { limit: 20, offset: pageParam }
+      return trendingClient.getTrendingStatuses(params)
+    },
+    getNextPageParam: (lastPage, allPages) => {
+      // Stop fetching if page is empty or has fewer items than requested (last page)
+      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      // Calculate next offset based on total pages loaded
+      return allPages.length * 20
+    },
+    initialPageParam: 0,
   })
 }

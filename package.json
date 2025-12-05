@@ -20,6 +20,7 @@
     "@tiptap/starter-kit": "^3.12.1",
     "@tiptap/suggestion": "^3.13.0",
     "autoprefixer": "^10.4.22",
+    "axios": "^1.13.2",
     "emoji-mart": "^5.6.0",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.555.0",

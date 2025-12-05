@@ -32,6 +32,7 @@ import {
   useVotePoll,
 } from '@/api/mutations';
 import { useCurrentAccount } from '@/api/queries';
+import { useAuthStore } from '@/hooks/useStores';
 
 interface PostCardProps {
   status: Status;
@@ -54,6 +55,7 @@ function formatRelativeTime(dateString: string): string {
 
 export function PostCard({ status, showThread = false, style }: PostCardProps) {
   const router = useRouter();
+  const authStore = useAuthStore();
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showCWContent, setShowCWContent] = useState(false);
@@ -83,6 +85,13 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
   const handleFavourite = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // Check authentication
+    if (!authStore.isAuthenticated) {
+      router.push('/auth/signin');
+      return;
+    }
+
     if (displayStatus.favourited) {
       unfavouriteMutation.mutate(displayStatus.id);
     } else {
@@ -93,6 +102,13 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
   const handleReblog = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // Check authentication
+    if (!authStore.isAuthenticated) {
+      router.push('/auth/signin');
+      return;
+    }
+
     if (displayStatus.reblogged) {
       unreblogMutation.mutate(displayStatus.id);
     } else {
@@ -103,6 +119,13 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
   const handleBookmark = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // Check authentication
+    if (!authStore.isAuthenticated) {
+      router.push('/auth/signin');
+      return;
+    }
+
     if (displayStatus.bookmarked) {
       unbookmarkMutation.mutate(displayStatus.id);
     } else {
@@ -197,6 +220,12 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
   const handlePollVote = async () => {
     if (!displayStatus.poll || selectedPollChoices.length === 0) return;
 
+    // Check authentication
+    if (!authStore.isAuthenticated) {
+      router.push('/auth/signin');
+      return;
+    }
+
     try {
       await votePollMutation.mutateAsync({
         pollId: displayStatus.poll.id,
@@ -206,6 +235,19 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
     } catch (error) {
       console.error('Failed to vote on poll:', error);
     }
+  };
+
+  const handleReply = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Check authentication
+    if (!authStore.isAuthenticated) {
+      router.push('/auth/signin');
+      return;
+    }
+
+    // TODO: Open reply modal
   };
 
   return (
@@ -756,11 +798,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
           }}>
             <IconButton
               size="small"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                // TODO: Open reply modal
-              }}
+              onClick={handleReply}
               title="Reply"
             >
               <MessageCircle size={16} />

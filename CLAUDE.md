@@ -95,7 +95,7 @@ mastodon-nextjs-client/
 
 ### `/src/app/`
 Next.js App Router with file-based routing. Each folder with a `page.tsx` becomes a route:
-- **Root** (`/`): Home timeline page
+- **Root** (`/`): Home timeline page (shows trending timeline from mastodon.social when not signed in)
 - **`/compose`**: Create new post page
 - **`/status/[id]`**: Status detail with thread context
 - **`/bookmarks`**: Bookmarked posts
@@ -397,6 +397,8 @@ The application uses Tiptap as a unified rich text editing solution for both com
 - [x] Tiptap mention autocomplete with Mastodon API integration
 - [x] Live WYSIWYG preview in composer with Tiptap
 - [x] Click navigation in read-only Tiptap for mentions and hashtags
+- [x] Trending timeline for non-authenticated users (from mastodon.social)
+- [x] Authentication checks in PostCard CTAs (redirect to sign-in when not authenticated)
 
 ### To Be Implemented
 - [ ] Settings page (profile editing)
@@ -554,6 +556,43 @@ const query = new URLSearchParams(filteredParams).toString()
   - Back button navigation to home
 - **Query Hook**: `useInfiniteHashtagTimeline(hashtag)` - fetches paginated hashtag timeline
 - **URL Format**: `/tags/opensource`, `/tags/nextjs`, etc.
+
+### Trending Timeline for Non-Authenticated Users
+- **Purpose**: Allow non-authenticated users to browse trending content from mastodon.social
+- **Implementation**:
+  - Home page (`src/app/page.tsx`) shows `TrendingPage` component when not signed in
+  - `TrendingPage` component displays trending statuses with infinite scroll
+  - Uses `useInfiniteTrendingStatuses()` query hook
+  - Creates temporary MastodonClient for mastodon.social (no auth required)
+- **API**: `getTrendingStatuses(params)` endpoint (`/api/v1/trends/statuses`)
+  - Uses offset-based pagination (`limit`, `offset`) instead of cursor-based
+  - Fetches from mastodon.social public API
+- **Query Hook**: `useInfiniteTrendingStatuses()` - fetches paginated trending timeline
+- **Features**:
+  - Infinite scroll with TanStack Virtual
+  - Deduplication of statuses
+  - Header with "Trending on Mastodon" title and TrendingUp icon
+  - Sign-in button in header
+  - Empty state with sign-in CTA
+- **User Flow**:
+  1. Unauthenticated user visits home page
+  2. Sees trending posts from mastodon.social
+  3. Can click on posts, mentions, hashtags, etc. (read-only)
+  4. Action buttons (favorite, reblog, bookmark) redirect to sign-in page
+
+### PostCard Authentication Guards
+- **Purpose**: Prevent unauthenticated users from performing actions, redirect to sign-in instead
+- **Implementation**: All action handlers in `PostCard` check `authStore.isAuthenticated` before proceeding
+- **Protected Actions**:
+  - **Favorite/Unfavorite**: `handleFavourite()` - redirects to `/auth/signin` if not authenticated
+  - **Reblog/Unreblog**: `handleReblog()` - redirects to `/auth/signin` if not authenticated
+  - **Bookmark/Unbookmark**: `handleBookmark()` - redirects to `/auth/signin` if not authenticated
+  - **Reply**: `handleReply()` - redirects to `/auth/signin` if not authenticated
+  - **Poll Voting**: `handlePollVote()` - redirects to `/auth/signin` if not authenticated
+- **User Experience**:
+  - Unauthenticated users can view all content
+  - Clicking any action button redirects to sign-in page
+  - After signing in, user can return and perform actions
 
 ## Development Workflow
 

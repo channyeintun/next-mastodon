@@ -379,6 +379,14 @@ export class MastodonClient {
       body: JSON.stringify({ choices }),
     })
   }
+
+  // Trends
+  async getTrendingStatuses(params?: { limit?: number; offset?: number }): Promise<Status[]> {
+    const query = new URLSearchParams(params as any).toString()
+    return this.request<Status[]>(
+      `/api/v1/trends/statuses${query ? `?${query}` : ''}`,
+    )
+  }
 }
 
 // Singleton instance - will be configured with instance URL

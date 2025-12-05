@@ -44,4 +44,9 @@ export const queryKeys = {
   search: {
     all: (query: string, type?: string) => ['search', query, type] as const,
   },
+
+  // Trends
+  trends: {
+    statuses: (params?: object) => ['trends', 'statuses', params] as const,
+  },
 }
