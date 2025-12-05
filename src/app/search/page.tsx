@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { ArrowLeft, Search as SearchIcon, Hash } from 'lucide-react';
 import { useSearch } from '@/api/queries';
 import { PostCard } from '@/components/molecules/PostCard';
@@ -14,9 +15,25 @@ import { Card } from '@/components/atoms/Card';
 type TabType = 'all' | 'accounts' | 'statuses' | 'hashtags';
 
 export default function SearchPage() {
-  const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<TabType>('all');
+  const searchParams = useSearchParams();
+  const urlQuery = searchParams.get('q') || '';
+
+  const [query, setQuery] = useState(urlQuery);
+  const [debouncedQuery, setDebouncedQuery] = useState(urlQuery);
+  const [activeTab, setActiveTab] = useState<TabType>(
+    urlQuery.startsWith('#') ? 'hashtags' : 'all'
+  );
+
+  // Update query when URL changes
+  useEffect(() => {
+    if (urlQuery && urlQuery !== query) {
+      setQuery(urlQuery);
+      setDebouncedQuery(urlQuery);
+      if (urlQuery.startsWith('#')) {
+        setActiveTab('hashtags');
+      }
+    }
+  }, [urlQuery]);
 
   // Debounce search query
   useEffect(() => {

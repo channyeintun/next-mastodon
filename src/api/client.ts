@@ -108,6 +108,13 @@ export class MastodonClient {
     )
   }
 
+  async getHashtagTimeline(hashtag: string, params?: TimelineParams): Promise<Status[]> {
+    const query = new URLSearchParams(params as any).toString()
+    return this.request<Status[]>(
+      `/api/v1/timelines/tag/${encodeURIComponent(hashtag)}${query ? `?${query}` : ''}`,
+    )
+  }
+
   // Statuses
   async getStatus(id: string): Promise<Status> {
     return this.request<Status>(`/api/v1/statuses/${id}`)

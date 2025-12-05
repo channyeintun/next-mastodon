@@ -30,6 +30,8 @@ mastodon-nextjs-client/
 │   │   │   └── page.tsx
 │   │   ├── status/[id]/      # Status detail pages
 │   │   │   └── page.tsx
+│   │   ├── tags/[tag]/       # Hashtag feed pages
+│   │   │   └── page.tsx
 │   │   ├── favicon.ico       # App favicon
 │   │   ├── globals.css       # Global styles with Open Props
 │   │   ├── layout.tsx        # Root layout with providers
@@ -90,6 +92,7 @@ Next.js App Router with file-based routing. Each folder with a `page.tsx` become
 - **`/status/[id]`**: Status detail with thread context
 - **`/bookmarks`**: Bookmarked posts
 - **`/[acct]`**: User profile and posts (accessed via `/@username` or `/@username@domain`, requires @ prefix)
+- **`/tags/[tag]`**: Hashtag feed page with infinite scroll (e.g., `/tags/opensource`)
 - **`/search`**: Search functionality
 - **`/settings`**: Account settings
 - **`/auth/signin`**: OAuth sign in
@@ -259,7 +262,7 @@ Components are organized by complexity:
 - [x] View Transitions utilities
 - [x] Authentication flow (OAuth) with Next.js
 - [x] Next.js proxy for route protection
-- [x] UI atoms (Button, Input, Avatar, Card, IconButton, Spinner, TextArea, Badge, EmojiText)
+- [x] UI atoms (Button, Input, Avatar, Card, IconButton, Spinner, TextArea, Badge, EmojiText, StatusContent)
 - [x] UI molecules (PostCard, UserCard, MentionSuggestions)
 - [x] UI organisms (ComposerPanel with Tiptap, EmojiPicker with emoji-mart, Header, AuthGuard)
 - [x] Timeline page with infinite scroll (TanStack Virtual + deduplication)
@@ -278,6 +281,9 @@ Components are organized by complexity:
 - [x] Professional emoji picker (emoji-mart library) with custom emoji support
 - [x] Duplicate status deduplication in virtualized lists (pagination overlap handling)
 - [x] Production build passing with TypeScript strict mode
+- [x] Clickable mentions and hashtags with internal navigation (no external redirects)
+- [x] Highlighted mentions (blue) and hashtags (indigo) in post content
+- [x] Dedicated hashtag feed page with infinite scroll (`/tags/[tag]`)
 
 ### To Be Implemented
 - [ ] Settings page (profile editing)
@@ -381,6 +387,36 @@ const filteredParams = Object.fromEntries(
 const query = new URLSearchParams(filteredParams).toString()
 ```
 - **Result**: When searching with "all" tab, URL becomes `?q=test` instead of `?q=test&type=undefined`
+- **URL Parameters**: Search page reads `?q=` parameter from URL and automatically populates search box
+- **Hashtag Auto-tab**: If query starts with `#`, automatically switches to "hashtags" tab
+
+### Clickable Mentions and Hashtags
+- **Component**: `StatusContent` - replaces `dangerouslySetInnerHTML` for status content
+- **Styling**:
+  - Mentions: `var(--blue-6)` color, bold font weight
+  - Hashtags: `var(--indigo-6)` color, bold font weight
+- **Click Behavior**:
+  - **Mentions**: Click navigates to `/@username` (internal routing, no external redirect)
+  - **Hashtags**: Click navigates to `/tags/hashtag` - dedicated hashtag feed page
+  - **Other Links**: Open in new tab with `noopener,noreferrer`
+- **Implementation**:
+  - Uses `useEffect` to attach click listeners after HTML is rendered
+  - Queries for `.mention`, `.u-url`, and `.hashtag` classes (Mastodon API classes)
+  - Extracts username/hashtag from link text content
+  - Uses Next.js `useRouter` for internal navigation
+  - Prevents default link behavior and stops propagation
+
+### Hashtag Feed Page
+- **Route**: `/tags/[tag]/page.tsx` - dedicated page for hashtag timelines
+- **API**: `getHashtagTimeline(hashtag)` endpoint (`/api/v1/timelines/tag/:hashtag`)
+- **Features**:
+  - Infinite scroll with TanStack Virtual
+  - Deduplication of statuses
+  - Header with hashtag icon and name
+  - Empty state when no posts found
+  - Back button navigation to home
+- **Query Hook**: `useInfiniteHashtagTimeline(hashtag)` - fetches paginated hashtag timeline
+- **URL Format**: `/tags/opensource`, `/tags/nextjs`, etc.
 
 ## Development Workflow
 

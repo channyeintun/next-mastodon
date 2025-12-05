@@ -38,6 +38,23 @@ export function usePublicTimeline(params?: TimelineParams) {
   })
 }
 
+export function useInfiniteHashtagTimeline(hashtag: string) {
+  return useInfiniteQuery({
+    queryKey: queryKeys.timelines.hashtag(hashtag),
+    queryFn: ({ pageParam }) => {
+      const params: TimelineParams = { limit: 20 }
+      if (pageParam) params.max_id = pageParam
+      return getMastodonClient().getHashtagTimeline(hashtag, params)
+    },
+    getNextPageParam: (lastPage) => {
+      if (lastPage.length === 0) return undefined
+      return lastPage[lastPage.length - 1]?.id
+    },
+    initialPageParam: undefined as string | undefined,
+    enabled: !!hashtag,
+  })
+}
+
 // Statuses
 export function useStatus(id: string) {
   return useQuery({
