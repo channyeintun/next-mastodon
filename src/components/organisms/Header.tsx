@@ -1,5 +1,6 @@
 'use client';
 
+import { Activity } from 'react';
 import Link from 'next/link';
 import { useAuthStore } from '@/hooks/useStores';
 import { observer } from 'mobx-react-lite';
@@ -44,7 +45,7 @@ const Header = observer(() => {
             Mastodon
           </Link>
 
-          {authStore.isAuthenticated && (
+          <Activity mode={authStore.isAuthenticated ? 'visible' : 'hidden'}>
             <nav style={{ display: 'flex', gap: 'var(--size-4)' }}>
               <Link
                 href="/"
@@ -87,11 +88,11 @@ const Header = observer(() => {
                 Search
               </Link>
             </nav>
-          )}
+          </Activity>
         </div>
 
         <div>
-          {authStore.isAuthenticated ? (
+          <Activity mode={authStore.isAuthenticated ? 'visible' : 'hidden'}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)' }}>
               <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
                 {authStore.instanceURL?.replace('https://', '')}
@@ -112,7 +113,9 @@ const Header = observer(() => {
                 Sign Out
               </button>
             </div>
-          ) : (
+          </Activity>
+
+          <Activity mode={!authStore.isAuthenticated ? 'visible' : 'hidden'}>
             <Link
               href="/auth/signin"
               style={{
@@ -129,7 +132,7 @@ const Header = observer(() => {
             >
               Sign In
             </Link>
-          )}
+          </Activity>
         </div>
       </div>
     </header>

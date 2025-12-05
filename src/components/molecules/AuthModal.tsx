@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Activity, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card } from '../atoms/Card';
 import { Button } from '../atoms/Button';
@@ -18,8 +18,6 @@ export function AuthModal() {
         return unsubscribe;
     }, []);
 
-    if (!isOpen) return null;
-
     const handleClose = () => {
         setIsOpen(false);
     };
@@ -30,7 +28,7 @@ export function AuthModal() {
     };
 
     return (
-        <>
+        <Activity mode={isOpen ? 'visible' : 'hidden'}>
             {/* Backdrop */}
             <div
                 style={{
@@ -96,6 +94,6 @@ export function AuthModal() {
                     </div>
                 </Card>
             </div>
-        </>
+        </Activity>
     );
 }

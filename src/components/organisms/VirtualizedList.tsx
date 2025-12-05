@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, type CSSProperties, type ReactNode } from 'react';
+import { Activity, useRef, useEffect, type CSSProperties, type ReactNode } from 'react';
 import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 
 interface VirtualizedListProps<T> {
@@ -160,11 +160,6 @@ export function VirtualizedList<T>({
     loadMoreThreshold,
   ]);
 
-  // Show empty state if no items
-  if (items.length === 0 && emptyState) {
-    return <div style={{ height, ...style }}>{emptyState}</div>;
-  }
-
   return (
     <div
       ref={parentRef}
@@ -174,51 +169,59 @@ export function VirtualizedList<T>({
         ...style,
       }}
     >
-      <div
-        style={{
-          height: `${virtualizer.getTotalSize()}px`,
-          width: '100%',
-          position: 'relative',
-        }}
-      >
-        {virtualItems.map((virtualItem) => {
-          const item = items[virtualItem.index];
-          if (!item) return null;
+      <Activity mode={items.length === 0 && emptyState ? 'visible' : 'hidden'}>
+        {emptyState}
+      </Activity>
 
-          return (
-            <div
-              key={virtualItem.key}
-              data-index={virtualItem.index}
-              ref={virtualizer.measureElement}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                transform: `translateY(${virtualItem.start}px)`,
-              }}
-            >
-              {renderItem(item, virtualItem.index)}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Loading indicator */}
-      {isLoadingMore && loadingIndicator}
-
-      {/* End of list indicator */}
-      {!hasMore && items.length > 0 && endIndicator && (
+      <Activity mode={items.length > 0 ? 'visible' : 'hidden'}>
         <div
           style={{
-            textAlign: 'center',
-            padding: 'var(--size-4)',
-            color: 'var(--text-2)',
+            height: `${virtualizer.getTotalSize()}px`,
+            width: '100%',
+            position: 'relative',
           }}
         >
-          {endIndicator}
+          {virtualItems.map((virtualItem) => {
+            const item = items[virtualItem.index];
+            if (!item) return null;
+
+            return (
+              <div
+                key={virtualItem.key}
+                data-index={virtualItem.index}
+                ref={virtualizer.measureElement}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  transform: `translateY(${virtualItem.start}px)`,
+                }}
+              >
+                {renderItem(item, virtualItem.index)}
+              </div>
+            );
+          })}
         </div>
-      )}
+
+        {/* Loading indicator */}
+        <Activity mode={isLoadingMore ? 'visible' : 'hidden'}>
+          {loadingIndicator}
+        </Activity>
+
+        {/* End of list indicator */}
+        <Activity mode={!hasMore && items.length > 0 && !!endIndicator ? 'visible' : 'hidden'}>
+          <div
+            style={{
+              textAlign: 'center',
+              padding: 'var(--size-4)',
+              color: 'var(--text-2)',
+            }}
+          >
+            {endIndicator}
+          </div>
+        </Activity>
+      </Activity>
     </div>
   );
 }
