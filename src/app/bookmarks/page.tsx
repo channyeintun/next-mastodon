@@ -143,7 +143,7 @@ export default function BookmarksPage() {
             Bookmarks
           </h1>
           <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-            {uniqueStatuses.length} {allStatuses.length === 1 ? 'post' : 'posts'}
+            {uniqueStatuses.length} {uniqueStatuses.length === 1 ? 'post' : 'posts'}
           </p>
         </div>
       </div>

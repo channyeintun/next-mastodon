@@ -24,7 +24,8 @@ export function useInfiniteHomeTimeline() {
       return getMastodonClient().getHomeTimeline(params)
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0) return undefined
+      // Stop fetching if page is empty or has fewer items than requested (last page)
+      if (lastPage.length === 0 || lastPage.length < 20) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -47,7 +48,8 @@ export function useInfiniteHashtagTimeline(hashtag: string) {
       return getMastodonClient().getHashtagTimeline(hashtag, params)
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0) return undefined
+      // Stop fetching if page is empty or has fewer items than requested (last page)
+      if (lastPage.length === 0 || lastPage.length < 20) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -113,7 +115,8 @@ export function useInfiniteAccountStatuses(id: string) {
       return getMastodonClient().getAccountStatuses(id, params)
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0) return undefined
+      // Stop fetching if page is empty or has fewer items than requested (last page)
+      if (lastPage.length === 0 || lastPage.length < 20) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -162,7 +165,8 @@ export function useInfiniteBookmarks() {
       return getMastodonClient().getBookmarks(params)
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0) return undefined
+      // Stop fetching if page is empty or has fewer items than requested (last page)
+      if (lastPage.length === 0 || lastPage.length < 20) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
