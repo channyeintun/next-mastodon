@@ -10,7 +10,7 @@
 :root {
   --app-max-width: 1200px;
   --app-sidebar-width: 280px;
-  --app-header-height: 60px;
+  --app-bottom-nav-height: 64px;
 }
 
 body {
@@ -156,4 +156,237 @@ a {
   vertical-align: middle;
   object-fit: contain;
   display: inline-block;
+}
+
+/* ====================================
+   Navigation Styles
+   ==================================== */
+
+/* Sidebar Navigation (Desktop) */
+.navigation-sidebar {
+  display: none; /* Hidden on mobile by default */
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--app-sidebar-width);
+  background: var(--surface-2);
+  border-right: 1px solid var(--surface-3);
+  z-index: 30;
+  overflow-y: auto;
+  flex-direction: column;
+}
+
+/* Sidebar Header (Logo) */
+.navigation-sidebar-header {
+  padding: var(--size-5);
+  border-bottom: 1px solid var(--surface-3);
+}
+
+.navigation-sidebar-logo {
+  font-size: var(--font-size-5);
+  font-weight: var(--font-weight-7);
+  text-decoration: none;
+  color: var(--text-1);
+  transition: color 0.2s ease;
+}
+
+.navigation-sidebar-logo:hover {
+  color: var(--blue-6);
+}
+
+/* Sidebar Navigation Links */
+.navigation-sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2);
+  padding: var(--size-5);
+}
+
+/* Sidebar Footer (User Info / Auth) */
+.navigation-sidebar-footer {
+  padding: var(--size-5);
+  border-top: 1px solid var(--surface-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-3);
+}
+
+.navigation-sidebar-instance {
+  font-size: var(--font-size-1);
+  color: var(--text-2);
+  text-align: center;
+  word-break: break-word;
+  padding: var(--size-1);
+}
+
+.navigation-sidebar-signin {
+  display: block;
+  width: 100%;
+  padding: var(--size-3) var(--size-4);
+  font-size: var(--font-size-1);
+  font-weight: var(--font-weight-6);
+  border: none;
+  border-radius: var(--radius-2);
+  background: var(--blue-6);
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.2s ease;
+}
+
+.navigation-sidebar-signin:hover {
+  background: var(--blue-7);
+}
+
+.navigation-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  padding: var(--size-3) var(--size-4);
+  text-decoration: none;
+  color: var(--text-2);
+  font-size: var(--font-size-2);
+  font-weight: var(--font-weight-6);
+  border-radius: var(--radius-3);
+  transition: all 0.2s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+.navigation-sidebar-link:hover {
+  color: var(--text-1);
+  background: var(--surface-3);
+}
+
+.navigation-sidebar-link.active {
+  color: var(--blue-6);
+  background: var(--blue-2);
+}
+
+.navigation-sidebar-link.pending {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Bottom Navigation (Mobile) */
+.navigation-bottom {
+  display: flex; /* Visible on mobile */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--app-bottom-nav-height);
+  background: var(--surface-2);
+  border-top: 1px solid var(--surface-3);
+  z-index: 40;
+  justify-content: space-around;
+  align-items: center;
+  padding: var(--size-2) var(--size-3);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navigation-bottom-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-1);
+  padding: var(--size-2);
+  text-decoration: none;
+  color: var(--text-2);
+  font-size: var(--font-size-0);
+  font-weight: var(--font-weight-5);
+  border-radius: var(--radius-2);
+  transition: all 0.2s ease;
+  position: relative;
+  cursor: pointer;
+  min-width: 64px;
+  flex: 1;
+}
+
+.navigation-bottom-link:hover {
+  color: var(--text-1);
+  background: var(--surface-3);
+}
+
+.navigation-bottom-link.active {
+  color: var(--blue-6);
+}
+
+.navigation-bottom-link.active .navigation-link-icon {
+  color: var(--blue-6);
+}
+
+.navigation-bottom-link.pending {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Navigation link icon container */
+.navigation-link-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navigation-link-label {
+  font-size: var(--font-size-0);
+  white-space: nowrap;
+}
+
+.navigation-sidebar-link .navigation-link-label {
+  font-size: var(--font-size-2);
+}
+
+/* Navigation link spinner (shown during pending state) */
+.navigation-link-spinner {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--surface-3);
+  border-top-color: var(--blue-6);
+  border-radius: 50%;
+  animation: navigation-spin 0.6s linear infinite;
+}
+
+@keyframes navigation-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ====================================
+   Responsive Breakpoints
+   ==================================== */
+
+/* Mobile layout adjustments */
+body {
+  padding-bottom: var(--app-bottom-nav-height); /* Prevent content from being hidden behind bottom nav */
+}
+
+/* Tablet and Desktop (768px+) */
+@media (min-width: 768px) {
+  body {
+    padding-bottom: 0; /* Remove bottom padding on desktop */
+    margin-left: var(--app-sidebar-width); /* Add left margin for sidebar */
+  }
+
+  .navigation-sidebar {
+    display: flex; /* Show sidebar navigation (flex for column layout) */
+  }
+
+  .navigation-bottom {
+    display: none; /* Hide bottom navigation */
+  }
+}
+
+/* Desktop (1024px+) */
+@media (min-width: 1024px) {
+  /* Additional desktop styles if needed */
 }

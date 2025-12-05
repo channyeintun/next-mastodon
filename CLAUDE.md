@@ -120,8 +120,8 @@ Mastodon API client and TanStack Query integration. Contains:
 ### `/src/components/`
 Atomic design pattern components:
 - **atoms/**: Smallest UI building blocks (Button, Input, Avatar, Card, Icon, Badge, Spinner, Link)
-- **molecules/**: Simple component combinations (PostCard, UserCard, SearchBar, Navigation, ActionBar, MediaGallery)
-- **organisms/**: Complex components (Timeline, ComposerPanel, ThreadView, ProfileHeader)
+- **molecules/**: Simple component combinations (PostCard, UserCard, SearchBar, Navigation with sidebar/bottom bar layout including logo and auth controls, ActionBar, MediaGallery)
+- **organisms/**: Complex components (Timeline, ComposerPanel, ThreadView, ProfileHeader, NavigationWrapper for auth integration)
 - **templates/**: Page layouts (MainLayout, AuthLayout, SettingsLayout)
 - **providers/**: React context providers for app-wide state
 
@@ -170,9 +170,18 @@ PostCSS configuration:
 ### `src/app/globals.css`
 Global styles using Open Props:
 - Open Props imports (style, normalize, buttons)
-- Custom CSS properties (app-specific variables)
+- Custom CSS properties:
+  - `--app-max-width`: Maximum content width (1200px)
+  - `--app-sidebar-width`: Desktop sidebar width (280px)
+  - `--app-bottom-nav-height`: Mobile bottom navigation height (64px)
 - View Transitions CSS
 - Utility classes (container, spinner)
+- Navigation styles:
+  - Sidebar for desktop (full height with header, nav links, footer)
+  - Bottom bar for mobile
+  - Logo, instance URL, sign in/out buttons
+- Responsive breakpoints (768px tablet, 1024px desktop)
+- Layout adjustments (body margins/padding for sidebar and bottom nav)
 
 ### `tsconfig.json`
 TypeScript configuration:
@@ -383,8 +392,8 @@ The application uses two complementary approaches for rendering post content:
 - [x] Authentication flow (OAuth) with Next.js
 - [x] Next.js proxy for route protection
 - [x] UI atoms (Button, Input, Avatar, Card, IconButton, Spinner, TextArea, Badge, EmojiText, TiptapEditor)
-- [x] UI molecules (PostCard with StatusContent, UserCard, MentionSuggestions, StatusContent)
-- [x] UI organisms (ComposerPanel with Tiptap, EmojiPicker with emoji-mart, Header, AuthGuard)
+- [x] UI molecules (PostCard with StatusContent, UserCard, MentionSuggestions, StatusContent, Navigation with integrated logo and auth)
+- [x] UI organisms (ComposerPanel with Tiptap, EmojiPicker with emoji-mart, NavigationWrapper, AuthGuard)
 - [x] Timeline page with infinite scroll (TanStack Virtual + deduplication)
 - [x] Status detail page with full thread context
 - [x] Bookmarks page with infinite scroll (+ deduplication)
@@ -412,6 +421,9 @@ The application uses two complementary approaches for rendering post content:
 - [x] Click navigation for mentions and hashtags in displayed content
 - [x] Trending timeline for non-authenticated users (from mastodon.social)
 - [x] Authentication checks in PostCard CTAs (redirect to sign-in when not authenticated)
+- [x] Modern responsive navigation (sidebar on desktop, bottom bar on mobile)
+- [x] Navigation pending state animations using `useLinkStatus` hook (spinner shown during slow network navigation)
+- [x] NavigationWrapper organism for auth state integration
 
 ### To Be Implemented
 - [ ] Settings page (profile editing)
@@ -439,6 +451,61 @@ The application uses two complementary approaches for rendering post content:
   - `showCWContent` controls text/polls visibility and media visibility
   - `showCWMedia` controls media blur state
 - Preserves user's choices during session
+
+### Responsive Navigation with Pending State
+- **Component**: `Navigation` molecule component (`src/components/molecules/Navigation.tsx`)
+- **Wrapper**: `NavigationWrapper` organism (`src/components/organisms/NavigationWrapper.tsx`) - wraps Navigation with MobX observer to provide auth state and sign-out handler
+- **Modern Responsive Design**:
+  - **Desktop (768px+)**: Fixed left sidebar navigation (280px wide, full height)
+    - **Sidebar Header**: Logo (top section with bottom border)
+    - **Sidebar Nav**: Navigation links (middle section, flex-grow)
+    - **Sidebar Footer**: Instance URL and sign out/sign in button (bottom section with top border)
+    - Positioned from top to bottom, fixed to left edge
+    - Body content offset by sidebar width
+  - **Mobile (<768px)**: Fixed bottom navigation bar (64px tall)
+    - Horizontal layout with icons and small labels
+    - Fixed to bottom of viewport
+    - Body content has bottom padding to prevent content from being hidden
+    - Only shows navigation links when authenticated
+- **Layout Structure**:
+  - **Desktop**: `body` has left margin of `--app-sidebar-width` (280px)
+  - **Mobile**: `body` has bottom padding of `--app-bottom-nav-height` (64px)
+  - **No separate header**: All UI elements integrated into sidebar/bottom nav
+- **Pending State Animations** (Next.js `useLinkStatus` hook):
+  - **Individual link tracking**: Each NavigationLink uses `useLinkStatus(href)` to detect pending navigation state
+  - **Visual feedback during slow networks**:
+    - Link opacity reduced to 60% when pending
+    - Small spinning loader icon shown in top-right corner of icon
+    - Pointer events disabled to prevent double clicks
+  - **Implementation**: Uses Next.js built-in `useLinkStatus` from `next/link` (not `useTransition`)
+  - **Benefits**: Provides visual feedback on slow networks without custom state management
+- **Accessibility**:
+  - `aria-label` for all navigation links
+  - `aria-current="page"` for active route
+  - Keyboard navigation support
+- **Active Route Highlighting**: Uses `usePathname()` to detect current route and apply active styles (blue color and background)
+- **CSS Classes**:
+  - **Sidebar (Desktop)**:
+    - `.navigation-sidebar` - Fixed left sidebar container (full height, flexbox column)
+    - `.navigation-sidebar-header` - Top section with logo
+    - `.navigation-sidebar-logo` - Logo link
+    - `.navigation-sidebar-nav` - Navigation links container (flex-grow)
+    - `.navigation-sidebar-link` - Sidebar navigation link
+    - `.navigation-sidebar-link.active` - Active route (blue color and background)
+    - `.navigation-sidebar-link.pending` - Pending state (reduced opacity)
+    - `.navigation-sidebar-footer` - Bottom section with user info/auth
+    - `.navigation-sidebar-instance` - Instance URL display
+    - `.navigation-sidebar-signout` - Sign out button
+    - `.navigation-sidebar-signin` - Sign in link
+  - **Bottom Bar (Mobile)**:
+    - `.navigation-bottom` - Fixed bottom bar container
+    - `.navigation-bottom-link` - Bottom navigation link
+    - `.navigation-bottom-link.active` - Active route (blue color)
+    - `.navigation-bottom-link.pending` - Pending state (reduced opacity)
+  - **Shared**:
+    - `.navigation-link-icon` - Icon container with spinner positioning
+    - `.navigation-link-label` - Text label
+    - `.navigation-link-spinner` - Spinning loader (absolute positioned in icon)
 
 ### Poll Functionality
 - **Two modes in PostCard**:

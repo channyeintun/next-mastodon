@@ -5,7 +5,7 @@ import { QueryProvider } from "@/components/providers/QueryProvider";
 import { StoreProvider } from "@/components/providers/StoreProvider";
 import { ScrollRestorationProvider } from "@/components/providers/ScrollRestorationProvider";
 import { AuthModal } from "@/components/molecules";
-import Header from "@/components/organisms/Header";
+import NavigationWrapper from "@/components/organisms/NavigationWrapper";
 
 export const metadata: Metadata = {
   title: "Mastodon",
@@ -41,7 +41,7 @@ export default async function RootLayout({
         <QueryProvider>
           <StoreProvider initialState={initialState}>
             <ScrollRestorationProvider />
-            <Header />
+            <NavigationWrapper />
             {children}
             <AuthModal />
           </StoreProvider>

@@ -3,16 +3,18 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Upload, X } from 'lucide-react';
+import { ArrowLeft, Upload, X, LogOut } from 'lucide-react';
 import { useCurrentAccount } from '@/api/queries';
 import { useUpdateAccount } from '@/api/mutations';
 import { Button } from '@/components/atoms/Button';
 import { IconButton } from '@/components/atoms/IconButton';
 import { Card } from '@/components/atoms/Card';
 import { Spinner } from '@/components/atoms/Spinner';
+import { useAuthStore } from '@/hooks/useStores';
 
 export default function SettingsPage() {
   const router = useRouter();
+  const authStore = useAuthStore();
   const { data: currentAccount, isLoading } = useCurrentAccount();
   const updateAccountMutation = useUpdateAccount();
 
@@ -97,6 +99,11 @@ export default function SettingsPage() {
     } catch (error) {
       console.error('Failed to update account:', error);
     }
+  };
+
+  const handleSignOut = () => {
+    authStore.signOut();
+    window.location.href = '/auth/signin';
   };
 
   if (isLoading) {
@@ -439,6 +446,36 @@ export default function SettingsPage() {
           </Button>
         </div>
       </form>
+
+      {/* Sign Out Section */}
+      <Card padding="medium" style={{ marginTop: 'var(--size-6)' }}>
+        <h2 style={{
+          fontSize: 'var(--font-size-3)',
+          fontWeight: 'var(--font-weight-6)',
+          marginBottom: 'var(--size-3)',
+        }}>
+          Account
+        </h2>
+        <p style={{
+          fontSize: 'var(--font-size-1)',
+          color: 'var(--text-2)',
+          marginBottom: 'var(--size-4)',
+        }}>
+          Signed in as <strong style={{ color: 'var(--text-1)' }}>@{currentAccount.acct}</strong>
+          {authStore.instanceURL && (
+            <span> on {authStore.instanceURL.replace('https://', '')}</span>
+          )}
+        </p>
+        <Button
+          type="button"
+          variant="danger"
+          onClick={handleSignOut}
+          style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}
+        >
+          <LogOut size={18} />
+          Sign Out
+        </Button>
+      </Card>
     </div>
   );
 }
