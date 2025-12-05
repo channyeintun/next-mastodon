@@ -16,6 +16,7 @@ export interface Status {
   text: string | null // Plain text
   spoiler_text: string
   language: string | null
+  emojis: Emoji[]
 
   // Visibility
   visibility: 'public' | 'unlisted' | 'private' | 'direct'

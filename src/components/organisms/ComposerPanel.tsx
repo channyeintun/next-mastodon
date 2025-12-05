@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '../atoms/Button';
 import { Card } from '../atoms/Card';
@@ -11,11 +11,11 @@ import { EmojiText } from '../atoms/EmojiText';
 import { MediaUpload } from '../molecules/MediaUpload';
 import { PollComposer, type PollData } from '../molecules/PollComposer';
 import { EmojiPicker } from './EmojiPicker';
-import { MentionSuggestions } from '../molecules/MentionSuggestions';
-import { useMentionAutocomplete } from '@/hooks/useMentionAutocomplete';
+import { TiptapEditor } from '../atoms/TiptapEditor';
+import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { getMastodonClient } from '@/api/client';
 import { Globe, Lock, Users, Mail, X, Smile } from 'lucide-react';
-import type { CreateStatusParams, MediaAttachment, Account } from '@/types/mastodon';
+import type { CreateStatusParams, MediaAttachment } from '@/types/mastodon';
 
 const MAX_CHAR_COUNT = 500;
 
@@ -49,9 +49,9 @@ export function ComposerPanel({
   const { data: currentAccount } = useCurrentAccount();
   const createStatusMutation = useCreateStatus();
   const updateStatusMutation = useUpdateStatus();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [content, setContent] = useState(initialContent);
+  const [textContent, setTextContent] = useState('');
   const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
   const [showVisibilityMenu, setShowVisibilityMenu] = useState(false);
   const [contentWarning, setContentWarning] = useState(initialSpoilerText);
@@ -62,51 +62,16 @@ export function ComposerPanel({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isUploadingMedia, setIsUploadingMedia] = useState(false);
 
-  const charCount = content.length;
+  const charCount = textContent.length;
   const isOverLimit = charCount > MAX_CHAR_COUNT;
   const isPending = editMode ? updateStatusMutation.isPending : createStatusMutation.isPending;
-  const canPost = charCount > 0 && !isOverLimit && !isPending && (media.length > 0 || poll !== null || content.trim().length > 0);
+  const canPost = charCount > 0 && !isOverLimit && !isPending && (media.length > 0 || poll !== null || textContent.trim().length > 0);
 
   const currentVisibility = visibilityOptions.find((v) => v.value === visibility);
   const VisibilityIcon = currentVisibility?.icon || Globe;
 
-  // Mention autocomplete
-  const {
-    suggestions: mentionSuggestions,
-    isLoading: isSearchingMentions,
-    mentionPosition,
-    selectedIndex,
-    handleSelect: handleMentionSelect,
-    handleKeyDown: handleMentionKeyDown,
-  } = useMentionAutocomplete({
-    content,
-    textareaRef,
-    onSelect: (account: Account, mentionStart: number, cursorPos: number) => {
-      const mention = `@${account.acct}`;
-      const before = content.substring(0, mentionStart);
-      const after = content.substring(cursorPos);
-      const newContent = before + mention + ' ' + after;
-      setContent(newContent);
-
-      // Set cursor after mention
-      setTimeout(() => {
-        const newPos = before.length + mention.length + 1;
-        if (textareaRef.current) {
-          textareaRef.current.selectionStart = newPos;
-          textareaRef.current.selectionEnd = newPos;
-          textareaRef.current.focus();
-        }
-      }, 0);
-    },
-  });
-
-  // Auto-resize textarea
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
-    }
-  }, [content]);
+  // Create mention suggestion config for Tiptap
+  const mentionSuggestion = createMentionSuggestion();
 
   const handleMediaAdd = async (file: File) => {
     setIsUploadingMedia(true);
@@ -134,26 +99,16 @@ export function ComposerPanel({
   };
 
   const handleEmojiSelect = (emoji: string) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const newContent = content.substring(0, start) + emoji + content.substring(end);
-    setContent(newContent);
-
-    // Set cursor position after emoji
-    setTimeout(() => {
-      textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
-      textarea.focus();
-    }, 0);
+    // Emoji will be inserted at cursor position in Tiptap editor
+    // For now, just append to content - Tiptap will handle cursor position
+    setContent((prev) => prev + emoji);
   };
 
   const handlePost = async () => {
     if (!canPost) return;
 
     const params: CreateStatusParams = {
-      status: content,
+      status: textContent,
       visibility,
     };
 
@@ -356,44 +311,25 @@ export function ComposerPanel({
           </div>
         )}
 
-        {/* Editor - Simple Textarea with Mention Suggestions */}
+        {/* Editor - Tiptap with Mention Autocomplete */}
         <div
           style={{
             border: '1px solid var(--surface-4)',
             borderRadius: 'var(--radius-2)',
             background: 'var(--surface-1)',
             marginBottom: 'var(--size-3)',
-            position: 'relative',
           }}
         >
-          <textarea
-            ref={textareaRef}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            onKeyDown={handleMentionKeyDown}
+          <TiptapEditor
+            content={content}
+            editable={true}
             placeholder="What's on your mind?"
-            style={{
-              width: '100%',
-              minHeight: '120px',
-              maxHeight: '400px',
-              padding: 'var(--size-3)',
-              border: 'none',
-              background: 'transparent',
-              color: 'var(--text-1)',
-              fontSize: 'var(--font-size-2)',
-              resize: 'none',
-              fontFamily: 'inherit',
-              lineHeight: '1.5',
+            emojis={currentAccount?.emojis || []}
+            onUpdate={(html, text) => {
+              setContent(html);
+              setTextContent(text);
             }}
-          />
-
-          {/* Mention Suggestions */}
-          <MentionSuggestions
-            accounts={mentionSuggestions}
-            isLoading={isSearchingMentions}
-            onSelect={handleMentionSelect}
-            position={mentionPosition}
-            selectedIndex={selectedIndex}
+            mentionSuggestion={mentionSuggestion}
           />
         </div>
 

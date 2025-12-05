@@ -54,6 +54,14 @@ mastodon-nextjs-client/
 │   │   ├── useStores.ts      # MobX store hooks
 │   │   ├── useViewTransition.ts  # View Transitions API hook
 │   │   └── README.md
+│   ├── lib/                  # Library code and extensions
+│   │   └── tiptap/           # Tiptap extensions and configurations
+│   │       ├── extensions/   # Custom Tiptap extensions
+│   │       │   ├── Hashtag.ts          # Hashtag mark with click navigation
+│   │       │   ├── CustomEmoji.ts      # Custom Mastodon emoji node
+│   │       │   ├── MentionWithClick.ts # Enhanced mention with click navigation
+│   │       │   └── ExternalLink.ts     # External link configuration
+│   │       └── MentionSuggestion.tsx   # Mention autocomplete UI
 │   ├── stores/               # MobX global state stores
 │   │   ├── authStore.ts      # Authentication state (tokens, instance URL)
 │   │   ├── userStore.ts      # Current user data
@@ -62,7 +70,7 @@ mastodon-nextjs-client/
 │   │   ├── index.ts          # Store exports
 │   │   └── README.md
 │   ├── types/                # TypeScript type definitions
-│   │   ├── mastodon.ts       # Mastodon API types
+│   │   ├── mastodon.ts       # Mastodon API types (includes Emoji array in Status)
 │   │   └── index.ts          # Type exports
 │   └── utils/                # Utility functions
 │       ├── oauth.ts          # OAuth helper functions
@@ -185,10 +193,15 @@ TypeScript configuration:
 - **mobx-react-lite**: React bindings for MobX
 - **mobx-persist-store**: MobX state persistence
 - **motion**: Animation library
-- **@tiptap/react**: Rich text editor
-- **@tiptap/starter-kit**: Tiptap base extensions
-- **@tiptap/extension-placeholder**: Placeholder extension
-- **@tiptap/extension-mention**: Mention extension
+- **@tiptap/react** (^3.12.1): Rich text editor framework
+- **@tiptap/starter-kit** (^3.12.1): Tiptap base extensions (paragraph, bold, italic, etc.)
+- **@tiptap/extension-placeholder** (^3.12.1): Placeholder text extension
+- **@tiptap/extension-mention** (^3.12.1): Mention autocomplete extension
+- **@tiptap/suggestion**: Suggestion/autocomplete framework for Tiptap
+- **tippy.js**: Tooltip/popover library for mention suggestions
+- **emoji-mart** (^5.6.0): Professional emoji picker
+- **@emoji-mart/data** (^1.2.1): Emoji data for emoji-mart
+- **@emoji-mart/react** (^1.1.1): React wrapper for emoji-mart
 - **open-props**: CSS design tokens
 - **postcss-import**: PostCSS imports
 - **postcss-nesting**: CSS nesting
@@ -247,6 +260,101 @@ Components are organized by complexity:
 6. Token and instance URL stored in MobX authStore (persisted to localStorage)
 7. All API requests include `Authorization: Bearer {token}` header
 
+## Tiptap Rich Text Editor
+
+The application uses Tiptap as a unified rich text editing solution for both composing posts and displaying content. This provides a consistent rendering experience with interactive elements.
+
+### Architecture
+
+**TiptapEditor Component** (`src/components/atoms/TiptapEditor.tsx`):
+- Reusable component that works in both editable and read-only modes
+- Accepts HTML content from Mastodon API
+- Supports custom emojis, mentions, hashtags, and links
+- Provides live preview while editing
+- Handles click navigation for mentions and hashtags in read-only mode
+
+### Custom Extensions
+
+**1. MentionWithClick** (`src/lib/tiptap/extensions/MentionWithClick.ts`):
+- Extends `@tiptap/extension-mention`
+- **Write mode**: Autocomplete mentions with `@username` detection
+- **Read mode**: Click navigation to user profiles (`/@username`)
+- Styling: Blue color (`var(--blue-6)`), bold font weight
+- Parses Mastodon HTML `<a class="mention">` tags
+
+**2. Hashtag** (`src/lib/tiptap/extensions/Hashtag.ts`):
+- Custom Mark extension for hashtag detection
+- **Write mode**: Auto-detects `#hashtag` patterns
+- **Read mode**: Click navigation to hashtag feeds (`/tags/hashtag`)
+- Styling: Indigo color (`var(--indigo-6)`), bold font weight
+- Parses Mastodon HTML `<a class="hashtag">` tags
+
+**3. CustomEmoji** (`src/lib/tiptap/extensions/CustomEmoji.ts`):
+- Custom Node extension for Mastodon custom emojis
+- Renders `:emoji_name:` as `<img>` tags with emoji URL
+- Displays inline with proper sizing (1.2em)
+- Parses Mastodon HTML `<img class="custom-emoji">` tags
+
+**4. ExternalLink** (`src/lib/tiptap/extensions/ExternalLink.ts`):
+- Configured Link extension for external URLs
+- Opens in new tab (`target="_blank"`)
+- Security: `rel="noopener noreferrer"`
+- Link color and underline styling
+- Only clickable in read-only mode
+
+### Mention Autocomplete System
+
+**MentionSuggestion** (`src/lib/tiptap/MentionSuggestion.tsx`):
+- React component for mention autocomplete UI
+- Uses `tippy.js` for popover positioning
+- Searches Mastodon API for matching accounts
+- Keyboard navigation support (↑/↓, Enter, Esc)
+- Displays user avatar, display name, and @acct
+- Integrates with Tiptap's suggestion framework
+
+**Flow**:
+1. User types `@` in the editor
+2. MentionSuggestion searches Mastodon API as user types
+3. Results displayed in dropdown with tippy.js positioning
+4. User selects with keyboard or mouse
+5. Mention inserted into editor with proper attributes
+
+### Usage
+
+**Editable Mode (ComposerPanel)**:
+```tsx
+<TiptapEditor
+  content={htmlContent}
+  editable={true}
+  placeholder="What's on your mind?"
+  emojis={currentAccount?.emojis || []}
+  onUpdate={(html, text) => {
+    setContent(html);
+    setTextContent(text);
+  }}
+  mentionSuggestion={mentionSuggestion}
+/>
+```
+
+**Read-only Mode (PostCard)**:
+```tsx
+<TiptapEditor
+  content={status.content}
+  editable={false}
+  emojis={status.emojis}
+/>
+```
+
+### Benefits
+
+1. **Unified Rendering**: Same logic for composing and displaying content
+2. **WYSIWYG Experience**: Live preview of formatting while typing
+3. **Interactive Elements**: Click navigation for mentions, hashtags, and links
+4. **Custom Emoji Support**: Renders Mastodon custom emojis inline
+5. **Mention Autocomplete**: Built-in @ mention suggestions with API integration
+6. **Consistent Styling**: All interactive elements styled with Open Props tokens
+7. **Type Safety**: Full TypeScript support with Mastodon types
+
 ## Features Status
 
 ### Completed Infrastructure & Features
@@ -262,8 +370,8 @@ Components are organized by complexity:
 - [x] View Transitions utilities
 - [x] Authentication flow (OAuth) with Next.js
 - [x] Next.js proxy for route protection
-- [x] UI atoms (Button, Input, Avatar, Card, IconButton, Spinner, TextArea, Badge, EmojiText, StatusContent)
-- [x] UI molecules (PostCard, UserCard, MentionSuggestions)
+- [x] UI atoms (Button, Input, Avatar, Card, IconButton, Spinner, TextArea, Badge, EmojiText, TiptapEditor)
+- [x] UI molecules (PostCard with Tiptap, UserCard, MentionSuggestions)
 - [x] UI organisms (ComposerPanel with Tiptap, EmojiPicker with emoji-mart, Header, AuthGuard)
 - [x] Timeline page with infinite scroll (TanStack Virtual + deduplication)
 - [x] Status detail page with full thread context
@@ -284,6 +392,11 @@ Components are organized by complexity:
 - [x] Clickable mentions and hashtags with internal navigation (no external redirects)
 - [x] Highlighted mentions (blue) and hashtags (indigo) in post content
 - [x] Dedicated hashtag feed page with infinite scroll (`/tags/[tag]`)
+- [x] Tiptap rich text editor for unified content rendering (compose + display)
+- [x] Custom Tiptap extensions (Mention, Hashtag, CustomEmoji, ExternalLink)
+- [x] Tiptap mention autocomplete with Mastodon API integration
+- [x] Live WYSIWYG preview in composer with Tiptap
+- [x] Click navigation in read-only Tiptap for mentions and hashtags
 
 ### To Be Implemented
 - [ ] Settings page (profile editing)
@@ -330,11 +443,16 @@ Components are organized by complexity:
   - Regex-based shortcode detection (`:emoji_name:`)
   - Replaces with `<img>` tags from emoji.url
 
-### Mention Autocomplete
-- **useMentionAutocomplete hook**: Detects `@` in composer
-- Searches Mastodon API for matching accounts
-- MentionSuggestions component with keyboard navigation (↑/↓, Enter, Esc)
-- Calculates popup position based on cursor location
+### Tiptap Content Rendering
+- **Unified approach**: Both ComposerPanel and PostCard use TiptapEditor component
+- **Compose mode**: Live WYSIWYG preview with interactive elements
+- **Display mode**: Read-only rendering with click navigation
+- **Parsing**: Converts Mastodon HTML to Tiptap document structure
+- **Extensions**: Custom extensions for Mention, Hashtag, CustomEmoji, and ExternalLink
+- **Mention autocomplete**: Integrated with Tiptap's suggestion system using MentionSuggestion component
+  - Detects `@` in composer and searches Mastodon API
+  - Keyboard navigation (↑/↓, Enter, Esc)
+  - Positioned with tippy.js for accurate placement
 
 ### Media Upload
 - MediaUpload component in ComposerPanel
@@ -390,21 +508,22 @@ const query = new URLSearchParams(filteredParams).toString()
 - **URL Parameters**: Search page reads `?q=` parameter from URL and automatically populates search box
 - **Hashtag Auto-tab**: If query starts with `#`, automatically switches to "hashtags" tab
 
-### Clickable Mentions and Hashtags
-- **Component**: `StatusContent` - replaces `dangerouslySetInnerHTML` for status content
+### Clickable Mentions and Hashtags (Tiptap-based)
+- **Component**: `TiptapEditor` - unified rich text component for both compose and display
 - **Styling**:
-  - Mentions: `var(--blue-6)` color, bold font weight
-  - Hashtags: `var(--indigo-6)` color, bold font weight
-- **Click Behavior**:
-  - **Mentions**: Click navigates to `/@username` (internal routing, no external redirect)
+  - Mentions: `var(--blue-6)` color, bold font weight, hover background
+  - Hashtags: `var(--indigo-6)` color, bold font weight, hover background
+- **Click Behavior** (read-only mode only):
+  - **Mentions**: Click navigates to `/@username` (internal routing via Next.js router)
   - **Hashtags**: Click navigates to `/tags/hashtag` - dedicated hashtag feed page
-  - **Other Links**: Open in new tab with `noopener,noreferrer`
+  - **External Links**: Open in new tab with `target="_blank"` and `rel="noopener noreferrer"`
 - **Implementation**:
-  - Uses `useEffect` to attach click listeners after HTML is rendered
-  - Queries for `.mention`, `.u-url`, and `.hashtag` classes (Mastodon API classes)
-  - Extracts username/hashtag from link text content
+  - Custom Tiptap extensions (MentionWithClick, Hashtag, ExternalLink)
+  - Uses `useEffect` to attach click listeners in read-only mode
+  - Parses Mastodon HTML attributes (`data-id`, `data-hashtag`)
   - Uses Next.js `useRouter` for internal navigation
   - Prevents default link behavior and stops propagation
+  - Extensions handle both rendering and interaction
 
 ### Hashtag Feed Page
 - **Route**: `/tags/[tag]/page.tsx` - dedicated page for hashtag timelines

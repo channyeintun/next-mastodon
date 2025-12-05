@@ -71,3 +71,89 @@ a {
     opacity: 0.5;
   }
 }
+
+/* Tiptap Editor Styles */
+.tiptap-editor-editable,
+.tiptap-editor-readonly {
+  font-size: var(--font-size-2);
+  line-height: 1.6;
+  color: var(--text-1);
+}
+
+.tiptap-editor-editable {
+  min-height: 120px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: var(--size-3);
+}
+
+.tiptap-editor-readonly {
+  padding: 0;
+}
+
+/* Tiptap placeholder */
+.tiptap-editor-editable .tiptap p.is-editor-empty:first-child::before {
+  color: var(--text-3);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Tiptap content styles */
+.tiptap-editor-editable p,
+.tiptap-editor-readonly p {
+  margin: 0 0 var(--size-2) 0;
+}
+
+.tiptap-editor-editable p:last-child,
+.tiptap-editor-readonly p:last-child {
+  margin-bottom: 0;
+}
+
+/* Mention styles */
+.tiptap .mention {
+  color: var(--blue-6);
+  font-weight: var(--font-weight-6);
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0 2px;
+  border-radius: var(--radius-1);
+}
+
+.tiptap-editor-readonly .mention:hover {
+  background: var(--blue-2);
+}
+
+/* Hashtag styles */
+.tiptap .hashtag {
+  color: var(--indigo-6);
+  font-weight: var(--font-weight-6);
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0 2px;
+  border-radius: var(--radius-1);
+}
+
+.tiptap-editor-readonly .hashtag:hover {
+  background: var(--indigo-2);
+}
+
+/* External link styles */
+.tiptap .external-link {
+  color: var(--link);
+  text-decoration: underline;
+}
+
+.tiptap .external-link:hover {
+  color: var(--link-visited);
+}
+
+/* Custom emoji styles */
+.tiptap .custom-emoji {
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: middle;
+  object-fit: contain;
+  display: inline-block;
+}
