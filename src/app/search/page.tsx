@@ -233,7 +233,7 @@ export default function SearchPage() {
                 </div>
               </div>
             ) : (
-              <div style={{ textAlign: 'center', marginTop: 'var(--size-8)', color: 'var(--text-2)' }}>
+              <div style={{ display: 'grid', placeItems: 'center', marginTop: 'var(--size-8)', color: 'var(--text-2)' }}>
                 <SearchIcon size={48} style={{ marginBottom: 'var(--size-4)' }} />
                 <p>Search for people, posts, or hashtags</p>
               </div>
