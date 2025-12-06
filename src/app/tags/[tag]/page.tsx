@@ -92,16 +92,15 @@ export default function HashtagPage({
   }
 
   return (
-    <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+    <div className="container full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{
-        position: 'sticky',
-        top: 0,
         background: 'var(--surface-1)',
         zIndex: 10,
-        padding: 'var(--size-4) 0',
+        padding: 'var(--size-4)',
         marginBottom: 'var(--size-4)',
         borderBottom: '1px solid var(--surface-3)',
+        flexShrink: 0,
       }}>
         <div style={{
           display: 'flex',
@@ -146,7 +145,9 @@ export default function HashtagPage({
         isLoadingMore={isFetchingNextPage}
         hasMore={hasNextPage}
         loadMoreThreshold={3}
-        height="calc(100vh - 140px)"
+
+        height="auto"
+        style={{ flex: 1, minHeight: 0 }}
         scrollRestorationKey={`hashtag-${decodedTag}`}
         loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
         endIndicator="You've reached the end"

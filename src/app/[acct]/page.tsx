@@ -163,19 +163,18 @@ export default function AccountPage({
   const isLoading = followMutation.isPending || unfollowMutation.isPending;
 
   return (
-    <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+    <div className="container full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{
-        position: 'sticky',
-        top: 0,
         background: 'var(--surface-1)',
         zIndex: 10,
-        padding: 'var(--size-4) 0',
+        padding: 'var(--size-4)',
         marginBottom: 'var(--size-4)',
         borderBottom: '1px solid var(--surface-3)',
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--size-3)',
+        flexShrink: 0,
       }}>
         <Link href="/">
           <IconButton>
@@ -357,6 +356,10 @@ export default function AccountPage({
         borderTop: '1px solid var(--surface-3)',
         paddingTop: 'var(--size-4)',
         marginTop: 'var(--size-4)',
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: 0,
       }}>
         <h3 style={{
           fontSize: 'var(--font-size-3)',
@@ -385,8 +388,8 @@ export default function AccountPage({
             isLoadingMore={isFetchingNextPage}
             hasMore={hasNextPage}
             loadMoreThreshold={1}
-            height="calc(100vh - 600px)"
-            style={{ minHeight: '400px' }}
+            height="auto"
+            style={{ flex: 1, minHeight: 0 }}
             scrollRestorationKey={`account-${acct}`}
             loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
             endIndicator="No more posts"

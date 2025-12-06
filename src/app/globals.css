@@ -47,6 +47,21 @@ a {
   padding: var(--size-4);
 }
 
+.full-height-container {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+
+@media (max-width: 767px) {
+  .full-height-container {
+    height: calc(100dvh - var(--app-bottom-nav-height));
+  }
+}
+
+
 /* Loading spinner */
 .spinner {
   border: 2px solid var(--surface-3);
@@ -65,9 +80,12 @@ a {
 
 /* Skeleton loading pulse animation */
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }
@@ -165,7 +183,8 @@ a {
 
 /* Sidebar Navigation (Desktop) */
 .navigation-sidebar {
-  display: none; /* Hidden on mobile by default */
+  display: none;
+  /* Hidden on mobile by default */
   position: fixed;
   left: 0;
   top: 0;
@@ -273,7 +292,8 @@ a {
 
 /* Bottom Navigation (Mobile) */
 .navigation-bottom {
-  display: flex; /* Visible on mobile */
+  display: flex;
+  /* Visible on mobile */
   position: fixed;
   bottom: 0;
   left: 0;
@@ -320,7 +340,7 @@ a {
   color: var(--blue-6);
 }
 
-.navigation-sidebar-link:has(.pending){
+.navigation-sidebar-link:has(.pending) {
   animation: var(--animation-pulse);
 }
 
@@ -352,22 +372,27 @@ a {
 
 /* Mobile layout adjustments */
 body {
-  padding-bottom: var(--app-bottom-nav-height); /* Prevent content from being hidden behind bottom nav */
+  padding-bottom: var(--app-bottom-nav-height);
+  /* Prevent content from being hidden behind bottom nav */
 }
 
 /* Tablet and Desktop (768px+) */
 @media (min-width: 768px) {
   body {
-    padding-bottom: 0; /* Remove bottom padding on desktop */
-    margin-left: var(--app-sidebar-width); /* Add left margin for sidebar */
+    padding-bottom: 0;
+    /* Remove bottom padding on desktop */
+    margin-left: var(--app-sidebar-width);
+    /* Add left margin for sidebar */
   }
 
   .navigation-sidebar {
-    display: flex; /* Show sidebar navigation (flex for column layout) */
+    display: flex;
+    /* Show sidebar navigation (flex for column layout) */
   }
 
   .navigation-bottom {
-    display: none; /* Hide bottom navigation */
+    display: none;
+    /* Hide bottom navigation */
   }
 }
 
