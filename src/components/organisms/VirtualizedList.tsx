@@ -165,6 +165,7 @@ export function VirtualizedList<T>({
   return (
     <div
       ref={parentRef}
+      className="virtualized-list-container"
       style={{
         height,
         overflow: 'auto',

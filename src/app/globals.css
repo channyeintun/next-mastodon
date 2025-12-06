@@ -853,3 +853,13 @@ body {
 .virtualized-list-item:has(* .boost-btn:focus-within) {
   z-index: 1;
 }
+
+/* ====================================
+   Virtualized List Mobile Padding
+   ==================================== */
+@media (max-width: 767px) {
+  .virtualized-list-container {
+    padding-left: var(--size-2);
+    padding-right: var(--size-2);
+  }
+}
