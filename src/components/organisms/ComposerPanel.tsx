@@ -1,9 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '../atoms/Button';
-import { Card } from '../atoms/Card';
 import { useCurrentAccount, useCustomEmojis } from '@/api/queries';
 import { useCreateStatus, useUpdateStatus } from '@/api/mutations';
 import { Avatar } from '../atoms/Avatar';
