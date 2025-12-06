@@ -49,4 +49,9 @@ export const queryKeys = {
   trends: {
     statuses: (params?: object) => ['trends', 'statuses', params] as const,
   },
+
+  // Instance
+  instance: {
+    default: ['instance'] as const,
+  },
 }

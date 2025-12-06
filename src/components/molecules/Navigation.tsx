@@ -2,7 +2,8 @@
 
 import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, PenSquare, Bookmark, Search, Settings, Coffee, Github, LogOut } from 'lucide-react';
+import { Home, PenSquare, Bookmark, Search, Settings, Coffee, Github, LogOut, Loader2 } from 'lucide-react';
+import { useInstance } from '@/api/queries';
 import type { Account } from '@/types/mastodon';
 
 interface NavigationProps {
@@ -13,6 +14,7 @@ interface NavigationProps {
 
 export default function Navigation({ isAuthenticated, instanceURL, user }: NavigationProps) {
   const pathname = usePathname();
+  const { data: instance, isLoading: isLoadingInstance } = useInstance();
 
   const navLinks = [
     { href: '/', label: 'Home', icon: Home },
@@ -28,8 +30,45 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
       <aside className="navigation-sidebar">
         {/* Logo */}
         <div className="navigation-sidebar-header">
-          <Link href="/" className="navigation-sidebar-logo">
-            Mastodon
+          <Link href="/" className="navigation-sidebar-instance">
+            {isLoadingInstance ? (
+              <>
+                <div className="skeleton" style={{ width: 40, height: 40, flexShrink: 0 }} />
+                <div className="navigation-sidebar-instance-info" style={{ gap: 4 }}>
+                  <div className="skeleton" style={{ height: 16, width: 96 }} />
+                  <div className="skeleton" style={{ height: 12, width: 64 }} />
+                </div>
+              </>
+            ) : instance ? (
+              <>
+                {instance.icon?.[instance.icon.length - 1]?.src || instance.thumbnail?.url ? (
+                  <img
+                    src={instance.icon?.[instance.icon.length - 1]?.src || instance.thumbnail?.url}
+                    alt={instance.title}
+                    className="navigation-instance-icon"
+                  />
+                ) : (
+                  <div className="navigation-instance-placeholder">
+                    <span>
+                      {instance.title?.charAt(0) || 'M'}
+                    </span>
+                  </div>
+                )}
+                <div className="navigation-sidebar-instance-info">
+                  <span className="navigation-sidebar-instance-title">{instance.title}</span>
+                  <span className="navigation-sidebar-instance-domain">{instance.domain}</span>
+                </div>
+              </>
+            ) : (
+              <div className="flex flex-col">
+                <span className="font-bold text-xl">Mastodon</span>
+                {instanceURL && (
+                  <span className="text-xs text-muted-foreground">
+                    {instanceURL.replace('https://', '')}
+                  </span>
+                )}
+              </div>
+            )}
           </Link>
         </div>
 
@@ -56,11 +95,7 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
 
         {/* User Info / Auth */}
         <div className="navigation-sidebar-footer">
-          {isAuthenticated ? (
-            <div className="navigation-sidebar-instance">
-              {instanceURL?.replace('https://', '')}
-            </div>
-          ) : (
+          {!isAuthenticated && (
             <Link href="/auth/signin" className="navigation-sidebar-signin">
               Sign In
             </Link>

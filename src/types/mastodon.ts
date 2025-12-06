@@ -274,3 +274,81 @@ export interface UpdateAccountParams {
     value: string
   }>
 }
+
+export interface Instance {
+  domain: string
+  title: string
+  version: string
+  source_url: string
+  description: string
+  usage: {
+    users: {
+      active_month: number
+    }
+  }
+  thumbnail: {
+    url: string
+    blurhash: string
+    versions: {
+      '@1x': string
+      '@2x': string
+    }
+  }
+  icon: Array<{
+    src: string
+    size: string
+  }>
+  languages: string[]
+  configuration: {
+    urls: {
+      streaming: string
+      status?: string
+      about?: string
+      privacy_policy?: string
+      terms_of_service?: string | null
+    }
+    vapid?: {
+      public_key: string
+    }
+    accounts: {
+      max_featured_tags: number
+      max_pinned_statuses?: number
+    }
+    statuses: {
+      max_characters: number
+      max_media_attachments: number
+      characters_reserved_per_url: number
+    }
+    media_attachments: {
+      description_limit: number
+      image_matrix_limit: number
+      image_size_limit: number
+      supported_mime_types: string[]
+      video_frame_rate_limit: number
+      video_matrix_limit: number
+      video_size_limit: number
+    }
+    polls: {
+      max_options: number
+      max_characters_per_option: number
+      min_expiration: number
+      max_expiration: number
+    }
+    translation: {
+      enabled: boolean
+    }
+  }
+  registrations: {
+    enabled: boolean
+    approval_required: boolean
+    message: string | null
+  }
+  contact: {
+    email: string
+    account: Account
+  }
+  rules: Array<{
+    id: string
+    text: string
+  }>
+}

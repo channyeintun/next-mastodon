@@ -12,6 +12,7 @@ import type {
   CreateAppParams,
   CreateStatusParams,
   Emoji,
+  Instance,
   MediaAttachment,
   Poll,
   Relationship,
@@ -348,6 +349,12 @@ export async function votePoll(id: string, choices: number[]): Promise<Poll> {
 // Trends
 export async function getTrendingStatuses(params?: { limit?: number; offset?: number }): Promise<Status[]> {
   const { data } = await api.get<Status[]>('/api/v1/trends/statuses', { params })
+  return data
+}
+
+// Instance
+export async function getInstance(): Promise<Instance> {
+  const { data } = await api.get<Instance>('/api/v2/instance')
   return data
 }
 

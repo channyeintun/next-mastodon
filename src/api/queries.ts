@@ -20,6 +20,7 @@ import {
   search,
   getCustomEmojis,
   getTrendingStatuses,
+  getInstance,
   createCustomClient,
 } from './client'
 import { queryKeys } from './queryKeys'
@@ -229,9 +230,17 @@ export function useInfiniteTrendingStatuses() {
     getNextPageParam: (lastPage, allPages) => {
       // Stop fetching if page is empty or has fewer items than requested (last page)
       if (lastPage.length === 0 || lastPage.length < 20) return undefined
-      // Calculate next offset based on total pages loaded
       return allPages.length * 20
     },
     initialPageParam: 0,
+  })
+}
+
+// Instance
+export function useInstance() {
+  return useQuery({
+    queryKey: queryKeys.instance.default,
+    queryFn: () => getInstance(),
+    staleTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
   })
 }
