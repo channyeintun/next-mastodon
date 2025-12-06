@@ -512,8 +512,8 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
             </div>
           )}
 
-          {/* Post content - hidden if CW active and not revealed */}
-          {(!hasContentWarning || showCWContent) && displayStatus.content && (
+          {/* Post content - hidden if CW active and not revealed, also hidden if has quote */}
+          {(!hasContentWarning || showCWContent) && displayStatus.content && !displayStatus.quote?.quoted_status && (
             <StatusContent
               html={displayStatus.content}
               emojis={displayStatus.emojis}
@@ -649,6 +649,18 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
                 card={displayStatus.card}
                 style={{ marginTop: 'var(--size-3)' }}
               />
+            )}
+
+          {/* Quoted status - shown if quote exists and is accepted */}
+          {(!hasContentWarning || showCWContent) &&
+            displayStatus.quote?.state === 'accepted' &&
+            displayStatus.quote.quoted_status && (
+              <div style={{ marginTop: 'var(--size-3)' }}>
+                <PostCard
+                  status={displayStatus.quote.quoted_status}
+                  hideActions
+                />
+              </div>
             )}
 
           {/* Poll - hidden if CW active and not revealed */}
