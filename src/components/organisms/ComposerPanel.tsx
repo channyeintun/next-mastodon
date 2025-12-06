@@ -9,6 +9,7 @@ import { EmojiText } from '../atoms/EmojiText';
 import { MediaUpload } from '../molecules/MediaUpload';
 import { PollComposer, type PollData } from '../molecules/PollComposer';
 import { EmojiPicker } from './EmojiPicker';
+import { VisibilitySettingsModal, type Visibility, type QuoteVisibility } from '../molecules/VisibilitySettingsModal';
 import { TiptapEditor } from '../atoms/TiptapEditor';
 import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { uploadMedia, updateMedia } from '@/api/client';
@@ -17,17 +18,13 @@ import type { CreateStatusParams, MediaAttachment } from '@/types/mastodon';
 
 const MAX_CHAR_COUNT = 500;
 
-type Visibility = 'public' | 'unlisted' | 'private' | 'direct';
-
-const visibilityOptions: Array<{ value: Visibility; label: string; icon: typeof Globe; description: string }> = [
+export const visibilityOptions: Array<{ value: Visibility; label: string; icon: typeof Globe; description: string }> = [
   { value: 'public', label: 'Public', icon: Globe, description: 'Visible to everyone' },
   { value: 'unlisted', label: 'Unlisted', icon: Lock, description: 'Not shown in public timelines' },
   { value: 'private', label: 'Followers only', icon: Users, description: 'Only visible to followers' },
   { value: 'direct', label: 'Direct', icon: Mail, description: 'Only mentioned users' },
 ];
-
-type QuoteVisibility = 'public' | 'followers' | 'nobody';
-
+// Quote visibility logic is now handled in the modal, but we keep a local map for the icon/label if needed for the trigger button
 const quoteVisibilityOptions: Array<{ value: QuoteVisibility; label: string; icon: typeof MessageSquareQuote; description: string }> = [
   { value: 'public', label: 'Everyone can quote', icon: Globe, description: 'Visible to everyone' },
   { value: 'followers', label: 'Followers only', icon: Users, description: 'Only visible to followers' },
@@ -61,10 +58,11 @@ export function ComposerPanel({
   const [content, setContent] = useState(initialContent);
   const [textContent, setTextContent] = useState('');
   const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
-  const [showVisibilityMenu, setShowVisibilityMenu] = useState(false);
+  // Remove individual menu states
+  const [showVisibilitySettingsModal, setShowVisibilitySettingsModal] = useState(false);
+
   // Initialize from props, or default to public. We'll update from account preferences below.
   const [quoteVisibility, setQuoteVisibility] = useState<QuoteVisibility>('public');
-  const [showQuoteVisibilityMenu, setShowQuoteVisibilityMenu] = useState(false);
   const [hasInitializedQuotePolicy, setHasInitializedQuotePolicy] = useState(false);
 
   // Quote policy is forced to 'nobody' if visibility is private or direct
@@ -73,7 +71,6 @@ export function ComposerPanel({
   useEffect(() => {
     if (isQuotePolicyDisabled) {
       setQuoteVisibility('nobody');
-      setShowQuoteVisibilityMenu(false); // Close menu if open
     } else if (!hasInitializedQuotePolicy && currentAccount?.source?.quote_policy) {
       // Initialize from account settings if not disabled and not yet initialized
       setQuoteVisibility(currentAccount.source.quote_policy);
@@ -222,174 +219,42 @@ export function ComposerPanel({
               />
             </div>
 
-            {/* Visibility selector integrated into header */}
-            <div style={{ position: 'relative' }}>
+            {/* Visibility Settings Trigger Button */}
+            <div style={{ marginTop: '4px' }}>
               <button
                 className="compose-visibility-selector"
-                onClick={() => setShowVisibilityMenu(!showVisibilityMenu)}
-                title="Post visibility"
+                onClick={() => setShowVisibilitySettingsModal(true)}
+                title="Adjust visibility and interaction"
                 type="button"
                 style={{
                   padding: 0,
                   background: 'transparent',
                   color: 'var(--text-2)',
                   fontSize: 'var(--font-size-1)',
-                  marginTop: '2px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  cursor: 'pointer',
+                  border: 'none',
                 }}
               >
-                <VisibilityIcon size={14} />
-                <span>{currentVisibility?.label}</span>
+                <VisibilityIcon size={16} />
+                <span style={{ fontWeight: 500 }}>{currentVisibility?.label}</span>
               </button>
-
-              {showVisibilityMenu && (
-                <>
-                  <div
-                    style={{
-                      position: 'fixed',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      zIndex: 40,
-                    }}
-                    onClick={() => setShowVisibilityMenu(false)}
-                  />
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: 0,
-                      marginTop: 'var(--size-2)',
-                      background: 'var(--surface-2)',
-                      borderRadius: 'var(--radius-3)',
-                      boxShadow: 'var(--shadow-4)',
-                      padding: 'var(--size-2)',
-                      minWidth: '220px',
-                      zIndex: 50,
-                      border: '1px solid var(--surface-3)',
-                    }}
-                  >
-                    {visibilityOptions.map((option) => {
-                      const Icon = option.icon;
-                      return (
-                        <button
-                          key={option.value}
-                          onClick={() => {
-                            setVisibility(option.value);
-                            setShowVisibilityMenu(false);
-                          }}
-                          style={{
-                            width: '100%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 'var(--size-3)',
-                            padding: 'var(--size-2) var(--size-3)',
-                            border: 'none',
-                            background: visibility === option.value ? 'var(--surface-3)' : 'transparent',
-                            borderRadius: 'var(--radius-2)',
-                            cursor: 'pointer',
-                            textAlign: 'left',
-                          }}
-                        >
-                          <Icon size={18} style={{ color: visibility === option.value ? 'var(--blue-6)' : 'var(--text-2)' }} />
-                          <div style={{ flex: 1 }}>
-                            <div style={{ fontWeight: 'var(--font-weight-6)', color: 'var(--text-1)', fontSize: 'var(--font-size-1)' }}>
-                              {option.label}
-                            </div>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
             </div>
 
-            {/* Quote visibility selector */}
-            <div style={{ position: 'relative', marginLeft: 'var(--size-3)' }}>
-              <button
-                className="compose-visibility-selector"
-                onClick={() => !isQuotePolicyDisabled && setShowQuoteVisibilityMenu(!showQuoteVisibilityMenu)}
-                title={isQuotePolicyDisabled ? "Quotes disabled for private/direct posts" : "Who can quote"}
-                type="button"
-                disabled={isQuotePolicyDisabled}
-                style={{
-                  padding: 0,
-                  background: 'transparent',
-                  color: isQuotePolicyDisabled ? 'var(--text-3)' : 'var(--text-2)',
-                  fontSize: 'var(--font-size-1)',
-                  marginTop: '2px',
-                  cursor: isQuotePolicyDisabled ? 'not-allowed' : 'pointer',
-                  opacity: isQuotePolicyDisabled ? 0.6 : 1,
+            <Activity mode={showVisibilitySettingsModal ? 'visible' : 'hidden'}>
+              <VisibilitySettingsModal
+                initialVisibility={visibility}
+                initialQuoteVisibility={quoteVisibility}
+                onClose={() => setShowVisibilitySettingsModal(false)}
+                onSave={(newVisibility, newQuoteVisibility) => {
+                  setVisibility(newVisibility);
+                  setQuoteVisibility(newQuoteVisibility);
+                  setShowVisibilitySettingsModal(false);
                 }}
-              >
-                <QuoteVisibilityIcon size={14} />
-                <span>{currentQuoteVisibility?.label}</span>
-              </button>
-
-              {showQuoteVisibilityMenu && (
-                <>
-                  <div
-                    style={{
-                      position: 'fixed',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      zIndex: 40,
-                    }}
-                    onClick={() => setShowQuoteVisibilityMenu(false)}
-                  />
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: 0,
-                      marginTop: 'var(--size-2)',
-                      background: 'var(--surface-2)',
-                      borderRadius: 'var(--radius-3)',
-                      boxShadow: 'var(--shadow-4)',
-                      padding: 'var(--size-2)',
-                      minWidth: '220px',
-                      zIndex: 50,
-                      border: '1px solid var(--surface-3)',
-                    }}
-                  >
-                    {quoteVisibilityOptions.map((option) => {
-                      const Icon = option.icon;
-                      return (
-                        <button
-                          key={option.value}
-                          onClick={() => {
-                            setQuoteVisibility(option.value);
-                            setShowQuoteVisibilityMenu(false);
-                          }}
-                          style={{
-                            width: '100%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 'var(--size-3)',
-                            padding: 'var(--size-2) var(--size-3)',
-                            border: 'none',
-                            background: quoteVisibility === option.value ? 'var(--surface-3)' : 'transparent',
-                            borderRadius: 'var(--radius-2)',
-                            cursor: 'pointer',
-                            textAlign: 'left',
-                          }}
-                        >
-                          <Icon size={18} style={{ color: quoteVisibility === option.value ? 'var(--blue-6)' : 'var(--text-2)' }} />
-                          <div style={{ flex: 1 }}>
-                            <div style={{ fontWeight: 'var(--font-weight-6)', color: 'var(--text-1)', fontSize: 'var(--font-size-1)' }}>
-                              {option.label}
-                            </div>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
-            </div>
+              />
+            </Activity>
           </div>
         </div>
       </div>
