@@ -99,12 +99,11 @@ interface NavigationLinkProps {
 }
 
 function NavigationLink({ href, icon: Icon, label, isActive, variant }: NavigationLinkProps) {
-  const status = useLinkStatus(href);
-  const isPending = status === 'pending';
+  const status = useLinkStatus();
 
   const className = variant === 'sidebar'
-    ? `navigation-sidebar-link ${isActive ? 'active' : ''} ${isPending ? 'pending' : ''}`
-    : `navigation-bottom-link ${isActive ? 'active' : ''} ${isPending ? 'pending' : ''}`;
+    ? `navigation-sidebar-link ${isActive ? 'active' : ''} ${status.pending ? 'pending' : ''}`
+    : `navigation-bottom-link ${isActive ? 'active' : ''} ${status.pending ? 'pending' : ''}`;
 
   return (
     <Link
@@ -115,7 +114,7 @@ function NavigationLink({ href, icon: Icon, label, isActive, variant }: Navigati
     >
       <div className="navigation-link-icon">
         <Icon size={variant === 'sidebar' ? 24 : 22} />
-        {isPending && (
+        {status.pending && (
           <span className="navigation-link-spinner" aria-label="Loading..." />
         )}
       </div>
