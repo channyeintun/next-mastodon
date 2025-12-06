@@ -143,8 +143,13 @@ a {
   padding: 0;
 }
 
-/* Tiptap placeholder */
-.tiptap-editor-editable .tiptap p.is-editor-empty:first-child::before {
+/* Tiptap placeholder
+   The editor may render a `.ProseMirror` (default) or use a class on the
+   contentEditable node. Cover the common cases so the placeholder pseudo
+   element appears regardless of the wrapper class ordering. */
+.tiptap-editor-editable p.is-editor-empty:first-child::before,
+.tiptap .tiptap-editor-editable p.is-editor-empty:first-child::before,
+.ProseMirror p.is-editor-empty:first-child::before {
   color: var(--text-3);
   content: attr(data-placeholder);
   float: left;
