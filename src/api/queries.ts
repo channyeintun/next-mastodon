@@ -163,10 +163,12 @@ export function useFollowing(id: string) {
 }
 
 export function useRelationships(ids: string[]) {
+  const authStore = useAuthStore()
+
   return useQuery({
     queryKey: queryKeys.accounts.relationships(ids),
     queryFn: () => getRelationships(ids),
-    enabled: ids.length > 0,
+    enabled: ids.length > 0 && authStore.isAuthenticated,
   })
 }
 
