@@ -47,7 +47,6 @@ export function EmojiPicker({ onEmojiSelect, onClose }: EmojiPickerProps) {
       {/* Picker */}
       <div
         className='emoji-picker'
-        onClick={onClose}
       >
         <EmojiPickerReact
           onEmojiClick={handleEmojiClick}
