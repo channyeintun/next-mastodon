@@ -72,7 +72,6 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
   const router = useRouter();
   const authStore = useAuthStore();
   const [showMenu, setShowMenu] = useState(false);
-  const [showBoostMenu, setShowBoostMenu] = useState(false);
   const [showCWContent, setShowCWContent] = useState(false);
   const [showCWMedia, setShowCWMedia] = useState(false);
   const [selectedPollChoices, setSelectedPollChoices] = useState<number[]>([]);
@@ -108,16 +107,16 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
     }
   };
 
-  const handleReblog = (e: React.MouseEvent) => {
+  const handleReblog = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    setShowBoostMenu(!showBoostMenu);
+    // Focus the button to trigger :focus-within and show the popover
+    e.currentTarget.focus();
   };
 
   const confirmReblog = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setShowBoostMenu(false);
 
     if (displayStatus.reblogged) {
       unreblogMutation.mutate(displayStatus.id);
@@ -129,7 +128,6 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
   const handleQuote = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setShowBoostMenu(false);
 
     router.push(`/compose?quoted_status_id=${displayStatus.id}`);
   };
@@ -846,7 +844,7 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
                 {displayStatus.replies_count}
               </span>
 
-              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <div className="boost-btn" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                 <IconButton
                   size="small"
                   onClick={handleReblog}
@@ -857,97 +855,76 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
                 >
                   <Repeat2 size={16} />
                 </IconButton>
-                {showBoostMenu && (
-                  <>
-                    <div
-                      style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        zIndex: 40,
-                      }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setShowBoostMenu(false);
-                      }}
-                    />
-                    <div
-                      className="boost-popover"
-                      style={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        marginTop: 'var(--size-2)',
-                        background: 'var(--surface-2)',
-                        borderRadius: 'var(--radius-2)',
-                        boxShadow: 'var(--shadow-4)',
-                        padding: 'var(--size-2)',
-                        minWidth: '150px',
-                        zIndex: 50,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 'var(--size-1)',
-                      }}
-                    >
-                      <button
-                        onClick={confirmReblog}
-                        style={{
-                          width: '100%',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 'var(--size-2)',
-                          padding: 'var(--size-2)',
-                          border: 'none',
-                          background: 'transparent',
-                          borderRadius: 'var(--radius-2)',
-                          cursor: 'pointer',
-                          color: displayStatus.reblogged ? 'var(--green-6)' : 'var(--text-1)',
-                          fontSize: 'var(--font-size-1)',
-                          whiteSpace: 'nowrap',
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = 'var(--surface-3)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = 'transparent';
-                        }}
-                      >
-                        <Repeat2 size={16} />
-                        <span>{displayStatus.reblogged ? 'Undo Boost' : 'Boost'}</span>
-                      </button>
-                      <button
-                        onClick={handleQuote}
-                        style={{
-                          width: '100%',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 'var(--size-2)',
-                          padding: 'var(--size-2)',
-                          border: 'none',
-                          background: 'transparent',
-                          borderRadius: 'var(--radius-2)',
-                          cursor: 'pointer',
-                          color: 'var(--text-1)',
-                          fontSize: 'var(--font-size-1)',
-                          whiteSpace: 'nowrap',
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = 'var(--surface-3)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = 'transparent';
-                        }}
-                      >
-                        <MessageSquareQuote size={16} />
-                        <span>Quote</span>
-                      </button>
-                    </div>
-                  </>
-                )}
+                <div
+                  className="boost-popover"
+                  style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    marginTop: 'var(--size-2)',
+                    background: 'var(--surface-2)',
+                    borderRadius: 'var(--radius-2)',
+                    boxShadow: 'var(--shadow-4)',
+                    padding: 'var(--size-2)',
+                    minWidth: '150px',
+                    zIndex: 50,
+                    gap: 'var(--size-1)',
+                  }}
+                >
+                  <button
+                    onClick={confirmReblog}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 'var(--size-2)',
+                      padding: 'var(--size-2)',
+                      border: 'none',
+                      background: 'transparent',
+                      borderRadius: 'var(--radius-2)',
+                      cursor: 'pointer',
+                      color: displayStatus.reblogged ? 'var(--green-6)' : 'var(--text-1)',
+                      fontSize: 'var(--font-size-1)',
+                      whiteSpace: 'nowrap',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'var(--surface-3)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'transparent';
+                    }}
+                  >
+                    <Repeat2 size={16} />
+                    <span>{displayStatus.reblogged ? 'Undo Boost' : 'Boost'}</span>
+                  </button>
+                  <button
+                    onClick={handleQuote}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 'var(--size-2)',
+                      padding: 'var(--size-2)',
+                      border: 'none',
+                      background: 'transparent',
+                      borderRadius: 'var(--radius-2)',
+                      cursor: 'pointer',
+                      color: 'var(--text-1)',
+                      fontSize: 'var(--font-size-1)',
+                      whiteSpace: 'nowrap',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'var(--surface-3)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'transparent';
+                    }}
+                  >
+                    <MessageSquareQuote size={16} />
+                    <span>Quote</span>
+                  </button>
+                </div>
               </div>
               <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
                 {displayStatus.reblogs_count}

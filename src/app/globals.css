@@ -835,6 +835,21 @@ body {
   }
 }
 
-.virtualized-list-item:has(* .boost-popover) {
+/* ====================================
+   Boost Menu Focus Technique
+   ==================================== */
+
+/* Boost popover - hidden by default */
+.boost-popover {
+  display: none;
+  flex-direction: column;
+}
+
+/* Show boost popover when button wrapper has focus-within */
+.boost-btn:focus-within .boost-popover {
+  display: flex;
+}
+
+.virtualized-list-item:has(* .boost-btn:focus-within) {
   z-index: 1;
 }
