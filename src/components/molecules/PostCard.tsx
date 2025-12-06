@@ -28,11 +28,13 @@ import {
   useUnreblogStatus,
   useBookmarkStatus,
   useUnbookmarkStatus,
-  useDeleteStatus,
+
   useVotePoll,
 } from '@/api/mutations';
 import { useCurrentAccount } from '@/api/queries';
 import { useAuthStore } from '@/hooks/useStores';
+import { useGlobalModal } from '@/contexts/GlobalModalContext';
+import { DeletePostModal } from './DeletePostModal';
 
 interface PostCardProps {
   status: Status;
@@ -57,7 +59,6 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
   const router = useRouter();
   const authStore = useAuthStore();
   const [showMenu, setShowMenu] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showCWContent, setShowCWContent] = useState(false);
   const [showCWMedia, setShowCWMedia] = useState(false);
   const [selectedPollChoices, setSelectedPollChoices] = useState<number[]>([]);
@@ -70,7 +71,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
   const unreblogMutation = useUnreblogStatus();
   const bookmarkMutation = useBookmarkStatus();
   const unbookmarkMutation = useUnbookmarkStatus();
-  const deleteStatusMutation = useDeleteStatus();
+  const { openModal, closeModal } = useGlobalModal();
 
   // Handle reblog (boost) - show the original status
   const displayStatus = status.reblog || status;
@@ -115,15 +116,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
     }
   };
 
-  const handleDelete = async () => {
-    try {
-      await deleteStatusMutation.mutateAsync(displayStatus.id);
-      setShowDeleteConfirm(false);
-      setShowMenu(false);
-    } catch (error) {
-      console.error('Failed to delete post:', error);
-    }
-  };
+
 
   const handleEdit = () => {
     setShowMenu(false);
@@ -378,7 +371,12 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
                             e.preventDefault();
                             e.stopPropagation();
                             setShowMenu(false);
-                            setShowDeleteConfirm(true);
+                            openModal(
+                              <DeletePostModal
+                                postId={displayStatus.id}
+                                onClose={closeModal}
+                              />
+                            );
                           }}
                           style={{
                             width: '100%',
@@ -835,83 +833,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
         </div>
       </div>
 
-      {/* Delete confirmation dialog */}
-      {showDeleteConfirm && (
-        <>
-          <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'rgba(0, 0, 0, 0.5)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 100,
-            }}
-            onClick={() => setShowDeleteConfirm(false)}
-          />
-          <div
-            style={{
-              position: 'fixed',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              background: 'var(--surface-2)',
-              borderRadius: 'var(--radius-3)',
-              boxShadow: 'var(--shadow-6)',
-              padding: 'var(--size-5)',
-              maxWidth: '400px',
-              width: '90%',
-              zIndex: 101,
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{
-              fontSize: 'var(--font-size-3)',
-              fontWeight: 'var(--font-weight-6)',
-              color: 'var(--text-1)',
-              marginBottom: 'var(--size-3)',
-            }}>
-              Delete post?
-            </div>
-            <div style={{
-              fontSize: 'var(--font-size-1)',
-              color: 'var(--text-2)',
-              marginBottom: 'var(--size-5)',
-              lineHeight: '1.5',
-            }}>
-              This action cannot be undone. Your post will be permanently deleted from your profile and the timelines of your followers.
-            </div>
-            <div style={{
-              display: 'flex',
-              gap: 'var(--size-3)',
-              justifyContent: 'flex-end',
-            }}>
-              <Button
-                variant="ghost"
-                onClick={() => setShowDeleteConfirm(false)}
-                disabled={deleteStatusMutation.isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleDelete}
-                disabled={deleteStatusMutation.isPending}
-                isLoading={deleteStatusMutation.isPending}
-                style={{
-                  background: 'var(--red-6)',
-                  color: 'white',
-                }}
-              >
-                Delete
-              </Button>
-            </div>
-          </div>
-        </>
-      )}
+
     </Card>
   );
 }
