@@ -9,32 +9,26 @@ import { IconButton } from '@/components/atoms/IconButton';
 export default function ComposePage() {
   return (
     <AuthGuard>
-      <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
-        {/* Header */}
-        <div style={{
-          position: 'sticky',
-          top: 0,
-          background: 'var(--surface-1)',
-          zIndex: 10,
-          padding: 'var(--size-4) 0',
-          marginBottom: 'var(--size-4)',
-          borderBottom: '1px solid var(--surface-3)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--size-3)',
-        }}>
-          <Link href="/">
-            <IconButton>
-              <ArrowLeft size={20} />
-            </IconButton>
-          </Link>
-          <h1 style={{ fontSize: 'var(--font-size-4)' }}>
-            Compose Post
-          </h1>
-        </div>
+      <div className="compose-page-container">
+        <div className="compose-card">
+          {/* Detailed header inside ComposerPanel or here? 
+              Common mobile pattern is to have a simple 'Compose' or just the close button.
+              Let's keep the back button here but make it cleaner.
+           */}
+          <div className="compose-header">
+            <Link href="/">
+              <IconButton>
+                <ArrowLeft size={24} />
+              </IconButton>
+            </Link>
+            <h1 style={{ fontSize: 'var(--font-size-4)', fontWeight: 'var(--font-weight-7)' }}>
+              New Post
+            </h1>
+          </div>
 
-        {/* Composer */}
-        <ComposerPanel />
+          {/* Composer */}
+          <ComposerPanel />
+        </div>
       </div>
     </AuthGuard>
   );

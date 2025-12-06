@@ -170,299 +170,284 @@ export function ComposerPanel({
 
   if (!currentAccount) {
     return (
-      <Card>
-        <div style={{ padding: 'var(--size-4)', textAlign: 'center', color: 'var(--text-2)' }}>
-          Loading...
-        </div>
-      </Card>
+      <div style={{ padding: 'var(--size-4)', textAlign: 'center', color: 'var(--text-2)' }}>
+        Loading...
+      </div>
     );
   }
 
   return (
-    <Card>
-      <div style={{ padding: 'var(--size-4)', position: 'relative' }}>
-        {/* Header with avatar */}
-        <div style={{ display: 'flex', gap: 'var(--size-3)', marginBottom: 'var(--size-3)' }}>
-          <Avatar
-            src={currentAccount.avatar}
-            alt={currentAccount.display_name || currentAccount.username}
-            size="medium"
-          />
-          <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 'var(--font-weight-6)', fontSize: 'var(--font-size-2)' }}>
+    <div>
+      {/* Header with avatar and visibility */}
+      <div className="compose-header">
+        <Avatar
+          src={currentAccount.avatar}
+          alt={currentAccount.display_name || currentAccount.username}
+          size="medium"
+        />
+        <div className="compose-user-info">
+          <div className="compose-user-details">
+            <div style={{ fontWeight: 'var(--font-weight-7)', fontSize: 'var(--font-size-2)' }}>
               <EmojiText
                 text={currentAccount.display_name || currentAccount.username}
                 emojis={currentAccount.emojis}
               />
             </div>
-            <div style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-              @{currentAccount.acct}
-            </div>
-          </div>
 
-          {/* Visibility selector */}
-          <div style={{ position: 'relative' }}>
-            <Button
-              variant="ghost"
-              size="small"
-              onClick={() => setShowVisibilityMenu(!showVisibilityMenu)}
-              title="Post visibility"
-            >
-              <VisibilityIcon size={18} />
-              <span style={{ fontSize: 'var(--font-size-0)' }}>
-                {currentVisibility?.label}
-              </span>
-            </Button>
-
-            {showVisibilityMenu && (
-              <>
-                <div
-                  style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    zIndex: 40,
-                  }}
-                  onClick={() => setShowVisibilityMenu(false)}
-                />
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '100%',
-                    right: 0,
-                    marginTop: 'var(--size-2)',
-                    background: 'var(--surface-2)',
-                    borderRadius: 'var(--radius-2)',
-                    boxShadow: 'var(--shadow-4)',
-                    padding: 'var(--size-2)',
-                    minWidth: '250px',
-                    zIndex: 50,
-                  }}
-                >
-                  {visibilityOptions.map((option) => {
-                    const Icon = option.icon;
-                    return (
-                      <button
-                        key={option.value}
-                        onClick={() => {
-                          setVisibility(option.value);
-                          setShowVisibilityMenu(false);
-                        }}
-                        style={{
-                          width: '100%',
-                          display: 'flex',
-                          alignItems: 'start',
-                          gap: 'var(--size-2)',
-                          padding: 'var(--size-2)',
-                          border: 'none',
-                          background: visibility === option.value ? 'var(--surface-3)' : 'transparent',
-                          borderRadius: 'var(--radius-2)',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                        }}
-                      >
-                        <Icon size={20} style={{ marginTop: '2px', flexShrink: 0 }} />
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontWeight: 'var(--font-weight-6)', color: 'var(--text-1)' }}>
-                            {option.label}
-                          </div>
-                          <div style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-                            {option.description}
-                          </div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Content Warning */}
-        {showCWInput && (
-          <div style={{ marginBottom: 'var(--size-3)' }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: 'var(--size-2)',
-            }}>
-              <label style={{ fontSize: 'var(--font-size-1)', fontWeight: 'var(--font-weight-6)' }}>
-                Content Warning
-              </label>
+            {/* Visibility selector integrated into header */}
+            <div style={{ position: 'relative' }}>
               <button
-                onClick={() => {
-                  setShowCWInput(false);
-                  setContentWarning('');
-                }}
+                className="compose-visibility-selector"
+                onClick={() => setShowVisibilityMenu(!showVisibilityMenu)}
+                title="Post visibility"
+                type="button"
                 style={{
-                  padding: 'var(--size-1)',
-                  border: 'none',
+                  padding: 0,
                   background: 'transparent',
-                  cursor: 'pointer',
                   color: 'var(--text-2)',
+                  fontSize: 'var(--font-size-1)',
+                  marginTop: '2px',
                 }}
               >
-                <X size={16} />
+                <VisibilityIcon size={14} />
+                <span>{currentVisibility?.label}</span>
               </button>
-            </div>
-            <input
-              type="text"
-              value={contentWarning}
-              onChange={(e) => setContentWarning(e.target.value)}
-              placeholder="Write your warning here"
-              style={{
-                width: '100%',
-                padding: 'var(--size-2)',
-                border: '1px solid var(--surface-4)',
-                borderRadius: 'var(--radius-2)',
-                background: 'var(--surface-1)',
-                color: 'var(--text-1)',
-                fontSize: 'var(--font-size-1)',
-              }}
-            />
-          </div>
-        )}
 
-        {/* Editor - Tiptap with Mention Autocomplete */}
-        <div
-          style={{
-            border: '1px solid var(--surface-4)',
-            borderRadius: 'var(--radius-2)',
-            background: 'var(--surface-1)',
-            marginBottom: 'var(--size-3)',
-          }}
-        >
-          <TiptapEditor
-            content={content}
-            placeholder="What's on your mind?"
-            emojis={customEmojis || []}
-            onUpdate={(html, text) => {
-              setContent(html);
-              setTextContent(text);
+              {showVisibilityMenu && (
+                <>
+                  <div
+                    style={{
+                      position: 'fixed',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      zIndex: 40,
+                    }}
+                    onClick={() => setShowVisibilityMenu(false)}
+                  />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      marginTop: 'var(--size-2)',
+                      background: 'var(--surface-2)',
+                      borderRadius: 'var(--radius-3)',
+                      boxShadow: 'var(--shadow-4)',
+                      padding: 'var(--size-2)',
+                      minWidth: '220px',
+                      zIndex: 50,
+                      border: '1px solid var(--surface-3)',
+                    }}
+                  >
+                    {visibilityOptions.map((option) => {
+                      const Icon = option.icon;
+                      return (
+                        <button
+                          key={option.value}
+                          onClick={() => {
+                            setVisibility(option.value);
+                            setShowVisibilityMenu(false);
+                          }}
+                          style={{
+                            width: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 'var(--size-3)',
+                            padding: 'var(--size-2) var(--size-3)',
+                            border: 'none',
+                            background: visibility === option.value ? 'var(--surface-3)' : 'transparent',
+                            borderRadius: 'var(--radius-2)',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                          }}
+                        >
+                          <Icon size={18} style={{ color: visibility === option.value ? 'var(--blue-6)' : 'var(--text-2)' }} />
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontWeight: 'var(--font-weight-6)', color: 'var(--text-1)', fontSize: 'var(--font-size-1)' }}>
+                              {option.label}
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Content Warning */}
+      {showCWInput && (
+        <div style={{ marginBottom: 'var(--size-3)' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 'var(--size-2)',
+          }}>
+            <label style={{ fontSize: 'var(--font-size-1)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)' }}>
+              Content Warning
+            </label>
+            <button
+              onClick={() => {
+                setShowCWInput(false);
+                setContentWarning('');
+              }}
+              style={{
+                padding: 'var(--size-1)',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                color: 'var(--text-2)',
+              }}
+            >
+              <X size={16} />
+            </button>
+          </div>
+          <input
+            type="text"
+            value={contentWarning}
+            onChange={(e) => setContentWarning(e.target.value)}
+            placeholder="Write your warning here..."
+            style={{
+              width: '100%',
+              padding: 'var(--size-2) var(--size-3)',
+              border: '1px solid var(--surface-3)',
+              borderRadius: 'var(--radius-2)',
+              background: 'var(--surface-1)',
+              color: 'var(--text-1)',
+              fontSize: 'var(--font-size-2)',
             }}
-            onEditorReady={(editor) => {
-              editorRef.current = editor;
-            }}
-            mentionSuggestion={mentionSuggestion}
           />
         </div>
+      )}
 
-        {/* Media Upload */}
-        {(media.length > 0 || isUploadingMedia) && (
-          <MediaUpload
-            media={media}
-            onMediaAdd={handleMediaAdd}
-            onMediaRemove={handleMediaRemove}
-            onAltTextChange={handleAltTextChange}
-            isUploading={isUploadingMedia}
-          />
-        )}
-
-        {/* Poll Composer */}
-        {poll !== null && (
-          <PollComposer poll={poll} onPollChange={setPoll} />
-        )}
-
-        {/* Hidden File Input */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*,video/*"
-          multiple
-          onChange={onFileInputChange}
-          style={{ display: 'none' }}
+      {/* Editor - Minimalist */}
+      <div className="compose-editor-area">
+        <TiptapEditor
+          content={content}
+          placeholder="What's on your mind?"
+          emojis={customEmojis || []}
+          onUpdate={(html, text) => {
+            setContent(html);
+            setTextContent(text);
+          }}
+          onEditorReady={(editor) => {
+            editorRef.current = editor;
+          }}
+          mentionSuggestion={mentionSuggestion}
         />
+      </div>
 
-        {/* Bottom toolbar */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
-          <div style={{ display: 'flex', gap: 'var(--size-2)', position: 'relative' }}>
+      {/* Media Upload */}
+      {(media.length > 0 || isUploadingMedia) && (
+        <MediaUpload
+          media={media}
+          onMediaAdd={handleMediaAdd}
+          onMediaRemove={handleMediaRemove}
+          onAltTextChange={handleAltTextChange}
+          isUploading={isUploadingMedia}
+        />
+      )}
+
+      {/* Poll Composer */}
+      {poll !== null && (
+        <PollComposer poll={poll} onPollChange={setPoll} />
+      )}
+
+      {/* Hidden File Input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*,video/*"
+        multiple
+        onChange={onFileInputChange}
+        style={{ display: 'none' }}
+      />
+
+      {/* Bottom toolbar */}
+      <div className="compose-toolbar-area">
+        <div className="compose-toolbar-row">
+          <div className="compose-tools">
             {/* Media Button */}
-            <Button
-              type="button"
-              variant="ghost"
-              size="small"
+            <button
+              className="compose-tool-btn"
+              type="button" // Fix: explicit type
               onClick={() => fileInputRef.current?.click()}
               disabled={poll !== null || media.length >= 4}
               title="Add media"
             >
-              <ImageIcon size={18} />
-            </Button>
+              <ImageIcon size={22} />
+            </button>
 
             {/* Poll Button */}
-            <Button
+            <button
+              className="compose-tool-btn"
               type="button"
-              variant="ghost"
-              size="small"
               onClick={() => setPoll({ options: ['', ''], expiresIn: 86400, multiple: false })}
               disabled={media.length > 0 || poll !== null}
               title="Add poll"
             >
-              <BarChart2 size={18} />
-            </Button>
+              <BarChart2 size={22} />
+            </button>
 
             {/* Emoji picker */}
-            <Button
-              type="button"
-              variant="ghost"
-              size="small"
-              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              title="Add emoji"
-            >
-              <Smile size={18} />
-            </Button>
-            {showEmojiPicker && (
-              <EmojiPicker
-                onEmojiSelect={handleEmojiSelect}
-                onClose={() => setShowEmojiPicker(false)}
-              />
-            )}
+            <div style={{ position: 'relative' }}>
+              <button
+                className="compose-tool-btn"
+                type="button"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                title="Add emoji"
+              >
+                <Smile size={22} />
+              </button>
+              {showEmojiPicker && (
+                <EmojiPicker
+                  onEmojiSelect={handleEmojiSelect}
+                  onClose={() => setShowEmojiPicker(false)}
+                />
+              )}
+            </div>
 
             {/* Content Warning toggle */}
-            <Button
+            <button
+              className="compose-tool-btn"
               type="button"
-              variant="ghost"
-              size="small"
               onClick={() => setShowCWInput(!showCWInput)}
               style={{
-                background: showCWInput ? 'var(--surface-3)' : undefined,
+                color: showCWInput ? 'var(--blue-6)' : undefined,
+                fontWeight: showCWInput ? 'bold' : 'normal',
               }}
               title="Add content warning"
             >
-              CW
-            </Button>
+              <span style={{ fontSize: '14px' }}>CW</span>
+            </button>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)' }}>
+          <div className="compose-action-row" style={{ gap: 'var(--size-3)' }}>
             {/* Character count */}
             <div
-              style={{
-                fontSize: 'var(--font-size-0)',
-                color: isOverLimit ? 'var(--red-6)' : 'var(--text-2)',
-                fontWeight: isOverLimit ? 'var(--font-weight-6)' : 'normal',
-              }}
+              className={`compose-char-count ${isOverLimit ? 'danger' : charCount > MAX_CHAR_COUNT - 50 ? 'warning' : ''
+                }`}
             >
-              {charCount} / {MAX_CHAR_COUNT}
+              {MAX_CHAR_COUNT - charCount}
             </div>
 
             {/* Post/Update button */}
-            <Button
+            <button
+              className="compose-submit-btn"
               onClick={handlePost}
               disabled={!canPost}
-              isLoading={isPending}
             >
-              {editMode ? 'Update' : 'Post'}
-            </Button>
+              {editMode ? 'Update' : 'Publish'}
+            </button>
           </div>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
