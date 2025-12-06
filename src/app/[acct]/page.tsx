@@ -198,6 +198,7 @@ export default function AccountPage({
       <div style={{
         width: '100%',
         height: '200px',
+        flexShrink: 0, 
         background: account.header
           ? `url(${account.header}) center/cover`
           : 'linear-gradient(135deg, var(--surface-3) 0%, var(--surface-2) 100%)',
@@ -356,10 +357,9 @@ export default function AccountPage({
         borderTop: '1px solid var(--surface-3)',
         paddingTop: 'var(--size-4)',
         marginTop: 'var(--size-4)',
-        flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        minHeight: 0,
+        height:'100%'
       }}>
         <h3 style={{
           fontSize: 'var(--font-size-3)',
@@ -388,7 +388,7 @@ export default function AccountPage({
             isLoadingMore={isFetchingNextPage}
             hasMore={hasNextPage}
             loadMoreThreshold={1}
-            height="500px"
+            height="100dvh"
             scrollRestorationKey={`account-${acct}`}
             loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
             endIndicator="No more posts"
