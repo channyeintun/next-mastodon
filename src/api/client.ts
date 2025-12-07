@@ -10,9 +10,11 @@ import type {
   Application,
   Context,
   CreateAppParams,
+  CreateListParams,
   CreateStatusParams,
   Emoji,
   Instance,
+  List,
   MediaAttachment,
   MuteAccountParams,
   Notification,
@@ -27,6 +29,7 @@ import type {
   Token,
   UnreadCount,
   UpdateAccountParams,
+  UpdateListParams,
 } from '../types/mastodon'
 
 // Create axios instance with default base URL
@@ -464,6 +467,54 @@ export async function getPreferences(): Promise<Preferences> {
 // Instance
 export async function getInstance(): Promise<Instance> {
   const { data } = await api.get<Instance>('/api/v2/instance')
+  return data
+}
+
+// Lists
+export async function getLists(): Promise<List[]> {
+  const { data } = await api.get<List[]>('/api/v1/lists')
+  return data
+}
+
+export async function getList(id: string): Promise<List> {
+  const { data } = await api.get<List>(`/api/v1/lists/${id}`)
+  return data
+}
+
+export async function createList(params: CreateListParams): Promise<List> {
+  const { data } = await api.post<List>('/api/v1/lists', params)
+  return data
+}
+
+export async function updateList(id: string, params: UpdateListParams): Promise<List> {
+  const { data } = await api.put<List>(`/api/v1/lists/${id}`, params)
+  return data
+}
+
+export async function deleteList(id: string): Promise<void> {
+  await api.delete(`/api/v1/lists/${id}`)
+}
+
+export async function getListAccounts(id: string, params?: { max_id?: string; since_id?: string; limit?: number }): Promise<Account[]> {
+  const { data } = await api.get<Account[]>(`/api/v1/lists/${id}/accounts`, { params })
+  return data
+}
+
+export async function addAccountsToList(listId: string, accountIds: string[]): Promise<void> {
+  await api.post(`/api/v1/lists/${listId}/accounts`, { account_ids: accountIds })
+}
+
+export async function removeAccountsFromList(listId: string, accountIds: string[]): Promise<void> {
+  await api.delete(`/api/v1/lists/${listId}/accounts`, { data: { account_ids: accountIds } })
+}
+
+export async function getListTimeline(id: string, params?: TimelineParams): Promise<Status[]> {
+  const { data } = await api.get<Status[]>(`/api/v1/timelines/list/${id}`, { params })
+  return data
+}
+
+export async function getAccountLists(accountId: string): Promise<List[]> {
+  const { data } = await api.get<List[]>(`/api/v1/accounts/${accountId}/lists`)
   return data
 }
 

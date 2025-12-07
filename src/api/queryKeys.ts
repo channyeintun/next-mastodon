@@ -80,4 +80,12 @@ export const queryKeys = {
   preferences: {
     all: () => ['preferences'] as const,
   },
+
+  // Lists
+  lists: {
+    all: () => ['lists'] as const,
+    detail: (id: string) => ['lists', id] as const,
+    accounts: (id: string, params?: object) => ['lists', id, 'accounts', params] as const,
+    timeline: (id: string, params?: object) => ['timelines', 'list', id, params] as const,
+  },
 }

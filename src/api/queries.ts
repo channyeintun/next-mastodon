@@ -29,6 +29,11 @@ import {
   getNotification,
   getUnreadNotificationCount,
   getPreferences,
+  getLists,
+  getList,
+  getListAccounts,
+  getListTimeline,
+  getAccountLists,
 } from './client'
 import { queryKeys } from './queryKeys'
 import type { TimelineParams, SearchParams, Status, NotificationParams, Account, Preferences } from '../types/mastodon'
@@ -405,5 +410,74 @@ export function usePreferences() {
     queryFn: () => getPreferences(),
     enabled: authStore.isAuthenticated,
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  })
+}
+
+// Lists
+export function useLists() {
+  const authStore = useAuthStore()
+
+  return useQuery({
+    queryKey: queryKeys.lists.all(),
+    queryFn: () => getLists(),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+export function useList(id: string) {
+  const authStore = useAuthStore()
+
+  return useQuery({
+    queryKey: queryKeys.lists.detail(id),
+    queryFn: () => getList(id),
+    enabled: !!id && authStore.isAuthenticated,
+  })
+}
+
+export function useListAccounts(id: string) {
+  const authStore = useAuthStore()
+
+  return useInfiniteQuery({
+    queryKey: queryKeys.lists.accounts(id),
+    queryFn: ({ pageParam }) => {
+      const params: { max_id?: string; limit: number } = { limit: 40 }
+      if (pageParam) params.max_id = pageParam
+      return getListAccounts(id, params)
+    },
+    getNextPageParam: (lastPage: Account[]) => {
+      if (lastPage.length === 0 || lastPage.length < 40) return undefined
+      return lastPage[lastPage.length - 1]?.id
+    },
+    initialPageParam: undefined as string | undefined,
+    enabled: !!id && authStore.isAuthenticated,
+  })
+}
+
+export function useInfiniteListTimeline(id: string) {
+  const authStore = useAuthStore()
+
+  return useInfiniteQuery({
+    queryKey: queryKeys.lists.timeline(id),
+    queryFn: ({ pageParam }) => {
+      const params: TimelineParams = { limit: 20 }
+      if (pageParam) params.max_id = pageParam
+      return getListTimeline(id, params)
+    },
+    getNextPageParam: (lastPage) => {
+      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      return lastPage[lastPage.length - 1]?.id
+    },
+    initialPageParam: undefined as string | undefined,
+    enabled: !!id && authStore.isAuthenticated,
+  })
+}
+
+export function useAccountLists(accountId: string) {
+  const authStore = useAuthStore()
+
+  return useQuery({
+    queryKey: ['accounts', accountId, 'lists'],
+    queryFn: () => getAccountLists(accountId),
+    enabled: !!accountId && authStore.isAuthenticated,
   })
 }

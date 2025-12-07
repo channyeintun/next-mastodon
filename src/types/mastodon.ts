@@ -407,3 +407,25 @@ export interface Preferences {
   'reading:expand:media': 'default' | 'show_all' | 'hide_all'
   'reading:expand:spoilers': boolean
 }
+
+// Lists
+export type ListRepliesPolicy = 'followed' | 'list' | 'none'
+
+export interface List {
+  id: string
+  title: string
+  replies_policy: ListRepliesPolicy
+  exclusive: boolean
+}
+
+export interface CreateListParams {
+  title: string
+  replies_policy?: ListRepliesPolicy
+  exclusive?: boolean
+}
+
+export interface UpdateListParams {
+  title?: string
+  replies_policy?: ListRepliesPolicy
+  exclusive?: boolean
+}

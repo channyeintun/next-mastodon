@@ -350,3 +350,68 @@ The following features from the API documentation are already implemented:
 2. **Add Preferences API** to improve the compose experience
 3. **Implement Familiar Followers** for better social discovery
 4. **Consider Registration flow** if targeting new users
+
+---
+
+## 4. Lists API
+
+**Status: ✅ Implemented**
+
+### API Endpoints
+```
+GET /api/v1/lists - View all lists
+GET /api/v1/lists/:id - Show a single list
+POST /api/v1/lists - Create a list
+PUT /api/v1/lists/:id - Update a list
+DELETE /api/v1/lists/:id - Delete a list
+GET /api/v1/lists/:id/accounts - View accounts in a list
+POST /api/v1/lists/:id/accounts - Add accounts to a list
+DELETE /api/v1/lists/:id/accounts - Remove accounts from a list
+GET /api/v1/timelines/list/:id - Get list timeline
+GET /api/v1/accounts/:id/lists - Get lists containing an account
+```
+
+### Implementation:
+- ✅ **Types**: Added `List`, `ListRepliesPolicy`, `CreateListParams`, `UpdateListParams` interfaces to `src/types/mastodon.ts`
+- ✅ **Query Keys**: Added `lists` key factory to `src/api/queryKeys.ts`
+- ✅ **API Client**: Added all list operations to `src/api/client.ts`:
+  - `getLists()` - Fetch all lists
+  - `getList(id)` - Fetch single list
+  - `createList(params)` - Create a list
+  - `updateList(id, params)` - Update a list
+  - `deleteList(id)` - Delete a list
+  - `getListAccounts(id, params)` - Get accounts in a list
+  - `addAccountsToList(listId, accountIds)` - Add accounts to list
+  - `removeAccountsFromList(listId, accountIds)` - Remove accounts from list
+  - `getListTimeline(id, params)` - Get list timeline
+  - `getAccountLists(accountId)` - Get lists containing an account
+- ✅ **Query Hooks**: Added to `src/api/queries.ts`:
+  - `useLists()` - Fetch all lists
+  - `useList(id)` - Fetch single list
+  - `useListAccounts(id)` - Infinite query for list accounts
+  - `useInfiniteListTimeline(id)` - Infinite query for list timeline
+  - `useAccountLists(accountId)` - Get lists containing an account
+- ✅ **Mutation Hooks**: Added to `src/api/mutations.ts`:
+  - `useCreateList()` - Create a list
+  - `useUpdateList()` - Update a list
+  - `useDeleteList()` - Delete a list
+  - `useAddAccountsToList()` - Add accounts to a list
+  - `useRemoveAccountsFromList()` - Remove accounts from a list
+- ✅ **UI Pages**:
+  - `/lists` - Main lists page with CRUD functionality
+  - `/lists/[id]` - List detail page showing list timeline
+  - `/lists/[id]/members` - Manage list members (add/remove accounts)
+- ✅ **Navigation**: Added Lists link to sidebar navigation
+
+### Features:
+- Create, edit, and delete lists
+- Set replies policy (list members, followed users, or none)
+- Toggle exclusive mode (hide posts from home timeline)
+- Browse list timeline with infinite scroll
+- Add accounts from following list to lists
+- Search following to add to lists
+- Remove accounts from lists
+- Visual indicators for list settings
+
+### Priority: **Medium** ⭐⭐
+Useful for organizing feeds and curating custom timelines.

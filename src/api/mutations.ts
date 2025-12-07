@@ -27,9 +27,14 @@ import {
   updateMarkers,
   acceptFollowRequest,
   rejectFollowRequest,
+  createList,
+  updateList,
+  deleteList,
+  addAccountsToList,
+  removeAccountsFromList,
 } from './client'
 import { queryKeys } from './queryKeys'
-import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams } from '../types/mastodon'
+import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams } from '../types/mastodon'
 
 // Helper function to update status in all infinite query caches
 function updateStatusInCaches(
@@ -684,6 +689,79 @@ export function useUnmuteAccount() {
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.relationships([id]) })
       // Invalidate mutes list
       queryClient.invalidateQueries({ queryKey: queryKeys.mutes.all() })
+    },
+  })
+}
+
+// List mutations
+export function useCreateList() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (params: CreateListParams) => createList(params),
+    onSuccess: () => {
+      // Invalidate lists to refetch
+      queryClient.invalidateQueries({ queryKey: queryKeys.lists.all() })
+    },
+  })
+}
+
+export function useUpdateList() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, params }: { id: string; params: UpdateListParams }) => updateList(id, params),
+    onSuccess: (_data, { id }) => {
+      // Invalidate the specific list
+      queryClient.invalidateQueries({ queryKey: queryKeys.lists.detail(id) })
+      // Invalidate all lists
+      queryClient.invalidateQueries({ queryKey: queryKeys.lists.all() })
+    },
+  })
+}
+
+export function useDeleteList() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => deleteList(id),
+    onSuccess: (_data, id) => {
+      // Remove the list from cache
+      queryClient.removeQueries({ queryKey: queryKeys.lists.detail(id) })
+      // Invalidate all lists
+      queryClient.invalidateQueries({ queryKey: queryKeys.lists.all() })
+      // Remove list timeline
+      queryClient.removeQueries({ queryKey: queryKeys.lists.timeline(id) })
+    },
+  })
+}
+
+export function useAddAccountsToList() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ listId, accountIds }: { listId: string; accountIds: string[] }) =>
+      addAccountsToList(listId, accountIds),
+    onSuccess: (_data, { listId }) => {
+      // Invalidate list accounts
+      queryClient.invalidateQueries({ queryKey: queryKeys.lists.accounts(listId) })
+      // Invalidate list timeline
+      queryClient.invalidateQueries({ queryKey: queryKeys.lists.timeline(listId) })
+    },
+  })
+}
+
+export function useRemoveAccountsFromList() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ listId, accountIds }: { listId: string; accountIds: string[] }) =>
+      removeAccountsFromList(listId, accountIds),
+    onSuccess: (_data, { listId }) => {
+      // Invalidate list accounts
+      queryClient.invalidateQueries({ queryKey: queryKeys.lists.accounts(listId) })
+      // Invalidate list timeline
+      queryClient.invalidateQueries({ queryKey: queryKeys.lists.timeline(listId) })
     },
   })
 }

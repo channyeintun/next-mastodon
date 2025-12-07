@@ -1,0 +1,627 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { ArrowLeft, Plus, List, MoreVertical, Pencil, Trash2, Users, MessageCircle } from 'lucide-react';
+import { useLists } from '@/api/queries';
+import { useCreateList, useUpdateList, useDeleteList } from '@/api/mutations';
+import { IconButton } from '@/components/atoms/IconButton';
+import { Spinner } from '@/components/atoms/Spinner';
+import type { List as ListType, ListRepliesPolicy, CreateListParams, UpdateListParams } from '@/types/mastodon';
+
+// Modal for creating/editing a list
+function ListModal({
+    isOpen,
+    onClose,
+    list,
+    onSubmit,
+    isPending,
+}: {
+    isOpen: boolean;
+    onClose: () => void;
+    list?: ListType;
+    onSubmit: (params: CreateListParams | UpdateListParams) => void;
+    isPending: boolean;
+}) {
+    const [title, setTitle] = useState(list?.title || '');
+    const [repliesPolicy, setRepliesPolicy] = useState<ListRepliesPolicy>(list?.replies_policy || 'list');
+    const [exclusive, setExclusive] = useState(list?.exclusive || false);
+
+    if (!isOpen) return null;
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!title.trim()) return;
+        onSubmit({ title: title.trim(), replies_policy: repliesPolicy, exclusive });
+    };
+
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                    background: 'var(--surface-2)',
+                    borderRadius: 'var(--radius-3)',
+                    padding: 'var(--size-6)',
+                    maxWidth: '400px',
+                    width: '90%',
+                }}
+            >
+                <h2 style={{ marginBottom: 'var(--size-4)', fontSize: 'var(--font-size-4)' }}>
+                    {list ? 'Edit List' : 'Create List'}
+                </h2>
+                <form onSubmit={handleSubmit}>
+                    <div style={{ marginBottom: 'var(--size-4)' }}>
+                        <label
+                            htmlFor="list-title"
+                            style={{
+                                display: 'block',
+                                marginBottom: 'var(--size-2)',
+                                fontSize: 'var(--font-size-1)',
+                                color: 'var(--text-2)',
+                            }}
+                        >
+                            List Name
+                        </label>
+                        <input
+                            id="list-title"
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            placeholder="My List"
+                            autoFocus
+                            style={{
+                                width: '100%',
+                                padding: 'var(--size-3)',
+                                background: 'var(--surface-3)',
+                                border: '1px solid var(--surface-4)',
+                                borderRadius: 'var(--radius-2)',
+                                color: 'var(--text-1)',
+                                fontSize: 'var(--font-size-2)',
+                            }}
+                        />
+                    </div>
+
+                    <div style={{ marginBottom: 'var(--size-4)' }}>
+                        <label
+                            htmlFor="replies-policy"
+                            style={{
+                                display: 'block',
+                                marginBottom: 'var(--size-2)',
+                                fontSize: 'var(--font-size-1)',
+                                color: 'var(--text-2)',
+                            }}
+                        >
+                            Show replies to
+                        </label>
+                        <select
+                            id="replies-policy"
+                            value={repliesPolicy}
+                            onChange={(e) => setRepliesPolicy(e.target.value as ListRepliesPolicy)}
+                            style={{
+                                width: '100%',
+                                padding: 'var(--size-3)',
+                                background: 'var(--surface-3)',
+                                border: '1px solid var(--surface-4)',
+                                borderRadius: 'var(--radius-2)',
+                                color: 'var(--text-1)',
+                                fontSize: 'var(--font-size-2)',
+                            }}
+                        >
+                            <option value="list">Members of the list</option>
+                            <option value="followed">Any followed user</option>
+                            <option value="none">No one</option>
+                        </select>
+                    </div>
+
+                    <div style={{ marginBottom: 'var(--size-5)' }}>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 'var(--size-2)',
+                                fontSize: 'var(--font-size-1)',
+                                color: 'var(--text-2)',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            <input
+                                type="checkbox"
+                                checked={exclusive}
+                                onChange={(e) => setExclusive(e.target.checked)}
+                                style={{
+                                    width: 18,
+                                    height: 18,
+                                    accentColor: 'var(--brand)',
+                                }}
+                            />
+                            Hide these posts from home
+                        </label>
+                        <p style={{
+                            fontSize: 'var(--font-size-0)',
+                            color: 'var(--text-3)',
+                            marginTop: 'var(--size-1)',
+                            marginLeft: 'var(--size-5)',
+                        }}>
+                            Posts from list members won&apos;t appear in your home timeline
+                        </p>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 'var(--size-3)', justifyContent: 'flex-end' }}>
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            disabled={isPending}
+                            style={{
+                                padding: 'var(--size-2) var(--size-4)',
+                                background: 'transparent',
+                                border: '1px solid var(--surface-4)',
+                                borderRadius: 'var(--radius-2)',
+                                color: 'var(--text-2)',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={!title.trim() || isPending}
+                            style={{
+                                padding: 'var(--size-2) var(--size-4)',
+                                background: 'var(--brand)',
+                                border: 'none',
+                                borderRadius: 'var(--radius-2)',
+                                color: 'white',
+                                cursor: 'pointer',
+                                opacity: !title.trim() || isPending ? 0.5 : 1,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 'var(--size-2)',
+                            }}
+                        >
+                            {isPending && <Spinner size="small" />}
+                            {list ? 'Save' : 'Create'}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
+
+// Delete confirmation modal
+function DeleteConfirmModal({
+    isOpen,
+    onClose,
+    onConfirm,
+    listTitle,
+    isPending,
+}: {
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+    listTitle: string;
+    isPending: boolean;
+}) {
+    if (!isOpen) return null;
+
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                    background: 'var(--surface-2)',
+                    borderRadius: 'var(--radius-3)',
+                    padding: 'var(--size-6)',
+                    maxWidth: '400px',
+                    width: '90%',
+                }}
+            >
+                <h2 style={{ marginBottom: 'var(--size-3)', fontSize: 'var(--font-size-4)' }}>
+                    Delete List
+                </h2>
+                <p style={{ color: 'var(--text-2)', marginBottom: 'var(--size-5)' }}>
+                    Are you sure you want to delete &quot;{listTitle}&quot;? This action cannot be undone.
+                </p>
+                <div style={{ display: 'flex', gap: 'var(--size-3)', justifyContent: 'flex-end' }}>
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        disabled={isPending}
+                        style={{
+                            padding: 'var(--size-2) var(--size-4)',
+                            background: 'transparent',
+                            border: '1px solid var(--surface-4)',
+                            borderRadius: 'var(--radius-2)',
+                            color: 'var(--text-2)',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="button"
+                        onClick={onConfirm}
+                        disabled={isPending}
+                        style={{
+                            padding: 'var(--size-2) var(--size-4)',
+                            background: 'var(--red)',
+                            border: 'none',
+                            borderRadius: 'var(--radius-2)',
+                            color: 'white',
+                            cursor: 'pointer',
+                            opacity: isPending ? 0.5 : 1,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 'var(--size-2)',
+                        }}
+                    >
+                        {isPending && <Spinner size="small" />}
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// List item component
+function ListItem({
+    list,
+    onEdit,
+    onDelete,
+}: {
+    list: ListType;
+    onEdit: (list: ListType) => void;
+    onDelete: (list: ListType) => void;
+}) {
+    const [showMenu, setShowMenu] = useState(false);
+
+    const repliesPolicyLabels: Record<ListRepliesPolicy, string> = {
+        followed: 'Replies to followed users',
+        list: 'Replies to list members',
+        none: 'No replies',
+    };
+
+    return (
+        <div
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: 'var(--size-4)',
+                gap: 'var(--size-3)',
+                background: 'var(--surface-2)',
+                borderRadius: 'var(--radius-3)',
+            }}
+        >
+            <Link
+                href={`/lists/${list.id}`}
+                style={{
+                    flex: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 'var(--size-3)',
+                    textDecoration: 'none',
+                    color: 'inherit',
+                }}
+            >
+                <div
+                    style={{
+                        width: 48,
+                        height: 48,
+                        borderRadius: 'var(--radius-2)',
+                        background: 'linear-gradient(135deg, var(--brand) 0%, var(--brand-hover) 100%)',
+                        display: 'grid',
+                        placeItems: 'center',
+                    }}
+                >
+                    <List size={24} color="white" />
+                </div>
+                <div style={{ flex: 1 }}>
+                    <h3 style={{
+                        fontSize: 'var(--font-size-2)',
+                        fontWeight: 600,
+                        marginBottom: 'var(--size-1)',
+                    }}>
+                        {list.title}
+                    </h3>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'var(--size-2)',
+                        fontSize: 'var(--font-size-0)',
+                        color: 'var(--text-2)',
+                    }}>
+                        <MessageCircle size={12} />
+                        <span>{repliesPolicyLabels[list.replies_policy]}</span>
+                        {list.exclusive && (
+                            <>
+                                <span>•</span>
+                                <span>Exclusive</span>
+                            </>
+                        )}
+                    </div>
+                </div>
+            </Link>
+
+            <div style={{ position: 'relative' }}>
+                <IconButton
+                    onClick={(e) => {
+                        e.preventDefault();
+                        setShowMenu(!showMenu);
+                    }}
+                    aria-label="List options"
+                >
+                    <MoreVertical size={18} />
+                </IconButton>
+
+                {showMenu && (
+                    <>
+                        <div
+                            style={{
+                                position: 'fixed',
+                                inset: 0,
+                                zIndex: 40
+                            }}
+                            onClick={() => setShowMenu(false)}
+                        />
+                        <div
+                            style={{
+                                position: 'absolute',
+                                right: 0,
+                                top: '100%',
+                                background: 'var(--surface-2)',
+                                border: '1px solid var(--surface-3)',
+                                borderRadius: 'var(--radius-2)',
+                                boxShadow: 'var(--shadow-4)',
+                                minWidth: 150,
+                                zIndex: 50,
+                                overflow: 'hidden',
+                            }}
+                        >
+                            <button
+                                onClick={() => {
+                                    setShowMenu(false);
+                                    onEdit(list);
+                                }}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 'var(--size-2)',
+                                    width: '100%',
+                                    padding: 'var(--size-3) var(--size-4)',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    color: 'var(--text-1)',
+                                    fontSize: 'var(--font-size-1)',
+                                    cursor: 'pointer',
+                                    textAlign: 'left',
+                                }}
+                            >
+                                <Pencil size={16} />
+                                Edit list
+                            </button>
+                            <Link
+                                href={`/lists/${list.id}/members`}
+                                onClick={() => setShowMenu(false)}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 'var(--size-2)',
+                                    width: '100%',
+                                    padding: 'var(--size-3) var(--size-4)',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    color: 'var(--text-1)',
+                                    fontSize: 'var(--font-size-1)',
+                                    cursor: 'pointer',
+                                    textAlign: 'left',
+                                    textDecoration: 'none',
+                                }}
+                            >
+                                <Users size={16} />
+                                Manage members
+                            </Link>
+                            <button
+                                onClick={() => {
+                                    setShowMenu(false);
+                                    onDelete(list);
+                                }}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 'var(--size-2)',
+                                    width: '100%',
+                                    padding: 'var(--size-3) var(--size-4)',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    color: 'var(--red)',
+                                    fontSize: 'var(--font-size-1)',
+                                    cursor: 'pointer',
+                                    textAlign: 'left',
+                                }}
+                            >
+                                <Trash2 size={16} />
+                                Delete list
+                            </button>
+                        </div>
+                    </>
+                )}
+            </div>
+        </div>
+    );
+}
+
+// Skeleton component for loading state
+function ListItemSkeleton() {
+    return (
+        <div
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: 'var(--size-4)',
+                borderBottom: '1px solid var(--surface-3)',
+                gap: 'var(--size-3)',
+            }}
+        >
+            <div className="skeleton" style={{ width: 48, height: 48, borderRadius: 'var(--radius-2)' }} />
+            <div style={{ flex: 1 }}>
+                <div className="skeleton" style={{ width: 120, height: 18, marginBottom: 'var(--size-1)' }} />
+                <div className="skeleton" style={{ width: 80, height: 14 }} />
+            </div>
+        </div>
+    );
+}
+
+export default function ListsPage() {
+    const { data: lists, isLoading } = useLists();
+    const createListMutation = useCreateList();
+    const updateListMutation = useUpdateList();
+    const deleteListMutation = useDeleteList();
+
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [editingList, setEditingList] = useState<ListType | null>(null);
+    const [deletingList, setDeletingList] = useState<ListType | null>(null);
+
+    const handleCreate = (params: CreateListParams | UpdateListParams) => {
+        createListMutation.mutate(params as CreateListParams, {
+            onSuccess: () => {
+                setShowCreateModal(false);
+            },
+        });
+    };
+
+    const handleUpdate = (params: CreateListParams | UpdateListParams) => {
+        if (!editingList) return;
+        updateListMutation.mutate(
+            { id: editingList.id, params: params as UpdateListParams },
+            {
+                onSuccess: () => {
+                    setEditingList(null);
+                },
+            }
+        );
+    };
+
+    const handleDelete = () => {
+        if (!deletingList) return;
+        deleteListMutation.mutate(deletingList.id, {
+            onSuccess: () => {
+                setDeletingList(null);
+            },
+        });
+    };
+
+    return (
+        <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+            {/* Header */}
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: 'var(--size-4)',
+                    borderBottom: '1px solid var(--surface-3)',
+                    position: 'sticky',
+                    top: 0,
+                    background: 'var(--surface-1)',
+                    zIndex: 10,
+                }}
+            >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)' }}>
+                    <Link href="/">
+                        <IconButton>
+                            <ArrowLeft size={20} />
+                        </IconButton>
+                    </Link>
+                    <div>
+                        <h1 style={{ fontSize: 'var(--font-size-4)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
+                            <List size={22} />
+                            Lists
+                        </h1>
+                        {lists && (
+                            <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
+                                {lists.length} list{lists.length !== 1 ? 's' : ''}
+                            </p>
+                        )}
+                    </div>
+                </div>
+                <IconButton onClick={() => setShowCreateModal(true)} aria-label="Create new list">
+                    <Plus size={20} />
+                </IconButton>
+            </div>
+
+            {/* Lists */}
+            {isLoading ? (
+                <>
+                    {Array.from({ length: 3 }).map((_, i) => (
+                        <ListItemSkeleton key={i} />
+                    ))}
+                </>
+            ) : lists && lists.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-3)', padding: 'var(--size-4)' }}>
+                    {lists.map((list) => (
+                        <ListItem
+                            key={list.id}
+                            list={list}
+                            onEdit={(l) => setEditingList(l)}
+                            onDelete={(l) => setDeletingList(l)}
+                        />
+                    ))}
+                </div>
+            ) : (
+                <div style={{ display: 'grid', placeItems: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
+                    <List size={48} style={{ opacity: 0.3, marginBottom: 'var(--size-4)' }} />
+                    <p>No lists yet</p>
+                    <p style={{ fontSize: 'var(--font-size-0)', marginTop: 'var(--size-2)', textAlign: 'center' }}>
+                        Lists let you organize the accounts you follow into curated timelines.
+                    </p>
+                    <button
+                        onClick={() => setShowCreateModal(true)}
+                        style={{
+                            marginTop: 'var(--size-4)',
+                            padding: 'var(--size-2) var(--size-4)',
+                            background: 'var(--brand)',
+                            border: 'none',
+                            borderRadius: 'var(--radius-2)',
+                            color: 'white',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 'var(--size-2)',
+                        }}
+                    >
+                        <Plus size={16} />
+                        Create your first list
+                    </button>
+                </div>
+            )}
+
+            {/* Modals */}
+            <ListModal
+                isOpen={showCreateModal}
+                onClose={() => setShowCreateModal(false)}
+                onSubmit={handleCreate}
+                isPending={createListMutation.isPending}
+            />
+
+            <ListModal
+                isOpen={!!editingList}
+                onClose={() => setEditingList(null)}
+                list={editingList || undefined}
+                onSubmit={handleUpdate}
+                isPending={updateListMutation.isPending}
+            />
+
+            <DeleteConfirmModal
+                isOpen={!!deletingList}
+                onClose={() => setDeletingList(null)}
+                onConfirm={handleDelete}
+                listTitle={deletingList?.title || ''}
+                isPending={deleteListMutation.isPending}
+            />
+        </div>
+    );
+}

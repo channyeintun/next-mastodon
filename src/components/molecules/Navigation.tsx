@@ -2,7 +2,7 @@
 
 import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, PenSquare, Search, Settings, Coffee, Github, Bell } from 'lucide-react';
+import { Home, PenSquare, Search, Settings, Coffee, Github, Bell, List } from 'lucide-react';
 import { useInstance, useUnreadNotificationCount } from '@/api/queries';
 import type { Account } from '@/types/mastodon';
 
@@ -21,6 +21,7 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
   const sidebarNavLinks = [
     { href: '/', label: 'Home', icon: Home },
     { href: '/notifications', label: 'Notifications', icon: Bell, badge: unreadCount?.count },
+    { href: '/lists', label: 'Lists', icon: List },
     { href: '/compose', label: 'Create', icon: PenSquare },
     { href: '/search', label: 'Search', icon: Search },
     { href: '/settings', label: 'Settings', icon: Settings },
