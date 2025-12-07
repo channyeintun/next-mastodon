@@ -22,9 +22,12 @@ import {
   getTrendingStatuses,
   getInstance,
   createCustomClient,
+  getNotifications,
+  getNotification,
+  getUnreadNotificationCount,
 } from './client'
 import { queryKeys } from './queryKeys'
-import type { TimelineParams, SearchParams, Status } from '../types/mastodon'
+import type { TimelineParams, SearchParams, Status, NotificationParams } from '../types/mastodon'
 import { useAuthStore } from '../hooks/useStores'
 
 // Timelines
@@ -242,5 +245,56 @@ export function useInstance() {
     queryKey: queryKeys.instance.default,
     queryFn: () => getInstance(),
     staleTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
+  })
+}
+
+// Notifications
+export function useNotifications(params?: NotificationParams) {
+  const authStore = useAuthStore()
+
+  return useQuery({
+    queryKey: queryKeys.notifications.list(params),
+    queryFn: () => getNotifications(params),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+export function useInfiniteNotifications() {
+  const authStore = useAuthStore()
+
+  return useInfiniteQuery({
+    queryKey: queryKeys.notifications.list(),
+    queryFn: ({ pageParam }) => {
+      const params: NotificationParams = { limit: 20 }
+      if (pageParam) params.max_id = pageParam
+      return getNotifications(params)
+    },
+    getNextPageParam: (lastPage) => {
+      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      return lastPage[lastPage.length - 1]?.id
+    },
+    initialPageParam: undefined as string | undefined,
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+export function useNotification(id: string) {
+  const authStore = useAuthStore()
+
+  return useQuery({
+    queryKey: queryKeys.notifications.detail(id),
+    queryFn: () => getNotification(id),
+    enabled: !!id && authStore.isAuthenticated,
+  })
+}
+
+export function useUnreadNotificationCount() {
+  const authStore = useAuthStore()
+
+  return useQuery({
+    queryKey: queryKeys.notifications.unreadCount(),
+    queryFn: () => getUnreadNotificationCount(),
+    enabled: authStore.isAuthenticated,
+    refetchInterval: 60000, // Refetch every minute
   })
 }

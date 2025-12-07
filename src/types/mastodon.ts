@@ -356,3 +356,38 @@ export interface Instance {
     text: string
   }>
 }
+
+// Notification types
+export type NotificationType =
+  | 'mention'
+  | 'status'
+  | 'reblog'
+  | 'follow'
+  | 'follow_request'
+  | 'favourite'
+  | 'poll'
+  | 'update'
+  | 'admin.sign_up'
+  | 'admin.report'
+
+export interface Notification {
+  id: string
+  type: NotificationType
+  created_at: string
+  account: Account
+  status?: Status
+}
+
+export interface NotificationParams {
+  max_id?: string
+  since_id?: string
+  min_id?: string
+  limit?: number
+  types?: NotificationType[]
+  exclude_types?: NotificationType[]
+  account_id?: string
+}
+
+export interface UnreadCount {
+  count: number
+}

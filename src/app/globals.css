@@ -863,3 +863,46 @@ body {
     padding-right: var(--size-2);
   }
 }
+
+/* ====================================
+   Notifications Page
+   ==================================== */
+.notifications-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--size-4);
+}
+
+.notifications-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-3);
+  margin-bottom: var(--size-4);
+  flex-wrap: wrap;
+}
+
+.notifications-actions {
+  display: flex;
+  gap: var(--size-2);
+}
+
+.notifications-action-label {
+  display: inline;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 480px) {
+  .notifications-page {
+    padding: var(--size-2);
+  }
+  
+  .notifications-header {
+    gap: var(--size-2);
+  }
+  
+  /* Hide button text labels on small screens, show only icons */
+  .notifications-action-label {
+    display: none;
+  }
+}

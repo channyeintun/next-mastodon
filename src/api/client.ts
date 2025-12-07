@@ -14,6 +14,8 @@ import type {
   Emoji,
   Instance,
   MediaAttachment,
+  Notification,
+  NotificationParams,
   Poll,
   Relationship,
   SearchParams,
@@ -21,6 +23,7 @@ import type {
   Status,
   TimelineParams,
   Token,
+  UnreadCount,
   UpdateAccountParams,
 } from '../types/mastodon'
 
@@ -349,6 +352,57 @@ export async function votePoll(id: string, choices: number[]): Promise<Poll> {
 // Trends
 export async function getTrendingStatuses(params?: { limit?: number; offset?: number }): Promise<Status[]> {
   const { data } = await api.get<Status[]>('/api/v1/trends/statuses', { params })
+  return data
+}
+
+// Notifications
+export async function getNotifications(params?: NotificationParams): Promise<Notification[]> {
+  const { data } = await api.get<Notification[]>('/api/v1/notifications', { params })
+  return data
+}
+
+export async function getNotification(id: string): Promise<Notification> {
+  const { data } = await api.get<Notification>(`/api/v1/notifications/${id}`)
+  return data
+}
+
+export async function dismissNotification(id: string): Promise<void> {
+  await api.post(`/api/v1/notifications/${id}/dismiss`)
+}
+
+export async function clearNotifications(): Promise<void> {
+  await api.post('/api/v1/notifications/clear')
+}
+
+export async function getUnreadNotificationCount(): Promise<UnreadCount> {
+  const { data } = await api.get<UnreadCount>('/api/v1/notifications/unread_count')
+  return data
+}
+
+// Markers (for tracking read position)
+export interface Marker {
+  last_read_id: string
+  version: number
+  updated_at: string
+}
+
+export interface MarkersResponse {
+  notifications?: Marker
+  home?: Marker
+}
+
+export async function getMarkers(timeline: ('home' | 'notifications')[]): Promise<MarkersResponse> {
+  const { data } = await api.get<MarkersResponse>('/api/v1/markers', {
+    params: { 'timeline[]': timeline },
+  })
+  return data
+}
+
+export async function updateMarkers(params: {
+  home?: { last_read_id: string }
+  notifications?: { last_read_id: string }
+}): Promise<MarkersResponse> {
+  const { data } = await api.post<MarkersResponse>('/api/v1/markers', params)
   return data
 }
 

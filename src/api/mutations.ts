@@ -18,6 +18,9 @@ import {
   unfollowAccount,
   updateCredentials,
   votePoll,
+  dismissNotification,
+  clearNotifications,
+  updateMarkers,
 } from './client'
 import { queryKeys } from './queryKeys'
 import type { CreateStatusParams, Status, UpdateAccountParams, Poll } from '../types/mastodon'
@@ -531,6 +534,49 @@ export function useVotePoll() {
       queryClient.invalidateQueries({ queryKey: ['accounts'] })
       queryClient.invalidateQueries({ queryKey: ['timelines', 'hashtag'] })
       queryClient.invalidateQueries({ queryKey: queryKeys.trends.statuses() })
+    },
+  })
+}
+
+// Notification mutations
+export function useDismissNotification() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => dismissNotification(id),
+    onSuccess: (_data, id) => {
+      // Remove the notification from the list cache
+      queryClient.removeQueries({ queryKey: queryKeys.notifications.detail(id) })
+      // Invalidate notifications list to refetch
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
+      // Update unread count
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.unreadCount() })
+    },
+  })
+}
+
+export function useClearNotifications() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: () => clearNotifications(),
+    onSuccess: () => {
+      // Clear all notification queries
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
+      // Reset unread count
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.unreadCount() })
+    },
+  })
+}
+
+export function useMarkNotificationsAsRead() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (lastReadId: string) => updateMarkers({ notifications: { last_read_id: lastReadId } }),
+    onSuccess: () => {
+      // Reset unread count after marking as read
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.unreadCount() })
     },
   })
 }

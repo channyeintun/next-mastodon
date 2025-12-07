@@ -4,6 +4,7 @@ import "./globals.css";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { StoreProvider } from "@/components/providers/StoreProvider";
 import { ScrollRestorationProvider } from "@/components/providers/ScrollRestorationProvider";
+import { StreamingProvider } from "@/components/providers/StreamingProvider";
 import { AuthModal } from "@/components/molecules";
 import NavigationWrapper from "@/components/organisms/NavigationWrapper";
 import { GlobalModalProvider } from "@/contexts/GlobalModalContext";
@@ -42,13 +43,15 @@ export default async function RootLayout({
       <body>
         <QueryProvider>
           <StoreProvider initialState={initialState}>
-            <GlobalModalProvider>
-              <ScrollRestorationProvider />
-              <NavigationWrapper />
-              {children}
-              <GlobalModalRenderer />
-              <AuthModal />
-            </GlobalModalProvider>
+            <StreamingProvider>
+              <GlobalModalProvider>
+                <ScrollRestorationProvider />
+                <NavigationWrapper />
+                {children}
+                <GlobalModalRenderer />
+                <AuthModal />
+              </GlobalModalProvider>
+            </StreamingProvider>
           </StoreProvider>
         </QueryProvider>
       </body>

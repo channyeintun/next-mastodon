@@ -50,6 +50,14 @@ export const queryKeys = {
     statuses: (params?: object) => ['trends', 'statuses', params] as const,
   },
 
+  // Notifications
+  notifications: {
+    all: ['notifications'] as const,
+    list: (params?: object) => ['notifications', 'list', params] as const,
+    detail: (id: string) => ['notifications', id] as const,
+    unreadCount: () => ['notifications', 'unread_count'] as const,
+  },
+
   // Instance
   instance: {
     default: ['instance'] as const,

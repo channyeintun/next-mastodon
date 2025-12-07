@@ -2,8 +2,8 @@
 
 import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, PenSquare, Bookmark, Search, Settings, Coffee, Github, LogOut, Loader2 } from 'lucide-react';
-import { useInstance } from '@/api/queries';
+import { Home, PenSquare, Bookmark, Search, Settings, Coffee, Github, LogOut, Loader2, Bell } from 'lucide-react';
+import { useInstance, useUnreadNotificationCount } from '@/api/queries';
 import type { Account } from '@/types/mastodon';
 
 interface NavigationProps {
@@ -15,9 +15,11 @@ interface NavigationProps {
 export default function Navigation({ isAuthenticated, instanceURL, user }: NavigationProps) {
   const pathname = usePathname();
   const { data: instance, isLoading: isLoadingInstance } = useInstance();
+  const { data: unreadCount } = useUnreadNotificationCount();
 
   const navLinks = [
     { href: '/', label: 'Home', icon: Home },
+    { href: '/notifications', label: 'Notifications', icon: Bell, badge: unreadCount?.count },
     { href: '/compose', label: 'Create', icon: PenSquare },
     { href: '/bookmarks', label: 'Bookmarks', icon: Bookmark },
     { href: '/search', label: 'Search', icon: Search },
@@ -87,6 +89,7 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
                   label={link.label}
                   isActive={isActive}
                   variant="sidebar"
+                  badge={link.badge}
                 />
               );
             })}
@@ -142,6 +145,7 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
                 label={link.label}
                 isActive={isActive}
                 variant="bottom"
+                badge={link.badge}
               />
             );
           })}
@@ -157,9 +161,10 @@ interface NavigationLinkProps {
   label: string;
   isActive: boolean;
   variant: 'sidebar' | 'bottom';
+  badge?: number;
 }
 
-function NavigationLink({ href, icon: Icon, label, isActive, variant }: NavigationLinkProps) {
+function NavigationLink({ href, icon: Icon, label, isActive, variant, badge }: NavigationLinkProps) {
 
   const className = variant === 'sidebar'
     ? `navigation-sidebar-link ${isActive ? 'active' : ''}`
@@ -172,8 +177,30 @@ function NavigationLink({ href, icon: Icon, label, isActive, variant }: Navigati
       aria-label={label}
       aria-current={isActive ? 'page' : undefined}
     >
-      <div className="navigation-link-icon">
+      <div className="navigation-link-icon" style={{ position: 'relative' }}>
         <Icon size={variant === 'sidebar' ? 24 : 22} />
+        {badge !== undefined && badge > 0 && (
+          <span
+            style={{
+              position: 'absolute',
+              top: '-4px',
+              right: '-6px',
+              minWidth: '16px',
+              height: '16px',
+              padding: '0 4px',
+              fontSize: '10px',
+              fontWeight: 'bold',
+              color: 'white',
+              background: 'var(--red-6)',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {badge > 99 ? '99+' : badge}
+          </span>
+        )}
       </div>
       <span className="navigation-link-label">{label}</span>
       <LinkStatus />
