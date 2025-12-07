@@ -241,6 +241,7 @@ export interface CreateStatusParams {
   quote_approval_policy?: 'public' | 'followers' | 'nobody'
   language?: string
   quoted_status_id?: string
+  scheduled_at?: string
 }
 
 export interface CreateAppParams {
@@ -428,4 +429,34 @@ export interface UpdateListParams {
   title?: string
   replies_policy?: ListRepliesPolicy
   exclusive?: boolean
+}
+
+// Status History & Source
+export interface StatusEdit {
+  content: string
+  spoiler_text: string
+  sensitive: boolean
+  created_at: string
+  account: Account
+  media_attachments: MediaAttachment[]
+  emojis: Emoji[]
+  poll?: Poll
+}
+
+export interface StatusSource {
+  id: string
+  text: string
+  spoiler_text: string
+}
+
+// Scheduled Statuses
+export interface ScheduledStatus {
+  id: string
+  scheduled_at: string
+  params: CreateStatusParams
+  media_attachments: MediaAttachment[]
+}
+
+export interface ScheduledStatusParams {
+  scheduled_at?: string
 }

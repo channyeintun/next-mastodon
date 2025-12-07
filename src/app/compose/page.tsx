@@ -10,6 +10,7 @@ import { IconButton } from '@/components/atoms/IconButton';
 export default function ComposePage() {
   const searchParams = useSearchParams();
   const quotedStatusId = searchParams.get('quoted_status_id') || undefined;
+  const scheduledStatusId = searchParams.get('scheduled_status_id') || undefined;
 
   return (
     <AuthGuard>
@@ -31,7 +32,7 @@ export default function ComposePage() {
           </div>
 
           {/* Composer */}
-          <ComposerPanel quotedStatusId={quotedStatusId} />
+          <ComposerPanel quotedStatusId={quotedStatusId} scheduledStatusId={scheduledStatusId} />
         </div>
       </div>
     </AuthGuard>

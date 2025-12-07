@@ -34,9 +34,13 @@ import {
   getListAccounts,
   getListTimeline,
   getAccountLists,
+  getStatusHistory,
+  getStatusSource,
+  getScheduledStatuses,
+  getScheduledStatus,
 } from './client'
 import { queryKeys } from './queryKeys'
-import type { TimelineParams, SearchParams, Status, NotificationParams, Account, Preferences } from '../types/mastodon'
+import type { TimelineParams, SearchParams, Status, NotificationParams, Account, Preferences, StatusEdit, StatusSource, ScheduledStatus } from '../types/mastodon'
 import { useAuthStore } from '../hooks/useStores'
 
 // Timelines
@@ -479,5 +483,52 @@ export function useAccountLists(accountId: string) {
     queryKey: ['accounts', accountId, 'lists'],
     queryFn: () => getAccountLists(accountId),
     enabled: !!accountId && authStore.isAuthenticated,
+  })
+}
+
+// Status History & Source
+export function useStatusHistory(id: string) {
+  return useQuery({
+    queryKey: queryKeys.statuses.history(id),
+    queryFn: () => getStatusHistory(id),
+    enabled: !!id,
+  })
+}
+
+export function useStatusSource(id: string) {
+  return useQuery({
+    queryKey: queryKeys.statuses.source(id),
+    queryFn: () => getStatusSource(id),
+    enabled: !!id,
+  })
+}
+
+// Scheduled Statuses
+export function useScheduledStatuses() {
+  const authStore = useAuthStore()
+
+  return useInfiniteQuery({
+    queryKey: queryKeys.scheduledStatuses.list(),
+    queryFn: ({ pageParam }) => {
+      const params: { min_id?: string; max_id?: string; limit?: number } = { limit: 20 }
+      if (pageParam) params.max_id = pageParam
+      return getScheduledStatuses(params)
+    },
+    getNextPageParam: (lastPage: ScheduledStatus[]) => {
+      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      return lastPage[lastPage.length - 1]?.id
+    },
+    initialPageParam: undefined as string | undefined,
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+export function useScheduledStatus(id: string) {
+  const authStore = useAuthStore()
+
+  return useQuery({
+    queryKey: queryKeys.scheduledStatuses.detail(id),
+    queryFn: () => getScheduledStatus(id),
+    enabled: !!id && authStore.isAuthenticated,
   })
 }

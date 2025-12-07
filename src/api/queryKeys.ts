@@ -20,6 +20,15 @@ export const queryKeys = {
     context: (id: string) => ['statuses', id, 'context'] as const,
     favouritedBy: (id: string) => ['statuses', id, 'favourited_by'] as const,
     rebloggedBy: (id: string) => ['statuses', id, 'reblogged_by'] as const,
+    history: (id: string) => ['statuses', id, 'history'] as const,
+    source: (id: string) => ['statuses', id, 'source'] as const,
+  },
+
+  // Scheduled Statuses
+  scheduledStatuses: {
+    all: () => ['scheduled_statuses'] as const,
+    list: (params?: object) => ['scheduled_statuses', 'list', params] as const,
+    detail: (id: string) => ['scheduled_statuses', id] as const,
   },
 
   // Accounts

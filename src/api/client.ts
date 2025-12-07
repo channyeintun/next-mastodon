@@ -25,6 +25,10 @@ import type {
   SearchParams,
   SearchResults,
   Status,
+  StatusEdit,
+  StatusSource,
+  ScheduledStatus,
+  ScheduledStatusParams,
   TimelineParams,
   Token,
   UnreadCount,
@@ -527,4 +531,55 @@ export function createCustomClient(instanceURL: string): AxiosInstance {
       'Content-Type': 'application/json',
     },
   })
+}
+
+// Status Interactions
+export async function muteConversation(id: string): Promise<Status> {
+  const { data } = await api.post<Status>(`/api/v1/statuses/${id}/mute`)
+  return data
+}
+
+export async function unmuteConversation(id: string): Promise<Status> {
+  const { data } = await api.post<Status>(`/api/v1/statuses/${id}/unmute`)
+  return data
+}
+
+export async function pinStatus(id: string): Promise<Status> {
+  const { data } = await api.post<Status>(`/api/v1/statuses/${id}/pin`)
+  return data
+}
+
+export async function unpinStatus(id: string): Promise<Status> {
+  const { data } = await api.post<Status>(`/api/v1/statuses/${id}/unpin`)
+  return data
+}
+
+export async function getStatusHistory(id: string): Promise<StatusEdit[]> {
+  const { data } = await api.get<StatusEdit[]>(`/api/v1/statuses/${id}/history`)
+  return data
+}
+
+export async function getStatusSource(id: string): Promise<StatusSource> {
+  const { data } = await api.get<StatusSource>(`/api/v1/statuses/${id}/source`)
+  return data
+}
+
+// Scheduled Statuses
+export async function getScheduledStatuses(params?: { min_id?: string; max_id?: string; limit?: number }): Promise<ScheduledStatus[]> {
+  const { data } = await api.get<ScheduledStatus[]>('/api/v1/scheduled_statuses', { params })
+  return data
+}
+
+export async function getScheduledStatus(id: string): Promise<ScheduledStatus> {
+  const { data } = await api.get<ScheduledStatus>(`/api/v1/scheduled_statuses/${id}`)
+  return data
+}
+
+export async function updateScheduledStatus(id: string, params: ScheduledStatusParams): Promise<ScheduledStatus> {
+  const { data } = await api.put<ScheduledStatus>(`/api/v1/scheduled_statuses/${id}`, params)
+  return data
+}
+
+export async function deleteScheduledStatus(id: string): Promise<void> {
+  await api.delete(`/api/v1/scheduled_statuses/${id}`)
 }

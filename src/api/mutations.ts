@@ -32,9 +32,15 @@ import {
   deleteList,
   addAccountsToList,
   removeAccountsFromList,
+  muteConversation,
+  unmuteConversation,
+  pinStatus,
+  unpinStatus,
+  updateScheduledStatus,
+  deleteScheduledStatus,
 } from './client'
 import { queryKeys } from './queryKeys'
-import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams } from '../types/mastodon'
+import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams } from '../types/mastodon'
 
 // Helper function to update status in all infinite query caches
 function updateStatusInCaches(
@@ -762,6 +768,78 @@ export function useRemoveAccountsFromList() {
       queryClient.invalidateQueries({ queryKey: queryKeys.lists.accounts(listId) })
       // Invalidate list timeline
       queryClient.invalidateQueries({ queryKey: queryKeys.lists.timeline(listId) })
+    },
+  })
+}
+
+// Status Interactions
+export function useMuteConversation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => muteConversation(id),
+    onSuccess: (data, id) => {
+      queryClient.setQueryData(queryKeys.statuses.detail(id), data)
+      queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(id) })
+    },
+  })
+}
+
+export function useUnmuteConversation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => unmuteConversation(id),
+    onSuccess: (data, id) => {
+      queryClient.setQueryData(queryKeys.statuses.detail(id), data)
+      queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(id) })
+    },
+  })
+}
+
+export function usePinStatus() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => pinStatus(id),
+    onSuccess: (data, id) => {
+      queryClient.setQueryData(queryKeys.statuses.detail(id), data)
+      queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(id) })
+      // Also might affect profile (pinned statuses)?
+      queryClient.invalidateQueries({ queryKey: ['accounts'] })
+    },
+  })
+}
+
+export function useUnpinStatus() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => unpinStatus(id),
+    onSuccess: (data, id) => {
+      queryClient.setQueryData(queryKeys.statuses.detail(id), data)
+      queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(id) })
+      queryClient.invalidateQueries({ queryKey: ['accounts'] })
+    },
+  })
+}
+
+// Scheduled Statuses
+export function useUpdateScheduledStatus() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, params }: { id: string; params: ScheduledStatusParams }) =>
+      updateScheduledStatus(id, params),
+    onSuccess: (data, { id }) => {
+      queryClient.setQueryData(queryKeys.scheduledStatuses.detail(id), data)
+      queryClient.invalidateQueries({ queryKey: queryKeys.scheduledStatuses.all() })
+    },
+  })
+}
+
+export function useDeleteScheduledStatus() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => deleteScheduledStatus(id),
+    onSuccess: (_data, id) => {
+      queryClient.removeQueries({ queryKey: queryKeys.scheduledStatuses.detail(id) })
+      queryClient.invalidateQueries({ queryKey: queryKeys.scheduledStatuses.all() })
     },
   })
 }

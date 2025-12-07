@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
-import { useStatus } from '@/api/queries';
+import { useStatus, useStatusSource } from '@/api/queries';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
 import { Button } from '@/components/atoms/Button';
 
@@ -11,7 +11,11 @@ export default function EditStatusPage() {
   const router = useRouter();
   const statusId = params.id as string;
 
-  const { data: status, isLoading, error } = useStatus(statusId);
+  const { data: status, isLoading: isLoadingStatus, error: statusError } = useStatus(statusId);
+  const { data: source, isLoading: isLoadingSource, error: sourceError } = useStatusSource(statusId);
+
+  const isLoading = isLoadingStatus || isLoadingSource;
+  const error = statusError || sourceError;
 
   if (isLoading) {
     return (
@@ -49,6 +53,12 @@ export default function EditStatusPage() {
     );
   }
 
+  // Use source text if available (converted to HTML-ish for Tiptap), otherwise fallback to status content
+  // Note: Tiptap handles <br> for newlines. Source text has \n.
+  const initialContent = source?.text
+    ? source.text.replace(/\n/g, '<br>')
+    : status.content;
+
   return (
     <div style={{
       maxWidth: '600px',
@@ -83,8 +93,8 @@ export default function EditStatusPage() {
       <ComposerPanel
         editMode={true}
         statusId={status.id}
-        initialContent={status.content}
-        initialSpoilerText={status.spoiler_text}
+        initialContent={initialContent}
+        initialSpoilerText={source?.spoiler_text || status.spoiler_text}
         initialVisibility={status.visibility}
         initialSensitive={status.sensitive}
       />

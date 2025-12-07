@@ -415,3 +415,43 @@ GET /api/v1/accounts/:id/lists - Get lists containing an account
 
 ### Priority: **Medium** ⭐⭐
 Useful for organizing feeds and curating custom timelines.
+
+---
+
+## 5. Statuses API - Additional Features
+**Status: 🚧 Implemented (API Layer)**
+
+### Missing Features:
+- **Mute Conversation**: Ignore notifications for a specific thread.
+- **Pin Status**: Feature a status on your profile.
+- **Edit History**: View revision history of a status.
+- **Status Source**: View the raw source of a status (for editing).
+
+### Implementation Plan:
+1. ✅ **API Client**: Add `muteConversation`, `unmuteConversation`, `pinStatus`, `unpinStatus`, `getStatusHistory`, `getStatusSource`.
+2. ✅ **Types**: Add `StatusEdit`, `StatusSource`.
+3. ✅ **Hooks**: Add corresponding query and mutation hooks.
+
+### Priority: **Medium** ⭐⭐
+Important for power users and moderation.
+
+---
+
+## 6. Scheduled Statuses API
+**Status: 🚧 Implemented (API Layer)**
+
+### API Endpoints:
+```
+GET /api/v1/scheduled_statuses
+GET /api/v1/scheduled_statuses/:id
+PUT /api/v1/scheduled_statuses/:id
+DELETE /api/v1/scheduled_statuses/:id
+```
+
+### Implementation Plan:
+1. ✅ **Types**: Add `ScheduledStatus`, `ScheduledStatusParams`.
+2. ✅ **API Client**: Add methods to get, update, and delete scheduled statuses.
+3. ✅ **Hooks**: Add `useScheduledStatuses`, `useScheduledStatus`, `useUpdateScheduledStatus`, `useDeleteScheduledStatus`.
+
+### Priority: **Low** ⭐
+Useful for content creators but not essential for consumption.

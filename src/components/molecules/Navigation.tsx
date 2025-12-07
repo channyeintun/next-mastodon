@@ -2,7 +2,7 @@
 
 import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, PenSquare, Search, Settings, Coffee, Github, Bell, List } from 'lucide-react';
+import { Home, PenSquare, Search, Settings, Coffee, Github, Bell, List, Calendar } from 'lucide-react';
 import { useInstance, useUnreadNotificationCount } from '@/api/queries';
 import type { Account } from '@/types/mastodon';
 

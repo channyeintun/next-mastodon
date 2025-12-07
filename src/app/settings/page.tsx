@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX } from 'lucide-react';
+import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock } from 'lucide-react';
 import { useCurrentAccount } from '@/api/queries';
 import { Button } from '@/components/atoms/Button';
 import { IconButton } from '@/components/atoms/IconButton';
@@ -108,6 +108,11 @@ export default function SettingsPage() {
           <Link href="/bookmarks" className="settings-link">
             <Bookmark size={20} className="settings-link-icon" />
             Bookmarks
+          </Link>
+
+          <Link href="/scheduled" className="settings-link">
+            <Clock size={20} className="settings-link-icon" />
+            Scheduled Posts
           </Link>
 
           {currentAccount.locked && (

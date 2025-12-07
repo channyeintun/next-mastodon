@@ -15,7 +15,11 @@ import {
   Lock,
   Users,
   Mail,
-  MessageSquareQuote
+  MessageSquareQuote,
+  Pin,
+  PinOff,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import { Avatar } from '../atoms/Avatar';
 import { Card } from '../atoms/Card';
@@ -32,7 +36,10 @@ import {
   useUnreblogStatus,
   useBookmarkStatus,
   useUnbookmarkStatus,
-
+  useMuteConversation,
+  useUnmuteConversation,
+  usePinStatus,
+  useUnpinStatus,
   useVotePoll,
 } from '@/api/mutations';
 import { useCurrentAccount } from '@/api/queries';
@@ -85,6 +92,10 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
   const unreblogMutation = useUnreblogStatus();
   const bookmarkMutation = useBookmarkStatus();
   const unbookmarkMutation = useUnbookmarkStatus();
+  const muteConversationMutation = useMuteConversation();
+  const unmuteConversationMutation = useUnmuteConversation();
+  const pinStatusMutation = usePinStatus();
+  const unpinStatusMutation = useUnpinStatus();
   const { openModal, closeModal } = useGlobalModal();
 
   // Handle reblog (boost) - show the original status
@@ -141,6 +152,24 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
       unbookmarkMutation.mutate(displayStatus.id);
     } else {
       bookmarkMutation.mutate(displayStatus.id);
+    }
+  };
+
+  const handleMuteConversation = () => {
+    setShowMenu(false);
+    if (displayStatus.muted) {
+      unmuteConversationMutation.mutate(displayStatus.id);
+    } else {
+      muteConversationMutation.mutate(displayStatus.id);
+    }
+  };
+
+  const handlePin = () => {
+    setShowMenu(false);
+    if (displayStatus.pinned) {
+      unpinStatusMutation.mutate(displayStatus.id);
+    } else {
+      pinStatusMutation.mutate(displayStatus.id);
     }
   };
 
@@ -368,15 +397,53 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
                             borderRadius: 'var(--radius-2)',
                             boxShadow: 'var(--shadow-4)',
                             padding: 'var(--size-2)',
-                            minWidth: '150px',
+                            minWidth: '200px',
                             zIndex: 50,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '2px', // gap between menu items
                           }}
                         >
+                          {/* Pin/Unpin - Only for own public/unlisted posts */}
+                          {isOwnPost && (displayStatus.visibility === 'public' || displayStatus.visibility === 'unlisted') && (
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handlePin();
+                              }}
+                              style={{
+                                width: '100%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 'var(--size-2)',
+                                padding: 'var(--size-2)',
+                                border: 'none',
+                                background: 'transparent',
+                                borderRadius: 'var(--radius-2)',
+                                cursor: 'pointer',
+                                color: 'var(--text-1)',
+                                fontSize: 'var(--font-size-1)',
+                                textAlign: 'left',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.background = 'var(--surface-3)';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.background = 'transparent';
+                              }}
+                            >
+                              {displayStatus.pinned ? <PinOff size={16} /> : <Pin size={16} />}
+                              <span>{displayStatus.pinned ? 'Unpin from profile' : 'Pin on profile'}</span>
+                            </button>
+                          )}
+
+                          {/* Mute/Unmute Conversation */}
                           <button
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
-                              handleEdit();
+                              handleMuteConversation();
                             }}
                             style={{
                               width: '100%',
@@ -398,44 +465,79 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
                               e.currentTarget.style.background = 'transparent';
                             }}
                           >
-                            <Edit2 size={16} />
-                            <span>Edit</span>
+                            {displayStatus.muted ? <Volume2 size={16} /> : <VolumeX size={16} />}
+                            <span>{displayStatus.muted ? 'Unmute conversation' : 'Mute conversation'}</span>
                           </button>
-                          <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setShowMenu(false);
-                              openModal(
-                                <DeletePostModal
-                                  postId={displayStatus.id}
-                                  onClose={closeModal}
-                                />
-                              );
-                            }}
-                            style={{
-                              width: '100%',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 'var(--size-2)',
-                              padding: 'var(--size-2)',
-                              border: 'none',
-                              background: 'transparent',
-                              borderRadius: 'var(--radius-2)',
-                              cursor: 'pointer',
-                              color: 'var(--red-6)',
-                              fontSize: 'var(--font-size-1)',
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.background = 'var(--red-2)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.background = 'transparent';
-                            }}
-                          >
-                            <Trash2 size={16} />
-                            <span>Delete</span>
-                          </button>
+
+                          {isOwnPost && (
+                            <>
+                              <div style={{ height: '1px', background: 'var(--surface-3)', margin: '4px 0' }} />
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  handleEdit();
+                                }}
+                                style={{
+                                  width: '100%',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 'var(--size-2)',
+                                  padding: 'var(--size-2)',
+                                  border: 'none',
+                                  background: 'transparent',
+                                  borderRadius: 'var(--radius-2)',
+                                  cursor: 'pointer',
+                                  color: 'var(--text-1)',
+                                  fontSize: 'var(--font-size-1)',
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.background = 'var(--surface-3)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.background = 'transparent';
+                                }}
+                              >
+                                <Edit2 size={16} />
+                                <span>Edit status</span>
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setShowMenu(false);
+                                  openModal(
+                                    <DeletePostModal
+                                      postId={displayStatus.id}
+                                      onClose={closeModal}
+                                    />
+                                  );
+                                }}
+                                style={{
+                                  width: '100%',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 'var(--size-2)',
+                                  padding: 'var(--size-2)',
+                                  border: 'none',
+                                  background: 'transparent',
+                                  borderRadius: 'var(--radius-2)',
+                                  cursor: 'pointer',
+                                  color: 'var(--red-6)',
+                                  fontSize: 'var(--font-size-1)',
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.background = 'var(--red-2)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.background = 'transparent';
+                                }}
+                              >
+                                <Trash2 size={16} />
+                                <span>Delete status</span>
+                              </button>
+                            </>
+                          )}
                         </div>
                       </>
                     )}

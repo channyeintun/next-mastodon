@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect, Activity } from 'react';
 import { useRouter } from 'next/navigation';
-import { useCurrentAccount, useCustomEmojis, useStatus, usePreferences } from '@/api/queries';
-import { useCreateStatus, useUpdateStatus } from '@/api/mutations';
+import { useCurrentAccount, useCustomEmojis, useStatus, usePreferences, useScheduledStatus } from '@/api/queries';
+import { useCreateStatus, useUpdateStatus, useDeleteScheduledStatus } from '@/api/mutations';
 import { PostCard } from '../molecules/PostCard';
 import { Avatar } from '../atoms/Avatar';
 import { EmojiText } from '../atoms/EmojiText';
@@ -14,7 +14,7 @@ import { VisibilitySettingsModal, type Visibility, type QuoteVisibility } from '
 import { TiptapEditor } from '../atoms/TiptapEditor';
 import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { uploadMedia, updateMedia } from '@/api/client';
-import { Globe, Lock, Users, Mail, X, Smile, Image as ImageIcon, BarChart2, MessageSquareQuote } from 'lucide-react';
+import { Globe, Lock, Users, Mail, X, Smile, Image as ImageIcon, BarChart2, MessageSquareQuote, Clock } from 'lucide-react';
 import type { CreateStatusParams, MediaAttachment } from '@/types/mastodon';
 
 const MAX_CHAR_COUNT = 500;
@@ -42,6 +42,7 @@ interface ComposerPanelProps {
   inReplyToId?: string;
   isReply?: boolean;
   quotedStatusId?: string;
+  scheduledStatusId?: string;
 }
 
 export function ComposerPanel({
@@ -54,17 +55,22 @@ export function ComposerPanel({
   inReplyToId,
   isReply = false,
   quotedStatusId,
+  scheduledStatusId,
 }: ComposerPanelProps) {
   const router = useRouter();
   const { data: currentAccount } = useCurrentAccount();
   const { data: customEmojis } = useCustomEmojis();
   const { data: preferences } = usePreferences();
+  const { data: scheduledStatusData } = useScheduledStatus(scheduledStatusId || '');
   const createStatusMutation = useCreateStatus();
   const updateStatusMutation = useUpdateStatus();
+  const deleteScheduledStatusMutation = useDeleteScheduledStatus();
   const editorRef = useRef<any>(null);
 
   const [content, setContent] = useState(initialContent);
   const [textContent, setTextContent] = useState('');
+  const [scheduledAt, setScheduledAt] = useState<string>('');
+  const [showScheduleInput, setShowScheduleInput] = useState(false);
 
   // Track whether we've initialized from preferences
   const [hasInitializedFromPreferences, setHasInitializedFromPreferences] = useState(false);
@@ -174,6 +180,42 @@ export function ComposerPanel({
     }
   };
 
+  // Effect to load scheduled status data
+  useEffect(() => {
+    if (scheduledStatusData) {
+      if (scheduledStatusData.params.status) {
+        // We set text content directly, HTML might not be available or needs conversion
+        // For simplicity, we assume text is plain or basic HTML 
+        // Note: Tiptap might need HTML. Status params 'text' is usually plain text.
+        // But for editing, we might want to just set it.
+        // If we have 'content' from status, we use it. But scheduled status stores "params" which has "status" (text).
+        // Use textContent directly if possible or wrapped in p tags.
+        setContent(scheduledStatusData.params.status?.replace(/\n/g, '<br>') || '');
+      }
+      if (scheduledStatusData.params.spoiler_text) {
+        setContentWarning(scheduledStatusData.params.spoiler_text);
+        setShowCWInput(true);
+      }
+      if (scheduledStatusData.params.sensitive) {
+        setSensitive(true);
+      }
+      if (scheduledStatusData.params.visibility) {
+        setVisibility(scheduledStatusData.params.visibility);
+      }
+      if (scheduledStatusData.media_attachments.length > 0) {
+        setMedia(scheduledStatusData.media_attachments);
+      }
+      if (scheduledStatusData.scheduled_at) {
+        // Format for datetime-local input: YYYY-MM-DDThh:mm
+        const date = new Date(scheduledStatusData.scheduled_at);
+        // Adjust to local time string
+        const localIso = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+        setScheduledAt(localIso);
+        setShowScheduleInput(true);
+      }
+    }
+  }, [scheduledStatusData]);
+
   const handlePost = async () => {
     if (!canPost) return;
 
@@ -207,18 +249,36 @@ export function ComposerPanel({
       }
     }
 
+    // Add scheduled_at if provided
+    if (showScheduleInput && scheduledAt) {
+      params.scheduled_at = new Date(scheduledAt).toISOString();
+    }
+
     try {
       if (editMode && statusId) {
         await updateStatusMutation.mutateAsync({ id: statusId, params });
         router.back();
       } else {
+        // Create new status (scheduled or immediate)
         await createStatusMutation.mutateAsync(params);
+
+        // If we were editing a scheduled status (by creating a new one), we should delete the old one
+        if (scheduledStatusId) {
+          await deleteScheduledStatusMutation.mutateAsync(scheduledStatusId);
+        }
+
         setContent('');
         setContentWarning('');
         setShowCWInput(false);
         setSensitive(false);
         setMedia([]);
         setPoll(null);
+        setScheduledAt('');
+        setShowScheduleInput(false);
+
+        if (scheduledStatusId) {
+          router.push('/scheduled');
+        }
       }
     } catch (error) {
       console.error(`Failed to ${editMode ? 'update' : 'create'} post:`, error);
@@ -296,48 +356,101 @@ export function ComposerPanel({
       </Activity>
 
       {/* Content Warning */}
-      {showCWInput && (
-        <div style={{ marginBottom: 'var(--size-3)' }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 'var(--size-2)',
-          }}>
-            <label style={{ fontSize: 'var(--font-size-1)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)' }}>
-              Content Warning
-            </label>
-            <button
-              onClick={() => {
-                setShowCWInput(false);
-                setContentWarning('');
-              }}
-              style={{
-                padding: 'var(--size-1)',
-                border: 'none',
-                background: 'transparent',
-                cursor: 'pointer',
-                color: 'var(--text-2)',
-              }}
-            >
-              <X size={16} />
-            </button>
-          </div>
-          <input
-            type="text"
-            value={contentWarning}
-            onChange={(e) => setContentWarning(e.target.value)}
-            placeholder="Write your warning here..."
-            style={{
-              width: '100%',
-              padding: 'var(--size-2) var(--size-3)',
-              border: '1px solid var(--surface-3)',
-              borderRadius: 'var(--radius-2)',
-              background: 'var(--surface-1)',
-              color: 'var(--text-1)',
-              fontSize: 'var(--font-size-2)',
-            }}
-          />
+      {(showCWInput || showScheduleInput) && (
+        <div style={{ marginBottom: 'var(--size-3)', display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
+          {showCWInput && (
+            <div style={{ marginBottom: 'var(--size-2)' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: 'var(--size-2)',
+              }}>
+                <label style={{ fontSize: 'var(--font-size-1)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)' }}>
+                  Content Warning
+                </label>
+                <button
+                  onClick={() => {
+                    setShowCWInput(false);
+                    setContentWarning('');
+                  }}
+                  style={{
+                    padding: 'var(--size-1)',
+                    border: 'none',
+                    background: 'transparent',
+                    cursor: 'pointer',
+                    color: 'var(--text-2)',
+                  }}
+                >
+                  <X size={16} />
+                </button>
+              </div>
+              <input
+                type="text"
+                value={contentWarning}
+                onChange={(e) => setContentWarning(e.target.value)}
+                placeholder="Write your warning here..."
+                style={{
+                  width: '100%',
+                  padding: 'var(--size-2) var(--size-3)',
+                  border: '1px solid var(--surface-3)',
+                  borderRadius: 'var(--radius-2)',
+                  background: 'var(--surface-1)',
+                  color: 'var(--text-1)',
+                  fontSize: 'var(--font-size-2)',
+                }}
+              />
+            </div>
+          )}
+
+          {/* Schedule Input */}
+          {showScheduleInput && (
+            <div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: 'var(--size-2)',
+              }}>
+                <label style={{ fontSize: 'var(--font-size-1)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)' }}>
+                  Schedule Post
+                </label>
+                <button
+                  onClick={() => {
+                    setShowScheduleInput(false);
+                    setScheduledAt('');
+                  }}
+                  style={{
+                    padding: 'var(--size-1)',
+                    border: 'none',
+                    background: 'transparent',
+                    cursor: 'pointer',
+                    color: 'var(--text-2)',
+                  }}
+                >
+                  <X size={16} />
+                </button>
+              </div>
+              <input
+                type="datetime-local"
+                value={scheduledAt}
+                min={new Date().toISOString().slice(0, 16)}
+                onChange={(e) => setScheduledAt(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: 'var(--size-2) var(--size-3)',
+                  border: '1px solid var(--surface-3)',
+                  borderRadius: 'var(--radius-2)',
+                  background: 'var(--surface-1)',
+                  color: 'var(--text-1)',
+                  fontSize: 'var(--font-size-2)',
+                }}
+              />
+              <div style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-3)', marginTop: '4px' }}>
+                Post will be published automatically at this time.
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -446,6 +559,20 @@ export function ComposerPanel({
               <span style={{ fontSize: '14px' }}>CW</span>
             </button>
 
+            {/* Schedule Button */}
+            <button
+              className="compose-tool-btn"
+              type="button"
+              onClick={() => setShowScheduleInput(!showScheduleInput)}
+              style={{
+                color: showScheduleInput ? 'var(--blue-6)' : undefined,
+              }}
+              title="Schedule post"
+              disabled={!!statusId} // Cannot schedule explicitly when editing a published post (though Mastodon API might not support it anyway)
+            >
+              <Clock size={22} />
+            </button>
+
             {/* Visibility Button (Only shown in toolbar if it's a reply) */}
             {isReply && (
               <button
@@ -474,7 +601,7 @@ export function ComposerPanel({
               onClick={handlePost}
               disabled={!canPost}
             >
-              {editMode ? 'Update' : (isReply ? 'Reply' : 'Publish')}
+              {editMode ? 'Update' : (showScheduleInput && scheduledAt ? (scheduledStatusId ? 'Reschedule' : 'Schedule') : (isReply ? 'Reply' : 'Publish'))}
             </button>
           </div>
         </div>
