@@ -46,6 +46,7 @@ interface PostCardProps {
   showThread?: boolean;
   style?: CSSProperties;
   hideActions?: boolean;
+  showThreadLine?: boolean;
 }
 
 function formatRelativeTime(dateString: string): string {
@@ -68,7 +69,7 @@ const VISIBILITY_ICONS = {
   direct: <Mail size={14} />,
 };
 
-export function PostCard({ status, showThread = false, style, hideActions = false }: PostCardProps) {
+export function PostCard({ status, showThread = false, style, hideActions = false, showThreadLine = false }: PostCardProps) {
   const router = useRouter();
   const authStore = useAuthStore();
   const [showMenu, setShowMenu] = useState(false);

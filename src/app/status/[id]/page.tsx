@@ -149,29 +149,24 @@ export default function StatusPage({
         {/* Ancestors (parent posts) */}
         {ancestors.length > 0 && (
           <div>
-            {ancestors.map((ancestor, index) => (
+            {ancestors.map((ancestor) => (
               <div key={ancestor.id}>
-                <PostCard status={ancestor} style={{ marginBottom: 'var(--size-3)' }} />
+                <PostCard status={ancestor} />
                 {/* Thread line connector */}
-                {index < ancestors.length - 1 || index === ancestors.length - 1 ? (
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  paddingLeft: 'var(--size-5)',
+                }}>
                   <div style={{
                     width: '2px',
-                    height: 'var(--size-4)',
+                    height: '32px',
                     background: 'var(--surface-4)',
-                    marginLeft: 'var(--size-8)',
-                    marginBottom: 'var(--size-3)',
+                    marginLeft: '18px', // Center align with avatar
                   }} />
-                ) : null}
+                </div>
               </div>
             ))}
-            {/* Connector to main status */}
-            <div style={{
-              width: '2px',
-              height: 'var(--size-4)',
-              background: 'var(--surface-4)',
-              marginLeft: 'var(--size-8)',
-              marginBottom: 'var(--size-3)',
-            }} />
           </div>
         )}
 
@@ -219,14 +214,19 @@ export default function StatusPage({
                 {/* Thread line connector */}
                 {index > 0 && (
                   <div style={{
-                    width: '2px',
-                    height: 'var(--size-3)',
-                    background: 'var(--surface-4)',
-                    marginLeft: 'var(--size-8)',
-                    marginBottom: 'var(--size-3)',
-                  }} />
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                    paddingLeft: 'var(--size-5)',
+                  }}>
+                    <div style={{
+                      width: '2px',
+                      height: '24px',
+                      background: 'var(--surface-4)',
+                      marginLeft: '18px',
+                    }} />
+                  </div>
                 )}
-                <PostCard status={descendant} style={{ marginBottom: 'var(--size-3)' }} />
+                <PostCard status={descendant} />
               </div>
             ))}
           </div>
