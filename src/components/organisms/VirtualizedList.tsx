@@ -1,6 +1,6 @@
 'use client';
 
-import { Activity, useRef, useEffect, type CSSProperties, type ReactNode } from 'react';
+import { useRef, useEffect, type CSSProperties, type ReactNode } from 'react';
 import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 
 interface VirtualizedListProps<T> {
@@ -174,11 +174,9 @@ export function VirtualizedList<T>({
         ...style,
       }}
     >
-      <Activity mode={items.length === 0 && emptyState ? 'visible' : 'hidden'}>
-        {emptyState}
-      </Activity>
+      {items.length === 0 && emptyState && emptyState}
 
-      <Activity mode={items.length > 0 ? 'visible' : 'hidden'}>
+      {items.length > 0 && (
         <div
           style={{
             height: `${virtualizer.getTotalSize()}px`,
@@ -210,25 +208,23 @@ export function VirtualizedList<T>({
             );
           })}
         </div>
+      )}
 
-        {/* Loading indicator */}
-        <Activity mode={isLoadingMore ? 'visible' : 'hidden'}>
-          {loadingIndicator}
-        </Activity>
+      {/* Loading indicator */}
+      {isLoadingMore && loadingIndicator}
 
-        {/* End of list indicator */}
-        <Activity mode={!hasMore && items.length > 0 && !!endIndicator ? 'visible' : 'hidden'}>
-          <div
-            style={{
-              textAlign: 'center',
-              padding: 'var(--size-4)',
-              color: 'var(--text-2)',
-            }}
-          >
-            {endIndicator}
-          </div>
-        </Activity>
-      </Activity>
+      {/* End of list indicator */}
+      {!hasMore && items.length > 0 && endIndicator && (
+        <div
+          style={{
+            textAlign: 'center',
+            padding: 'var(--size-4)',
+            color: 'var(--text-2)',
+          }}
+        >
+          {endIndicator}
+        </div>
+      )}
     </div>
   );
 }

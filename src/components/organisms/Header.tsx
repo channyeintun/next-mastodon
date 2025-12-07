@@ -1,6 +1,6 @@
 'use client';
 
-import { Activity } from 'react';
+
 import Link from 'next/link';
 import { useAuthStore } from '@/hooks/useStores';
 import { observer } from 'mobx-react-lite';
@@ -23,7 +23,7 @@ const Header = observer(() => {
         </div>
 
         <div className="header-right">
-          <Activity mode={authStore.isAuthenticated ? 'visible' : 'hidden'}>
+          {authStore.isAuthenticated ? (
             <div className="header-user-info">
               <span className="header-instance">
                 {authStore.instanceURL?.replace('https://', '')}
@@ -32,13 +32,11 @@ const Header = observer(() => {
                 Sign Out
               </button>
             </div>
-          </Activity>
-
-          <Activity mode={!authStore.isAuthenticated ? 'visible' : 'hidden'}>
+          ) : (
             <Link href="/auth/signin" className="header-signin-button">
               Sign In
             </Link>
-          </Activity>
+          )}
         </div>
       </div>
     </header>
