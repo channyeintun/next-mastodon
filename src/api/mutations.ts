@@ -194,6 +194,10 @@ export function useDeleteStatus() {
     onSuccess: (_data, id) => {
       // Remove from cache
       queryClient.removeQueries({ queryKey: queryKeys.statuses.detail(id) })
+      // Invalidate context (thread views)
+      queryClient.invalidateQueries({ queryKey: queryKeys.statuses.context(id) })
+      // Invalidate all context queries since this status may appear in other threads
+      queryClient.invalidateQueries({ queryKey: ['statuses', 'context'] })
       // Invalidate timelines
       queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
       queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
