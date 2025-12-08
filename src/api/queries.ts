@@ -51,16 +51,16 @@ import { useAuthStore } from '../hooks/useStores'
 export const homeTimelineOptions = (params?: TimelineParams) =>
   queryOptions({
     queryKey: queryKeys.timelines.home(params),
-    queryFn: () => getHomeTimeline(params),
+    queryFn: ({ signal }) => getHomeTimeline(params, signal),
   })
 
 export const infiniteHomeTimelineOptions = () =>
   infiniteQueryOptions({
     queryKey: queryKeys.timelines.home(),
-    queryFn: ({ pageParam }) => {
+    queryFn: ({ pageParam, signal }) => {
       const params: TimelineParams = { limit: 20 }
       if (pageParam) params.max_id = pageParam
-      return getHomeTimeline(params)
+      return getHomeTimeline(params, signal)
     },
     getNextPageParam: (lastPage) => {
       if (lastPage.length === 0 || lastPage.length < 20) return undefined
@@ -72,16 +72,16 @@ export const infiniteHomeTimelineOptions = () =>
 export const publicTimelineOptions = (params?: TimelineParams) =>
   queryOptions({
     queryKey: queryKeys.timelines.public(params),
-    queryFn: () => getPublicTimeline(params),
+    queryFn: ({ signal }) => getPublicTimeline(params, signal),
   })
 
 export const infiniteHashtagTimelineOptions = (hashtag: string) =>
   infiniteQueryOptions({
     queryKey: queryKeys.timelines.hashtag(hashtag),
-    queryFn: ({ pageParam }) => {
+    queryFn: ({ pageParam, signal }) => {
       const params: TimelineParams = { limit: 20 }
       if (pageParam) params.max_id = pageParam
-      return getHashtagTimeline(hashtag, params)
+      return getHashtagTimeline(hashtag, params, signal)
     },
     getNextPageParam: (lastPage) => {
       if (lastPage.length === 0 || lastPage.length < 20) return undefined
@@ -94,59 +94,59 @@ export const infiniteHashtagTimelineOptions = (hashtag: string) =>
 export const statusOptions = (id: string) =>
   queryOptions({
     queryKey: queryKeys.statuses.detail(id),
-    queryFn: () => getStatus(id),
+    queryFn: ({ signal }) => getStatus(id, signal),
   })
 
 export const statusContextOptions = (id: string) =>
   queryOptions({
     queryKey: queryKeys.statuses.context(id),
-    queryFn: () => getStatusContext(id),
+    queryFn: ({ signal }) => getStatusContext(id, signal),
   })
 
 export const statusHistoryOptions = (id: string) =>
   queryOptions({
     queryKey: queryKeys.statuses.history(id),
-    queryFn: () => getStatusHistory(id),
+    queryFn: ({ signal }) => getStatusHistory(id, signal),
   })
 
 export const statusSourceOptions = (id: string) =>
   queryOptions({
     queryKey: queryKeys.statuses.source(id),
-    queryFn: () => getStatusSource(id),
+    queryFn: ({ signal }) => getStatusSource(id, signal),
   })
 
 // Account Options
 export const accountOptions = (id: string) =>
   queryOptions({
     queryKey: queryKeys.accounts.detail(id),
-    queryFn: () => getAccount(id),
+    queryFn: ({ signal }) => getAccount(id, signal),
   })
 
 export const lookupAccountOptions = (acct: string) =>
   queryOptions({
     queryKey: queryKeys.accounts.lookup(acct),
-    queryFn: () => lookupAccount(acct),
+    queryFn: ({ signal }) => lookupAccount(acct, signal),
   })
 
 export const currentAccountOptions = () =>
   queryOptions({
     queryKey: queryKeys.accounts.current(),
-    queryFn: () => verifyCredentials(),
+    queryFn: ({ signal }) => verifyCredentials(signal),
   })
 
 export const accountStatusesOptions = (id: string, params?: TimelineParams) =>
   queryOptions({
     queryKey: queryKeys.accounts.statuses(id, params),
-    queryFn: () => getAccountStatuses(id, params),
+    queryFn: ({ signal }) => getAccountStatuses(id, params, signal),
   })
 
 export const infiniteAccountStatusesOptions = (id: string) =>
   infiniteQueryOptions({
     queryKey: queryKeys.accounts.statuses(id),
-    queryFn: ({ pageParam }) => {
+    queryFn: ({ pageParam, signal }) => {
       const params: TimelineParams = { limit: 20 }
       if (pageParam) params.max_id = pageParam
-      return getAccountStatuses(id, params)
+      return getAccountStatuses(id, params, signal)
     },
     getNextPageParam: (lastPage) => {
       if (lastPage.length === 0 || lastPage.length < 20) return undefined
@@ -158,22 +158,22 @@ export const infiniteAccountStatusesOptions = (id: string) =>
 export const pinnedStatusesOptions = (id: string) =>
   queryOptions({
     queryKey: queryKeys.accounts.pinnedStatuses(id),
-    queryFn: () => getPinnedStatuses(id),
+    queryFn: ({ signal }) => getPinnedStatuses(id, signal),
   })
 
 export const followersOptions = (id: string) =>
   queryOptions({
     queryKey: queryKeys.accounts.followers(id),
-    queryFn: () => getFollowers(id),
+    queryFn: ({ signal }) => getFollowers(id, undefined, signal),
   })
 
 export const infiniteFollowersOptions = (id: string) =>
   infiniteQueryOptions({
     queryKey: queryKeys.accounts.followers(id),
-    queryFn: ({ pageParam }) => {
+    queryFn: ({ pageParam, signal }) => {
       const params: { max_id?: string; limit: number } = { limit: 40 }
       if (pageParam) params.max_id = pageParam
-      return getFollowers(id, params)
+      return getFollowers(id, params, signal)
     },
     getNextPageParam: (lastPage: Account[]) => {
       if (lastPage.length === 0 || lastPage.length < 40) return undefined
@@ -185,16 +185,16 @@ export const infiniteFollowersOptions = (id: string) =>
 export const followingOptions = (id: string) =>
   queryOptions({
     queryKey: queryKeys.accounts.following(id),
-    queryFn: () => getFollowing(id),
+    queryFn: ({ signal }) => getFollowing(id, undefined, signal),
   })
 
 export const infiniteFollowingOptions = (id: string) =>
   infiniteQueryOptions({
     queryKey: queryKeys.accounts.following(id),
-    queryFn: ({ pageParam }) => {
+    queryFn: ({ pageParam, signal }) => {
       const params: { max_id?: string; limit: number } = { limit: 40 }
       if (pageParam) params.max_id = pageParam
-      return getFollowing(id, params)
+      return getFollowing(id, params, signal)
     },
     getNextPageParam: (lastPage: Account[]) => {
       if (lastPage.length === 0 || lastPage.length < 40) return undefined
@@ -206,10 +206,10 @@ export const infiniteFollowingOptions = (id: string) =>
 export const infiniteFollowRequestsOptions = () =>
   infiniteQueryOptions({
     queryKey: queryKeys.accounts.followRequests(),
-    queryFn: ({ pageParam }) => {
+    queryFn: ({ pageParam, signal }) => {
       const params: { max_id?: string; limit: number } = { limit: 40 }
       if (pageParam) params.max_id = pageParam
-      return getFollowRequests(params)
+      return getFollowRequests(params, signal)
     },
     getNextPageParam: (lastPage: Account[]) => {
       if (lastPage.length === 0 || lastPage.length < 40) return undefined
@@ -221,23 +221,23 @@ export const infiniteFollowRequestsOptions = () =>
 export const relationshipsOptions = (ids: string[]) =>
   queryOptions({
     queryKey: queryKeys.accounts.relationships(ids),
-    queryFn: () => getRelationships(ids),
+    queryFn: ({ signal }) => getRelationships(ids, signal),
   })
 
 // Bookmarks Options
 export const bookmarksOptions = (params?: TimelineParams) =>
   queryOptions({
     queryKey: queryKeys.bookmarks.all(params),
-    queryFn: () => getBookmarks(params),
+    queryFn: ({ signal }) => getBookmarks(params, signal),
   })
 
 export const infiniteBookmarksOptions = () =>
   infiniteQueryOptions({
     queryKey: queryKeys.bookmarks.all(),
-    queryFn: ({ pageParam }) => {
+    queryFn: ({ pageParam, signal }) => {
       const params: TimelineParams = { limit: 20 }
       if (pageParam) params.max_id = pageParam
-      return getBookmarks(params)
+      return getBookmarks(params, signal)
     },
     getNextPageParam: (lastPage) => {
       if (lastPage.length === 0 || lastPage.length < 20) return undefined
@@ -250,16 +250,16 @@ export const infiniteBookmarksOptions = () =>
 export const searchOptions = (params: SearchParams) =>
   queryOptions({
     queryKey: queryKeys.search.all(params.q, params.type),
-    queryFn: () => search(params),
+    queryFn: ({ signal }) => search(params, signal),
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   })
 
 export const infiniteSearchOptions = (params: SearchParams) =>
   infiniteQueryOptions({
     queryKey: [...queryKeys.search.all(params.q, params.type), 'infinite'],
-    queryFn: ({ pageParam }) => {
+    queryFn: ({ pageParam, signal }) => {
       const searchParams = { ...params, limit: 20, offset: pageParam }
-      return search(searchParams)
+      return search(searchParams, signal)
     },
     getNextPageParam: (lastPage, allPages) => {
       const hasResults =
@@ -277,7 +277,7 @@ export const infiniteSearchOptions = (params: SearchParams) =>
 export const customEmojisOptions = () =>
   queryOptions({
     queryKey: ['customEmojis'] as const,
-    queryFn: () => getCustomEmojis(),
+    queryFn: ({ signal }) => getCustomEmojis(signal),
     staleTime: 1000 * 60 * 60, // Cache for 1 hour
   })
 
@@ -285,10 +285,10 @@ export const customEmojisOptions = () =>
 export const infiniteTrendingStatusesOptions = () =>
   infiniteQueryOptions({
     queryKey: queryKeys.trends.statuses(),
-    queryFn: async ({ pageParam }) => {
+    queryFn: async ({ pageParam, signal }) => {
       const trendingClient = createCustomClient('https://mastodon.social')
       const params = { limit: 20, offset: pageParam }
-      const { data } = await trendingClient.get<Status[]>('/api/v1/trends/statuses', { params })
+      const { data } = await trendingClient.get<Status[]>('/api/v1/trends/statuses', { params, signal })
       return data
     },
     getNextPageParam: (lastPage, allPages) => {
@@ -301,10 +301,10 @@ export const infiniteTrendingStatusesOptions = () =>
 export const infiniteTrendingTagsOptions = () =>
   infiniteQueryOptions({
     queryKey: queryKeys.trends.tags(),
-    queryFn: async ({ pageParam }) => {
+    queryFn: async ({ pageParam, signal }) => {
       const trendingClient = createCustomClient('https://mastodon.social')
       const params = { limit: 20, offset: pageParam }
-      const { data } = await trendingClient.get<Tag[]>('/api/v1/trends/tags', { params })
+      const { data } = await trendingClient.get<Tag[]>('/api/v1/trends/tags', { params, signal })
       return data
     },
     getNextPageParam: (lastPage, allPages) => {
@@ -317,10 +317,10 @@ export const infiniteTrendingTagsOptions = () =>
 export const infiniteTrendingLinksOptions = () =>
   infiniteQueryOptions({
     queryKey: queryKeys.trends.links(),
-    queryFn: async ({ pageParam }) => {
+    queryFn: async ({ pageParam, signal }) => {
       const trendingClient = createCustomClient('https://mastodon.social')
       const params = { limit: 20, offset: pageParam }
-      const { data } = await trendingClient.get<TrendingLink[]>('/api/v1/trends/links', { params })
+      const { data } = await trendingClient.get<TrendingLink[]>('/api/v1/trends/links', { params, signal })
       return data
     },
     getNextPageParam: (lastPage, allPages) => {
@@ -334,7 +334,7 @@ export const infiniteTrendingLinksOptions = () =>
 export const instanceOptions = () =>
   queryOptions({
     queryKey: queryKeys.instance.default,
-    queryFn: () => import('./client').then(m => m.getInstance()),
+    queryFn: ({ signal }) => import('./client').then(m => m.getInstance(signal)),
     staleTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
   })
 
@@ -342,16 +342,16 @@ export const instanceOptions = () =>
 export const notificationsOptions = (params?: NotificationParams) =>
   queryOptions({
     queryKey: queryKeys.notifications.list(params),
-    queryFn: () => getNotifications(params),
+    queryFn: ({ signal }) => getNotifications(params, signal),
   })
 
 export const infiniteNotificationsOptions = () =>
   infiniteQueryOptions({
     queryKey: queryKeys.notifications.list(),
-    queryFn: ({ pageParam }) => {
+    queryFn: ({ pageParam, signal }) => {
       const params: NotificationParams = { limit: 20 }
       if (pageParam) params.max_id = pageParam
-      return getNotifications(params)
+      return getNotifications(params, signal)
     },
     getNextPageParam: (lastPage) => {
       if (lastPage.length === 0 || lastPage.length < 20) return undefined
@@ -363,13 +363,13 @@ export const infiniteNotificationsOptions = () =>
 export const notificationOptions = (id: string) =>
   queryOptions({
     queryKey: queryKeys.notifications.detail(id),
-    queryFn: () => getNotification(id),
+    queryFn: ({ signal }) => getNotification(id, signal),
   })
 
 export const unreadNotificationCountOptions = () =>
   queryOptions({
     queryKey: queryKeys.notifications.unreadCount(),
-    queryFn: () => getUnreadNotificationCount(),
+    queryFn: ({ signal }) => getUnreadNotificationCount(signal),
     refetchInterval: 60000, // Refetch every minute
   })
 
@@ -377,10 +377,10 @@ export const unreadNotificationCountOptions = () =>
 export const infiniteBlockedAccountsOptions = () =>
   infiniteQueryOptions({
     queryKey: queryKeys.blocks.list(),
-    queryFn: ({ pageParam }) => {
+    queryFn: ({ pageParam, signal }) => {
       const params: { max_id?: string; limit: number } = { limit: 40 }
       if (pageParam) params.max_id = pageParam
-      return getBlockedAccounts(params)
+      return getBlockedAccounts(params, signal)
     },
     getNextPageParam: (lastPage: Account[]) => {
       if (lastPage.length === 0 || lastPage.length < 40) return undefined
@@ -392,10 +392,10 @@ export const infiniteBlockedAccountsOptions = () =>
 export const infiniteMutedAccountsOptions = () =>
   infiniteQueryOptions({
     queryKey: queryKeys.mutes.list(),
-    queryFn: ({ pageParam }) => {
+    queryFn: ({ pageParam, signal }) => {
       const params: { max_id?: string; limit: number } = { limit: 40 }
       if (pageParam) params.max_id = pageParam
-      return getMutedAccounts(params)
+      return getMutedAccounts(params, signal)
     },
     getNextPageParam: (lastPage: Account[]) => {
       if (lastPage.length === 0 || lastPage.length < 40) return undefined
@@ -408,7 +408,7 @@ export const infiniteMutedAccountsOptions = () =>
 export const preferencesOptions = () =>
   queryOptions({
     queryKey: queryKeys.preferences.all(),
-    queryFn: () => getPreferences(),
+    queryFn: ({ signal }) => getPreferences(signal),
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   })
 
@@ -416,22 +416,22 @@ export const preferencesOptions = () =>
 export const listsOptions = () =>
   queryOptions({
     queryKey: queryKeys.lists.all(),
-    queryFn: () => getLists(),
+    queryFn: ({ signal }) => getLists(signal),
   })
 
 export const listOptions = (id: string) =>
   queryOptions({
     queryKey: queryKeys.lists.detail(id),
-    queryFn: () => getList(id),
+    queryFn: ({ signal }) => getList(id, signal),
   })
 
 export const infiniteListAccountsOptions = (id: string) =>
   infiniteQueryOptions({
     queryKey: queryKeys.lists.accounts(id),
-    queryFn: ({ pageParam }) => {
+    queryFn: ({ pageParam, signal }) => {
       const params: { max_id?: string; limit: number } = { limit: 40 }
       if (pageParam) params.max_id = pageParam
-      return getListAccounts(id, params)
+      return getListAccounts(id, params, signal)
     },
     getNextPageParam: (lastPage: Account[]) => {
       if (lastPage.length === 0 || lastPage.length < 40) return undefined
@@ -443,10 +443,10 @@ export const infiniteListAccountsOptions = (id: string) =>
 export const infiniteListTimelineOptions = (id: string) =>
   infiniteQueryOptions({
     queryKey: queryKeys.lists.timeline(id),
-    queryFn: ({ pageParam }) => {
+    queryFn: ({ pageParam, signal }) => {
       const params: TimelineParams = { limit: 20 }
       if (pageParam) params.max_id = pageParam
-      return getListTimeline(id, params)
+      return getListTimeline(id, params, signal)
     },
     getNextPageParam: (lastPage) => {
       if (lastPage.length === 0 || lastPage.length < 20) return undefined
@@ -458,17 +458,17 @@ export const infiniteListTimelineOptions = (id: string) =>
 export const accountListsOptions = (accountId: string) =>
   queryOptions({
     queryKey: ['accounts', accountId, 'lists'] as const,
-    queryFn: () => getAccountLists(accountId),
+    queryFn: ({ signal }) => getAccountLists(accountId, signal),
   })
 
 // Scheduled Statuses Options
 export const infiniteScheduledStatusesOptions = () =>
   infiniteQueryOptions({
     queryKey: queryKeys.scheduledStatuses.list(),
-    queryFn: ({ pageParam }) => {
+    queryFn: ({ pageParam, signal }) => {
       const params: { min_id?: string; max_id?: string; limit?: number } = { limit: 20 }
       if (pageParam) params.max_id = pageParam
-      return getScheduledStatuses(params)
+      return getScheduledStatuses(params, signal)
     },
     getNextPageParam: (lastPage: ScheduledStatus[]) => {
       if (lastPage.length === 0 || lastPage.length < 20) return undefined
@@ -480,7 +480,7 @@ export const infiniteScheduledStatusesOptions = () =>
 export const scheduledStatusOptions = (id: string) =>
   queryOptions({
     queryKey: queryKeys.scheduledStatuses.detail(id),
-    queryFn: () => getScheduledStatus(id),
+    queryFn: ({ signal }) => getScheduledStatus(id, signal),
   })
 
 // ============================================================================

@@ -126,24 +126,24 @@ export async function getToken(
 }
 
 // Timelines
-export async function getHomeTimeline(params?: TimelineParams): Promise<Status[]> {
-  const { data } = await api.get<Status[]>('/api/v1/timelines/home', { params })
+export async function getHomeTimeline(params?: TimelineParams, signal?: AbortSignal): Promise<Status[]> {
+  const { data } = await api.get<Status[]>('/api/v1/timelines/home', { params, signal })
   return data
 }
 
-export async function getPublicTimeline(params?: TimelineParams): Promise<Status[]> {
-  const { data } = await api.get<Status[]>('/api/v1/timelines/public', { params })
+export async function getPublicTimeline(params?: TimelineParams, signal?: AbortSignal): Promise<Status[]> {
+  const { data } = await api.get<Status[]>('/api/v1/timelines/public', { params, signal })
   return data
 }
 
-export async function getHashtagTimeline(hashtag: string, params?: TimelineParams): Promise<Status[]> {
-  const { data } = await api.get<Status[]>(`/api/v1/timelines/tag/${encodeURIComponent(hashtag)}`, { params })
+export async function getHashtagTimeline(hashtag: string, params?: TimelineParams, signal?: AbortSignal): Promise<Status[]> {
+  const { data } = await api.get<Status[]>(`/api/v1/timelines/tag/${encodeURIComponent(hashtag)}`, { params, signal })
   return data
 }
 
 // Statuses
-export async function getStatus(id: string): Promise<Status> {
-  const { data } = await api.get<Status>(`/api/v1/statuses/${id}`)
+export async function getStatus(id: string, signal?: AbortSignal): Promise<Status> {
+  const { data } = await api.get<Status>(`/api/v1/statuses/${id}`, { signal })
   return data
 }
 
@@ -162,8 +162,8 @@ export async function updateStatus(id: string, params: CreateStatusParams): Prom
   return data
 }
 
-export async function getStatusContext(id: string): Promise<Context> {
-  const { data } = await api.get<Context>(`/api/v1/statuses/${id}/context`)
+export async function getStatusContext(id: string, signal?: AbortSignal): Promise<Context> {
+  const { data } = await api.get<Context>(`/api/v1/statuses/${id}/context`, { signal })
   return data
 }
 
@@ -198,20 +198,21 @@ export async function unbookmarkStatus(id: string): Promise<Status> {
 }
 
 // Accounts
-export async function getAccount(id: string): Promise<Account> {
-  const { data } = await api.get<Account>(`/api/v1/accounts/${id}`)
+export async function getAccount(id: string, signal?: AbortSignal): Promise<Account> {
+  const { data } = await api.get<Account>(`/api/v1/accounts/${id}`, { signal })
   return data
 }
 
-export async function lookupAccount(acct: string): Promise<Account> {
+export async function lookupAccount(acct: string, signal?: AbortSignal): Promise<Account> {
   const { data } = await api.get<Account>(`/api/v1/accounts/lookup`, {
     params: { acct },
+    signal,
   })
   return data
 }
 
-export async function verifyCredentials(): Promise<Account> {
-  const { data } = await api.get<Account>('/api/v1/accounts/verify_credentials')
+export async function verifyCredentials(signal?: AbortSignal): Promise<Account> {
+  const { data } = await api.get<Account>('/api/v1/accounts/verify_credentials', { signal })
   return data
 }
 
@@ -262,25 +263,27 @@ export async function updateCredentials(params: UpdateAccountParams): Promise<Ac
 export async function getAccountStatuses(
   id: string,
   params?: TimelineParams,
+  signal?: AbortSignal,
 ): Promise<Status[]> {
-  const { data } = await api.get<Status[]>(`/api/v1/accounts/${id}/statuses`, { params })
+  const { data } = await api.get<Status[]>(`/api/v1/accounts/${id}/statuses`, { params, signal })
   return data
 }
 
-export async function getPinnedStatuses(id: string): Promise<Status[]> {
+export async function getPinnedStatuses(id: string, signal?: AbortSignal): Promise<Status[]> {
   const { data } = await api.get<Status[]>(`/api/v1/accounts/${id}/statuses`, {
-    params: { pinned: true }
+    params: { pinned: true },
+    signal,
   })
   return data
 }
 
-export async function getFollowers(id: string, params?: { max_id?: string; limit?: number }): Promise<Account[]> {
-  const { data } = await api.get<Account[]>(`/api/v1/accounts/${id}/followers`, { params })
+export async function getFollowers(id: string, params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<Account[]> {
+  const { data } = await api.get<Account[]>(`/api/v1/accounts/${id}/followers`, { params, signal })
   return data
 }
 
-export async function getFollowing(id: string, params?: { max_id?: string; limit?: number }): Promise<Account[]> {
-  const { data } = await api.get<Account[]>(`/api/v1/accounts/${id}/following`, { params })
+export async function getFollowing(id: string, params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<Account[]> {
+  const { data } = await api.get<Account[]>(`/api/v1/accounts/${id}/following`, { params, signal })
   return data
 }
 
@@ -294,19 +297,20 @@ export async function unfollowAccount(id: string): Promise<Relationship> {
   return data
 }
 
-export async function getRelationships(ids: string[]): Promise<Relationship[]> {
+export async function getRelationships(ids: string[], signal?: AbortSignal): Promise<Relationship[]> {
   const { data } = await api.get<Relationship[]>('/api/v1/accounts/relationships', {
     params: { 'id[]': ids },
     paramsSerializer: {
       indexes: null, // Use PHP/Rails style array params (id[]=1&id[]=2)
     },
+    signal,
   })
   return data
 }
 
 // Follow Requests
-export async function getFollowRequests(params?: { max_id?: string; limit?: number }): Promise<Account[]> {
-  const { data } = await api.get<Account[]>('/api/v1/follow_requests', { params })
+export async function getFollowRequests(params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<Account[]> {
+  const { data } = await api.get<Account[]>('/api/v1/follow_requests', { params, signal })
   return data
 }
 
@@ -330,8 +334,8 @@ export async function unblockAccount(id: string): Promise<Relationship> {
   return data
 }
 
-export async function getBlockedAccounts(params?: { max_id?: string; limit?: number }): Promise<Account[]> {
-  const { data } = await api.get<Account[]>('/api/v1/blocks', { params })
+export async function getBlockedAccounts(params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<Account[]> {
+  const { data } = await api.get<Account[]>('/api/v1/blocks', { params, signal })
   return data
 }
 
@@ -346,32 +350,33 @@ export async function unmuteAccount(id: string): Promise<Relationship> {
   return data
 }
 
-export async function getMutedAccounts(params?: { max_id?: string; limit?: number }): Promise<Account[]> {
-  const { data } = await api.get<Account[]>('/api/v1/mutes', { params })
+export async function getMutedAccounts(params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<Account[]> {
+  const { data } = await api.get<Account[]>('/api/v1/mutes', { params, signal })
   return data
 }
 
 // Bookmarks
-export async function getBookmarks(params?: TimelineParams): Promise<Status[]> {
-  const { data } = await api.get<Status[]>('/api/v1/bookmarks', { params })
+export async function getBookmarks(params?: TimelineParams, signal?: AbortSignal): Promise<Status[]> {
+  const { data } = await api.get<Status[]>('/api/v1/bookmarks', { params, signal })
   return data
 }
 
 // Search
-export async function search(params: SearchParams): Promise<SearchResults> {
+export async function search(params: SearchParams, signal?: AbortSignal): Promise<SearchResults> {
   // Filter out undefined values to avoid "type=undefined" in query string
   const filteredParams = Object.fromEntries(
     Object.entries(params).filter(([_, value]) => value !== undefined)
   )
   const { data } = await api.get<SearchResults>('/api/v2/search', {
     params: filteredParams,
+    signal,
   })
   return data
 }
 
 // Custom Emojis
-export async function getCustomEmojis(): Promise<Emoji[]> {
-  const { data } = await api.get<Emoji[]>('/api/v1/custom_emojis')
+export async function getCustomEmojis(signal?: AbortSignal): Promise<Emoji[]> {
+  const { data } = await api.get<Emoji[]>('/api/v1/custom_emojis', { signal })
   return data
 }
 
@@ -404,8 +409,8 @@ export async function updateMedia(id: string, description: string): Promise<Medi
 }
 
 // Polls
-export async function getPoll(id: string): Promise<Poll> {
-  const { data } = await api.get<Poll>(`/api/v1/polls/${id}`)
+export async function getPoll(id: string, signal?: AbortSignal): Promise<Poll> {
+  const { data } = await api.get<Poll>(`/api/v1/polls/${id}`, { signal })
   return data
 }
 
@@ -431,13 +436,13 @@ export async function getTrendingLinks(params?: { limit?: number; offset?: numbe
 }
 
 // Notifications
-export async function getNotifications(params?: NotificationParams): Promise<Notification[]> {
-  const { data } = await api.get<Notification[]>('/api/v1/notifications', { params })
+export async function getNotifications(params?: NotificationParams, signal?: AbortSignal): Promise<Notification[]> {
+  const { data } = await api.get<Notification[]>('/api/v1/notifications', { params, signal })
   return data
 }
 
-export async function getNotification(id: string): Promise<Notification> {
-  const { data } = await api.get<Notification>(`/api/v1/notifications/${id}`)
+export async function getNotification(id: string, signal?: AbortSignal): Promise<Notification> {
+  const { data } = await api.get<Notification>(`/api/v1/notifications/${id}`, { signal })
   return data
 }
 
@@ -449,8 +454,8 @@ export async function clearNotifications(): Promise<void> {
   await api.post('/api/v1/notifications/clear')
 }
 
-export async function getUnreadNotificationCount(): Promise<UnreadCount> {
-  const { data } = await api.get<UnreadCount>('/api/v1/notifications/unread_count')
+export async function getUnreadNotificationCount(signal?: AbortSignal): Promise<UnreadCount> {
+  const { data } = await api.get<UnreadCount>('/api/v1/notifications/unread_count', { signal })
   return data
 }
 
@@ -466,9 +471,10 @@ export interface MarkersResponse {
   home?: Marker
 }
 
-export async function getMarkers(timeline: ('home' | 'notifications')[]): Promise<MarkersResponse> {
+export async function getMarkers(timeline: ('home' | 'notifications')[], signal?: AbortSignal): Promise<MarkersResponse> {
   const { data } = await api.get<MarkersResponse>('/api/v1/markers', {
     params: { 'timeline[]': timeline },
+    signal,
   })
   return data
 }
@@ -482,25 +488,25 @@ export async function updateMarkers(params: {
 }
 
 // Preferences
-export async function getPreferences(): Promise<Preferences> {
-  const { data } = await api.get<Preferences>('/api/v1/preferences')
+export async function getPreferences(signal?: AbortSignal): Promise<Preferences> {
+  const { data } = await api.get<Preferences>('/api/v1/preferences', { signal })
   return data
 }
 
 // Instance
-export async function getInstance(): Promise<Instance> {
-  const { data } = await api.get<Instance>('/api/v2/instance')
+export async function getInstance(signal?: AbortSignal): Promise<Instance> {
+  const { data } = await api.get<Instance>('/api/v2/instance', { signal })
   return data
 }
 
 // Lists
-export async function getLists(): Promise<List[]> {
-  const { data } = await api.get<List[]>('/api/v1/lists')
+export async function getLists(signal?: AbortSignal): Promise<List[]> {
+  const { data } = await api.get<List[]>('/api/v1/lists', { signal })
   return data
 }
 
-export async function getList(id: string): Promise<List> {
-  const { data } = await api.get<List>(`/api/v1/lists/${id}`)
+export async function getList(id: string, signal?: AbortSignal): Promise<List> {
+  const { data } = await api.get<List>(`/api/v1/lists/${id}`, { signal })
   return data
 }
 
@@ -518,8 +524,8 @@ export async function deleteList(id: string): Promise<void> {
   await api.delete(`/api/v1/lists/${id}`)
 }
 
-export async function getListAccounts(id: string, params?: { max_id?: string; since_id?: string; limit?: number }): Promise<Account[]> {
-  const { data } = await api.get<Account[]>(`/api/v1/lists/${id}/accounts`, { params })
+export async function getListAccounts(id: string, params?: { max_id?: string; since_id?: string; limit?: number }, signal?: AbortSignal): Promise<Account[]> {
+  const { data } = await api.get<Account[]>(`/api/v1/lists/${id}/accounts`, { params, signal })
   return data
 }
 
@@ -531,13 +537,13 @@ export async function removeAccountsFromList(listId: string, accountIds: string[
   await api.delete(`/api/v1/lists/${listId}/accounts`, { data: { account_ids: accountIds } })
 }
 
-export async function getListTimeline(id: string, params?: TimelineParams): Promise<Status[]> {
-  const { data } = await api.get<Status[]>(`/api/v1/timelines/list/${id}`, { params })
+export async function getListTimeline(id: string, params?: TimelineParams, signal?: AbortSignal): Promise<Status[]> {
+  const { data } = await api.get<Status[]>(`/api/v1/timelines/list/${id}`, { params, signal })
   return data
 }
 
-export async function getAccountLists(accountId: string): Promise<List[]> {
-  const { data } = await api.get<List[]>(`/api/v1/accounts/${accountId}/lists`)
+export async function getAccountLists(accountId: string, signal?: AbortSignal): Promise<List[]> {
+  const { data } = await api.get<List[]>(`/api/v1/accounts/${accountId}/lists`, { signal })
   return data
 }
 
@@ -573,24 +579,24 @@ export async function unpinStatus(id: string): Promise<Status> {
   return data
 }
 
-export async function getStatusHistory(id: string): Promise<StatusEdit[]> {
-  const { data } = await api.get<StatusEdit[]>(`/api/v1/statuses/${id}/history`)
+export async function getStatusHistory(id: string, signal?: AbortSignal): Promise<StatusEdit[]> {
+  const { data } = await api.get<StatusEdit[]>(`/api/v1/statuses/${id}/history`, { signal })
   return data
 }
 
-export async function getStatusSource(id: string): Promise<StatusSource> {
-  const { data } = await api.get<StatusSource>(`/api/v1/statuses/${id}/source`)
+export async function getStatusSource(id: string, signal?: AbortSignal): Promise<StatusSource> {
+  const { data } = await api.get<StatusSource>(`/api/v1/statuses/${id}/source`, { signal })
   return data
 }
 
 // Scheduled Statuses
-export async function getScheduledStatuses(params?: { min_id?: string; max_id?: string; limit?: number }): Promise<ScheduledStatus[]> {
-  const { data } = await api.get<ScheduledStatus[]>('/api/v1/scheduled_statuses', { params })
+export async function getScheduledStatuses(params?: { min_id?: string; max_id?: string; limit?: number }, signal?: AbortSignal): Promise<ScheduledStatus[]> {
+  const { data } = await api.get<ScheduledStatus[]>('/api/v1/scheduled_statuses', { params, signal })
   return data
 }
 
-export async function getScheduledStatus(id: string): Promise<ScheduledStatus> {
-  const { data } = await api.get<ScheduledStatus>(`/api/v1/scheduled_statuses/${id}`)
+export async function getScheduledStatus(id: string, signal?: AbortSignal): Promise<ScheduledStatus> {
+  const { data } = await api.get<ScheduledStatus>(`/api/v1/scheduled_statuses/${id}`, { signal })
   return data
 }
 
