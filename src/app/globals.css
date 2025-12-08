@@ -81,9 +81,12 @@ a {
   navigation: auto;
 }
 
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 0.3s;
+::view-transition-old(page-content) {
+  animation: var(--animation-fade-out) forwards;
+}
+
+::view-transition-new(page-content) {
+  animation: var(--animation-fade-in) forwards;
 }
 
 /* Container utilities */

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
+import { ViewTransition } from "react";
 import "./globals.css";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { StoreProvider } from "@/components/providers/StoreProvider";
@@ -47,7 +48,9 @@ export default async function RootLayout({
               <GlobalModalProvider>
                 <ScrollRestorationProvider />
                 <NavigationWrapper />
-                {children}
+                <ViewTransition name="page-content">
+                  {children}
+                </ViewTransition>
                 <GlobalModalRenderer />
                 <AuthModal />
               </GlobalModalProvider>
