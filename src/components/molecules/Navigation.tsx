@@ -2,7 +2,7 @@
 
 import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, PenSquare, Search, Settings, Coffee, Github, Bell, List, Calendar } from 'lucide-react';
+import { Home, PenSquare, Search, Settings, Coffee, Github, Bell, List, Calendar, TrendingUp } from 'lucide-react';
 import { useInstance, useUnreadNotificationCount } from '@/api/queries';
 import type { Account } from '@/types/mastodon';
 
@@ -20,6 +20,7 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
   // Desktop sidebar includes all links
   const sidebarNavLinks = [
     { href: '/', label: 'Home', icon: Home },
+    { href: '/explore', label: 'Explore', icon: TrendingUp },
     { href: '/search', label: 'Search', icon: Search },
     { href: '/compose', label: 'Create', icon: PenSquare },
     { href: '/lists', label: 'Lists', icon: List },
@@ -30,7 +31,7 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
   // Mobile bottom nav is simplified - no bookmarks (accessible via Settings)
   const bottomNavLinks = [
     { href: '/', label: 'Home', icon: Home },
-    { href: '/search', label: 'Search', icon: Search },
+    { href: '/explore', label: 'Explore', icon: TrendingUp },
     { href: '/compose', label: 'Create', icon: PenSquare },
     { href: '/notifications', label: 'Notifications', icon: Bell, badge: unreadCount?.count },
     { href: '/settings', label: 'Settings', icon: Settings },
