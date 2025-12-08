@@ -38,6 +38,7 @@ export const queryKeys = {
     lookup: (acct: string) => ['accounts', 'lookup', acct] as const,
     statuses: (id: string, params?: object) =>
       ['accounts', id, 'statuses', params] as const,
+    pinnedStatuses: (id: string) => ['accounts', id, 'pinned_statuses'] as const,
     followers: (id: string) => ['accounts', id, 'followers'] as const,
     following: (id: string) => ['accounts', id, 'following'] as const,
     relationships: (ids: string[]) => ['accounts', 'relationships', ids] as const,

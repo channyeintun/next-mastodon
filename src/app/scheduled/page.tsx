@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useScheduledStatuses } from '@/api/queries';
 import { useDeleteScheduledStatus } from '@/api/mutations';
@@ -11,7 +10,7 @@ import { IconButton } from '@/components/atoms/IconButton';
 import { ArrowLeft, Calendar, Trash2, Edit2, Clock } from 'lucide-react';
 import Navigation from '@/components/molecules/Navigation';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { PostCardSkeletonList } from '@/components/molecules/PostCardSkeleton';
+import { ScheduledCardSkeletonList } from '@/components/molecules/ScheduledCardSkeleton';
 import type { ScheduledStatus } from '@/types/mastodon';
 
 export default function ScheduledStatusesPage() {
@@ -105,7 +104,6 @@ export default function ScheduledStatusesPage() {
                                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                     />
                                 )}
-                                {/* Handlers for other media types could be added */}
                             </div>
                         ))}
                     </div>
@@ -169,7 +167,7 @@ export default function ScheduledStatusesPage() {
 
                     <div className="scheduled-statuses-list" style={{ flex: 1, minHeight: 0 }}>
                         {isLoading ? (
-                            <PostCardSkeletonList count={5} />
+                            <ScheduledCardSkeletonList count={5} />
                         ) : isError ? (
                             <div style={{
                                 padding: 'var(--size-4)',

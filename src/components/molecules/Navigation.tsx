@@ -20,19 +20,19 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
   // Desktop sidebar includes all links
   const sidebarNavLinks = [
     { href: '/', label: 'Home', icon: Home },
-    { href: '/notifications', label: 'Notifications', icon: Bell, badge: unreadCount?.count },
-    { href: '/lists', label: 'Lists', icon: List },
-    { href: '/compose', label: 'Create', icon: PenSquare },
     { href: '/search', label: 'Search', icon: Search },
+    { href: '/compose', label: 'Create', icon: PenSquare },
+    { href: '/lists', label: 'Lists', icon: List },
+    { href: '/notifications', label: 'Notifications', icon: Bell, badge: unreadCount?.count },
     { href: '/settings', label: 'Settings', icon: Settings },
   ];
 
   // Mobile bottom nav is simplified - no bookmarks (accessible via Settings)
   const bottomNavLinks = [
     { href: '/', label: 'Home', icon: Home },
-    { href: '/notifications', label: 'Notifications', icon: Bell, badge: unreadCount?.count },
-    { href: '/compose', label: 'Create', icon: PenSquare },
     { href: '/search', label: 'Search', icon: Search },
+    { href: '/compose', label: 'Create', icon: PenSquare },
+    { href: '/notifications', label: 'Notifications', icon: Bell, badge: unreadCount?.count },
     { href: '/settings', label: 'Settings', icon: Settings },
   ];
 

@@ -13,6 +13,7 @@ import {
   lookupAccount,
   verifyCredentials,
   getAccountStatuses,
+  getPinnedStatuses,
   getFollowers,
   getFollowing,
   getRelationships,
@@ -159,6 +160,14 @@ export function useInfiniteAccountStatuses(id: string) {
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
+    enabled: !!id,
+  })
+}
+
+export function usePinnedStatuses(id: string) {
+  return useQuery({
+    queryKey: queryKeys.accounts.pinnedStatuses(id),
+    queryFn: () => getPinnedStatuses(id),
     enabled: !!id,
   })
 }

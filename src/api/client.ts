@@ -265,6 +265,13 @@ export async function getAccountStatuses(
   return data
 }
 
+export async function getPinnedStatuses(id: string): Promise<Status[]> {
+  const { data } = await api.get<Status[]>(`/api/v1/accounts/${id}/statuses`, {
+    params: { pinned: true }
+  })
+  return data
+}
+
 export async function getFollowers(id: string, params?: { max_id?: string; limit?: number }): Promise<Account[]> {
   const { data } = await api.get<Account[]>(`/api/v1/accounts/${id}/followers`, { params })
   return data

@@ -2,8 +2,8 @@
 
 import { use, useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, ExternalLink, MoreHorizontal, Ban, VolumeX, Volume2 } from 'lucide-react';
-import { useLookupAccount, useInfiniteAccountStatuses, useRelationships, useCurrentAccount } from '@/api/queries';
+import { ArrowLeft, Calendar, ExternalLink, MoreHorizontal, Ban, VolumeX, Volume2, Pin } from 'lucide-react';
+import { useLookupAccount, useInfiniteAccountStatuses, useRelationships, useCurrentAccount, usePinnedStatuses } from '@/api/queries';
 import { useFollowAccount, useUnfollowAccount, useBlockAccount, useUnblockAccount, useMuteAccount, useUnmuteAccount } from '@/api/mutations';
 import { PostCard } from '@/components/molecules/PostCard';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
@@ -53,6 +53,8 @@ export default function AccountPage({
 
   const { data: relationships } = useRelationships(accountId ? [accountId] : []);
   const relationship = relationships?.[0];
+
+  const { data: pinnedStatuses } = usePinnedStatuses(accountId || '');
 
   const { data: currentAccount } = useCurrentAccount();
   const isOwnProfile = currentAccount?.id === accountId;
@@ -493,6 +495,36 @@ export default function AccountPage({
           </a>
         )}
       </div>
+
+      {/* Pinned Posts Section */}
+      {pinnedStatuses && pinnedStatuses.length > 0 && (
+        <div style={{
+          borderTop: '1px solid var(--surface-3)',
+          paddingTop: 'var(--size-4)',
+          marginTop: 'var(--size-4)',
+        }}>
+          <h3 style={{
+            fontSize: 'var(--font-size-2)',
+            fontWeight: 'var(--font-weight-6)',
+            marginBottom: 'var(--size-3)',
+            paddingLeft: 'var(--size-4)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--size-2)',
+            color: 'var(--text-2)',
+          }}>
+            <Pin size={16} />
+            Pinned Posts
+          </h3>
+          {pinnedStatuses.map(status => (
+            <PostCard
+              key={status.id}
+              status={status}
+              style={{ marginBottom: 'var(--size-3)' }}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Posts Section */}
       <div style={{
