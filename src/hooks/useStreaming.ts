@@ -5,10 +5,9 @@
 
 'use client'
 
-import { useEffect, useCallback } from 'react'
+import { useEffect, useEffectEvent } from 'react'
 import { useQueryClient, type InfiniteData } from '@tanstack/react-query'
 import Cookies from 'js-cookie'
-import { observer } from 'mobx-react-lite'
 import { getStreamingStore } from '../stores/streamingStore'
 import { useInstance } from '../api/queries'
 import { useAuthStore } from './useStores'
@@ -25,8 +24,9 @@ export function useNotificationStream() {
     const { data: instance } = useInstance()
     const streamingStore = getStreamingStore()
 
-    // Handle incoming notifications
-    const handleNotification = useCallback((notification: Notification) => {
+    // Handle incoming notifications - using useEffectEvent to always access
+    // the latest queryClient without making it a reactive dependency
+    const handleNotification = useEffectEvent((notification: Notification) => {
         // Add to the beginning of the notifications list
         queryClient.setQueryData<InfiniteData<Notification[]>>(
             queryKeys.notifications.list(),
@@ -59,13 +59,13 @@ export function useNotificationStream() {
         queryClient.invalidateQueries({
             queryKey: queryKeys.notifications.unreadCount()
         })
-    }, [queryClient])
+    })
 
     // Set up notification handler
     useEffect(() => {
         streamingStore.setOnNotification(handleNotification)
         return () => streamingStore.setOnNotification(null)
-    }, [handleNotification, streamingStore])
+    }, [streamingStore])
 
     // Connect/disconnect based on auth state
     useEffect(() => {
