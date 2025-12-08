@@ -2,7 +2,7 @@
 
 import { useState, Activity } from 'react';
 import { observer } from 'mobx-react-lite';
-import { useInfiniteTrendingStatuses, useTrendingTags, useTrendingLinks } from '@/api/queries';
+import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendingLinks } from '@/api/queries';
 import { PostCard } from '@/components/molecules/PostCard';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
@@ -10,7 +10,7 @@ import { TrendingTagCard, TrendingTagCardSkeleton } from '@/components/molecules
 import { TrendingLinkCard, TrendingLinkCardSkeleton } from '@/components/molecules/TrendingLinkCard';
 import { Button } from '@/components/atoms/Button';
 import { TrendingUp, Hash, Newspaper, FileText } from 'lucide-react';
-import type { Status } from '@/types/mastodon';
+import type { Status, Tag, TrendingLink } from '@/types/mastodon';
 
 type TrendingTab = 'posts' | 'tags' | 'links';
 
@@ -32,18 +32,36 @@ const ExplorePage = observer(() => {
         data: tagsData,
         isLoading: tagsLoading,
         isError: tagsError,
-    } = useTrendingTags();
+        fetchNextPage: fetchNextTags,
+        hasNextPage: hasMoreTags,
+        isFetchingNextPage: isFetchingNextTags,
+    } = useInfiniteTrendingTags();
 
     const {
         data: linksData,
         isLoading: linksLoading,
         isError: linksError,
-    } = useTrendingLinks();
+        fetchNextPage: fetchNextLinks,
+        hasNextPage: hasMoreLinks,
+        isFetchingNextPage: isFetchingNextLinks,
+    } = useInfiniteTrendingLinks();
 
     // Flatten and deduplicate statuses
     const allStatuses = statusData?.pages.flatMap((page) => page) ?? [];
     const uniqueStatuses = Array.from(
         new Map(allStatuses.map((status) => [status.id, status])).values()
+    );
+
+    // Flatten and deduplicate tags
+    const allTags = tagsData?.pages.flatMap((page) => page) ?? [];
+    const uniqueTags = Array.from(
+        new Map(allTags.map((tag) => [tag.name, tag])).values()
+    );
+
+    // Flatten and deduplicate links
+    const allLinks = linksData?.pages.flatMap((page) => page) ?? [];
+    const uniqueLinks = Array.from(
+        new Map(allLinks.map((link) => [link.url, link])).values()
     );
 
     return (
@@ -129,53 +147,79 @@ const ExplorePage = observer(() => {
             </Activity>
 
             <Activity mode={activeTab === 'tags' ? 'visible' : 'hidden'}>
-                <div style={{ flex: 1, overflow: 'auto', padding: '0 var(--size-4) var(--size-4)' }}>
+                <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%', padding: '0 var(--size-4)' }}>
                     {tagsLoading ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
                             {Array.from({ length: 8 }).map((_, i) => (
                                 <TrendingTagCardSkeleton key={i} />
                             ))}
                         </div>
-                    ) : tagsError || !tagsData ? (
+                    ) : tagsError ? (
                         <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
                             Failed to load trending tags.
                         </div>
-                    ) : tagsData.length === 0 ? (
+                    ) : uniqueTags.length === 0 ? (
                         <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
                             No trending tags at the moment.
                         </div>
                     ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
-                            {tagsData.map((tag) => (
-                                <TrendingTagCard key={tag.name} tag={tag} />
-                            ))}
-                        </div>
+                        <VirtualizedList<Tag>
+                            items={uniqueTags}
+                            renderItem={(tag) => (
+                                <TrendingTagCard tag={tag} style={{ marginBottom: 'var(--size-2)' }} />
+                            )}
+                            getItemKey={(tag) => tag.name}
+                            estimateSize={80}
+                            overscan={5}
+                            onLoadMore={fetchNextTags}
+                            isLoadingMore={isFetchingNextTags}
+                            hasMore={hasMoreTags}
+                            loadMoreThreshold={1}
+                            height="100%"
+                            style={{ height: '100%' }}
+                            scrollRestorationKey="explore-tags"
+                            loadingIndicator={<TrendingTagCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
+                            endIndicator="You've reached the end of trending tags"
+                        />
                     )}
                 </div>
             </Activity>
 
             <Activity mode={activeTab === 'links' ? 'visible' : 'hidden'}>
-                <div style={{ flex: 1, overflow: 'auto', padding: '0 var(--size-4) var(--size-4)' }}>
+                <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%', padding: '0 var(--size-4)' }}>
                     {linksLoading ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
                             {Array.from({ length: 5 }).map((_, i) => (
                                 <TrendingLinkCardSkeleton key={i} />
                             ))}
                         </div>
-                    ) : linksError || !linksData ? (
+                    ) : linksError ? (
                         <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
                             Failed to load trending news.
                         </div>
-                    ) : linksData.length === 0 ? (
+                    ) : uniqueLinks.length === 0 ? (
                         <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
                             No trending news at the moment.
                         </div>
                     ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
-                            {linksData.map((link) => (
-                                <TrendingLinkCard key={link.url} link={link} />
-                            ))}
-                        </div>
+                        <VirtualizedList<TrendingLink>
+                            items={uniqueLinks}
+                            renderItem={(link) => (
+                                <TrendingLinkCard link={link} style={{ marginBottom: 'var(--size-2)' }} />
+                            )}
+                            getItemKey={(link) => link.url}
+                            estimateSize={120}
+                            overscan={5}
+                            onLoadMore={fetchNextLinks}
+                            isLoadingMore={isFetchingNextLinks}
+                            hasMore={hasMoreLinks}
+                            loadMoreThreshold={1}
+                            height="100%"
+                            style={{ height: '100%' }}
+                            scrollRestorationKey="explore-links"
+                            loadingIndicator={<TrendingLinkCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
+                            endIndicator="You've reached the end of trending news"
+                        />
                     )}
                 </div>
             </Activity>

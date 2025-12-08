@@ -316,27 +316,41 @@ export function useInfiniteTrendingStatuses() {
   })
 }
 
-export function useTrendingTags() {
-  return useQuery({
+export function useInfiniteTrendingTags() {
+  return useInfiniteQuery({
     queryKey: queryKeys.trends.tags(),
-    queryFn: async () => {
+    queryFn: async ({ pageParam }) => {
       // Use mastodon.social for trending tags (public API, no auth required)
       const trendingClient = createCustomClient('https://mastodon.social')
-      const { data } = await trendingClient.get<Tag[]>('/api/v1/trends/tags', { params: { limit: 20 } })
+      const params = { limit: 20, offset: pageParam }
+      const { data } = await trendingClient.get<Tag[]>('/api/v1/trends/tags', { params })
       return data
     },
+    getNextPageParam: (lastPage, allPages) => {
+      // Stop fetching if page is empty or has fewer items than requested (last page)
+      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      return allPages.length * 20
+    },
+    initialPageParam: 0,
   })
 }
 
-export function useTrendingLinks() {
-  return useQuery({
+export function useInfiniteTrendingLinks() {
+  return useInfiniteQuery({
     queryKey: queryKeys.trends.links(),
-    queryFn: async () => {
+    queryFn: async ({ pageParam }) => {
       // Use mastodon.social for trending links (public API, no auth required)
       const trendingClient = createCustomClient('https://mastodon.social')
-      const { data } = await trendingClient.get<TrendingLink[]>('/api/v1/trends/links', { params: { limit: 20 } })
+      const params = { limit: 20, offset: pageParam }
+      const { data } = await trendingClient.get<TrendingLink[]>('/api/v1/trends/links', { params })
       return data
     },
+    getNextPageParam: (lastPage, allPages) => {
+      // Stop fetching if page is empty or has fewer items than requested (last page)
+      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      return allPages.length * 20
+    },
+    initialPageParam: 0,
   })
 }
 
