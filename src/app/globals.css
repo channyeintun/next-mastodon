@@ -880,6 +880,71 @@ body {
 }
 
 /* ====================================
+   Options Menu (3-dot) Focus Technique
+   ==================================== */
+
+/* Options menu container */
+.options-menu-btn {
+  position: relative;
+}
+
+/* Options menu popover - hidden by default */
+.options-menu-popover {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--size-2);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  box-shadow: var(--shadow-4);
+  padding: var(--size-2);
+  min-width: 200px;
+  z-index: 50;
+  gap: 2px;
+}
+
+/* Show options menu when button wrapper has focus-within */
+.options-menu-btn:focus-within .options-menu-popover {
+  display: flex;
+}
+
+/* Ensure z-index in virtualized lists */
+.virtualized-list-item:has(* .options-menu-btn:focus-within) {
+  z-index: 1;
+}
+
+/* Options menu item styling */
+.options-menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  padding: var(--size-2);
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-2);
+  cursor: pointer;
+  color: var(--text-1);
+  font-size: var(--font-size-1);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.options-menu-item:hover {
+  background: var(--surface-3);
+}
+
+.options-menu-item.danger {
+  color: var(--red-6);
+}
+
+.options-menu-item.danger:hover {
+  background: var(--red-2);
+}
+
+/* ====================================
    Virtualized List Mobile Padding
    ==================================== */
 @media (max-width: 767px) {
@@ -1015,8 +1080,92 @@ body {
 }
 
 /* ====================================
-   Modal Overlay Styles
+   Native Dialog Element Styles
    ==================================== */
+
+/* Base dialog styles */
+dialog {
+  border: none;
+  border-radius: var(--radius-3);
+  padding: 0;
+  background: var(--surface-2);
+  box-shadow: var(--shadow-6);
+  max-width: min(90vw, 500px);
+  max-height: 90vh;
+  overflow: visible;
+}
+
+/* Modal-specific styles (opened with showModal()) */
+dialog:modal {
+  /* Animation properties */
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.2s ease-out,
+    overlay 0.2s ease-out allow-discrete,
+    display 0.2s ease-out allow-discrete;
+}
+
+/* Starting state for open animation */
+@starting-style {
+  dialog:modal {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* Closed state for close animation */
+dialog:not([open]) {
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none;
+}
+
+/* Modal backdrop styling */
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 1;
+  transition:
+    opacity 0.2s ease-out,
+    overlay 0.2s ease-out allow-discrete,
+    display 0.2s ease-out allow-discrete;
+}
+
+@starting-style {
+  dialog::backdrop {
+    opacity: 0;
+  }
+}
+
+/* Dialog content wrapper for internal padding */
+.dialog-content {
+  padding: var(--size-5);
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--size-3) var(--size-4);
+  border-bottom: 1px solid var(--surface-3);
+}
+
+.dialog-body {
+  padding: var(--size-4);
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--size-2);
+  padding: var(--size-3) var(--size-4);
+  border-top: 1px solid var(--surface-3);
+}
+
+/* Legacy modal-overlay class for backward compatibility */
 .modal-overlay {
   position: fixed;
   inset: 0;

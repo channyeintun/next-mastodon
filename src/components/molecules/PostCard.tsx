@@ -79,7 +79,7 @@ const VISIBILITY_ICONS = {
 export function PostCard({ status, showThread = false, style, hideActions = false, showThreadLine = false }: PostCardProps) {
   const router = useRouter();
   const authStore = useAuthStore();
-  const [showMenu, setShowMenu] = useState(false);
+
   const [showCWContent, setShowCWContent] = useState(false);
   const [showCWMedia, setShowCWMedia] = useState(false);
   const [selectedPollChoices, setSelectedPollChoices] = useState<number[]>([]);
@@ -156,7 +156,6 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
   };
 
   const handleMuteConversation = () => {
-    setShowMenu(false);
     if (displayStatus.muted) {
       unmuteConversationMutation.mutate(displayStatus.id);
     } else {
@@ -165,7 +164,6 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
   };
 
   const handlePin = () => {
-    setShowMenu(false);
     if (displayStatus.pinned) {
       unpinStatusMutation.mutate(displayStatus.id);
     } else {
@@ -176,7 +174,6 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
 
 
   const handleEdit = () => {
-    setShowMenu(false);
     router.push(`/status/${displayStatus.id}/edit`);
   };
 
@@ -362,185 +359,81 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
                   {VISIBILITY_ICONS[displayStatus.visibility as keyof typeof VISIBILITY_ICONS]}
                 </div>
                 {isOwnPost && (
-                  <div style={{ position: 'relative' }}>
+                  <div className="options-menu-btn">
                     <IconButton
                       size="small"
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        setShowMenu(!showMenu);
+                        // Focus the button to trigger :focus-within and show the popover
+                        e.currentTarget.focus();
                       }}
                     >
                       <MoreHorizontal size={16} />
                     </IconButton>
 
-                    {showMenu && (
-                      <>
-                        <div
-                          style={{
-                            position: 'fixed',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            zIndex: 40,
-                          }}
-                          onClick={() => setShowMenu(false)}
-                        />
-                        <div
-                          style={{
-                            position: 'absolute',
-                            top: '100%',
-                            right: 0,
-                            marginTop: 'var(--size-2)',
-                            background: 'var(--surface-2)',
-                            borderRadius: 'var(--radius-2)',
-                            boxShadow: 'var(--shadow-4)',
-                            padding: 'var(--size-2)',
-                            minWidth: '200px',
-                            zIndex: 50,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '2px', // gap between menu items
+                    <div className="options-menu-popover">
+                      {/* Pin/Unpin - Only for own public/unlisted posts */}
+                      {isOwnPost && (displayStatus.visibility === 'public' || displayStatus.visibility === 'unlisted') && (
+                        <button
+                          className="options-menu-item"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handlePin();
                           }}
                         >
-                          {/* Pin/Unpin - Only for own public/unlisted posts */}
-                          {isOwnPost && (displayStatus.visibility === 'public' || displayStatus.visibility === 'unlisted') && (
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                handlePin();
-                              }}
-                              style={{
-                                width: '100%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 'var(--size-2)',
-                                padding: 'var(--size-2)',
-                                border: 'none',
-                                background: 'transparent',
-                                borderRadius: 'var(--radius-2)',
-                                cursor: 'pointer',
-                                color: 'var(--text-1)',
-                                fontSize: 'var(--font-size-1)',
-                                textAlign: 'left',
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.background = 'var(--surface-3)';
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.background = 'transparent';
-                              }}
-                            >
-                              {displayStatus.pinned ? <PinOff size={16} /> : <Pin size={16} />}
-                              <span>{displayStatus.pinned ? 'Unpin from profile' : 'Pin on profile'}</span>
-                            </button>
-                          )}
+                          {displayStatus.pinned ? <PinOff size={16} /> : <Pin size={16} />}
+                          <span>{displayStatus.pinned ? 'Unpin from profile' : 'Pin on profile'}</span>
+                        </button>
+                      )}
 
-                          {/* Mute/Unmute Conversation */}
+                      {/* Mute/Unmute Conversation */}
+                      <button
+                        className="options-menu-item"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleMuteConversation();
+                        }}
+                      >
+                        {displayStatus.muted ? <Volume2 size={16} /> : <VolumeX size={16} />}
+                        <span>{displayStatus.muted ? 'Unmute conversation' : 'Mute conversation'}</span>
+                      </button>
+
+                      {isOwnPost && (
+                        <>
+                          <div style={{ height: '1px', background: 'var(--surface-3)', margin: '4px 0' }} />
                           <button
+                            className="options-menu-item"
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
-                              handleMuteConversation();
-                            }}
-                            style={{
-                              width: '100%',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 'var(--size-2)',
-                              padding: 'var(--size-2)',
-                              border: 'none',
-                              background: 'transparent',
-                              borderRadius: 'var(--radius-2)',
-                              cursor: 'pointer',
-                              color: 'var(--text-1)',
-                              fontSize: 'var(--font-size-1)',
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.background = 'var(--surface-3)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.background = 'transparent';
+                              handleEdit();
                             }}
                           >
-                            {displayStatus.muted ? <Volume2 size={16} /> : <VolumeX size={16} />}
-                            <span>{displayStatus.muted ? 'Unmute conversation' : 'Mute conversation'}</span>
+                            <Edit2 size={16} />
+                            <span>Edit status</span>
                           </button>
-
-                          {isOwnPost && (
-                            <>
-                              <div style={{ height: '1px', background: 'var(--surface-3)', margin: '4px 0' }} />
-                              <button
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  handleEdit();
-                                }}
-                                style={{
-                                  width: '100%',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: 'var(--size-2)',
-                                  padding: 'var(--size-2)',
-                                  border: 'none',
-                                  background: 'transparent',
-                                  borderRadius: 'var(--radius-2)',
-                                  cursor: 'pointer',
-                                  color: 'var(--text-1)',
-                                  fontSize: 'var(--font-size-1)',
-                                }}
-                                onMouseEnter={(e) => {
-                                  e.currentTarget.style.background = 'var(--surface-3)';
-                                }}
-                                onMouseLeave={(e) => {
-                                  e.currentTarget.style.background = 'transparent';
-                                }}
-                              >
-                                <Edit2 size={16} />
-                                <span>Edit status</span>
-                              </button>
-                              <button
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  setShowMenu(false);
-                                  openModal(
-                                    <DeletePostModal
-                                      postId={displayStatus.id}
-                                      onClose={closeModal}
-                                    />
-                                  );
-                                }}
-                                style={{
-                                  width: '100%',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: 'var(--size-2)',
-                                  padding: 'var(--size-2)',
-                                  border: 'none',
-                                  background: 'transparent',
-                                  borderRadius: 'var(--radius-2)',
-                                  cursor: 'pointer',
-                                  color: 'var(--red-6)',
-                                  fontSize: 'var(--font-size-1)',
-                                }}
-                                onMouseEnter={(e) => {
-                                  e.currentTarget.style.background = 'var(--red-2)';
-                                }}
-                                onMouseLeave={(e) => {
-                                  e.currentTarget.style.background = 'transparent';
-                                }}
-                              >
-                                <Trash2 size={16} />
-                                <span>Delete status</span>
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </>
-                    )}
+                          <button
+                            className="options-menu-item danger"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              openModal(
+                                <DeletePostModal
+                                  postId={displayStatus.id}
+                                  onClose={closeModal}
+                                />
+                              );
+                            }}
+                          >
+                            <Trash2 size={16} />
+                            <span>Delete status</span>
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>

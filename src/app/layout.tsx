@@ -9,7 +9,6 @@ import { StreamingProvider } from "@/components/providers/StreamingProvider";
 import { AuthModal } from "@/components/molecules";
 import NavigationWrapper from "@/components/organisms/NavigationWrapper";
 import { GlobalModalProvider } from "@/contexts/GlobalModalContext";
-import { GlobalModalRenderer } from "@/components/organisms/GlobalModalRenderer";
 
 export const metadata: Metadata = {
   title: "Mastodon",
@@ -51,7 +50,6 @@ export default async function RootLayout({
                 <ViewTransition name="page-content">
                   {children}
                 </ViewTransition>
-                <GlobalModalRenderer />
                 <AuthModal />
               </GlobalModalProvider>
             </StreamingProvider>

@@ -21,17 +21,7 @@ export function DeletePostModal({ postId, onClose }: DeletePostModalProps) {
     };
 
     return (
-        <div
-            style={{
-                background: 'var(--surface-2)',
-                borderRadius: 'var(--radius-3)',
-                boxShadow: 'var(--shadow-6)',
-                padding: 'var(--size-5)',
-                maxWidth: '400px',
-                width: '90vw', // Responsive width
-            }}
-            onClick={(e) => e.stopPropagation()}
-        >
+        <div className="dialog-content">
             <div style={{
                 fontSize: 'var(--font-size-3)',
                 fontWeight: 'var(--font-weight-6)',
@@ -64,6 +54,7 @@ export function DeletePostModal({ postId, onClose }: DeletePostModalProps) {
                     onClick={handleDelete}
                     disabled={deleteStatusMutation.isPending}
                     isLoading={deleteStatusMutation.isPending}
+                    autoFocus
                     style={{
                         background: 'var(--red-6)',
                         color: 'white',

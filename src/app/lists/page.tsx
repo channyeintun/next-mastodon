@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef, useId } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Plus, List, MoreVertical, Pencil, Trash2, Users, MessageCircle } from 'lucide-react';
@@ -24,11 +24,28 @@ function ListModal({
     onSubmit: (params: CreateListParams | UpdateListParams) => void;
     isPending: boolean;
 }) {
+    const dialogRef = useRef<HTMLDialogElement>(null);
     const [title, setTitle] = useState(list?.title || '');
     const [repliesPolicy, setRepliesPolicy] = useState<ListRepliesPolicy>(list?.replies_policy || 'list');
     const [exclusive, setExclusive] = useState(list?.exclusive || false);
 
-    if (!isOpen) return null;
+    // Sync dialog open state with isOpen prop
+    useEffect(() => {
+        if (isOpen) {
+            dialogRef.current?.showModal();
+        } else {
+            dialogRef.current?.close();
+        }
+    }, [isOpen]);
+
+    // Reset form when list changes or modal opens
+    useEffect(() => {
+        if (isOpen) {
+            setTitle(list?.title || '');
+            setRepliesPolicy(list?.replies_policy || 'list');
+            setExclusive(list?.exclusive || false);
+        }
+    }, [isOpen, list]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,119 +54,123 @@ function ListModal({
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div
-                className="modal-content"
-                onClick={(e) => e.stopPropagation()}
-                style={{
-                    background: 'var(--surface-2)',
-                    borderRadius: 'var(--radius-3)',
-                    padding: 'var(--size-6)',
-                    maxWidth: '400px',
-                    width: '90%',
-                }}
-            >
-                <h2 style={{ marginBottom: 'var(--size-4)', fontSize: 'var(--font-size-4)' }}>
-                    {list ? 'Edit List' : 'Create List'}
-                </h2>
+        <dialog
+            ref={dialogRef}
+            onClose={onClose}
+            onClick={(e) => {
+                // Close on backdrop click
+                if (e.target === dialogRef.current) {
+                    onClose();
+                }
+            }}
+            style={{ maxWidth: '400px', width: '90%' }}
+        >
+            <div onClick={(e) => e.stopPropagation()}>
+                <div className="dialog-header">
+                    <h2 style={{ fontSize: 'var(--font-size-4)', margin: 0 }}>
+                        {list ? 'Edit List' : 'Create List'}
+                    </h2>
+                </div>
                 <form onSubmit={handleSubmit}>
-                    <div style={{ marginBottom: 'var(--size-4)' }}>
-                        <label
-                            htmlFor="list-title"
-                            style={{
-                                display: 'block',
-                                marginBottom: 'var(--size-2)',
-                                fontSize: 'var(--font-size-1)',
-                                color: 'var(--text-2)',
-                            }}
-                        >
-                            List Name
-                        </label>
-                        <input
-                            id="list-title"
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            placeholder="My List"
-                            autoFocus
-                            style={{
-                                width: '100%',
-                                padding: 'var(--size-3)',
-                                background: 'var(--surface-3)',
-                                border: '1px solid var(--surface-4)',
-                                borderRadius: 'var(--radius-2)',
-                                color: 'var(--text-1)',
-                                fontSize: 'var(--font-size-2)',
-                            }}
-                        />
-                    </div>
-
-                    <div style={{ marginBottom: 'var(--size-4)' }}>
-                        <label
-                            htmlFor="replies-policy"
-                            style={{
-                                display: 'block',
-                                marginBottom: 'var(--size-2)',
-                                fontSize: 'var(--font-size-1)',
-                                color: 'var(--text-2)',
-                            }}
-                        >
-                            Show replies to
-                        </label>
-                        <select
-                            id="replies-policy"
-                            value={repliesPolicy}
-                            onChange={(e) => setRepliesPolicy(e.target.value as ListRepliesPolicy)}
-                            style={{
-                                width: '100%',
-                                padding: 'var(--size-3)',
-                                background: 'var(--surface-3)',
-                                border: '1px solid var(--surface-4)',
-                                borderRadius: 'var(--radius-2)',
-                                color: 'var(--text-1)',
-                                fontSize: 'var(--font-size-2)',
-                            }}
-                        >
-                            <option value="list">Members of the list</option>
-                            <option value="followed">Any followed user</option>
-                            <option value="none">No one</option>
-                        </select>
-                    </div>
-
-                    <div style={{ marginBottom: 'var(--size-5)' }}>
-                        <label
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 'var(--size-2)',
-                                fontSize: 'var(--font-size-1)',
-                                color: 'var(--text-2)',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            <input
-                                type="checkbox"
-                                checked={exclusive}
-                                onChange={(e) => setExclusive(e.target.checked)}
+                    <div className="dialog-body">
+                        <div style={{ marginBottom: 'var(--size-4)' }}>
+                            <label
+                                htmlFor="list-title"
                                 style={{
-                                    width: 18,
-                                    height: 18,
-                                    accentColor: 'var(--brand)',
+                                    display: 'block',
+                                    marginBottom: 'var(--size-2)',
+                                    fontSize: 'var(--font-size-1)',
+                                    color: 'var(--text-2)',
+                                }}
+                            >
+                                List Name
+                            </label>
+                            <input
+                                id="list-title"
+                                type="text"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                placeholder="My List"
+                                autoFocus
+                                style={{
+                                    width: '100%',
+                                    padding: 'var(--size-3)',
+                                    background: 'var(--surface-3)',
+                                    border: '1px solid var(--surface-4)',
+                                    borderRadius: 'var(--radius-2)',
+                                    color: 'var(--text-1)',
+                                    fontSize: 'var(--font-size-2)',
                                 }}
                             />
-                            Hide these posts from home
-                        </label>
-                        <p style={{
-                            fontSize: 'var(--font-size-0)',
-                            color: 'var(--text-3)',
-                            marginTop: 'var(--size-1)',
-                            marginLeft: 'var(--size-5)',
-                        }}>
-                            Posts from list members won&apos;t appear in your home timeline
-                        </p>
+                        </div>
+
+                        <div style={{ marginBottom: 'var(--size-4)' }}>
+                            <label
+                                htmlFor="replies-policy"
+                                style={{
+                                    display: 'block',
+                                    marginBottom: 'var(--size-2)',
+                                    fontSize: 'var(--font-size-1)',
+                                    color: 'var(--text-2)',
+                                }}
+                            >
+                                Show replies to
+                            </label>
+                            <select
+                                id="replies-policy"
+                                value={repliesPolicy}
+                                onChange={(e) => setRepliesPolicy(e.target.value as ListRepliesPolicy)}
+                                style={{
+                                    width: '100%',
+                                    padding: 'var(--size-3)',
+                                    background: 'var(--surface-3)',
+                                    border: '1px solid var(--surface-4)',
+                                    borderRadius: 'var(--radius-2)',
+                                    color: 'var(--text-1)',
+                                    fontSize: 'var(--font-size-2)',
+                                }}
+                            >
+                                <option value="list">Members of the list</option>
+                                <option value="followed">Any followed user</option>
+                                <option value="none">No one</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 'var(--size-2)',
+                                    fontSize: 'var(--font-size-1)',
+                                    color: 'var(--text-2)',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                <input
+                                    type="checkbox"
+                                    checked={exclusive}
+                                    onChange={(e) => setExclusive(e.target.checked)}
+                                    style={{
+                                        width: 18,
+                                        height: 18,
+                                        accentColor: 'var(--brand)',
+                                    }}
+                                />
+                                Hide these posts from home
+                            </label>
+                            <p style={{
+                                fontSize: 'var(--font-size-0)',
+                                color: 'var(--text-3)',
+                                marginTop: 'var(--size-1)',
+                                marginLeft: 'var(--size-5)',
+                            }}>
+                                Posts from list members won&apos;t appear in your home timeline
+                            </p>
+                        </div>
                     </div>
 
-                    <div style={{ display: 'flex', gap: 'var(--size-3)', justifyContent: 'flex-end' }}>
+                    <div className="dialog-footer">
                         <button
                             type="button"
                             onClick={onClose}
@@ -186,8 +207,8 @@ function ListModal({
                         </button>
                     </div>
                 </form>
-            </div >
-        </div >
+            </div>
+        </dialog>
     );
 }
 
@@ -205,28 +226,41 @@ function DeleteConfirmModal({
     listTitle: string;
     isPending: boolean;
 }) {
-    if (!isOpen) return null;
+    const dialogRef = useRef<HTMLDialogElement>(null);
+
+    // Sync dialog open state with isOpen prop
+    useEffect(() => {
+        if (isOpen) {
+            dialogRef.current?.showModal();
+        } else {
+            dialogRef.current?.close();
+        }
+    }, [isOpen]);
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div
-                className="modal-content"
-                onClick={(e) => e.stopPropagation()}
-                style={{
-                    background: 'var(--surface-2)',
-                    borderRadius: 'var(--radius-3)',
-                    padding: 'var(--size-6)',
-                    maxWidth: '400px',
-                    width: '90%',
-                }}
-            >
-                <h2 style={{ marginBottom: 'var(--size-3)', fontSize: 'var(--font-size-4)' }}>
-                    Delete List
-                </h2>
-                <p style={{ color: 'var(--text-2)', marginBottom: 'var(--size-5)' }}>
-                    Are you sure you want to delete &quot;{listTitle}&quot;? This action cannot be undone.
-                </p>
-                <div style={{ display: 'flex', gap: 'var(--size-3)', justifyContent: 'flex-end' }}>
+        <dialog
+            ref={dialogRef}
+            onClose={onClose}
+            onClick={(e) => {
+                // Close on backdrop click
+                if (e.target === dialogRef.current) {
+                    onClose();
+                }
+            }}
+            style={{ maxWidth: '400px', width: '90%' }}
+        >
+            <div onClick={(e) => e.stopPropagation()}>
+                <div className="dialog-header">
+                    <h2 style={{ fontSize: 'var(--font-size-4)', margin: 0 }}>
+                        Delete List
+                    </h2>
+                </div>
+                <div className="dialog-body">
+                    <p style={{ color: 'var(--text-2)', margin: 0 }}>
+                        Are you sure you want to delete &quot;{listTitle}&quot;? This action cannot be undone.
+                    </p>
+                </div>
+                <div className="dialog-footer">
                     <button
                         type="button"
                         onClick={onClose}
@@ -246,9 +280,10 @@ function DeleteConfirmModal({
                         type="button"
                         onClick={onConfirm}
                         disabled={isPending}
+                        autoFocus
                         style={{
                             padding: 'var(--size-2) var(--size-4)',
-                            background: 'var(--red)',
+                            background: 'var(--red-6)',
                             border: 'none',
                             borderRadius: 'var(--radius-2)',
                             color: 'white',
@@ -264,7 +299,7 @@ function DeleteConfirmModal({
                     </button>
                 </div>
             </div>
-        </div>
+        </dialog>
     );
 }
 

@@ -14,6 +14,7 @@ import { VisibilitySettingsModal, type Visibility, type QuoteVisibility } from '
 import { TiptapEditor } from '../atoms/TiptapEditor';
 import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { uploadMedia, updateMedia } from '@/api/client';
+import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { Globe, Lock, Users, Mail, X, Smile, Image as ImageIcon, BarChart2, MessageSquareQuote, Clock } from 'lucide-react';
 import type { CreateStatusParams, MediaAttachment } from '@/types/mastodon';
 
@@ -24,12 +25,6 @@ export const visibilityOptions: Array<{ value: Visibility; label: string; icon: 
   { value: 'unlisted', label: 'Unlisted', icon: Lock, description: 'Not shown in public timelines' },
   { value: 'private', label: 'Followers only', icon: Users, description: 'Only visible to followers' },
   { value: 'direct', label: 'Direct', icon: Mail, description: 'Only mentioned users' },
-];
-// Quote visibility logic is now handled in the modal, but we keep a local map for the icon/label if needed for the trigger button
-const quoteVisibilityOptions: Array<{ value: QuoteVisibility; label: string; icon: typeof MessageSquareQuote; description: string }> = [
-  { value: 'public', label: 'Everyone can quote', icon: Globe, description: 'Visible to everyone' },
-  { value: 'followers', label: 'Followers only', icon: Users, description: 'Only visible to followers' },
-  { value: 'nobody', label: 'No quotes', icon: Lock, description: 'No one can quote' },
 ];
 
 interface ComposerPanelProps {
@@ -65,6 +60,7 @@ export function ComposerPanel({
   const createStatusMutation = useCreateStatus();
   const updateStatusMutation = useUpdateStatus();
   const deleteScheduledStatusMutation = useDeleteScheduledStatus();
+  const { openModal, closeModal } = useGlobalModal();
   const editorRef = useRef<any>(null);
 
   const [content, setContent] = useState(initialContent);
@@ -77,8 +73,6 @@ export function ComposerPanel({
 
   // Initialize visibility - use props if in edit mode, otherwise start with initial and update from preferences
   const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
-  // Remove individual menu states
-  const [showVisibilitySettingsModal, setShowVisibilitySettingsModal] = useState(false);
 
   // Initialize from props, or default to public. We'll update from account preferences below.
   const [quoteVisibility, setQuoteVisibility] = useState<QuoteVisibility>('public');
@@ -128,10 +122,24 @@ export function ComposerPanel({
   const canPost = charCount > 0 && !isOverLimit && !isPending && (media.length > 0 || poll !== null || textContent.trim().length > 0);
 
   const currentVisibility = visibilityOptions.find((v) => v.value === visibility);
-  const VisibilityIcon = currentVisibility?.icon || Globe;
+  const VisibilityIcon = currentVisibility?.icon ?? Globe;
 
-  const currentQuoteVisibility = quoteVisibilityOptions.find((v) => v.value === quoteVisibility);
-  const QuoteVisibilityIcon = MessageSquareQuote;
+  // Helper to open visibility settings modal
+  const handleOpenVisibilitySettings = () => {
+    openModal(
+      <VisibilitySettingsModal
+        initialVisibility={visibility}
+        initialQuoteVisibility={quoteVisibility}
+        isReply={isReply}
+        onClose={closeModal}
+        onSave={(newVisibility, newQuoteVisibility) => {
+          setVisibility(newVisibility);
+          setQuoteVisibility(newQuoteVisibility);
+          closeModal();
+        }}
+      />
+    );
+  };
 
   // Create mention suggestion config for Tiptap
   const mentionSuggestion = createMentionSuggestion();
@@ -316,7 +324,7 @@ export function ComposerPanel({
               <div style={{ marginTop: '4px' }}>
                 <button
                   className="compose-visibility-selector"
-                  onClick={() => setShowVisibilitySettingsModal(true)}
+                  onClick={handleOpenVisibilitySettings}
                   title="Adjust visibility and interaction"
                   type="button"
                   style={{
@@ -340,20 +348,7 @@ export function ComposerPanel({
         </div>
       )}
 
-      {/* Visibility Modal - Render independent of header */}
-      <Activity mode={showVisibilitySettingsModal ? 'visible' : 'hidden'}>
-        <VisibilitySettingsModal
-          initialVisibility={visibility}
-          initialQuoteVisibility={quoteVisibility}
-          isReply={isReply}
-          onClose={() => setShowVisibilitySettingsModal(false)}
-          onSave={(newVisibility, newQuoteVisibility) => {
-            setVisibility(newVisibility);
-            setQuoteVisibility(newQuoteVisibility);
-            setShowVisibilitySettingsModal(false);
-          }}
-        />
-      </Activity>
+
 
       {/* Content Warning */}
       {(showCWInput || showScheduleInput) && (
@@ -578,7 +573,7 @@ export function ComposerPanel({
               <button
                 className="compose-tool-btn"
                 type="button"
-                onClick={() => setShowVisibilitySettingsModal(true)}
+                onClick={handleOpenVisibilitySettings}
                 title={`Visibility: ${currentVisibility?.label}`}
               >
                 <VisibilityIcon size={22} />
