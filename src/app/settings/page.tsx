@@ -6,7 +6,6 @@ import { useCurrentAccount } from '@/api/queries';
 import { Button } from '@/components/atoms/Button';
 import { IconButton } from '@/components/atoms/IconButton';
 import { Card } from '@/components/atoms/Card';
-import { Spinner } from '@/components/atoms/Spinner';
 import { Avatar } from '@/components/atoms/Avatar';
 import { EmojiText } from '@/components/atoms/EmojiText';
 import { useAuthStore } from '@/hooks/useStores';
@@ -22,11 +21,54 @@ export default function SettingsPage() {
 
   if (isLoading) {
     return (
-      <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
-        <Spinner />
-        <p style={{ marginTop: 'var(--size-4)', color: 'var(--text-2)' }}>
-          Loading settings...
-        </p>
+      <div className="container" style={{ maxWidth: '600px', margin: '0 auto', padding: 'var(--size-4)' }}>
+        {/* Header Skeleton */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 'var(--size-3)',
+          marginBottom: 'var(--size-5)',
+        }}>
+          <div className="skeleton" style={{ width: 40, height: 40, borderRadius: 'var(--radius-round)' }} />
+          <div className="skeleton" style={{ width: 100, height: 24, borderRadius: 'var(--radius-2)' }} />
+        </div>
+
+        {/* Account Info Card Skeleton */}
+        <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)', marginBottom: 'var(--size-4)' }}>
+            <div className="skeleton" style={{ width: 50, height: 50, borderRadius: 'var(--radius-round)', flexShrink: 0 }} />
+            <div style={{ flex: 1 }}>
+              <div className="skeleton" style={{ width: 120, height: 18, marginBottom: 'var(--size-2)', borderRadius: 'var(--radius-1)' }} />
+              <div className="skeleton" style={{ width: 90, height: 14, marginBottom: 'var(--size-1)', borderRadius: 'var(--radius-1)' }} />
+              <div className="skeleton" style={{ width: 80, height: 12, borderRadius: 'var(--radius-1)' }} />
+            </div>
+          </div>
+          <div className="skeleton" style={{ width: '100%', height: 40, borderRadius: 'var(--radius-2)' }} />
+        </Card>
+
+        {/* Quick Links Card Skeleton */}
+        <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
+          <div className="skeleton" style={{ width: 100, height: 18, marginBottom: 'var(--size-3)', borderRadius: 'var(--radius-1)' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
+            <div className="skeleton" style={{ width: '100%', height: 40, borderRadius: 'var(--radius-2)' }} />
+            <div className="skeleton" style={{ width: '100%', height: 40, borderRadius: 'var(--radius-2)' }} />
+          </div>
+        </Card>
+
+        {/* Moderation Card Skeleton */}
+        <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
+          <div className="skeleton" style={{ width: 100, height: 18, marginBottom: 'var(--size-3)', borderRadius: 'var(--radius-1)' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
+            <div className="skeleton" style={{ width: '100%', height: 40, borderRadius: 'var(--radius-2)' }} />
+            <div className="skeleton" style={{ width: '100%', height: 40, borderRadius: 'var(--radius-2)' }} />
+          </div>
+        </Card>
+
+        {/* Account Card Skeleton */}
+        <Card padding="medium">
+          <div className="skeleton" style={{ width: 80, height: 18, marginBottom: 'var(--size-3)', borderRadius: 'var(--radius-1)' }} />
+          <div className="skeleton" style={{ width: 100, height: 36, borderRadius: 'var(--radius-2)' }} />
+        </Card>
       </div>
     );
   }
