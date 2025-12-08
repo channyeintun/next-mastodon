@@ -1,8 +1,9 @@
 /**
  * TanStack Query hooks for fetching Mastodon data
+ * Uses queryOptions pattern for reusability and type safety
  */
 
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
+import { useQuery, useInfiniteQuery, queryOptions, infiniteQueryOptions } from '@tanstack/react-query'
 import {
   getHomeTimeline,
   getPublicTimeline,
@@ -23,10 +24,6 @@ import {
   getBookmarks,
   search,
   getCustomEmojis,
-  getTrendingStatuses,
-  getTrendingTags,
-  getTrendingLinks,
-  getInstance,
   createCustomClient,
   getNotifications,
   getNotification,
@@ -43,19 +40,22 @@ import {
   getScheduledStatus,
 } from './client'
 import { queryKeys } from './queryKeys'
-import type { TimelineParams, SearchParams, Status, NotificationParams, Account, Preferences, StatusEdit, StatusSource, ScheduledStatus, Tag, TrendingLink } from '../types/mastodon'
+import type { TimelineParams, SearchParams, Status, NotificationParams, Account, ScheduledStatus, Tag, TrendingLink } from '../types/mastodon'
 import { useAuthStore } from '../hooks/useStores'
 
-// Timelines
-export function useHomeTimeline(params?: TimelineParams) {
-  return useQuery({
+// ============================================================================
+// QUERY OPTIONS - Reusable query configurations
+// ============================================================================
+
+// Timeline Options
+export const homeTimelineOptions = (params?: TimelineParams) =>
+  queryOptions({
     queryKey: queryKeys.timelines.home(params),
     queryFn: () => getHomeTimeline(params),
   })
-}
 
-export function useInfiniteHomeTimeline() {
-  return useInfiniteQuery({
+export const infiniteHomeTimelineOptions = () =>
+  infiniteQueryOptions({
     queryKey: queryKeys.timelines.home(),
     queryFn: ({ pageParam }) => {
       const params: TimelineParams = { limit: 20 }
@@ -63,23 +63,20 @@ export function useInfiniteHomeTimeline() {
       return getHomeTimeline(params)
     },
     getNextPageParam: (lastPage) => {
-      // Stop fetching if page is empty or has fewer items than requested (last page)
       if (lastPage.length === 0 || lastPage.length < 20) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
   })
-}
 
-export function usePublicTimeline(params?: TimelineParams) {
-  return useQuery({
+export const publicTimelineOptions = (params?: TimelineParams) =>
+  queryOptions({
     queryKey: queryKeys.timelines.public(params),
     queryFn: () => getPublicTimeline(params),
   })
-}
 
-export function useInfiniteHashtagTimeline(hashtag: string) {
-  return useInfiniteQuery({
+export const infiniteHashtagTimelineOptions = (hashtag: string) =>
+  infiniteQueryOptions({
     queryKey: queryKeys.timelines.hashtag(hashtag),
     queryFn: ({ pageParam }) => {
       const params: TimelineParams = { limit: 20 }
@@ -87,69 +84,64 @@ export function useInfiniteHashtagTimeline(hashtag: string) {
       return getHashtagTimeline(hashtag, params)
     },
     getNextPageParam: (lastPage) => {
-      // Stop fetching if page is empty or has fewer items than requested (last page)
       if (lastPage.length === 0 || lastPage.length < 20) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
-    enabled: !!hashtag,
   })
-}
 
-// Statuses
-export function useStatus(id: string) {
-  return useQuery({
+// Status Options
+export const statusOptions = (id: string) =>
+  queryOptions({
     queryKey: queryKeys.statuses.detail(id),
     queryFn: () => getStatus(id),
-    enabled: !!id,
   })
-}
 
-export function useStatusContext(id: string) {
-  return useQuery({
+export const statusContextOptions = (id: string) =>
+  queryOptions({
     queryKey: queryKeys.statuses.context(id),
     queryFn: () => getStatusContext(id),
-    enabled: !!id,
   })
-}
 
-// Accounts
-export function useAccount(id: string) {
-  return useQuery({
+export const statusHistoryOptions = (id: string) =>
+  queryOptions({
+    queryKey: queryKeys.statuses.history(id),
+    queryFn: () => getStatusHistory(id),
+  })
+
+export const statusSourceOptions = (id: string) =>
+  queryOptions({
+    queryKey: queryKeys.statuses.source(id),
+    queryFn: () => getStatusSource(id),
+  })
+
+// Account Options
+export const accountOptions = (id: string) =>
+  queryOptions({
     queryKey: queryKeys.accounts.detail(id),
     queryFn: () => getAccount(id),
-    enabled: !!id,
   })
-}
 
-export function useLookupAccount(acct: string) {
-  return useQuery({
+export const lookupAccountOptions = (acct: string) =>
+  queryOptions({
     queryKey: queryKeys.accounts.lookup(acct),
     queryFn: () => lookupAccount(acct),
-    enabled: !!acct,
   })
-}
 
-export function useCurrentAccount() {
-  const authStore = useAuthStore()
-
-  return useQuery({
+export const currentAccountOptions = () =>
+  queryOptions({
     queryKey: queryKeys.accounts.current(),
     queryFn: () => verifyCredentials(),
-    enabled: authStore.isAuthenticated,
   })
-}
 
-export function useAccountStatuses(id: string, params?: TimelineParams) {
-  return useQuery({
+export const accountStatusesOptions = (id: string, params?: TimelineParams) =>
+  queryOptions({
     queryKey: queryKeys.accounts.statuses(id, params),
     queryFn: () => getAccountStatuses(id, params),
-    enabled: !!id,
   })
-}
 
-export function useInfiniteAccountStatuses(id: string) {
-  return useInfiniteQuery({
+export const infiniteAccountStatusesOptions = (id: string) =>
+  infiniteQueryOptions({
     queryKey: queryKeys.accounts.statuses(id),
     queryFn: ({ pageParam }) => {
       const params: TimelineParams = { limit: 20 }
@@ -157,33 +149,26 @@ export function useInfiniteAccountStatuses(id: string) {
       return getAccountStatuses(id, params)
     },
     getNextPageParam: (lastPage) => {
-      // Stop fetching if page is empty or has fewer items than requested (last page)
       if (lastPage.length === 0 || lastPage.length < 20) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
-    enabled: !!id,
   })
-}
 
-export function usePinnedStatuses(id: string) {
-  return useQuery({
+export const pinnedStatusesOptions = (id: string) =>
+  queryOptions({
     queryKey: queryKeys.accounts.pinnedStatuses(id),
     queryFn: () => getPinnedStatuses(id),
-    enabled: !!id,
   })
-}
 
-export function useFollowers(id: string) {
-  return useQuery({
+export const followersOptions = (id: string) =>
+  queryOptions({
     queryKey: queryKeys.accounts.followers(id),
     queryFn: () => getFollowers(id),
-    enabled: !!id,
   })
-}
 
-export function useInfiniteFollowers(id: string) {
-  return useInfiniteQuery({
+export const infiniteFollowersOptions = (id: string) =>
+  infiniteQueryOptions({
     queryKey: queryKeys.accounts.followers(id),
     queryFn: ({ pageParam }) => {
       const params: { max_id?: string; limit: number } = { limit: 40 }
@@ -195,20 +180,16 @@ export function useInfiniteFollowers(id: string) {
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
-    enabled: !!id,
   })
-}
 
-export function useFollowing(id: string) {
-  return useQuery({
+export const followingOptions = (id: string) =>
+  queryOptions({
     queryKey: queryKeys.accounts.following(id),
     queryFn: () => getFollowing(id),
-    enabled: !!id,
   })
-}
 
-export function useInfiniteFollowing(id: string) {
-  return useInfiniteQuery({
+export const infiniteFollowingOptions = (id: string) =>
+  infiniteQueryOptions({
     queryKey: queryKeys.accounts.following(id),
     queryFn: ({ pageParam }) => {
       const params: { max_id?: string; limit: number } = { limit: 40 }
@@ -220,14 +201,10 @@ export function useInfiniteFollowing(id: string) {
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
-    enabled: !!id,
   })
-}
 
-export function useFollowRequests() {
-  const authStore = useAuthStore()
-
-  return useInfiniteQuery({
+export const infiniteFollowRequestsOptions = () =>
+  infiniteQueryOptions({
     queryKey: queryKeys.accounts.followRequests(),
     queryFn: ({ pageParam }) => {
       const params: { max_id?: string; limit: number } = { limit: 40 }
@@ -239,30 +216,23 @@ export function useFollowRequests() {
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
-    enabled: authStore.isAuthenticated,
   })
-}
 
-export function useRelationships(ids: string[]) {
-  const authStore = useAuthStore()
-
-  return useQuery({
+export const relationshipsOptions = (ids: string[]) =>
+  queryOptions({
     queryKey: queryKeys.accounts.relationships(ids),
     queryFn: () => getRelationships(ids),
-    enabled: ids.length > 0 && authStore.isAuthenticated,
   })
-}
 
-// Bookmarks
-export function useBookmarks(params?: TimelineParams) {
-  return useQuery({
+// Bookmarks Options
+export const bookmarksOptions = (params?: TimelineParams) =>
+  queryOptions({
     queryKey: queryKeys.bookmarks.all(params),
     queryFn: () => getBookmarks(params),
   })
-}
 
-export function useInfiniteBookmarks() {
-  return useInfiniteQuery({
+export const infiniteBookmarksOptions = () =>
+  infiniteQueryOptions({
     queryKey: queryKeys.bookmarks.all(),
     queryFn: ({ pageParam }) => {
       const params: TimelineParams = { limit: 20 }
@@ -270,143 +240,113 @@ export function useInfiniteBookmarks() {
       return getBookmarks(params)
     },
     getNextPageParam: (lastPage) => {
-      // Stop fetching if page is empty or has fewer items than requested (last page)
       if (lastPage.length === 0 || lastPage.length < 20) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
   })
-}
 
-// Search
-export function useSearch(params: SearchParams, options?: { enabled?: boolean }) {
-  return useQuery({
+// Search Options
+export const searchOptions = (params: SearchParams) =>
+  queryOptions({
     queryKey: queryKeys.search.all(params.q, params.type),
     queryFn: () => search(params),
-    enabled: (options?.enabled ?? true) && !!params.q && params.q.trim().length > 0,
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes to support scroll restoration
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   })
-}
 
-export function useInfiniteSearch(params: SearchParams, options?: { enabled?: boolean }) {
-  return useInfiniteQuery({
-    // Use a distinct query key for infinite search to avoid conflicts with useSearch
-    // useSearch expects a single SearchResults object, while useInfiniteQuery expects InfiniteData<SearchResults>
+export const infiniteSearchOptions = (params: SearchParams) =>
+  infiniteQueryOptions({
     queryKey: [...queryKeys.search.all(params.q, params.type), 'infinite'],
     queryFn: ({ pageParam }) => {
       const searchParams = { ...params, limit: 20, offset: pageParam }
       return search(searchParams)
     },
     getNextPageParam: (lastPage, allPages) => {
-      // Search API uses offset-based pagination
-      // If we got fewer items than limit, we're done
-
       const hasResults =
         lastPage.accounts.length >= 20 ||
         lastPage.statuses.length >= 20 ||
-        lastPage.hashtags.length >= 20;
-
-      if (!hasResults) return undefined;
-
-      return allPages.length * 20;
+        lastPage.hashtags.length >= 20
+      if (!hasResults) return undefined
+      return allPages.length * 20
     },
     initialPageParam: 0,
-    enabled: (options?.enabled ?? true) && !!params.q && params.q.trim().length > 0 && params.type !== undefined,
     staleTime: 1000 * 60 * 5,
   })
-}
 
-// Custom Emojis
-export function useCustomEmojis() {
-  return useQuery({
-    queryKey: ['customEmojis'],
+// Custom Emojis Options
+export const customEmojisOptions = () =>
+  queryOptions({
+    queryKey: ['customEmojis'] as const,
     queryFn: () => getCustomEmojis(),
     staleTime: 1000 * 60 * 60, // Cache for 1 hour
   })
-}
 
-// Trends
-export function useInfiniteTrendingStatuses() {
-  return useInfiniteQuery({
+// Trends Options
+export const infiniteTrendingStatusesOptions = () =>
+  infiniteQueryOptions({
     queryKey: queryKeys.trends.statuses(),
     queryFn: async ({ pageParam }) => {
-      // Use mastodon.social for trending statuses (public API, no auth required)
       const trendingClient = createCustomClient('https://mastodon.social')
       const params = { limit: 20, offset: pageParam }
       const { data } = await trendingClient.get<Status[]>('/api/v1/trends/statuses', { params })
       return data
     },
     getNextPageParam: (lastPage, allPages) => {
-      // Stop fetching if page is empty or has fewer items than requested (last page)
       if (lastPage.length === 0 || lastPage.length < 20) return undefined
       return allPages.length * 20
     },
     initialPageParam: 0,
   })
-}
 
-export function useInfiniteTrendingTags() {
-  return useInfiniteQuery({
+export const infiniteTrendingTagsOptions = () =>
+  infiniteQueryOptions({
     queryKey: queryKeys.trends.tags(),
     queryFn: async ({ pageParam }) => {
-      // Use mastodon.social for trending tags (public API, no auth required)
       const trendingClient = createCustomClient('https://mastodon.social')
       const params = { limit: 20, offset: pageParam }
       const { data } = await trendingClient.get<Tag[]>('/api/v1/trends/tags', { params })
       return data
     },
     getNextPageParam: (lastPage, allPages) => {
-      // Stop fetching if page is empty or has fewer items than requested (last page)
       if (lastPage.length === 0 || lastPage.length < 20) return undefined
       return allPages.length * 20
     },
     initialPageParam: 0,
   })
-}
 
-export function useInfiniteTrendingLinks() {
-  return useInfiniteQuery({
+export const infiniteTrendingLinksOptions = () =>
+  infiniteQueryOptions({
     queryKey: queryKeys.trends.links(),
     queryFn: async ({ pageParam }) => {
-      // Use mastodon.social for trending links (public API, no auth required)
       const trendingClient = createCustomClient('https://mastodon.social')
       const params = { limit: 20, offset: pageParam }
       const { data } = await trendingClient.get<TrendingLink[]>('/api/v1/trends/links', { params })
       return data
     },
     getNextPageParam: (lastPage, allPages) => {
-      // Stop fetching if page is empty or has fewer items than requested (last page)
       if (lastPage.length === 0 || lastPage.length < 20) return undefined
       return allPages.length * 20
     },
     initialPageParam: 0,
   })
-}
 
-// Instance
-export function useInstance() {
-  return useQuery({
+// Instance Options
+export const instanceOptions = () =>
+  queryOptions({
     queryKey: queryKeys.instance.default,
-    queryFn: () => getInstance(),
+    queryFn: () => import('./client').then(m => m.getInstance()),
     staleTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
   })
-}
 
-// Notifications
-export function useNotifications(params?: NotificationParams) {
-  const authStore = useAuthStore()
-
-  return useQuery({
+// Notification Options
+export const notificationsOptions = (params?: NotificationParams) =>
+  queryOptions({
     queryKey: queryKeys.notifications.list(params),
     queryFn: () => getNotifications(params),
-    enabled: authStore.isAuthenticated,
   })
-}
 
-export function useInfiniteNotifications() {
-  const authStore = useAuthStore()
-
-  return useInfiniteQuery({
+export const infiniteNotificationsOptions = () =>
+  infiniteQueryOptions({
     queryKey: queryKeys.notifications.list(),
     queryFn: ({ pageParam }) => {
       const params: NotificationParams = { limit: 20 }
@@ -418,36 +358,24 @@ export function useInfiniteNotifications() {
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
-    enabled: authStore.isAuthenticated,
   })
-}
 
-export function useNotification(id: string) {
-  const authStore = useAuthStore()
-
-  return useQuery({
+export const notificationOptions = (id: string) =>
+  queryOptions({
     queryKey: queryKeys.notifications.detail(id),
     queryFn: () => getNotification(id),
-    enabled: !!id && authStore.isAuthenticated,
   })
-}
 
-export function useUnreadNotificationCount() {
-  const authStore = useAuthStore()
-
-  return useQuery({
+export const unreadNotificationCountOptions = () =>
+  queryOptions({
     queryKey: queryKeys.notifications.unreadCount(),
     queryFn: () => getUnreadNotificationCount(),
-    enabled: authStore.isAuthenticated,
     refetchInterval: 60000, // Refetch every minute
   })
-}
 
-// Blocked Accounts
-export function useBlockedAccounts() {
-  const authStore = useAuthStore()
-
-  return useInfiniteQuery({
+// Blocked/Muted Accounts Options
+export const infiniteBlockedAccountsOptions = () =>
+  infiniteQueryOptions({
     queryKey: queryKeys.blocks.list(),
     queryFn: ({ pageParam }) => {
       const params: { max_id?: string; limit: number } = { limit: 40 }
@@ -459,15 +387,10 @@ export function useBlockedAccounts() {
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
-    enabled: authStore.isAuthenticated,
   })
-}
 
-// Muted Accounts
-export function useMutedAccounts() {
-  const authStore = useAuthStore()
-
-  return useInfiniteQuery({
+export const infiniteMutedAccountsOptions = () =>
+  infiniteQueryOptions({
     queryKey: queryKeys.mutes.list(),
     queryFn: ({ pageParam }) => {
       const params: { max_id?: string; limit: number } = { limit: 40 }
@@ -479,47 +402,31 @@ export function useMutedAccounts() {
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
-    enabled: authStore.isAuthenticated,
   })
-}
 
-// Preferences
-export function usePreferences() {
-  const authStore = useAuthStore()
-
-  return useQuery({
+// Preferences Options
+export const preferencesOptions = () =>
+  queryOptions({
     queryKey: queryKeys.preferences.all(),
     queryFn: () => getPreferences(),
-    enabled: authStore.isAuthenticated,
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   })
-}
 
-// Lists
-export function useLists() {
-  const authStore = useAuthStore()
-
-  return useQuery({
+// List Options
+export const listsOptions = () =>
+  queryOptions({
     queryKey: queryKeys.lists.all(),
     queryFn: () => getLists(),
-    enabled: authStore.isAuthenticated,
   })
-}
 
-export function useList(id: string) {
-  const authStore = useAuthStore()
-
-  return useQuery({
+export const listOptions = (id: string) =>
+  queryOptions({
     queryKey: queryKeys.lists.detail(id),
     queryFn: () => getList(id),
-    enabled: !!id && authStore.isAuthenticated,
   })
-}
 
-export function useListAccounts(id: string) {
-  const authStore = useAuthStore()
-
-  return useInfiniteQuery({
+export const infiniteListAccountsOptions = (id: string) =>
+  infiniteQueryOptions({
     queryKey: queryKeys.lists.accounts(id),
     queryFn: ({ pageParam }) => {
       const params: { max_id?: string; limit: number } = { limit: 40 }
@@ -531,14 +438,10 @@ export function useListAccounts(id: string) {
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
-    enabled: !!id && authStore.isAuthenticated,
   })
-}
 
-export function useInfiniteListTimeline(id: string) {
-  const authStore = useAuthStore()
-
-  return useInfiniteQuery({
+export const infiniteListTimelineOptions = (id: string) =>
+  infiniteQueryOptions({
     queryKey: queryKeys.lists.timeline(id),
     queryFn: ({ pageParam }) => {
       const params: TimelineParams = { limit: 20 }
@@ -550,42 +453,17 @@ export function useInfiniteListTimeline(id: string) {
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
-    enabled: !!id && authStore.isAuthenticated,
   })
-}
 
-export function useAccountLists(accountId: string) {
-  const authStore = useAuthStore()
-
-  return useQuery({
-    queryKey: ['accounts', accountId, 'lists'],
+export const accountListsOptions = (accountId: string) =>
+  queryOptions({
+    queryKey: ['accounts', accountId, 'lists'] as const,
     queryFn: () => getAccountLists(accountId),
-    enabled: !!accountId && authStore.isAuthenticated,
   })
-}
 
-// Status History & Source
-export function useStatusHistory(id: string) {
-  return useQuery({
-    queryKey: queryKeys.statuses.history(id),
-    queryFn: () => getStatusHistory(id),
-    enabled: !!id,
-  })
-}
-
-export function useStatusSource(id: string) {
-  return useQuery({
-    queryKey: queryKeys.statuses.source(id),
-    queryFn: () => getStatusSource(id),
-    enabled: !!id,
-  })
-}
-
-// Scheduled Statuses
-export function useScheduledStatuses() {
-  const authStore = useAuthStore()
-
-  return useInfiniteQuery({
+// Scheduled Statuses Options
+export const infiniteScheduledStatusesOptions = () =>
+  infiniteQueryOptions({
     queryKey: queryKeys.scheduledStatuses.list(),
     queryFn: ({ pageParam }) => {
       const params: { min_id?: string; max_id?: string; limit?: number } = { limit: 20 }
@@ -597,16 +475,316 @@ export function useScheduledStatuses() {
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
+  })
+
+export const scheduledStatusOptions = (id: string) =>
+  queryOptions({
+    queryKey: queryKeys.scheduledStatuses.detail(id),
+    queryFn: () => getScheduledStatus(id),
+  })
+
+// ============================================================================
+// HOOKS - React hooks using the query options
+// ============================================================================
+
+// Timelines
+export function useHomeTimeline(params?: TimelineParams) {
+  return useQuery(homeTimelineOptions(params))
+}
+
+export function useInfiniteHomeTimeline() {
+  return useInfiniteQuery(infiniteHomeTimelineOptions())
+}
+
+export function usePublicTimeline(params?: TimelineParams) {
+  return useQuery(publicTimelineOptions(params))
+}
+
+export function useInfiniteHashtagTimeline(hashtag: string) {
+  return useInfiniteQuery({
+    ...infiniteHashtagTimelineOptions(hashtag),
+    enabled: !!hashtag,
+  })
+}
+
+// Statuses
+export function useStatus(id: string) {
+  return useQuery({
+    ...statusOptions(id),
+    enabled: !!id,
+  })
+}
+
+export function useStatusContext(id: string) {
+  return useQuery({
+    ...statusContextOptions(id),
+    enabled: !!id,
+  })
+}
+
+export function useStatusHistory(id: string) {
+  return useQuery({
+    ...statusHistoryOptions(id),
+    enabled: !!id,
+  })
+}
+
+export function useStatusSource(id: string) {
+  return useQuery({
+    ...statusSourceOptions(id),
+    enabled: !!id,
+  })
+}
+
+// Accounts
+export function useAccount(id: string) {
+  return useQuery({
+    ...accountOptions(id),
+    enabled: !!id,
+  })
+}
+
+export function useLookupAccount(acct: string) {
+  return useQuery({
+    ...lookupAccountOptions(acct),
+    enabled: !!acct,
+  })
+}
+
+export function useCurrentAccount() {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...currentAccountOptions(),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+export function useAccountStatuses(id: string, params?: TimelineParams) {
+  return useQuery({
+    ...accountStatusesOptions(id, params),
+    enabled: !!id,
+  })
+}
+
+export function useInfiniteAccountStatuses(id: string) {
+  return useInfiniteQuery({
+    ...infiniteAccountStatusesOptions(id),
+    enabled: !!id,
+  })
+}
+
+export function usePinnedStatuses(id: string) {
+  return useQuery({
+    ...pinnedStatusesOptions(id),
+    enabled: !!id,
+  })
+}
+
+export function useFollowers(id: string) {
+  return useQuery({
+    ...followersOptions(id),
+    enabled: !!id,
+  })
+}
+
+export function useInfiniteFollowers(id: string) {
+  return useInfiniteQuery({
+    ...infiniteFollowersOptions(id),
+    enabled: !!id,
+  })
+}
+
+export function useFollowing(id: string) {
+  return useQuery({
+    ...followingOptions(id),
+    enabled: !!id,
+  })
+}
+
+export function useInfiniteFollowing(id: string) {
+  return useInfiniteQuery({
+    ...infiniteFollowingOptions(id),
+    enabled: !!id,
+  })
+}
+
+export function useFollowRequests() {
+  const authStore = useAuthStore()
+  return useInfiniteQuery({
+    ...infiniteFollowRequestsOptions(),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+export function useRelationships(ids: string[]) {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...relationshipsOptions(ids),
+    enabled: ids.length > 0 && authStore.isAuthenticated,
+  })
+}
+
+// Bookmarks
+export function useBookmarks(params?: TimelineParams) {
+  return useQuery(bookmarksOptions(params))
+}
+
+export function useInfiniteBookmarks() {
+  return useInfiniteQuery(infiniteBookmarksOptions())
+}
+
+// Search
+export function useSearch(params: SearchParams, options?: { enabled?: boolean }) {
+  return useQuery({
+    ...searchOptions(params),
+    enabled: (options?.enabled ?? true) && !!params.q && params.q.trim().length > 0,
+  })
+}
+
+export function useInfiniteSearch(params: SearchParams, options?: { enabled?: boolean }) {
+  return useInfiniteQuery({
+    ...infiniteSearchOptions(params),
+    enabled: (options?.enabled ?? true) && !!params.q && params.q.trim().length > 0 && params.type !== undefined,
+  })
+}
+
+// Custom Emojis
+export function useCustomEmojis() {
+  return useQuery(customEmojisOptions())
+}
+
+// Trends
+export function useInfiniteTrendingStatuses() {
+  return useInfiniteQuery(infiniteTrendingStatusesOptions())
+}
+
+export function useInfiniteTrendingTags() {
+  return useInfiniteQuery(infiniteTrendingTagsOptions())
+}
+
+export function useInfiniteTrendingLinks() {
+  return useInfiniteQuery(infiniteTrendingLinksOptions())
+}
+
+// Instance
+export function useInstance() {
+  return useQuery(instanceOptions())
+}
+
+// Notifications
+export function useNotifications(params?: NotificationParams) {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...notificationsOptions(params),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+export function useInfiniteNotifications() {
+  const authStore = useAuthStore()
+  return useInfiniteQuery({
+    ...infiniteNotificationsOptions(),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+export function useNotification(id: string) {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...notificationOptions(id),
+    enabled: !!id && authStore.isAuthenticated,
+  })
+}
+
+export function useUnreadNotificationCount() {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...unreadNotificationCountOptions(),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+// Blocked Accounts
+export function useBlockedAccounts() {
+  const authStore = useAuthStore()
+  return useInfiniteQuery({
+    ...infiniteBlockedAccountsOptions(),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+// Muted Accounts
+export function useMutedAccounts() {
+  const authStore = useAuthStore()
+  return useInfiniteQuery({
+    ...infiniteMutedAccountsOptions(),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+// Preferences
+export function usePreferences() {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...preferencesOptions(),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+// Lists
+export function useLists() {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...listsOptions(),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+export function useList(id: string) {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...listOptions(id),
+    enabled: !!id && authStore.isAuthenticated,
+  })
+}
+
+export function useListAccounts(id: string) {
+  const authStore = useAuthStore()
+  return useInfiniteQuery({
+    ...infiniteListAccountsOptions(id),
+    enabled: !!id && authStore.isAuthenticated,
+  })
+}
+
+export function useInfiniteListTimeline(id: string) {
+  const authStore = useAuthStore()
+  return useInfiniteQuery({
+    ...infiniteListTimelineOptions(id),
+    enabled: !!id && authStore.isAuthenticated,
+  })
+}
+
+export function useAccountLists(accountId: string) {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...accountListsOptions(accountId),
+    enabled: !!accountId && authStore.isAuthenticated,
+  })
+}
+
+// Scheduled Statuses
+export function useScheduledStatuses() {
+  const authStore = useAuthStore()
+  return useInfiniteQuery({
+    ...infiniteScheduledStatusesOptions(),
     enabled: authStore.isAuthenticated,
   })
 }
 
 export function useScheduledStatus(id: string) {
   const authStore = useAuthStore()
-
   return useQuery({
-    queryKey: queryKeys.scheduledStatuses.detail(id),
-    queryFn: () => getScheduledStatus(id),
+    ...scheduledStatusOptions(id),
     enabled: !!id && authStore.isAuthenticated,
   })
 }
