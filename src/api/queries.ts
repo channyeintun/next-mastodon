@@ -24,6 +24,8 @@ import {
   search,
   getCustomEmojis,
   getTrendingStatuses,
+  getTrendingTags,
+  getTrendingLinks,
   getInstance,
   createCustomClient,
   getNotifications,
@@ -41,7 +43,7 @@ import {
   getScheduledStatus,
 } from './client'
 import { queryKeys } from './queryKeys'
-import type { TimelineParams, SearchParams, Status, NotificationParams, Account, Preferences, StatusEdit, StatusSource, ScheduledStatus } from '../types/mastodon'
+import type { TimelineParams, SearchParams, Status, NotificationParams, Account, Preferences, StatusEdit, StatusSource, ScheduledStatus, Tag, TrendingLink } from '../types/mastodon'
 import { useAuthStore } from '../hooks/useStores'
 
 // Timelines
@@ -311,6 +313,30 @@ export function useInfiniteTrendingStatuses() {
       return allPages.length * 20
     },
     initialPageParam: 0,
+  })
+}
+
+export function useTrendingTags() {
+  return useQuery({
+    queryKey: queryKeys.trends.tags(),
+    queryFn: async () => {
+      // Use mastodon.social for trending tags (public API, no auth required)
+      const trendingClient = createCustomClient('https://mastodon.social')
+      const { data } = await trendingClient.get<Tag[]>('/api/v1/trends/tags', { params: { limit: 20 } })
+      return data
+    },
+  })
+}
+
+export function useTrendingLinks() {
+  return useQuery({
+    queryKey: queryKeys.trends.links(),
+    queryFn: async () => {
+      // Use mastodon.social for trending links (public API, no auth required)
+      const trendingClient = createCustomClient('https://mastodon.social')
+      const { data } = await trendingClient.get<TrendingLink[]>('/api/v1/trends/links', { params: { limit: 20 } })
+      return data
+    },
   })
 }
 

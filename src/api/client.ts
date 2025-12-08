@@ -29,8 +29,10 @@ import type {
   StatusSource,
   ScheduledStatus,
   ScheduledStatusParams,
+  Tag,
   TimelineParams,
   Token,
+  TrendingLink,
   UnreadCount,
   UpdateAccountParams,
   UpdateListParams,
@@ -415,6 +417,16 @@ export async function votePoll(id: string, choices: number[]): Promise<Poll> {
 // Trends
 export async function getTrendingStatuses(params?: { limit?: number; offset?: number }): Promise<Status[]> {
   const { data } = await api.get<Status[]>('/api/v1/trends/statuses', { params })
+  return data
+}
+
+export async function getTrendingTags(params?: { limit?: number; offset?: number }): Promise<Tag[]> {
+  const { data } = await api.get<Tag[]>('/api/v1/trends/tags', { params })
+  return data
+}
+
+export async function getTrendingLinks(params?: { limit?: number; offset?: number }): Promise<TrendingLink[]> {
+  const { data } = await api.get<TrendingLink[]>('/api/v1/trends/links', { params })
   return data
 }
 

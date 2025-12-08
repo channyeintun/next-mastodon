@@ -209,6 +209,22 @@ export interface Card {
   blurhash: string | null
 }
 
+export interface TrendingLink extends Card {
+  author_name?: string
+  author_url?: string
+  provider_name?: string
+  provider_url?: string
+  html?: string
+  width?: number
+  height?: number
+  embed_url?: string
+  history: Array<{
+    day: string
+    uses: string
+    accounts: string
+  }>
+}
+
 export interface Application {
   id: string
   client_id: string

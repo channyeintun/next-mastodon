@@ -1011,3 +1011,220 @@ body {
 .modal-content {
   animation: var(--animation-fade-in);
 }
+
+/* ====================================
+   Trending Page Tabs
+   ==================================== */
+.trending-tabs {
+  display: flex;
+  gap: var(--size-1);
+  padding: var(--size-2) 0;
+  border-bottom: 1px solid var(--surface-3);
+  margin-bottom: var(--size-3);
+}
+
+.trending-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-2);
+  padding: var(--size-2) var(--size-3);
+  font-size: var(--font-size-1);
+  font-weight: var(--font-weight-5);
+  color: var(--text-2);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.trending-tab:hover {
+  color: var(--text-1);
+  background: var(--surface-2);
+}
+
+.trending-tab.active {
+  color: var(--blue-6);
+  background: var(--blue-0);
+  font-weight: var(--font-weight-6);
+}
+
+/* ====================================
+   Trending Tag Card
+   ==================================== */
+.trending-tag-card {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  padding: var(--size-3);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  text-decoration: none;
+  color: var(--text-1);
+  transition: all 0.2s ease;
+}
+
+.trending-tag-card:hover {
+  background: var(--surface-3);
+  transform: translateX(2px);
+}
+
+.trending-tag-card.skeleton {
+  pointer-events: none;
+}
+
+.trending-tag-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-3);
+  border-radius: var(--radius-2);
+  color: var(--text-2);
+  flex-shrink: 0;
+}
+
+.trending-tag-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.trending-tag-name {
+  font-size: var(--font-size-2);
+  font-weight: var(--font-weight-6);
+  color: var(--blue-6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trending-tag-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-2);
+  margin-top: var(--size-1);
+}
+
+.trending-tag-stat {
+  display: flex;
+  align-items: center;
+  gap: var(--size-1);
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+}
+
+/* ====================================
+   Trending Link Card
+   ==================================== */
+.trending-link-card {
+  display: flex;
+  gap: var(--size-3);
+  padding: var(--size-3);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  text-decoration: none;
+  color: var(--text-1);
+  transition: all 0.2s ease;
+}
+
+.trending-link-card:hover {
+  background: var(--surface-3);
+  transform: translateX(2px);
+}
+
+.trending-link-card.skeleton {
+  pointer-events: none;
+}
+
+.trending-link-image {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-2);
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--surface-3);
+}
+
+.trending-link-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.trending-link-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+}
+
+.trending-link-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1);
+}
+
+.trending-link-provider {
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.trending-link-title {
+  font-size: var(--font-size-1);
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  line-height: var(--font-lineheight-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.trending-link-description {
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+  line-height: var(--font-lineheight-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.trending-link-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.trending-link-stat {
+  font-size: var(--font-size-0);
+  color: var(--text-3);
+}
+
+/* Skeleton loading animation */
+.skeleton-loading {
+  background: linear-gradient(90deg, var(--surface-3) 25%, var(--surface-4) 50%, var(--surface-3) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}

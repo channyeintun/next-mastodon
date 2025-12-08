@@ -59,6 +59,8 @@ export const queryKeys = {
   // Trends
   trends: {
     statuses: (params?: object) => ['trends', 'statuses', params] as const,
+    tags: (params?: object) => ['trends', 'tags', params] as const,
+    links: (params?: object) => ['trends', 'links', params] as const,
   },
 
   // Notifications
