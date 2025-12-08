@@ -1039,8 +1039,8 @@ body {
    ==================================== */
 .trending-tabs {
   display: flex;
-  gap: var(--size-1);
-  padding: var(--size-2) 0;
+  gap: 0;
+  padding: 0;
   border-bottom: 1px solid var(--surface-3);
   margin-bottom: var(--size-3);
 }
@@ -1051,26 +1051,27 @@ body {
   align-items: center;
   justify-content: center;
   gap: var(--size-2);
-  padding: var(--size-2) var(--size-3);
+  padding: var(--size-3) var(--size-4);
   font-size: var(--font-size-1);
   font-weight: var(--font-weight-5);
   color: var(--text-2);
   background: transparent;
   border: none;
-  border-radius: var(--radius-2);
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, border-color 0.2s ease;
   white-space: nowrap;
 }
 
 .trending-tab:hover {
   color: var(--text-1);
-  background: var(--surface-2);
+  background: transparent;
 }
 
 .trending-tab.active {
   color: var(--blue-6);
-  background: var(--blue-0);
+  border-bottom-color: var(--blue-6);
   font-weight: var(--font-weight-6);
 }
 

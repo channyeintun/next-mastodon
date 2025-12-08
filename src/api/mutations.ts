@@ -42,21 +42,48 @@ import {
 import { queryKeys } from './queryKeys'
 import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams } from '../types/mastodon'
 
+// Helper to update a status or its nested reblog
+function updateStatusOrReblog(
+  status: Status,
+  statusId: string,
+  updateFn: (status: Status) => Status
+): Status {
+  // Check if this status matches
+  if (status.id === statusId) {
+    return updateFn(status)
+  }
+  // Check if this is a reblog and the reblogged status matches
+  if (status.reblog && status.reblog.id === statusId) {
+    return {
+      ...status,
+      reblog: updateFn(status.reblog),
+    }
+  }
+  // No match
+  return status
+}
+
 // Helper function to update status in all infinite query caches
 function updateStatusInCaches(
   queryClient: QueryClient,
   statusId: string,
   updateFn: (status: Status) => Status
 ) {
-  // Update timelines
+  // Update all timeline types (home, public, list, hashtag, etc.)
+  // Using predicate to ensure we match all queries starting with 'timelines'
   queryClient.setQueriesData<InfiniteData<Status[]>>(
-    { queryKey: queryKeys.timelines.all },
+    {
+      predicate: (query) => {
+        const key = query.queryKey as readonly unknown[]
+        return key[0] === 'timelines'
+      }
+    },
     (old) => {
       if (!old?.pages) return old
       return {
         ...old,
         pages: old.pages.map((page) =>
-          page.map((status) => (status.id === statusId ? updateFn(status) : status))
+          page.map((status) => updateStatusOrReblog(status, statusId, updateFn))
         ),
       }
     }
@@ -70,7 +97,7 @@ function updateStatusInCaches(
       return {
         ...old,
         pages: old.pages.map((page) =>
-          page.map((status) => (status.id === statusId ? updateFn(status) : status))
+          page.map((status) => updateStatusOrReblog(status, statusId, updateFn))
         ),
       }
     }
@@ -84,7 +111,56 @@ function updateStatusInCaches(
       return {
         ...old,
         pages: old.pages.map((page) =>
-          page.map((status) => (status.id === statusId ? updateFn(status) : status))
+          page.map((status) => updateStatusOrReblog(status, statusId, updateFn))
+        ),
+      }
+    }
+  )
+
+  // Update trending statuses
+  queryClient.setQueriesData<InfiniteData<Status[]>>(
+    { queryKey: queryKeys.trends.statuses() },
+    (old) => {
+      if (!old?.pages) return old
+      return {
+        ...old,
+        pages: old.pages.map((page) =>
+          page.map((status) => updateStatusOrReblog(status, statusId, updateFn))
+        ),
+      }
+    }
+  )
+
+  // Update search results - infinite search (Statuses, Accounts, Hashtags tabs)
+  // Query key format: ['search', query, type, 'infinite']
+  // Data structure: InfiniteData<{ accounts, statuses, hashtags }>
+  queryClient.setQueriesData<InfiniteData<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>>(
+    { queryKey: ['search'], predicate: (query) => query.queryKey.includes('infinite') },
+    (old) => {
+      if (!old?.pages) return old
+      return {
+        ...old,
+        pages: old.pages.map((page) => ({
+          ...page,
+          statuses: page.statuses.map((status) =>
+            updateStatusOrReblog(status, statusId, updateFn)
+          ),
+        })),
+      }
+    }
+  )
+
+  // Update search results - regular search (All tab)
+  // Query key format: ['search', query, type]
+  // Data structure: { accounts, statuses, hashtags } (not paginated)
+  queryClient.setQueriesData<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>(
+    { queryKey: ['search'], predicate: (query) => !query.queryKey.includes('infinite') },
+    (old) => {
+      if (!old?.statuses) return old
+      return {
+        ...old,
+        statuses: old.statuses.map((status) =>
+          updateStatusOrReblog(status, statusId, updateFn)
         ),
       }
     }
@@ -97,9 +173,15 @@ function updatePollInCaches(
   pollId: string,
   updatedPoll: Poll
 ) {
-  // Update timelines
+  // Update all timeline types (home, public, list, hashtag, etc.)
+  // Using predicate to ensure we match all queries starting with 'timelines'
   queryClient.setQueriesData<InfiniteData<Status[]>>(
-    { queryKey: queryKeys.timelines.all },
+    {
+      predicate: (query) => {
+        const key = query.queryKey as readonly unknown[]
+        return key[0] === 'timelines'
+      }
+    },
     (old) => {
       if (!old?.pages) return old
       return {
@@ -136,24 +218,6 @@ function updatePollInCaches(
   // Update account statuses
   queryClient.setQueriesData<InfiniteData<Status[]>>(
     { queryKey: ['accounts'] },
-    (old) => {
-      if (!old?.pages) return old
-      return {
-        ...old,
-        pages: old.pages.map((page) =>
-          page.map((status) =>
-            status.poll?.id === pollId
-              ? { ...status, poll: updatedPoll }
-              : status
-          )
-        ),
-      }
-    }
-  )
-
-  // Update hashtag timelines
-  queryClient.setQueriesData<InfiniteData<Status[]>>(
-    { queryKey: ['timelines', 'hashtag'] },
     (old) => {
       if (!old?.pages) return old
       return {
@@ -182,6 +246,41 @@ function updatePollInCaches(
               ? { ...status, poll: updatedPoll }
               : status
           )
+        ),
+      }
+    }
+  )
+
+  // Update search results - infinite search (Statuses, Accounts, Hashtags tabs)
+  queryClient.setQueriesData<InfiniteData<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>>(
+    { queryKey: ['search'], predicate: (query) => query.queryKey.includes('infinite') },
+    (old) => {
+      if (!old?.pages) return old
+      return {
+        ...old,
+        pages: old.pages.map((page) => ({
+          ...page,
+          statuses: page.statuses.map((status) =>
+            status.poll?.id === pollId
+              ? { ...status, poll: updatedPoll }
+              : status
+          ),
+        })),
+      }
+    }
+  )
+
+  // Update search results - regular search (All tab)
+  queryClient.setQueriesData<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>(
+    { queryKey: ['search'], predicate: (query) => !query.queryKey.includes('infinite') },
+    (old) => {
+      if (!old?.statuses) return old
+      return {
+        ...old,
+        statuses: old.statuses.map((status) =>
+          status.poll?.id === pollId
+            ? { ...status, poll: updatedPoll }
+            : status
         ),
       }
     }

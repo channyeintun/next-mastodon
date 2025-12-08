@@ -37,6 +37,7 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
                         gap: 'var(--size-3)',
                         padding: 'var(--size-4)',
                         borderBottom: '1px solid var(--surface-3)',
+                        marginBottom: 'var(--size-4)',
                     }}
                 >
                     <div className="skeleton" style={{ width: 32, height: 32, borderRadius: '50%' }} />
@@ -98,6 +99,7 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
                     top: 0,
                     background: 'var(--surface-1)',
                     zIndex: 10,
+                    marginBottom: 'var(--size-4)',
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)' }}>
@@ -141,9 +143,9 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
             {isLoadingTimeline ? (
                 <PostCardSkeletonList count={5} />
             ) : statuses.length > 0 ? (
-                <VirtualizedList
+                <VirtualizedList<Status>
                     items={statuses}
-                    renderItem={(status: Status) => (
+                    renderItem={(status) => (
                         <PostCard
                             key={status.id}
                             status={status}
