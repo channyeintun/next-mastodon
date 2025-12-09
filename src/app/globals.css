@@ -583,11 +583,6 @@ body {
   }
 }
 
-/* Desktop (1024px+) */
-@media (min-width: 1024px) {
-  /* Additional desktop styles if needed */
-}
-
 /* ====================================
    Compose Page Styles (Premium Redesign)
    ==================================== */

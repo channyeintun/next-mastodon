@@ -2,10 +2,14 @@
   "name": "mastodon-nextjs-client",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev -p 9003",
     "build": "next build",
-    "start": "next start -p 9003"
+    "start": "next start -p 9003",
+    "lint": "eslint .",
+    "lint:css": "eslint --ext .css .",
+    "lint:fix": "eslint --fix ."
   },
   "dependencies": {
     "@tanstack/react-form": "^1.27.0",
@@ -34,10 +38,12 @@
     "tippy.js": "^6.3.7"
   },
   "devDependencies": {
+    "@eslint/css": "^0.14.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "^9.39.1",
     "typescript": "^5"
   }
 }
