@@ -171,7 +171,7 @@ export default function StatusPage({
           borderRadius: 'var(--radius-3)',
           marginBottom: 'var(--size-3)', // Reduced margin here as reply box follows
         }}>
-          <PostCard status={status} />
+          <PostCard status={status} showEditHistory={true} />
         </div>
 
         {/* Reply Composer - Comment Box Style */}

@@ -28,6 +28,7 @@ import { Button } from '../atoms/Button';
 import { EmojiText } from '../atoms/EmojiText';
 import { StatusContent } from './StatusContent';
 import { LinkPreview } from './LinkPreview';
+import { StatusEditHistory } from './StatusEditHistory';
 import type { Status } from '@/types/mastodon';
 import {
   useFavouriteStatus,
@@ -54,6 +55,7 @@ interface PostCardProps {
   style?: CSSProperties;
   hideActions?: boolean;
   showThreadLine?: boolean;
+  showEditHistory?: boolean;
 }
 
 function formatRelativeTime(dateString: string): string {
@@ -76,7 +78,7 @@ const VISIBILITY_ICONS = {
   direct: <Mail size={14} />,
 };
 
-export function PostCard({ status, showThread = false, style, hideActions = false, showThreadLine = false }: PostCardProps) {
+export function PostCard({ status, showThread = false, style, hideActions = false, showThreadLine = false, showEditHistory = false }: PostCardProps) {
   const router = useRouter();
   const authStore = useAuthStore();
 
@@ -952,6 +954,14 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
           </div>
         )}
       </div>
+
+      {/* Edit History - shown only on detail page when prop is true */}
+      {showEditHistory && displayStatus.edited_at && (
+        <StatusEditHistory
+          statusId={displayStatus.id}
+          editedAt={displayStatus.edited_at}
+        />
+      )}
 
 
     </Card >
