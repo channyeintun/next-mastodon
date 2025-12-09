@@ -8,7 +8,6 @@ import { Card } from '@/components/atoms/Card';
 import { Button } from '@/components/atoms/Button';
 import { IconButton } from '@/components/atoms/IconButton';
 import { ArrowLeft, Calendar, Trash2, Edit2, Clock } from 'lucide-react';
-import Navigation from '@/components/molecules/Navigation';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { ScheduledCardSkeletonList } from '@/components/molecules/ScheduledCardSkeleton';
 import type { ScheduledStatus } from '@/types/mastodon';
@@ -133,103 +132,90 @@ export default function ScheduledStatusesPage() {
     );
 
     return (
-        <div className="layout-container">
-            <Navigation isAuthenticated={authStore.isAuthenticated} />
-
-            <main className="layout-main full-height-container">
-                <div style={{
-                    maxWidth: '600px',
-                    margin: '0 auto',
-                    padding: 'var(--size-4)',
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column'
-                }}>
-                    <div style={{
-                        position: 'sticky',
-                        top: 0,
-                        background: 'var(--surface-1)',
-                        zIndex: 10,
-                        padding: 'var(--size-4) 0',
-                        marginBottom: 'var(--size-4)',
-                        borderBottom: '1px solid var(--surface-3)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 'var(--size-3)',
-                        flexShrink: 0
-                    }}>
-                        <IconButton onClick={() => router.back()}>
-                            <ArrowLeft size={20} />
-                        </IconButton>
-                        <h1 style={{ fontSize: 'var(--font-size-4)', fontWeight: 'bold' }}>Scheduled Posts</h1>
-                    </div>
-
-                    <div className="scheduled-statuses-list" style={{ flex: 1, minHeight: 0 }}>
-                        {isLoading ? (
-                            <ScheduledCardSkeletonList count={5} />
-                        ) : isError ? (
-                            <div style={{
-                                padding: 'var(--size-4)',
-                                background: 'var(--red-2)',
-                                borderRadius: 'var(--radius-2)',
-                                color: 'var(--red-9)',
-                                textAlign: 'center'
-                            }}>
-                                {error?.message || 'Failed to load scheduled posts'}
-                            </div>
-                        ) : (
-                            <VirtualizedList<ScheduledStatus>
-                                items={allScheduledStatuses}
-                                renderItem={renderItem}
-                                getItemKey={(status) => status.id}
-                                estimateSize={200}
-                                onLoadMore={fetchNextPage}
-                                isLoadingMore={isFetchingNextPage}
-                                hasMore={hasNextPage}
-                                scrollRestorationKey="scheduled-statuses"
-                                height="100%"
-                                loadingIndicator={
-                                    <div style={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        padding: 'var(--size-4)'
-                                    }}>
-                                        <div className="spinner" />
-                                    </div>
-                                }
-                                endIndicator={
-                                    <div style={{ padding: 'var(--size-4)', textAlign: 'center', color: 'var(--text-3)' }}>
-                                        End of scheduled posts
-                                    </div>
-                                }
-                                emptyState={
-                                    <div style={{
-                                        textAlign: 'center',
-                                        padding: 'var(--size-8) var(--size-4)',
-                                        color: 'var(--text-2)',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        gap: 'var(--size-4)'
-                                    }}>
-                                        <Calendar size={48} strokeWidth={1.5} />
-                                        <div>
-                                            <h2 style={{ fontSize: 'var(--font-size-3)', marginBottom: 'var(--size-2)' }}>No scheduled posts</h2>
-                                            <p>Posts you schedule will appear here.</p>
-                                        </div>
-                                        <Button onClick={() => router.push('/compose')}>Create Post</Button>
-                                    </div>
-                                }
-                            />
-                        )}
-                    </div>
+        <div className="container full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+            {/* Header */}
+            <div style={{
+                background: 'var(--surface-1)',
+                zIndex: 10,
+                padding: 'var(--size-4)',
+                marginBottom: 'var(--size-4)',
+                borderBottom: '1px solid var(--surface-3)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--size-3)',
+                flexShrink: 0
+            }}>
+                <IconButton onClick={() => router.back()}>
+                    <ArrowLeft size={20} />
+                </IconButton>
+                <div>
+                    <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
+                        Scheduled Posts
+                    </h1>
+                    <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
+                        {allScheduledStatuses.length} {allScheduledStatuses.length === 1 ? 'post' : 'posts'}
+                    </p>
                 </div>
-            </main>
-
-            <div className="layout-sidebar-right">
-                {/* Right sidebar content can go here */}
             </div>
+
+            {isLoading ? (
+                <ScheduledCardSkeletonList count={5} />
+            ) : isError ? (
+                <div style={{
+                    padding: 'var(--size-4)',
+                    background: 'var(--red-2)',
+                    borderRadius: 'var(--radius-2)',
+                    color: 'var(--red-9)',
+                    textAlign: 'center'
+                }}>
+                    {error?.message || 'Failed to load scheduled posts'}
+                </div>
+            ) : (
+                <VirtualizedList<ScheduledStatus>
+                    items={allScheduledStatuses}
+                    renderItem={renderItem}
+                    getItemKey={(status) => status.id}
+                    estimateSize={200}
+                    onLoadMore={fetchNextPage}
+                    isLoadingMore={isFetchingNextPage}
+                    hasMore={hasNextPage}
+                    scrollRestorationKey="scheduled-statuses"
+                    height="auto"
+                    style={{ flex: 1, minHeight: 0 }}
+                    loadingIndicator={
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            padding: 'var(--size-4)'
+                        }}>
+                            <div className="spinner" />
+                        </div>
+                    }
+                    endIndicator={
+                        <div style={{ padding: 'var(--size-4)', textAlign: 'center', color: 'var(--text-3)' }}>
+                            End of scheduled posts
+                        </div>
+                    }
+                    emptyState={
+                        <div style={{
+                            textAlign: 'center',
+                            padding: 'var(--size-8) var(--size-4)',
+                            color: 'var(--text-2)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: 'var(--size-4)'
+                        }}>
+                            <Calendar size={48} strokeWidth={1.5} />
+                            <div>
+                                <h2 style={{ fontSize: 'var(--font-size-3)', marginBottom: 'var(--size-2)' }}>No scheduled posts</h2>
+                                <p>Posts you schedule will appear here.</p>
+                            </div>
+                            <Button onClick={() => router.push('/compose')}>Create Post</Button>
+                        </div>
+                    }
+                />
+            )}
         </div>
     );
 }

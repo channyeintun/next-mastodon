@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, Activity } from 'react';
-import Link from 'next/link';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { ArrowLeft, Search as SearchIcon, Hash, X, Clock } from 'lucide-react';
 import { useSearch, useInfiniteSearch } from '@/api/queries';
