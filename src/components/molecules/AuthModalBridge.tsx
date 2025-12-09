@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useRouter } from 'next/navigation';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
-import { getRootStore } from '@/stores/rootStore';
+import { useAuthStore } from '@/hooks/useStores';
 import { Button } from '../atoms/Button';
 
 /**
@@ -14,10 +14,13 @@ import { Button } from '../atoms/Button';
 function AuthModalBridgeComponent() {
     const { openModal, closeModal } = useGlobalModal();
     const router = useRouter();
-    const authStore = getRootStore().authStore;
+    const authStore = useAuthStore();
+
+    // Read observable during render phase so MobX can track it
+    const showAuthModal = authStore.showAuthModal;
 
     useEffect(() => {
-        if (authStore.showAuthModal) {
+        if (showAuthModal) {
             openModal(
                 <div
                     className="dialog-content"
@@ -73,7 +76,7 @@ function AuthModalBridgeComponent() {
                 </div>
             );
         }
-    }, [authStore.showAuthModal, openModal, closeModal, router, authStore]);
+    }, [showAuthModal, openModal, closeModal, router, authStore]);
 
     return null;
 }
