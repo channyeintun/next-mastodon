@@ -1571,3 +1571,16 @@ dialog::backdrop {
   padding-top: var(--size-3);
   border-top: 1px solid var(--surface-3);
 }
+
+/* Theme Selector Responsive Layout */
+.theme-selector-container {
+  display: flex;
+  gap: var(--size-3);
+  flex-direction: column;
+}
+
+@media (min-width: 640px) {
+  .theme-selector-container {
+    flex-direction: row;
+  }
+}

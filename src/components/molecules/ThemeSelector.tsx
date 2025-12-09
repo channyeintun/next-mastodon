@@ -74,21 +74,22 @@ export function ThemeSelector() {
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-3)' }}>
+        <div className="theme-selector-container">
             {themeOptions.map((option) => (
                 <label
                     key={option.value}
                     style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: 'var(--size-3)',
+                        gap: 'var(--size-2)',
                         padding: 'var(--size-3)',
                         borderRadius: 'var(--radius-2)',
                         border: `2px solid ${currentTheme === option.value ? 'var(--blue-6)' : 'var(--surface-3)'
                             }`,
-                        background: currentTheme === option.value ? 'var(--blue-0)' : 'transparent',
+                        background: currentTheme === option.value ? 'var(--blue-6)' : 'transparent',
                         cursor: 'pointer',
                         transition: 'all 0.2s ease',
+                        flex: 1,
                     }}
                 >
                     <input
@@ -98,41 +99,29 @@ export function ThemeSelector() {
                         checked={currentTheme === option.value}
                         onChange={() => handleThemeChange(option.value)}
                         style={{
-                            width: '20px',
-                            height: '20px',
+                            width: '18px',
+                            height: '18px',
                             cursor: 'pointer',
-                            accentColor: 'var(--blue-6)',
+                            accentColor: currentTheme === option.value ? 'white' : 'var(--blue-6)',
                         }}
                     />
                     <div
                         style={{
-                            color: currentTheme === option.value ? 'var(--blue-6)' : 'var(--text-2)',
+                            color: currentTheme === option.value ? 'white' : 'var(--text-2)',
                             display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'center',
                         }}
                     >
                         {option.icon}
                     </div>
-                    <div style={{ flex: 1 }}>
-                        <div
-                            style={{
-                                fontWeight: 'var(--font-weight-6)',
-                                fontSize: 'var(--font-size-2)',
-                                color: 'var(--text-1)',
-                                marginBottom: 'var(--size-1)',
-                            }}
-                        >
-                            {option.label}
-                        </div>
-                        <div
-                            style={{
-                                fontSize: 'var(--font-size-1)',
-                                color: 'var(--text-2)',
-                            }}
-                        >
-                            {option.description}
-                        </div>
+                    <div
+                        style={{
+                            fontWeight: 'var(--font-weight-6)',
+                            fontSize: 'var(--font-size-2)',
+                            color: currentTheme === option.value ? 'white' : 'var(--text-1)',
+                        }}
+                    >
+                        {option.label}
                     </div>
                 </label>
             ))}
