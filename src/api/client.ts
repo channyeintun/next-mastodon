@@ -5,6 +5,7 @@
 
 import axios, { type AxiosInstance } from 'axios'
 import Cookies from 'js-cookie'
+import { getRootStore } from '../stores/rootStore'
 import type {
   Account,
   Application,
@@ -80,12 +81,9 @@ api.interceptors.response.use(
         const isSignInRequest = requestUrl.includes('/oauth/token') || requestUrl.includes('/api/v1/apps')
 
         if (!isSignInRequest) {
-          // Emit auth event to show modal
+          // Show auth modal via MobX store
           if (typeof window !== 'undefined') {
-            // Import dynamically to avoid issues during SSR
-            import('../lib/authEvents').then(({ authEvents }) => {
-              authEvents.emit()
-            })
+            getRootStore().authStore.openAuthModal()
           }
         }
       }

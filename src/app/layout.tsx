@@ -7,7 +7,7 @@ import { StoreProvider } from "@/components/providers/StoreProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { ScrollRestorationProvider } from "@/components/providers/ScrollRestorationProvider";
 import { StreamingProvider } from "@/components/providers/StreamingProvider";
-import { AuthModal } from "@/components/molecules";
+import { AuthModalBridge } from "@/components/molecules";
 import NavigationWrapper from "@/components/organisms/NavigationWrapper";
 import SkipToMain from "@/components/atoms/SkipToMain";
 import { GlobalModalProvider } from "@/contexts/GlobalModalContext";
@@ -59,7 +59,7 @@ export default async function RootLayout({
                     {children}
                   </main>
                 </ViewTransition>
-                <AuthModal />
+                <AuthModalBridge />
               </GlobalModalProvider>
             </StreamingProvider>
           </StoreProvider>

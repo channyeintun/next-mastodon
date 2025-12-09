@@ -13,6 +13,7 @@ export interface AuthState {
   clientId: string | null
   clientSecret: string | null
   isAuthenticated: boolean
+  showAuthModal: boolean
 }
 
 const COOKIE_OPTIONS = {
@@ -26,6 +27,7 @@ export class AuthStore {
   accessToken: string | null = null
   clientId: string | null = null
   clientSecret: string | null = null
+  showAuthModal: boolean = false
 
   constructor(initialState?: Partial<AuthState>) {
     // Initialize with server-provided state if available
@@ -110,6 +112,19 @@ export class AuthStore {
       clientId: this.clientId,
       clientSecret: this.clientSecret,
       isAuthenticated: this.isAuthenticated,
+      showAuthModal: this.showAuthModal,
     }
+  }
+
+  setShowAuthModal(show: boolean) {
+    this.showAuthModal = show
+  }
+
+  openAuthModal() {
+    this.showAuthModal = true
+  }
+
+  closeAuthModal() {
+    this.showAuthModal = false
   }
 }
