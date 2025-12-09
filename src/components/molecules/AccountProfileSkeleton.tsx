@@ -24,7 +24,7 @@ export function AccountProfileSkeleton() {
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'start',
+            alignItems: 'center',
             marginBottom: 'var(--size-3)',
           }}
         >
