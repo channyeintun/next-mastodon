@@ -6,18 +6,22 @@ const protectedRoutes = [
   '/compose',
   '/bookmarks',
   '/settings',
+  '/profile/edit',
+  '/scheduled',
+  '/follow-requests',
+  '/lists',
 ];
 
 // Routes that should redirect to home if authenticated
 const authRoutes = ['/auth/signin'];
 
-// Next.js 16 proxy API (replaces middleware)
+// Next.js middleware (or proxy API)
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Get auth state from localStorage (via cookie or header in production)
-  // For now, we'll let client-side handle it since MobX stores are client-side
-  // In a production app, you'd want to use cookies or server-side sessions
+  // Get auth state from cookies
+  const accessToken = request.cookies.get('accessToken')?.value;
+  const isAuthenticated = !!accessToken;
 
   // Check if accessing protected route
   const isProtectedRoute = protectedRoutes.some((route) =>
@@ -27,15 +31,17 @@ export function proxy(request: NextRequest) {
   // Check if accessing auth route
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
 
-  // Note: Since we're using MobX with localStorage, and Next.js proxy
-  // runs on the server, we can't directly access the auth state here.
-  // For a production app, you'd want to:
-  // 1. Use HTTP-only cookies to store auth tokens
-  // 2. Check those cookies in this proxy
-  // 3. Redirect accordingly
-  //
-  // For this implementation, we'll handle route protection client-side
-  // and this proxy is here as a placeholder for future improvements.
+  // Redirect unauthenticated users from protected routes to sign-in
+  if (isProtectedRoute && !isAuthenticated) {
+    const signInUrl = new URL('/auth/signin', request.url);
+    signInUrl.searchParams.set('redirect', pathname);
+    return NextResponse.redirect(signInUrl);
+  }
+
+  // Redirect authenticated users from auth routes to home
+  if (isAuthRoute && isAuthenticated) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
 
   return NextResponse.next();
 }

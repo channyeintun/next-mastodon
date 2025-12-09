@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Upload, X, Check, Copy, ChevronDown, ChevronUp } from 'lucide-react';
 import { useCurrentAccount } from '@/api/queries';
@@ -134,22 +133,14 @@ export default function ProfileEditPage() {
         }
     };
 
-    if (isLoading) {
+    // Note: Auth protection is handled by middleware (proxy.ts)
+    // Show loading state until account data is loaded
+    if (isLoading || !currentAccount) {
         return (
             <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
                 <Spinner />
                 <p style={{ marginTop: 'var(--size-4)', color: 'var(--text-2)' }}>
                     Loading profile...
-                </p>
-            </div>
-        );
-    }
-
-    if (!currentAccount) {
-        return (
-            <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
-                <p style={{ color: 'var(--text-2)' }}>
-                    Please sign in to edit your profile.
                 </p>
             </div>
         );

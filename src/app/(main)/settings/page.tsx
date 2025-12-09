@@ -30,7 +30,8 @@ export default function SettingsPage() {
     });
   };
 
-  if (isLoading) {
+  // Show skeleton until account data is loaded
+  if (isLoading || !currentAccount) {
     return (
       <div className="container" style={{ maxWidth: '600px', margin: '0 auto', padding: 'var(--size-4)' }}>
         {/* Header Skeleton */}
@@ -80,16 +81,6 @@ export default function SettingsPage() {
           <div className="skeleton" style={{ width: 80, height: 18, marginBottom: 'var(--size-3)', borderRadius: 'var(--radius-1)' }} />
           <div className="skeleton" style={{ width: 100, height: 36, borderRadius: 'var(--radius-2)' }} />
         </Card>
-      </div>
-    );
-  }
-
-  if (!currentAccount) {
-    return (
-      <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
-        <p style={{ color: 'var(--text-2)' }}>
-          Please sign in to access settings.
-        </p>
       </div>
     );
   }
