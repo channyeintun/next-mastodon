@@ -7,7 +7,6 @@
 
 import { useEffect, useEffectEvent } from 'react'
 import { useQueryClient, type InfiniteData } from '@tanstack/react-query'
-import Cookies from 'js-cookie'
 import { getStreamingStore } from '../stores/streamingStore'
 import { useInstance } from '../api/queries'
 import { useAuthStore } from './useStores'
@@ -70,8 +69,9 @@ export function useNotificationStream() {
     // Connect/disconnect based on auth state
     useEffect(() => {
         if (authStore.isAuthenticated && instance) {
-            const accessToken = Cookies.get('accessToken')
-            const instanceURL = Cookies.get('instanceURL') || 'https://mastodon.social'
+            // Read from authStore instead of cookies (in-memory, synced with cookies)
+            const accessToken = authStore.accessToken
+            const instanceURL = authStore.instanceURL || 'https://mastodon.social'
 
             // Use streaming URL from instance config, fallback to instance URL
             const streamingUrl = instance.configuration?.urls?.streaming || instanceURL

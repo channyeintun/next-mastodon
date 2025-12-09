@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import Cookies from 'js-cookie';
+import { getCookie } from '../../utils/cookies';
 
 /**
  * ThemeProvider - Applies theme globally and listens to system preference changes
@@ -13,8 +13,8 @@ import Cookies from 'js-cookie';
  */
 export function ThemeProvider() {
     useEffect(() => {
-        const applyTheme = () => {
-            const savedTheme = Cookies.get('theme') as 'light' | 'dark' | undefined;
+        const applyTheme = async () => {
+            const savedTheme = await getCookie('theme') as 'light' | 'dark' | undefined;
 
             let activeTheme: 'light' | 'dark';
 
@@ -37,9 +37,10 @@ export function ThemeProvider() {
         // Listen to system preference changes for auto mode only
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
-        const handleMediaChange = () => {
+        const handleMediaChange = async () => {
             // Only update if in auto mode (no cookie)
-            if (!Cookies.get('theme')) {
+            const theme = await getCookie('theme');
+            if (!theme) {
                 applyTheme();
             }
         };

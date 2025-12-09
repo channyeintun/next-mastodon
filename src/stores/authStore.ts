@@ -5,7 +5,7 @@
  */
 
 import { makeAutoObservable } from 'mobx'
-import Cookies from 'js-cookie'
+import { getCookie, setCookie, deleteCookie, type CookieOptions } from '../utils/cookies'
 
 export interface AuthState {
   instanceURL: string | null
@@ -16,10 +16,9 @@ export interface AuthState {
   showAuthModal: boolean
 }
 
-const COOKIE_OPTIONS = {
-  expires: 365, // 1 year
-  sameSite: 'lax' as const,
-  secure: process.env.NODE_ENV === 'production',
+const COOKIE_OPTIONS: CookieOptions = {
+  expires: 365, // 1 year (in days)
+  sameSite: 'lax',
 }
 
 export class AuthStore {
@@ -36,15 +35,31 @@ export class AuthStore {
       this.accessToken = initialState.accessToken ?? null
       this.clientId = initialState.clientId ?? null
       this.clientSecret = initialState.clientSecret ?? null
-    } else if (typeof window !== 'undefined') {
-      // Client-side: read from cookies
-      this.instanceURL = Cookies.get('instanceURL') ?? null
-      this.accessToken = Cookies.get('accessToken') ?? null
-      this.clientId = Cookies.get('clientId') ?? null
-      this.clientSecret = Cookies.get('clientSecret') ?? null
     }
+    // Note: Client-side cookie hydration is now done via hydrate() method
+    // since CookieStore API is async
 
     makeAutoObservable(this)
+  }
+
+  /**
+   * Hydrate auth state from cookies on client-side
+   * Should be called once on app mount
+   */
+  async hydrate(): Promise<void> {
+    if (typeof window === 'undefined') return
+
+    const [instanceURL, accessToken, clientId, clientSecret] = await Promise.all([
+      getCookie('instanceURL'),
+      getCookie('accessToken'),
+      getCookie('clientId'),
+      getCookie('clientSecret'),
+    ])
+
+    this.instanceURL = instanceURL ?? null
+    this.accessToken = accessToken ?? null
+    this.clientId = clientId ?? null
+    this.clientSecret = clientSecret ?? null
   }
 
   get isAuthenticated(): boolean {
@@ -54,7 +69,8 @@ export class AuthStore {
   setInstance(url: string) {
     this.instanceURL = url.replace(/\/$/, '') // Remove trailing slash
     if (typeof window !== 'undefined') {
-      Cookies.set('instanceURL', this.instanceURL, COOKIE_OPTIONS)
+      // Fire-and-forget cookie operation
+      setCookie('instanceURL', this.instanceURL, COOKIE_OPTIONS)
     }
   }
 
@@ -68,16 +84,17 @@ export class AuthStore {
     this.clientSecret = clientSecret
 
     if (typeof window !== 'undefined') {
-      Cookies.set('accessToken', accessToken, COOKIE_OPTIONS)
-      Cookies.set('clientId', clientId, COOKIE_OPTIONS)
-      Cookies.set('clientSecret', clientSecret, COOKIE_OPTIONS)
+      // Fire-and-forget cookie operations
+      setCookie('accessToken', accessToken, COOKIE_OPTIONS)
+      setCookie('clientId', clientId, COOKIE_OPTIONS)
+      setCookie('clientSecret', clientSecret, COOKIE_OPTIONS)
     }
   }
 
   setAccessToken(token: string) {
     this.accessToken = token
     if (typeof window !== 'undefined') {
-      Cookies.set('accessToken', token, COOKIE_OPTIONS)
+      setCookie('accessToken', token, COOKIE_OPTIONS)
     }
   }
 
@@ -86,8 +103,8 @@ export class AuthStore {
     this.clientSecret = clientSecret
 
     if (typeof window !== 'undefined') {
-      Cookies.set('clientId', clientId, COOKIE_OPTIONS)
-      Cookies.set('clientSecret', clientSecret, COOKIE_OPTIONS)
+      setCookie('clientId', clientId, COOKIE_OPTIONS)
+      setCookie('clientSecret', clientSecret, COOKIE_OPTIONS)
     }
   }
 
@@ -98,10 +115,11 @@ export class AuthStore {
     this.clientSecret = null
 
     if (typeof window !== 'undefined') {
-      Cookies.remove('instanceURL')
-      Cookies.remove('accessToken')
-      Cookies.remove('clientId')
-      Cookies.remove('clientSecret')
+      // Fire-and-forget cookie deletions
+      deleteCookie('instanceURL')
+      deleteCookie('accessToken')
+      deleteCookie('clientId')
+      deleteCookie('clientSecret')
     }
   }
 

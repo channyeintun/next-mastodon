@@ -4,7 +4,6 @@
  */
 
 import axios, { type AxiosInstance } from 'axios'
-import Cookies from 'js-cookie'
 import { getRootStore } from '../stores/rootStore'
 import type {
   Account,
@@ -50,16 +49,17 @@ const api: AxiosInstance = axios.create({
 // Request interceptor to attach auth token and set base URL
 api.interceptors.request.use(
   (config) => {
-    // Get instance URL from cookies, fallback to default (mastodon.social)
-    const instanceURL = Cookies.get('instanceURL')
-    if (instanceURL) {
-      config.baseURL = instanceURL.replace(/\/$/, '') // Remove trailing slash
+    // Get auth state from MobX store (in-memory, synced with cookies)
+    const { authStore } = getRootStore()
+
+    // Set instance URL if available
+    if (authStore.instanceURL) {
+      config.baseURL = authStore.instanceURL
     }
 
-    // Get access token from cookies and attach if it exists
-    const accessToken = Cookies.get('accessToken')
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`
+    // Attach access token if available
+    if (authStore.accessToken) {
+      config.headers.Authorization = `Bearer ${authStore.accessToken}`
     }
 
     return config

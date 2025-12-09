@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
-import Cookies from 'js-cookie';
+import { getCookie, deleteCookie } from '@/utils/cookies';
 import { useAuthStore } from '@/hooks/useStores';
 import { getRedirectURI } from '@/utils/oauth';
 
@@ -52,9 +52,9 @@ function CallbackContent() {
         authStore.setAccessToken(token.access_token);
 
         // Get redirect path from cookie (set by middleware when accessing protected route)
-        const redirectPath = Cookies.get('authRedirect') || '/';
+        const redirectPath = await getCookie('authRedirect') || '/';
         // Clear the redirect cookie
-        Cookies.remove('authRedirect');
+        await deleteCookie('authRedirect');
 
         // Redirect to the intended page or home
         router.push(redirectPath);

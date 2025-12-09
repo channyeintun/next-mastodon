@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Sun, Moon, Monitor } from 'lucide-react';
-import Cookies from 'js-cookie';
+import { getCookie, setCookie, deleteCookie, type CookieOptions } from '../../utils/cookies';
 
 type Theme = 'light' | 'dark' | 'auto';
 
@@ -34,10 +34,9 @@ const themeOptions: ThemeOption[] = [
     },
 ];
 
-const COOKIE_OPTIONS = {
+const COOKIE_OPTIONS: CookieOptions = {
     expires: 365, // 1 year
-    sameSite: 'lax' as const,
-    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
 };
 
 function getActiveTheme(theme: Theme): 'light' | 'dark' {
@@ -52,20 +51,23 @@ export function ThemeSelector() {
 
     useEffect(() => {
         // Read theme from cookie on mount to set button state
-        const savedTheme = (Cookies.get('theme') as 'light' | 'dark' | undefined) ?? 'auto';
-        setCurrentTheme(savedTheme as Theme);
+        const loadTheme = async () => {
+            const savedTheme = await getCookie('theme') as 'light' | 'dark' | undefined;
+            setCurrentTheme((savedTheme ?? 'auto') as Theme);
+        };
+        loadTheme();
     }, []);
 
-    const handleThemeChange = (theme: Theme) => {
+    const handleThemeChange = async (theme: Theme) => {
         // Update state for button highlighting
         setCurrentTheme(theme);
 
         // Save to cookie - only store explicit choices (light/dark)
         // For 'auto', remove the cookie so undefined = auto
         if (theme === 'auto') {
-            Cookies.remove('theme');
+            await deleteCookie('theme');
         } else {
-            Cookies.set('theme', theme, COOKIE_OPTIONS);
+            await setCookie('theme', theme, COOKIE_OPTIONS);
         }
 
         // Update DOM immediately
