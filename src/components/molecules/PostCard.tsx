@@ -417,7 +417,10 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
                           </button>
                           <button
                             className="options-menu-item danger"
-                            onClick={(e) => {
+                            onMouseDown={(e) => {
+                              // Use onMouseDown instead of onClick for iOS Safari compatibility.
+                              // In :focus-within popovers, iOS Safari loses focus before onClick fires,
+                              // but onMouseDown fires before focus is lost.
                               e.preventDefault();
                               e.stopPropagation();
                               openModal(
