@@ -361,10 +361,11 @@ export function ComposerPanel({
                 justifyContent: 'space-between',
                 marginBottom: 'var(--size-2)',
               }}>
-                <label style={{ fontSize: 'var(--font-size-1)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)' }}>
+                <label htmlFor="cw-input" style={{ fontSize: 'var(--font-size-1)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)' }}>
                   Content Warning
                 </label>
                 <button
+                  aria-label="Remove content warning"
                   onClick={() => {
                     setShowCWInput(false);
                     setContentWarning('');
@@ -381,6 +382,7 @@ export function ComposerPanel({
                 </button>
               </div>
               <input
+                id="cw-input"
                 type="text"
                 value={contentWarning}
                 onChange={(e) => setContentWarning(e.target.value)}
@@ -407,10 +409,11 @@ export function ComposerPanel({
                 justifyContent: 'space-between',
                 marginBottom: 'var(--size-2)',
               }}>
-                <label style={{ fontSize: 'var(--font-size-1)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)' }}>
+                <label htmlFor="schedule-input" style={{ fontSize: 'var(--font-size-1)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)' }}>
                   Schedule Post
                 </label>
                 <button
+                  aria-label="Remove schedule"
                   onClick={() => {
                     setShowScheduleInput(false);
                     setScheduledAt('');
@@ -427,6 +430,7 @@ export function ComposerPanel({
                 </button>
               </div>
               <input
+                id="schedule-input"
                 type="datetime-local"
                 value={scheduledAt}
                 min={new Date().toISOString().slice(0, 16)}
@@ -464,6 +468,7 @@ export function ComposerPanel({
             editorRef.current = editor;
           }}
           mentionSuggestion={mentionSuggestion}
+          ariaLabel="Compose post"
         />
       </div>
 
@@ -507,6 +512,7 @@ export function ComposerPanel({
                 type="button"
                 onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                 title="Add emoji"
+                aria-label="Add emoji"
               >
                 <Smile size={22} />
               </button>
@@ -525,6 +531,7 @@ export function ComposerPanel({
               onClick={() => fileInputRef.current?.click()}
               disabled={poll !== null || media.length >= 4}
               title="Add media"
+              aria-label="Add media"
             >
               <ImageIcon size={22} />
             </button>
@@ -536,6 +543,7 @@ export function ComposerPanel({
               onClick={() => setPoll({ options: ['', ''], expiresIn: 86400, multiple: false })}
               disabled={media.length > 0 || poll !== null}
               title="Add poll"
+              aria-label="Add poll"
             >
               <BarChart2 size={22} />
             </button>
@@ -550,6 +558,7 @@ export function ComposerPanel({
                 fontWeight: showCWInput ? 'bold' : 'normal',
               }}
               title="Add content warning"
+              aria-label="Add content warning"
             >
               <span style={{ fontSize: '14px' }}>CW</span>
             </button>
@@ -563,6 +572,7 @@ export function ComposerPanel({
                 color: showScheduleInput ? 'var(--blue-6)' : undefined,
               }}
               title="Schedule post"
+              aria-label="Schedule post"
               disabled={!!statusId} // Cannot schedule explicitly when editing a published post (though Mastodon API might not support it anyway)
             >
               <Clock size={22} />
@@ -586,6 +596,8 @@ export function ComposerPanel({
             <div
               className={`compose-char-count ${isOverLimit ? 'danger' : charCount > MAX_CHAR_COUNT - 50 ? 'warning' : ''
                 }`}
+              aria-live="polite"
+              aria-label={`${MAX_CHAR_COUNT - charCount} characters remaining`}
             >
               {MAX_CHAR_COUNT - charCount}
             </div>

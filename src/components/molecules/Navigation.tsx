@@ -40,7 +40,7 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
   return (
     <>
       {/* Desktop Sidebar Navigation */}
-      <aside className="navigation-sidebar" aria-label="Site navigation">
+      <nav className="navigation-sidebar" aria-label="Site navigation">
         {/* Logo */}
         <div className="navigation-sidebar-header">
           <Link href="/" className="navigation-sidebar-instance">
@@ -139,7 +139,7 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
             <span className="navigation-link-label">Source Code</span>
           </a>
         </div>
-      </aside>
+      </nav>
 
       {/* Mobile Bottom Navigation */}
       {isAuthenticated && (

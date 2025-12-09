@@ -19,6 +19,7 @@ interface TiptapEditorProps {
   mentionSuggestion?: Omit<SuggestionOptions, 'editor'>;
   className?: string;
   style?: React.CSSProperties;
+  ariaLabel?: string;
 }
 
 /**
@@ -36,6 +37,7 @@ export function TiptapEditor({
   mentionSuggestion,
   className,
   style,
+  ariaLabel,
 }: TiptapEditorProps) {
 
   const editor = useEditor({
@@ -66,6 +68,7 @@ export function TiptapEditor({
       attributes: {
         class: 'tiptap-editor-editable',
         style: 'outline: none;',
+        ...(ariaLabel ? { 'aria-label': ariaLabel } : {}),
       },
     },
     onUpdate: ({ editor }) => {
