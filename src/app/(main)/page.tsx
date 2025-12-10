@@ -44,19 +44,18 @@ const TimelinePage = observer(() => {
 
   if (isLoading) {
     return (
-      <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+      <div className="container full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
         {/* Header */}
         <div style={{
-          position: 'sticky',
-          top: 0,
           background: 'var(--surface-1)',
           zIndex: 10,
-          padding: 'var(--size-4) 0',
+          padding: 'var(--size-4)',
           marginBottom: 'var(--size-4)',
           borderBottom: '1px solid var(--surface-3)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          flexShrink: 0,
         }}>
           <div>
             <h1 style={{ fontSize: 'var(--font-size-5)', marginBottom: 'var(--size-1)' }}>
@@ -66,29 +65,29 @@ const TimelinePage = observer(() => {
               {authStore.instanceURL?.replace('https://', '')}
             </p>
           </div>
-          <Link href={user ? `/@${user.acct}` : '#'} className={`profile-pill profile-pill-static ${!user ? 'skeleton-loading' : ''}`}>
-            {user ? (
-              <>
-                <img
-                  src={user.avatar}
-                  alt={user.display_name}
-                  className="profile-pill-avatar"
-                />
-                <span className="profile-pill-name">
-                  <EmojiText text={user.display_name} emojis={user.emojis} />
-                </span>
-              </>
-            ) : (
-              <>
-                <div className="profile-pill-avatar" style={{ background: 'var(--surface-3)' }} />
-                <div className="profile-pill-name" style={{ width: '80px', height: '1em', background: 'var(--surface-3)', borderRadius: 'var(--radius-1)' }} />
-              </>
-            )}
-          </Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
+            {/* Search icon skeleton */}
+            <div
+              style={{
+                width: 'var(--size-7)',
+                height: 'var(--size-7)',
+                borderRadius: '50%',
+                background: 'var(--surface-3)',
+                animation: 'var(--animation-blink)',
+              }}
+            />
+            {/* Profile pill skeleton */}
+            <div className="profile-pill profile-pill-static skeleton-loading">
+              <div className="profile-pill-avatar" style={{ background: 'var(--surface-3)' }} />
+              <div className="profile-pill-name" style={{ width: '80px', height: '1em', background: 'var(--surface-3)', borderRadius: 'var(--radius-1)' }} />
+            </div>
+          </div>
         </div>
 
         {/* Skeleton loading */}
-        <PostCardSkeletonList count={5} />
+        <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+          <PostCardSkeletonList count={5} />
+        </div>
       </div>
     );
   }
