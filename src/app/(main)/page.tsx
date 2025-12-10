@@ -207,7 +207,6 @@ const TimelinePage = observer(() => {
         isLoadingMore={isFetchingNextPage}
         hasMore={hasNextPage}
         loadMoreThreshold={1}
-
         height="auto"
         style={{ flex: 1, minHeight: 0 }}
         scrollRestorationKey="home-timeline"

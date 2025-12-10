@@ -4,6 +4,7 @@ export { AuthModalBridge } from './AuthModalBridge';
 export { DeletePostModal } from './DeletePostModal';
 export { ImageCropper } from './ImageCropper';
 export { LinkPreview } from './LinkPreview';
+export { MediaGrid } from './MediaGrid';
 export { MediaUpload } from './MediaUpload';
 export { MentionSuggestions } from './MentionSuggestions';
 export { default as Navigation } from './Navigation';

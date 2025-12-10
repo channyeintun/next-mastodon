@@ -272,6 +272,10 @@ export interface TimelineParams {
   since_id?: string
   min_id?: string
   limit?: number
+  // Account status filters
+  exclude_replies?: boolean
+  exclude_reblogs?: boolean
+  only_media?: boolean
 }
 
 export interface SearchParams {

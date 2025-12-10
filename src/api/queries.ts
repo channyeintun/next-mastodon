@@ -155,6 +155,30 @@ export const infiniteAccountStatusesOptions = (id: string) =>
     initialPageParam: undefined as string | undefined,
   })
 
+export interface AccountStatusFilters {
+  exclude_replies?: boolean
+  exclude_reblogs?: boolean
+  only_media?: boolean
+}
+
+export const infiniteAccountStatusesWithFiltersOptions = (
+  id: string,
+  filters: AccountStatusFilters
+) =>
+  infiniteQueryOptions({
+    queryKey: queryKeys.accounts.statuses(id, filters),
+    queryFn: ({ pageParam, signal }) => {
+      const params: TimelineParams = { limit: 20, ...filters }
+      if (pageParam) params.max_id = pageParam
+      return getAccountStatuses(id, params, signal)
+    },
+    getNextPageParam: (lastPage) => {
+      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      return lastPage[lastPage.length - 1]?.id
+    },
+    initialPageParam: undefined as string | undefined,
+  })
+
 export const pinnedStatusesOptions = (id: string) =>
   queryOptions({
     queryKey: queryKeys.accounts.pinnedStatuses(id),
@@ -569,6 +593,16 @@ export function useAccountStatuses(id: string, params?: TimelineParams) {
 export function useInfiniteAccountStatuses(id: string) {
   return useInfiniteQuery({
     ...infiniteAccountStatusesOptions(id),
+    enabled: !!id,
+  })
+}
+
+export function useInfiniteAccountStatusesWithFilters(
+  id: string,
+  filters: AccountStatusFilters
+) {
+  return useInfiniteQuery({
+    ...infiniteAccountStatusesWithFiltersOptions(id, filters),
     enabled: !!id,
   })
 }

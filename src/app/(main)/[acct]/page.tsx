@@ -1,13 +1,15 @@
 'use client';
 
-import { use, useState, useRef, useEffect } from 'react';
+import { use, useState, useRef, useEffect, useMemo, Activity } from 'react';
 import { useRouter, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, ExternalLink, MoreHorizontal, Ban, VolumeX, Volume2, Pin } from 'lucide-react';
-import { useLookupAccount, useInfiniteAccountStatuses, useRelationships, useCurrentAccount, usePinnedStatuses, useFollowAccount, useUnfollowAccount, useBlockAccount, useUnblockAccount, useMuteAccount, useUnmuteAccount } from '@/api';
-import { PostCard, PostCardSkeletonList, PostCardSkeleton, AccountProfileSkeleton } from '@/components/molecules';
+import { useLookupAccount, useInfiniteAccountStatusesWithFilters, useRelationships, useCurrentAccount, usePinnedStatuses, useFollowAccount, useUnfollowAccount, useBlockAccount, useUnblockAccount, useMuteAccount, useUnmuteAccount } from '@/api';
+import type { AccountStatusFilters } from '@/api/queries';
+import { PostCard, PostCardSkeletonList, PostCardSkeleton, AccountProfileSkeleton, MediaGrid } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { Avatar, Button, IconButton, EmojiText } from '@/components/atoms';
+import { Avatar, Button, IconButton, EmojiText, Tabs } from '@/components/atoms';
+import type { TabItem } from '@/components/atoms/Tabs';
 import type { Status } from '@/types';
 
 export default function AccountPage({
@@ -39,13 +41,31 @@ export default function AccountPage({
   // Use account.id for other queries that require IDs
   const accountId = account?.id;
 
+  // Tab state for profile content
+  type ProfileTab = 'posts' | 'posts_replies' | 'media';
+  const [activeTab, setActiveTab] = useState<ProfileTab>('posts');
+
+  // Compute filter params based on active tab
+  const statusFilters: AccountStatusFilters = useMemo(() => {
+    switch (activeTab) {
+      case 'posts':
+        return { exclude_replies: true };
+      case 'posts_replies':
+        return { exclude_replies: false, exclude_reblogs: true };
+      case 'media':
+        return { only_media: true };
+      default:
+        return { exclude_replies: true };
+    }
+  }, [activeTab]);
+
   const {
     data: statusPages,
     isLoading: statusesLoading,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteAccountStatuses(accountId || '');
+  } = useInfiniteAccountStatusesWithFilters(accountId || '', statusFilters);
 
   const { data: relationships } = useRelationships(accountId ? [accountId] : []);
   const relationship = relationships?.[0];
@@ -651,87 +671,181 @@ export default function AccountPage({
         }
       </div >
 
-      {/* Pinned Posts Section */}
-      {
-        pinnedStatuses && pinnedStatuses.length > 0 && (
-          <div style={{
-            borderTop: '1px solid var(--surface-3)',
-            paddingTop: 'var(--size-4)',
-            marginTop: 'var(--size-4)',
-          }}>
-            <h3 style={{
-              fontSize: 'var(--font-size-2)',
-              fontWeight: 'var(--font-weight-6)',
-              marginBottom: 'var(--size-3)',
-              paddingLeft: 'var(--size-4)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--size-2)',
-              color: 'var(--text-2)',
-            }}>
-              <Pin size={16} />
-              Pinned Posts
-            </h3>
-            {pinnedStatuses.map(status => (
-              <PostCard
-                key={status.id}
-                status={status}
-                style={{ marginBottom: 'var(--size-3)' }}
-              />
-            ))}
-          </div>
-        )
-      }
-
-      {/* Posts Section */}
+      {/* Tabs Section */}
       <div style={{
         borderTop: '1px solid var(--surface-3)',
-        paddingTop: 'var(--size-4)',
         marginTop: 'var(--size-4)',
+      }}>
+        <Tabs
+          tabs={[
+            { value: 'posts', label: 'Posts' },
+            { value: 'posts_replies', label: 'Posts & Replies' },
+            { value: 'media', label: 'Media' },
+          ] as TabItem<typeof activeTab>[]}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          variant="underline"
+          fullWidth
+        />
+      </div>
+
+      {/* Pinned Posts Section - only show for posts and posts_replies tabs */}
+      {activeTab !== 'media' && pinnedStatuses && pinnedStatuses.length > 0 && (
+        <div style={{
+          paddingTop: 'var(--size-4)',
+          paddingBottom: 'var(--size-4)',
+          borderBottom: '1px solid var(--surface-3)',
+        }}>
+          <h3 style={{
+            fontSize: 'var(--font-size-2)',
+            fontWeight: 'var(--font-weight-6)',
+            marginBottom: 'var(--size-3)',
+            paddingLeft: 'var(--size-4)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--size-2)',
+            color: 'var(--text-2)',
+          }}>
+            <Pin size={16} />
+            Pinned Posts
+          </h3>
+          {pinnedStatuses.map(status => (
+            <PostCard
+              key={status.id}
+              status={status}
+              style={{ marginBottom: 'var(--size-3)' }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Content Section */}
+      <div style={{
+        paddingTop: 'var(--size-4)',
         display: 'flex',
         flexDirection: 'column',
         height: '100%'
       }}>
-        <h3 style={{
-          fontSize: 'var(--font-size-3)',
-          fontWeight: 'var(--font-weight-6)',
-          marginBottom: 'var(--size-4)',
-          paddingLeft: 'var(--size-4)',
-        }}>
-          Posts
-        </h3>
-
-        {statusesLoading && uniqueStatuses.length === 0 ? (
-          <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
-            <PostCardSkeletonList count={3} />
-          </div>
-        ) : (
-          <VirtualizedList<Status>
-            items={uniqueStatuses}
-            renderItem={(status) => (
-              <PostCard
-                status={status}
-                style={{ marginBottom: 'var(--size-3)' }}
+        {/* Posts Tab Content */}
+        <Activity mode={activeTab === 'posts' ? 'visible' : 'hidden'}>
+          <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
+            {statusesLoading && uniqueStatuses.length === 0 ? (
+              <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+                <PostCardSkeletonList count={3} />
+              </div>
+            ) : (
+              <VirtualizedList<Status>
+                items={uniqueStatuses}
+                renderItem={(status) => (
+                  <PostCard
+                    status={status}
+                    style={{ marginBottom: 'var(--size-3)' }}
+                  />
+                )}
+                getItemKey={(status) => status.id}
+                estimateSize={300}
+                overscan={5}
+                onLoadMore={fetchNextPage}
+                isLoadingMore={isFetchingNextPage}
+                hasMore={hasNextPage}
+                loadMoreThreshold={1}
+                height="100dvh"
+                scrollRestorationKey={`account-${acct}-posts`}
+                loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
+                endIndicator="No more posts"
+                emptyState={
+                  <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
+                    No posts yet
+                  </div>
+                }
               />
             )}
-            getItemKey={(status) => status.id}
-            estimateSize={300}
-            overscan={5}
-            onLoadMore={fetchNextPage}
-            isLoadingMore={isFetchingNextPage}
-            hasMore={hasNextPage}
-            loadMoreThreshold={1}
-            height="100dvh"
-            scrollRestorationKey={`account-${acct}`}
-            loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
-            endIndicator="No more posts"
-            emptyState={
-              <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
-                No posts yet
+          </div>
+        </Activity>
+
+        {/* Posts & Replies Tab Content */}
+        <Activity mode={activeTab === 'posts_replies' ? 'visible' : 'hidden'}>
+          <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
+            {statusesLoading && uniqueStatuses.length === 0 ? (
+              <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+                <PostCardSkeletonList count={3} />
               </div>
-            }
-          />
-        )}
+            ) : (
+              <VirtualizedList<Status>
+                items={uniqueStatuses}
+                renderItem={(status) => (
+                  <PostCard
+                    status={status}
+                    style={{ marginBottom: 'var(--size-3)' }}
+                  />
+                )}
+                getItemKey={(status) => status.id}
+                estimateSize={300}
+                overscan={5}
+                onLoadMore={fetchNextPage}
+                isLoadingMore={isFetchingNextPage}
+                hasMore={hasNextPage}
+                loadMoreThreshold={1}
+                height="100dvh"
+                scrollRestorationKey={`account-${acct}-posts_replies`}
+                loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
+                endIndicator="No more posts"
+                emptyState={
+                  <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
+                    No posts yet
+                  </div>
+                }
+              />
+            )}
+          </div>
+        </Activity>
+
+        {/* Media Tab Content */}
+        <Activity mode={activeTab === 'media' ? 'visible' : 'hidden'}>
+          <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
+            {statusesLoading && uniqueStatuses.length === 0 ? (
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: 'var(--size-1)',
+                padding: 'var(--size-2)'
+              }}>
+                {[...Array(9)].map((_, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      aspectRatio: '1',
+                      background: 'var(--surface-3)',
+                      borderRadius: 'var(--radius-2)',
+                      animation: 'var(--animation-blink)',
+                    }}
+                  />
+                ))}
+              </div>
+            ) : (
+              <>
+                <MediaGrid statuses={uniqueStatuses} />
+                {hasNextPage && (
+                  <button
+                    onClick={() => fetchNextPage()}
+                    disabled={isFetchingNextPage}
+                    style={{
+                      margin: 'var(--size-4) auto',
+                      padding: 'var(--size-2) var(--size-4)',
+                      background: 'var(--surface-2)',
+                      border: '1px solid var(--surface-3)',
+                      borderRadius: 'var(--radius-2)',
+                      color: 'var(--text-1)',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {isFetchingNextPage ? 'Loading...' : 'Load more'}
+                  </button>
+                )}
+              </>
+            )}
+          </div>
+        </Activity>
       </div>
     </div >
   );
