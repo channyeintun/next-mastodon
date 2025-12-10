@@ -102,6 +102,8 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
 
   // Check if content warning is active (has actual text)
   const hasContentWarning = displayStatus.spoiler_text && displayStatus.spoiler_text.trim().length > 0;
+  // Check if media should be blurred (sensitive flag OR content warning)
+  const hasSensitiveMedia = displayStatus.sensitive || hasContentWarning;
 
   const handleFavourite = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -502,7 +504,7 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
               gap: 'var(--size-2)',
               borderRadius: 'var(--radius-2)',
               overflow: 'hidden',
-              filter: hasContentWarning && !showCWMedia ? 'blur(32px)' : 'none',
+              filter: hasSensitiveMedia && !showCWMedia ? 'blur(32px)' : 'none',
               transition: 'filter 0.2s ease',
             }}>
               {displayStatus.media_attachments.map((media) => (
@@ -553,8 +555,8 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
               ))}
             </div>
 
-            {/* Sensitive content overlay - shown after first click */}
-            {hasContentWarning && !showCWMedia && (
+            {/* Sensitive content overlay - shown for sensitive media */}
+            {hasSensitiveMedia && !showCWMedia && (
               <div
                 style={{
                   position: 'absolute',
@@ -599,7 +601,7 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
                     e.currentTarget.style.borderColor = 'var(--surface-4)';
                   }}
                 >
-                  👁️ Click to view sensitive content
+                  Click to view sensitive content
                 </button>
               </div>
             )}

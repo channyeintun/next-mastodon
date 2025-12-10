@@ -3,7 +3,7 @@
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock, List } from 'lucide-react';
+import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock, List, Settings2 } from 'lucide-react';
 import { useCurrentAccount } from '@/api';
 import { Button, IconButton, Card, Avatar, EmojiText } from '@/components/atoms';
 import { ThemeSelector } from '@/components/molecules';
@@ -132,6 +132,11 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
         <Link href="/profile/edit" className="settings-link" style={{ marginBottom: 'var(--size-2)' }}>
           <User size={20} className="settings-link-icon" />
           Edit Profile
+        </Link>
+
+        <Link href="/settings/preferences" className="settings-link">
+          <Settings2 size={20} className="settings-link-icon" />
+          Preferences
         </Link>
       </Card>
 

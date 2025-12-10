@@ -233,6 +233,12 @@ export async function updateCredentials(params: UpdateAccountParams): Promise<Ac
   if (params.discoverable !== undefined) {
     formData.append('discoverable', String(params.discoverable))
   }
+  if (params.hide_collections !== undefined) {
+    formData.append('hide_collections', String(params.hide_collections))
+  }
+  if (params.indexable !== undefined) {
+    formData.append('indexable', String(params.indexable))
+  }
 
   // Add file fields
   if (params.avatar) {
@@ -248,6 +254,22 @@ export async function updateCredentials(params: UpdateAccountParams): Promise<Ac
       formData.append(`fields_attributes[${index}][name]`, field.name)
       formData.append(`fields_attributes[${index}][value]`, field.value)
     })
+  }
+
+  // Add source fields for posting defaults
+  if (params.source) {
+    if (params.source.privacy !== undefined) {
+      formData.append('source[privacy]', params.source.privacy)
+    }
+    if (params.source.sensitive !== undefined) {
+      formData.append('source[sensitive]', String(params.source.sensitive))
+    }
+    if (params.source.language !== undefined) {
+      formData.append('source[language]', params.source.language)
+    }
+    if (params.source.quote_policy !== undefined) {
+      formData.append('source[quote_policy]', params.source.quote_policy)
+    }
   }
 
   const { data } = await api.patch<Account>('/api/v1/accounts/update_credentials', formData, {

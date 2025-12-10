@@ -291,10 +291,19 @@ export interface UpdateAccountParams {
   locked?: boolean
   bot?: boolean
   discoverable?: boolean
+  hide_collections?: boolean
+  indexable?: boolean
   fields_attributes?: Array<{
     name: string
     value: string
   }>
+  // Source fields for posting defaults
+  source?: {
+    privacy?: 'public' | 'unlisted' | 'private' | 'direct'
+    sensitive?: boolean
+    language?: string
+    quote_policy?: 'public' | 'followers' | 'nobody'
+  }
 }
 
 export interface Instance {
