@@ -28,7 +28,6 @@
     "lucide-react": "^0.555.0",
     "mobx": "^6.15.0",
     "mobx-react-lite": "^4.1.1",
-    "motion": "^12.23.25",
     "next": "16.0.7",
     "open-props": "^1.7.17",
     "postcss-import": "^16.1.1",
