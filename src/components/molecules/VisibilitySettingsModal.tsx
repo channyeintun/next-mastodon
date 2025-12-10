@@ -25,12 +25,13 @@ interface OptionType {
 const customStyles: StylesConfig<OptionType, false> = {
     control: (base, state) => ({
         ...base,
-        background: state.isDisabled ? 'rgba(0,0,0,0.05)' : 'transparent',
+        background: state.isDisabled ? 'var(--surface-3)' : 'transparent',
         borderColor: 'var(--surface-3)',
         borderRadius: 'var(--radius-2)',
         padding: '4px',
         boxShadow: state.isFocused ? '0 0 0 1px var(--blue-6)' : 'none',
         cursor: state.isDisabled ? 'not-allowed' : 'pointer',
+        opacity: state.isDisabled ? 0.6 : 1,
         '&:hover': {
             borderColor: state.isDisabled ? 'var(--surface-3)' : 'var(--text-2)',
         }
@@ -50,8 +51,8 @@ const customStyles: StylesConfig<OptionType, false> = {
     }),
     option: (base, state) => ({
         ...base,
-        background: state.isSelected ? 'var(--blue-9)' : state.isFocused ? 'var(--surface-3)' : 'transparent',
-        color: 'var(--text-1)',
+        background: state.isSelected ? 'var(--blue-6)' : state.isFocused ? 'var(--surface-3)' : 'transparent',
+        color: state.isSelected ? 'white' : 'var(--text-1)',
         padding: '12px',
         cursor: 'pointer',
         borderBottom: '1px solid var(--surface-3)',
@@ -59,7 +60,7 @@ const customStyles: StylesConfig<OptionType, false> = {
             borderBottom: 'none',
         },
         ':active': {
-            backgroundColor: 'var(--blue-9)',
+            backgroundColor: 'var(--blue-6)',
         },
     }),
     singleValue: (base) => ({
@@ -93,7 +94,7 @@ const CustomOption = (props: OptionProps<OptionType, false>) => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', opacity: props.isDisabled ? 0.5 : 1 }}>
                 {Icon && (
                     <div style={{
-                        color: isSelected ? 'var(--blue-6)' : 'var(--text-2)',
+                        color: isSelected ? 'white' : 'var(--text-2)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center'
                     }}>
                         <Icon size={20} />
