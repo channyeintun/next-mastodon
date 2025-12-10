@@ -8,4 +8,6 @@ For detailed project structure, architecture, and technical documentation, see [
 
 ## Support
 
-[![Buy Me A Coffee](buy-me-coffee.png)](https://www.buymeacoffee.com/)
+<a href="https://www.buymeacoffee.com/">
+  <img src="buy-me-coffee.png" alt="Buy Me A Coffee" width="200" />
+</a>
