@@ -23,17 +23,27 @@ export default function FollowRequestsPage() {
     if (isLoading) {
         return (
             <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+                {/* Header */}
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: 'var(--size-3)',
                     padding: 'var(--size-4)',
                     borderBottom: '1px solid var(--surface-3)',
+                    position: 'sticky',
+                    top: 0,
+                    background: 'var(--surface-1)',
+                    zIndex: 10,
                 }}>
-                    <div className="skeleton" style={{ width: 32, height: 32, borderRadius: '50%' }} />
+                    <IconButton onClick={() => router.back()}>
+                        <ArrowLeft size={20} />
+                    </IconButton>
                     <div>
-                        <div className="skeleton" style={{ width: 150, height: 20, marginBottom: 4 }} />
-                        <div className="skeleton" style={{ width: 100, height: 14 }} />
+                        <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
+                            <UserPlus size={20} />
+                            Follow Requests
+                        </h1>
+                        <div className="skeleton" style={{ width: 100, height: 14, borderRadius: 'var(--radius-1)' }} />
                     </div>
                 </div>
                 {Array.from({ length: 3 }).map((_, i) => (
