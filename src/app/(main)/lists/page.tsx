@@ -1,49 +1,29 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Plus, List, MoreVertical, Pencil, Trash2, Users, MessageCircle } from 'lucide-react';
 import { useLists, useCreateList, useUpdateList, useDeleteList } from '@/api';
 import { IconButton, Spinner } from '@/components/atoms';
+import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import type { List as ListType, ListRepliesPolicy, CreateListParams, UpdateListParams } from '@/types';
 
-// Modal for creating/editing a list
-function ListModal({
-    isOpen,
+// Modal content for creating/editing a list
+function ListModalContent({
     onClose,
     list,
     onSubmit,
     isPending,
 }: {
-    isOpen: boolean;
     onClose: () => void;
     list?: ListType;
     onSubmit: (params: CreateListParams | UpdateListParams) => void;
     isPending: boolean;
 }) {
-    const dialogRef = useRef<HTMLDialogElement>(null);
     const [title, setTitle] = useState(list?.title || '');
     const [repliesPolicy, setRepliesPolicy] = useState<ListRepliesPolicy>(list?.replies_policy || 'list');
     const [exclusive, setExclusive] = useState(list?.exclusive || false);
-
-    // Sync dialog open state with isOpen prop
-    useEffect(() => {
-        if (isOpen) {
-            dialogRef.current?.showModal();
-        } else {
-            dialogRef.current?.close();
-        }
-    }, [isOpen]);
-
-    // Reset form when list changes or modal opens
-    useEffect(() => {
-        if (isOpen) {
-            setTitle(list?.title || '');
-            setRepliesPolicy(list?.replies_policy || 'list');
-            setExclusive(list?.exclusive || false);
-        }
-    }, [isOpen, list]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -52,212 +32,111 @@ function ListModal({
     };
 
     return (
-        <dialog
-            ref={dialogRef}
-            onClose={onClose}
-            onClick={(e) => {
-                // Close on backdrop click
-                if (e.target === dialogRef.current) {
-                    onClose();
-                }
-            }}
-            style={{ maxWidth: '400px', width: '90%' }}
-        >
-            <div onClick={(e) => e.stopPropagation()}>
-                <div className="dialog-header">
-                    <h2 style={{ fontSize: 'var(--font-size-4)', margin: 0 }}>
-                        {list ? 'Edit List' : 'Create List'}
-                    </h2>
-                </div>
-                <form onSubmit={handleSubmit}>
-                    <div className="dialog-body">
-                        <div style={{ marginBottom: 'var(--size-4)' }}>
-                            <label
-                                htmlFor="list-title"
-                                style={{
-                                    display: 'block',
-                                    marginBottom: 'var(--size-2)',
-                                    fontSize: 'var(--font-size-1)',
-                                    color: 'var(--text-2)',
-                                }}
-                            >
-                                List Name
-                            </label>
-                            <input
-                                id="list-title"
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                placeholder="My List"
-                                autoFocus
-                                style={{
-                                    width: '100%',
-                                    padding: 'var(--size-3)',
-                                    background: 'var(--surface-3)',
-                                    border: '1px solid var(--surface-4)',
-                                    borderRadius: 'var(--radius-2)',
-                                    color: 'var(--text-1)',
-                                    fontSize: 'var(--font-size-2)',
-                                }}
-                            />
-                        </div>
-
-                        <div style={{ marginBottom: 'var(--size-4)' }}>
-                            <label
-                                htmlFor="replies-policy"
-                                style={{
-                                    display: 'block',
-                                    marginBottom: 'var(--size-2)',
-                                    fontSize: 'var(--font-size-1)',
-                                    color: 'var(--text-2)',
-                                }}
-                            >
-                                Show replies to
-                            </label>
-                            <select
-                                id="replies-policy"
-                                value={repliesPolicy}
-                                onChange={(e) => setRepliesPolicy(e.target.value as ListRepliesPolicy)}
-                                style={{
-                                    width: '100%',
-                                    padding: 'var(--size-3)',
-                                    background: 'var(--surface-3)',
-                                    border: '1px solid var(--surface-4)',
-                                    borderRadius: 'var(--radius-2)',
-                                    color: 'var(--text-1)',
-                                    fontSize: 'var(--font-size-2)',
-                                }}
-                            >
-                                <option value="list">Members of the list</option>
-                                <option value="followed">Any followed user</option>
-                                <option value="none">No one</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 'var(--size-2)',
-                                    fontSize: 'var(--font-size-1)',
-                                    color: 'var(--text-2)',
-                                    cursor: 'pointer',
-                                }}
-                            >
-                                <input
-                                    type="checkbox"
-                                    checked={exclusive}
-                                    onChange={(e) => setExclusive(e.target.checked)}
-                                    style={{
-                                        width: 18,
-                                        height: 18,
-                                        accentColor: 'var(--brand)',
-                                    }}
-                                />
-                                Hide these posts from home
-                            </label>
-                            <p style={{
-                                fontSize: 'var(--font-size-0)',
-                                color: 'var(--text-3)',
-                                marginTop: 'var(--size-1)',
-                                marginLeft: 'var(--size-5)',
-                            }}>
-                                Posts from list members won&apos;t appear in your home timeline
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="dialog-footer">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            disabled={isPending}
+        <div style={{ maxWidth: '400px', width: '90vw' }}>
+            <div className="dialog-header">
+                <h2 style={{ fontSize: 'var(--font-size-4)', margin: 0 }}>
+                    {list ? 'Edit List' : 'Create List'}
+                </h2>
+            </div>
+            <form onSubmit={handleSubmit}>
+                <div className="dialog-body">
+                    <div style={{ marginBottom: 'var(--size-4)' }}>
+                        <label
+                            htmlFor="list-title"
                             style={{
-                                padding: 'var(--size-2) var(--size-4)',
-                                background: 'transparent',
+                                display: 'block',
+                                marginBottom: 'var(--size-2)',
+                                fontSize: 'var(--font-size-1)',
+                                color: 'var(--text-2)',
+                            }}
+                        >
+                            List Name
+                        </label>
+                        <input
+                            id="list-title"
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            placeholder="My List"
+                            autoFocus
+                            style={{
+                                width: '100%',
+                                padding: 'var(--size-3)',
+                                background: 'var(--surface-3)',
                                 border: '1px solid var(--surface-4)',
                                 borderRadius: 'var(--radius-2)',
+                                color: 'var(--text-1)',
+                                fontSize: 'var(--font-size-2)',
+                            }}
+                        />
+                    </div>
+
+                    <div style={{ marginBottom: 'var(--size-4)' }}>
+                        <label
+                            htmlFor="replies-policy"
+                            style={{
+                                display: 'block',
+                                marginBottom: 'var(--size-2)',
+                                fontSize: 'var(--font-size-1)',
+                                color: 'var(--text-2)',
+                            }}
+                        >
+                            Show replies to
+                        </label>
+                        <select
+                            id="replies-policy"
+                            value={repliesPolicy}
+                            onChange={(e) => setRepliesPolicy(e.target.value as ListRepliesPolicy)}
+                            style={{
+                                width: '100%',
+                                padding: 'var(--size-3)',
+                                background: 'var(--surface-3)',
+                                border: '1px solid var(--surface-4)',
+                                borderRadius: 'var(--radius-2)',
+                                color: 'var(--text-1)',
+                                fontSize: 'var(--font-size-2)',
+                            }}
+                        >
+                            <option value="list">Members of the list</option>
+                            <option value="followed">Any followed user</option>
+                            <option value="none">No one</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 'var(--size-2)',
+                                fontSize: 'var(--font-size-1)',
                                 color: 'var(--text-2)',
                                 cursor: 'pointer',
                             }}
                         >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={!title.trim() || isPending}
-                            style={{
-                                padding: 'var(--size-2) var(--size-4)',
-                                background: 'var(--blue-6)',
-                                border: 'none',
-                                borderRadius: 'var(--radius-2)',
-                                color: 'white',
-                                cursor: 'pointer',
-                                opacity: !title.trim() || isPending ? 0.5 : 1,
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 'var(--size-2)',
-                            }}
-                        >
-                            {isPending && <Spinner size="small" />}
-                            {list ? 'Save' : 'Create'}
-                        </button>
+                            <input
+                                type="checkbox"
+                                checked={exclusive}
+                                onChange={(e) => setExclusive(e.target.checked)}
+                                style={{
+                                    width: 18,
+                                    height: 18,
+                                    accentColor: 'var(--brand)',
+                                }}
+                            />
+                            Hide these posts from home
+                        </label>
+                        <p style={{
+                            fontSize: 'var(--font-size-0)',
+                            color: 'var(--text-3)',
+                            marginTop: 'var(--size-1)',
+                            marginLeft: 'var(--size-5)',
+                        }}>
+                            Posts from list members won&apos;t appear in your home timeline
+                        </p>
                     </div>
-                </form>
-            </div>
-        </dialog>
-    );
-}
-
-// Delete confirmation modal
-function DeleteConfirmModal({
-    isOpen,
-    onClose,
-    onConfirm,
-    listTitle,
-    isPending,
-}: {
-    isOpen: boolean;
-    onClose: () => void;
-    onConfirm: () => void;
-    listTitle: string;
-    isPending: boolean;
-}) {
-    const dialogRef = useRef<HTMLDialogElement>(null);
-
-    // Sync dialog open state with isOpen prop
-    useEffect(() => {
-        if (isOpen) {
-            dialogRef.current?.showModal();
-        } else {
-            dialogRef.current?.close();
-        }
-    }, [isOpen]);
-
-    return (
-        <dialog
-            ref={dialogRef}
-            onClose={onClose}
-            onClick={(e) => {
-                // Close on backdrop click
-                if (e.target === dialogRef.current) {
-                    onClose();
-                }
-            }}
-            style={{ maxWidth: '400px', width: '90%' }}
-        >
-            <div onClick={(e) => e.stopPropagation()}>
-                <div className="dialog-header">
-                    <h2 style={{ fontSize: 'var(--font-size-4)', margin: 0 }}>
-                        Delete List
-                    </h2>
                 </div>
-                <div className="dialog-body">
-                    <p style={{ color: 'var(--text-2)', margin: 0 }}>
-                        Are you sure you want to delete &quot;{listTitle}&quot;? This action cannot be undone.
-                    </p>
-                </div>
+
                 <div className="dialog-footer">
                     <button
                         type="button"
@@ -275,29 +154,93 @@ function DeleteConfirmModal({
                         Cancel
                     </button>
                     <button
-                        type="button"
-                        onClick={onConfirm}
-                        disabled={isPending}
-                        autoFocus
+                        type="submit"
+                        disabled={!title.trim() || isPending}
                         style={{
                             padding: 'var(--size-2) var(--size-4)',
-                            background: 'var(--red-6)',
+                            background: 'var(--blue-6)',
                             border: 'none',
                             borderRadius: 'var(--radius-2)',
                             color: 'white',
                             cursor: 'pointer',
-                            opacity: isPending ? 0.5 : 1,
+                            opacity: !title.trim() || isPending ? 0.5 : 1,
                             display: 'flex',
                             alignItems: 'center',
                             gap: 'var(--size-2)',
                         }}
                     >
                         {isPending && <Spinner size="small" />}
-                        Delete
+                        {list ? 'Save' : 'Create'}
                     </button>
                 </div>
+            </form>
+        </div>
+    );
+}
+
+// Delete confirmation modal content
+function DeleteConfirmModalContent({
+    onClose,
+    onConfirm,
+    listTitle,
+    isPending,
+}: {
+    onClose: () => void;
+    onConfirm: () => void;
+    listTitle: string;
+    isPending: boolean;
+}) {
+    return (
+        <div style={{ maxWidth: '400px', width: '90vw' }}>
+            <div className="dialog-header">
+                <h2 style={{ fontSize: 'var(--font-size-4)', margin: 0 }}>
+                    Delete List
+                </h2>
             </div>
-        </dialog>
+            <div className="dialog-body">
+                <p style={{ color: 'var(--text-2)', margin: 0 }}>
+                    Are you sure you want to delete &quot;{listTitle}&quot;? This action cannot be undone.
+                </p>
+            </div>
+            <div className="dialog-footer">
+                <button
+                    type="button"
+                    onClick={onClose}
+                    disabled={isPending}
+                    style={{
+                        padding: 'var(--size-2) var(--size-4)',
+                        background: 'transparent',
+                        border: '1px solid var(--surface-4)',
+                        borderRadius: 'var(--radius-2)',
+                        color: 'var(--text-2)',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Cancel
+                </button>
+                <button
+                    type="button"
+                    onClick={onConfirm}
+                    disabled={isPending}
+                    autoFocus
+                    style={{
+                        padding: 'var(--size-2) var(--size-4)',
+                        background: 'var(--red-6)',
+                        border: 'none',
+                        borderRadius: 'var(--radius-2)',
+                        color: 'white',
+                        cursor: 'pointer',
+                        opacity: isPending ? 0.5 : 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'var(--size-2)',
+                    }}
+                >
+                    {isPending && <Spinner size="small" />}
+                    Delete
+                </button>
+            </div>
+        </div>
     );
 }
 
@@ -511,42 +454,63 @@ function ListItemSkeleton() {
 
 export default function ListsPage() {
     const router = useRouter();
+    const { openModal, closeModal } = useGlobalModal();
     const { data: lists, isLoading } = useLists();
     const createListMutation = useCreateList();
     const updateListMutation = useUpdateList();
     const deleteListMutation = useDeleteList();
 
-    const [showCreateModal, setShowCreateModal] = useState(false);
-    const [editingList, setEditingList] = useState<ListType | null>(null);
-    const [deletingList, setDeletingList] = useState<ListType | null>(null);
-
-    const handleCreate = (params: CreateListParams | UpdateListParams) => {
-        createListMutation.mutate(params as CreateListParams, {
-            onSuccess: () => {
-                setShowCreateModal(false);
-            },
-        });
-    };
-
-    const handleUpdate = (params: CreateListParams | UpdateListParams) => {
-        if (!editingList) return;
-        updateListMutation.mutate(
-            { id: editingList.id, params: params as UpdateListParams },
-            {
-                onSuccess: () => {
-                    setEditingList(null);
-                },
-            }
+    const handleOpenCreateModal = () => {
+        openModal(
+            <ListModalContent
+                onClose={closeModal}
+                onSubmit={(params) => {
+                    createListMutation.mutate(params as CreateListParams, {
+                        onSuccess: () => {
+                            closeModal();
+                        },
+                    });
+                }}
+                isPending={createListMutation.isPending}
+            />
         );
     };
 
-    const handleDelete = () => {
-        if (!deletingList) return;
-        deleteListMutation.mutate(deletingList.id, {
-            onSuccess: () => {
-                setDeletingList(null);
-            },
-        });
+    const handleOpenEditModal = (list: ListType) => {
+        openModal(
+            <ListModalContent
+                onClose={closeModal}
+                list={list}
+                onSubmit={(params) => {
+                    updateListMutation.mutate(
+                        { id: list.id, params: params as UpdateListParams },
+                        {
+                            onSuccess: () => {
+                                closeModal();
+                            },
+                        }
+                    );
+                }}
+                isPending={updateListMutation.isPending}
+            />
+        );
+    };
+
+    const handleOpenDeleteModal = (list: ListType) => {
+        openModal(
+            <DeleteConfirmModalContent
+                onClose={closeModal}
+                onConfirm={() => {
+                    deleteListMutation.mutate(list.id, {
+                        onSuccess: () => {
+                            closeModal();
+                        },
+                    });
+                }}
+                listTitle={list.title}
+                isPending={deleteListMutation.isPending}
+            />
+        );
     };
 
     return (
@@ -581,7 +545,7 @@ export default function ListsPage() {
                         )}
                     </div>
                 </div>
-                <IconButton onClick={() => setShowCreateModal(true)} aria-label="Create new list">
+                <IconButton onClick={handleOpenCreateModal} aria-label="Create new list">
                     <Plus size={20} />
                 </IconButton>
             </div>
@@ -599,8 +563,8 @@ export default function ListsPage() {
                         <ListItem
                             key={list.id}
                             list={list}
-                            onEdit={(l) => setEditingList(l)}
-                            onDelete={(l) => setDeletingList(l)}
+                            onEdit={handleOpenEditModal}
+                            onDelete={handleOpenDeleteModal}
                         />
                     ))}
                 </div>
@@ -612,7 +576,7 @@ export default function ListsPage() {
                         Lists let you organize the accounts you follow into curated timelines.
                     </p>
                     <button
-                        onClick={() => setShowCreateModal(true)}
+                        onClick={handleOpenCreateModal}
                         style={{
                             marginTop: 'var(--size-4)',
                             padding: 'var(--size-2) var(--size-4)',
@@ -631,30 +595,6 @@ export default function ListsPage() {
                     </button>
                 </div>
             )}
-
-            {/* Modals */}
-            <ListModal
-                isOpen={showCreateModal}
-                onClose={() => setShowCreateModal(false)}
-                onSubmit={handleCreate}
-                isPending={createListMutation.isPending}
-            />
-
-            <ListModal
-                isOpen={!!editingList}
-                onClose={() => setEditingList(null)}
-                list={editingList || undefined}
-                onSubmit={handleUpdate}
-                isPending={updateListMutation.isPending}
-            />
-
-            <DeleteConfirmModal
-                isOpen={!!deletingList}
-                onClose={() => setDeletingList(null)}
-                onConfirm={handleDelete}
-                listTitle={deletingList?.title || ''}
-                isPending={deleteListMutation.isPending}
-            />
         </div>
     );
 }
