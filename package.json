@@ -23,6 +23,7 @@
     "@tiptap/suggestion": "^3.13.0",
     "autoprefixer": "^10.4.22",
     "axios": "^1.13.2",
+    "cropperjs": "^2.1.0",
     "emoji-picker-react": "^4.16.1",
     "lucide-react": "^0.555.0",
     "mobx": "^6.15.0",
@@ -33,6 +34,7 @@
     "postcss-import": "^16.1.1",
     "postcss-nesting": "^13.0.2",
     "react": "19.2.0",
+    "react-cropper": "^2.3.3",
     "react-dom": "19.2.0",
     "react-select": "^5.10.2",
     "tippy.js": "^6.3.7"

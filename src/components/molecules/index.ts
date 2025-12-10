@@ -2,6 +2,7 @@ export { AccountCard, AccountCardSkeleton } from './AccountCard';
 export { AccountProfileSkeleton } from './AccountProfileSkeleton';
 export { AuthModalBridge } from './AuthModalBridge';
 export { DeletePostModal } from './DeletePostModal';
+export { ImageCropper } from './ImageCropper';
 export { LinkPreview } from './LinkPreview';
 export { MediaUpload } from './MediaUpload';
 export { MentionSuggestions } from './MentionSuggestions';

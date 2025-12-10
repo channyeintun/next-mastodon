@@ -93,6 +93,7 @@ mastodon-nextjs-client/
 │   │   │   ├── AccountProfileSkeleton.tsx
 │   │   │   ├── AuthModalBridge.tsx
 │   │   │   ├── DeletePostModal.tsx
+│   │   │   ├── ImageCropper.tsx
 │   │   │   ├── LinkPreview.tsx
 │   │   │   ├── MediaUpload.tsx
 │   │   │   ├── MentionSuggestions.tsx
@@ -228,7 +229,7 @@ Atomic design pattern components:
 - **atoms/**: Smallest UI building blocks
   - Avatar, Badge, Button, Card, EmojiText, IconButton, Input, ScrollToTopButton, SkipToMain, Spinner, Tabs, TextArea, TiptapEditor
 - **molecules/**: Simple component combinations
-  - AccountCard, AccountProfileSkeleton, AuthModalBridge, DeletePostModal, LinkPreview, MediaUpload, MentionSuggestions, Navigation, NotificationCard, NotificationSkeleton, PollComposer, PostCard, PostCardSkeleton, ScheduledCardSkeleton, StatusContent, StatusEditHistory, ThemeSelector, TrendingLinkCard, TrendingTagCard, UserCard, VisibilitySettingsModal
+  - AccountCard, AccountProfileSkeleton, AuthModalBridge, DeletePostModal, ImageCropper (cropperjs-based image cropping modal with zoom, rotate, flip controls), LinkPreview, MediaUpload (media upload with image cropping), MentionSuggestions, Navigation, NotificationCard, NotificationSkeleton, PollComposer, PostCard, PostCardSkeleton, ScheduledCardSkeleton, StatusContent, StatusEditHistory, ThemeSelector, TrendingLinkCard, TrendingTagCard, UserCard, VisibilitySettingsModal
 - **organisms/**: Complex components
   - AuthGuard (authentication route protection), ComposerPanel (post composition), EmojiPicker, NavigationWrapper (auth integration), TrendingContent, VirtualizedList (infinite scroll)
 - **templates/**: Page layouts (currently empty, layouts handled by route groups)
@@ -237,6 +238,7 @@ Atomic design pattern components:
 
 ### `/src/hooks/`
 Custom React hooks:
+- **useCropper.ts**: Reusable image cropper state management (used in ComposerPanel and profile edit)
 - **useStores.ts**: Access MobX stores (useAuthStore, useUserStore, useStreamingStore)
 - **useStreaming.ts**: Real-time Mastodon streaming API integration
 - **useScrollDirection.ts**: Detect scroll direction for UI enhancements
@@ -269,7 +271,7 @@ Utility functions:
 ### `package.json`
 Dependencies and scripts:
 - **Type**: ES module (`"type": "module"`)
-- **Main dependencies**: Next.js 16, React 19, TanStack Query, MobX, Motion, Tiptap, Open Props
+- **Main dependencies**: Next.js 16, React 19, TanStack Query, MobX, Motion, Tiptap, Open Props, cropperjs/react-cropper (image cropping)
 - **Dev dependencies**: ESLint, @eslint/css (CSS baseline linting)
 - **Scripts**:
   - `dev`: Start development server with Turbopack

@@ -177,6 +177,11 @@ a {
   .full-height-container {
     height: calc(100dvh - var(--app-bottom-nav-height));
   }
+
+  /* Remove border radius from header images on mobile */
+  .profile-header-image {
+    border-radius: 0 !important;
+  }
 }
 
 

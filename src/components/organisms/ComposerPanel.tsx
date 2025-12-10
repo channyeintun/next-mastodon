@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, Activity } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrentAccount, useCustomEmojis, useStatus, usePreferences, useScheduledStatus, useCreateStatus, useUpdateStatus, useDeleteScheduledStatus } from '@/api';
-import { PostCard, MediaUpload, PollComposer, VisibilitySettingsModal } from '@/components/molecules';
+import { PostCard, MediaUpload, PollComposer, VisibilitySettingsModal, ImageCropper } from '@/components/molecules';
 import type { PollData } from '@/components/molecules/PollComposer';
 import type { Visibility, QuoteVisibility } from '@/components/molecules/VisibilitySettingsModal';
 import { Avatar, EmojiText, TiptapEditor } from '@/components/atoms';
@@ -11,6 +11,7 @@ import { EmojiPicker } from './EmojiPicker';
 import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { uploadMedia, updateMedia } from '@/api/client';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
+import { useCropper } from '@/hooks/useCropper';
 import { Globe, Lock, Users, Mail, X, Smile, Image as ImageIcon, BarChart2, MessageSquareQuote, Clock } from 'lucide-react';
 import type { CreateStatusParams, MediaAttachment } from '@/types';
 
@@ -111,6 +112,7 @@ export function ComposerPanel({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isUploadingMedia, setIsUploadingMedia] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { cropperImage, openCropper, closeCropper, handleCropComplete } = useCropper();
 
   const charCount = textContent.length;
   const isOverLimit = charCount > MAX_CHAR_COUNT;
@@ -157,8 +159,17 @@ export function ComposerPanel({
     if (!files) return;
 
     for (let i = 0; i < files.length; i++) {
-      await handleMediaAdd(files[i]);
+      const file = files[i];
+
+      // Show cropper for images, upload directly for other media types
+      if (openCropper(file)) {
+        break; // Handle one image at a time for cropping
+      } else {
+        // Upload non-image files directly
+        await handleMediaAdd(file);
+      }
     }
+
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -299,6 +310,16 @@ export function ComposerPanel({
 
   return (
     <div>
+      {/* Image Cropper Modal */}
+      {cropperImage && (
+        <ImageCropper
+          image={cropperImage}
+          onCropComplete={(blob) => handleCropComplete(blob, handleMediaAdd)}
+          onCancel={closeCropper}
+          aspectRatio={16 / 9}
+        />
+      )}
+
       {/* Header with avatar and visibility - Only show if not a reply */}
       {!isReply && (
         <div className="compose-header">

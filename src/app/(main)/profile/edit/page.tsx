@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Upload, X, Check, Copy, ChevronDown, ChevronUp } from 'lucide-react';
 import { useCurrentAccount, useUpdateAccount } from '@/api';
 import { Button, IconButton, Card, Spinner } from '@/components/atoms';
+import { ImageCropper } from '@/components/molecules';
+import { useCropper } from '@/hooks/useCropper';
 
 export default function ProfileEditPage() {
     const router = useRouter();
@@ -20,6 +22,8 @@ export default function ProfileEditPage() {
     const [headerFile, setHeaderFile] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const [headerPreview, setHeaderPreview] = useState<string | null>(null);
+    const [cropperType, setCropperType] = useState<'avatar' | 'header' | null>(null);
+    const { cropperImage, openCropper, closeCropper, handleCropComplete } = useCropper();
 
     // Profile metadata fields (up to 4)
     const [fields, setFields] = useState<Array<{ name: string; value: string; verified_at: string | null }>>([
@@ -66,26 +70,42 @@ export default function ProfileEditPage() {
 
     const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) {
-            setAvatarFile(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setAvatarPreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
+        if (file && openCropper(file)) {
+            setCropperType('avatar');
         }
+        // Reset input to allow selecting the same file again
+        e.target.value = '';
     };
 
     const handleHeaderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) {
-            setHeaderFile(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setHeaderPreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
+        if (file && openCropper(file)) {
+            setCropperType('header');
         }
+        // Reset input to allow selecting the same file again
+        e.target.value = '';
+    };
+
+    const onCropComplete = (croppedFile: File) => {
+        // Create preview URL
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const previewUrl = reader.result as string;
+            if (cropperType === 'avatar') {
+                setAvatarFile(croppedFile);
+                setAvatarPreview(previewUrl);
+            } else {
+                setHeaderFile(croppedFile);
+                setHeaderPreview(previewUrl);
+            }
+        };
+        reader.readAsDataURL(croppedFile);
+        setCropperType(null);
+    };
+
+    const onCropCancel = () => {
+        closeCropper();
+        setCropperType(null);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -133,17 +153,171 @@ export default function ProfileEditPage() {
     // Show loading state until account data is loaded
     if (isLoading || !currentAccount) {
         return (
-            <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
-                <Spinner />
-                <p style={{ marginTop: 'var(--size-4)', color: 'var(--text-2)' }}>
-                    Loading profile...
-                </p>
+            <div className="container" style={{ maxWidth: '700px', margin: '0 auto', padding: 'var(--size-4)' }}>
+                {/* Header Skeleton */}
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 'var(--size-3)',
+                    marginBottom: 'var(--size-5)',
+                }}>
+                    <div style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: 'var(--radius-2)',
+                        background: 'var(--surface-3)',
+                        animation: 'var(--animation-blink)',
+                    }} />
+                    <div style={{
+                        width: '120px',
+                        height: '28px',
+                        borderRadius: 'var(--radius-2)',
+                        background: 'var(--surface-3)',
+                        animation: 'var(--animation-blink)',
+                    }} />
+                </div>
+
+                {/* Header Image & Avatar Skeleton */}
+                <Card padding="none" style={{ marginBottom: 'var(--size-4)' }}>
+                    <div style={{
+                        width: '100%',
+                        height: '200px',
+                        background: 'var(--surface-3)',
+                        animation: 'var(--animation-blink)',
+                        borderRadius: 'var(--radius-2) var(--radius-2) 0 0',
+                        position: 'relative',
+                    }}>
+                        <div style={{
+                            position: 'absolute',
+                            bottom: '-40px',
+                            left: 'var(--size-4)',
+                            width: '120px',
+                            height: '120px',
+                            borderRadius: '50%',
+                            background: 'var(--surface-3)',
+                            border: '4px solid var(--surface-1)',
+                            animation: 'var(--animation-blink)',
+                        }} />
+                    </div>
+                    <div style={{ padding: 'var(--size-4)', paddingTop: 'var(--size-8)' }} />
+                </Card>
+
+                {/* Profile Fields Skeleton */}
+                <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
+                    <div style={{
+                        width: '150px',
+                        height: '24px',
+                        borderRadius: 'var(--radius-2)',
+                        background: 'var(--surface-3)',
+                        animation: 'var(--animation-blink)',
+                        marginBottom: 'var(--size-4)',
+                    }} />
+                    <div style={{ marginBottom: 'var(--size-4)' }}>
+                        <div style={{
+                            width: '100px',
+                            height: '16px',
+                            borderRadius: 'var(--radius-2)',
+                            background: 'var(--surface-3)',
+                            animation: 'var(--animation-blink)',
+                            marginBottom: 'var(--size-2)',
+                        }} />
+                        <div style={{
+                            width: '100%',
+                            height: '40px',
+                            borderRadius: 'var(--radius-2)',
+                            background: 'var(--surface-3)',
+                            animation: 'var(--animation-blink)',
+                        }} />
+                    </div>
+                    <div>
+                        <div style={{
+                            width: '80px',
+                            height: '16px',
+                            borderRadius: 'var(--radius-2)',
+                            background: 'var(--surface-3)',
+                            animation: 'var(--animation-blink)',
+                            marginBottom: 'var(--size-2)',
+                        }} />
+                        <div style={{
+                            width: '100%',
+                            height: '80px',
+                            borderRadius: 'var(--radius-2)',
+                            background: 'var(--surface-3)',
+                            animation: 'var(--animation-blink)',
+                        }} />
+                    </div>
+                </Card>
+
+                {/* Extra Fields Skeleton */}
+                <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
+                    <div style={{
+                        width: '120px',
+                        height: '24px',
+                        borderRadius: 'var(--radius-2)',
+                        background: 'var(--surface-3)',
+                        animation: 'var(--animation-blink)',
+                        marginBottom: 'var(--size-4)',
+                    }} />
+                    {[1, 2].map((i) => (
+                        <div key={i} style={{
+                            display: 'grid',
+                            gridTemplateColumns: '1fr 1fr',
+                            gap: 'var(--size-2)',
+                            marginBottom: 'var(--size-3)',
+                        }}>
+                            <div style={{
+                                height: '40px',
+                                borderRadius: 'var(--radius-2)',
+                                background: 'var(--surface-3)',
+                                animation: 'var(--animation-blink)',
+                            }} />
+                            <div style={{
+                                height: '40px',
+                                borderRadius: 'var(--radius-2)',
+                                background: 'var(--surface-3)',
+                                animation: 'var(--animation-blink)',
+                            }} />
+                        </div>
+                    ))}
+                </Card>
+
+                {/* Action Buttons Skeleton */}
+                <div style={{
+                    display: 'flex',
+                    gap: 'var(--size-3)',
+                    justifyContent: 'flex-end',
+                }}>
+                    <div style={{
+                        width: '80px',
+                        height: '40px',
+                        borderRadius: 'var(--radius-2)',
+                        background: 'var(--surface-3)',
+                        animation: 'var(--animation-blink)',
+                    }} />
+                    <div style={{
+                        width: '120px',
+                        height: '40px',
+                        borderRadius: 'var(--radius-2)',
+                        background: 'var(--surface-3)',
+                        animation: 'var(--animation-blink)',
+                    }} />
+                </div>
             </div>
         );
     }
 
     return (
         <div className="container" style={{ maxWidth: '700px', margin: '0 auto', padding: 'var(--size-4)' }}>
+            {/* Image Cropper Modal */}
+            {cropperImage && (
+                <ImageCropper
+                    image={cropperImage}
+                    onCropComplete={(blob) => handleCropComplete(blob, onCropComplete)}
+                    onCancel={onCropCancel}
+                    aspectRatio={cropperType === 'avatar' ? 1 : 16 / 9}
+                />
+            )}
+
             {/* Header */}
             <div style={{
                 display: 'flex',
@@ -168,6 +342,7 @@ export default function ProfileEditPage() {
                 <Card padding="none" style={{ marginBottom: 'var(--size-4)' }}>
                     <div style={{ position: 'relative' }}>
                         <div
+                            className="profile-header-image"
                             style={{
                                 width: '100%',
                                 height: '200px',

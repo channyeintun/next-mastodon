@@ -69,6 +69,77 @@ export function MediaUpload({
         style={{ display: 'none' }}
       />
 
+      {/* Alt Text Editor - Above Media Grid */}
+      {editingAlt && (
+        <div style={{
+          marginBottom: 'var(--size-3)',
+          padding: 'var(--size-3)',
+          background: 'var(--surface-2)',
+          borderRadius: 'var(--radius-2)',
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 'var(--size-2)',
+          }}>
+            <label style={{
+              fontSize: 'var(--font-size-1)',
+              fontWeight: 'var(--font-weight-6)',
+              color: 'var(--text-1)',
+            }}>
+              Alt Text
+            </label>
+            <button
+              onClick={() => {
+                setEditingAlt(null);
+                setAltText('');
+              }}
+              style={{
+                padding: 'var(--size-1)',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                color: 'var(--text-2)',
+              }}
+            >
+              <X size={16} />
+            </button>
+          </div>
+          <textarea
+            value={altText}
+            onChange={(e) => setAltText(e.target.value)}
+            placeholder="Describe this media for visually impaired users..."
+            maxLength={1500}
+            rows={3}
+            style={{
+              width: '100%',
+              padding: 'var(--size-2)',
+              border: '1px solid var(--surface-4)',
+              borderRadius: 'var(--radius-2)',
+              background: 'var(--surface-1)',
+              color: 'var(--text-1)',
+              fontSize: 'var(--font-size-1)',
+              resize: 'vertical',
+              fontFamily: 'inherit',
+              marginBottom: 'var(--size-2)',
+            }}
+          />
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+            <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
+              {altText.length} / 1500
+            </span>
+            <Button size="small" onClick={handleAltSave}>
+              Save
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Media Grid */}
       <div style={{
         display: 'grid',
@@ -175,77 +246,6 @@ export function MediaUpload({
           </button>
         )}
       </div>
-
-      {/* Alt Text Editor */}
-      {editingAlt && (
-        <div style={{
-          marginBottom: 'var(--size-3)',
-          padding: 'var(--size-3)',
-          background: 'var(--surface-2)',
-          borderRadius: 'var(--radius-2)',
-        }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: 'var(--size-2)',
-          }}>
-            <label style={{
-              fontSize: 'var(--font-size-1)',
-              fontWeight: 'var(--font-weight-6)',
-              color: 'var(--text-1)',
-            }}>
-              Alt Text
-            </label>
-            <button
-              onClick={() => {
-                setEditingAlt(null);
-                setAltText('');
-              }}
-              style={{
-                padding: 'var(--size-1)',
-                border: 'none',
-                background: 'transparent',
-                cursor: 'pointer',
-                color: 'var(--text-2)',
-              }}
-            >
-              <X size={16} />
-            </button>
-          </div>
-          <textarea
-            value={altText}
-            onChange={(e) => setAltText(e.target.value)}
-            placeholder="Describe this media for visually impaired users..."
-            maxLength={1500}
-            rows={3}
-            style={{
-              width: '100%',
-              padding: 'var(--size-2)',
-              border: '1px solid var(--surface-4)',
-              borderRadius: 'var(--radius-2)',
-              background: 'var(--surface-1)',
-              color: 'var(--text-1)',
-              fontSize: 'var(--font-size-1)',
-              resize: 'vertical',
-              fontFamily: 'inherit',
-              marginBottom: 'var(--size-2)',
-            }}
-          />
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-            <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-              {altText.length} / 1500
-            </span>
-            <Button size="small" onClick={handleAltSave}>
-              Save
-            </Button>
-          </div>
-        </div>
-      )}
 
       {isUploading && (
         <div style={{

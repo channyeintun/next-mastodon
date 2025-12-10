@@ -126,14 +126,14 @@ export default function AccountPage({
 
   if (accountLoading) {
     return (
-      <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+      <div className="container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0 }}>
         {/* Header */}
         <div style={{
           position: 'sticky',
           top: 0,
           background: 'var(--surface-1)',
           zIndex: 10,
-          padding: 'var(--size-4) 0',
+          padding: 'var(--size-4)',
           marginBottom: 'var(--size-4)',
           borderBottom: '1px solid var(--surface-3)',
           display: 'flex',
@@ -209,7 +209,7 @@ export default function AccountPage({
   const isLoading = followMutation.isPending || unfollowMutation.isPending;
 
   return (
-    <div className="container full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+    <div className="container full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0 }}>
       {/* Header */}
       <div style={{
         background: 'var(--surface-1)',
@@ -239,16 +239,18 @@ export default function AccountPage({
       </div>
 
       {/* Profile Header Image */}
-      <div style={{
-        width: '100%',
-        height: '200px',
-        flexShrink: 0,
-        background: account.header
-          ? `url(${account.header}) center/cover`
-          : 'linear-gradient(135deg, var(--surface-3) 0%, var(--surface-2) 100%)',
-        borderRadius: 'var(--radius-3)',
-        marginBottom: 'calc(-1 * var(--size-8))',
-      }} />
+      <div
+        className="profile-header-image"
+        style={{
+          width: '100%',
+          height: '200px',
+          flexShrink: 0,
+          background: account.header
+            ? `url(${account.header}) center/cover`
+            : 'linear-gradient(135deg, var(--surface-3) 0%, var(--surface-2) 100%)',
+          borderRadius: 'var(--radius-3)',
+          marginBottom: 'calc(-1 * var(--size-8))',
+        }} />
 
       {/* Profile Info */}
       <div style={{ padding: 'var(--size-4)', paddingTop: 'var(--size-2)' }}>
