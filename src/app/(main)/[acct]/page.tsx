@@ -606,7 +606,14 @@ export default function AccountPage({
                   <div style={{ fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)' }}>
                     {field.name}
                   </div>
-                  <div dangerouslySetInnerHTML={{ __html: field.value }} />
+                  <div
+                    dangerouslySetInnerHTML={{ __html: field.value }}
+                    style={{
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  />
                 </div>
               ))}
             </div>
