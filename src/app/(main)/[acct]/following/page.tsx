@@ -43,7 +43,7 @@ export default function FollowingPage({
 
     if (accountLoading || followingLoading) {
         return (
-            <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -66,7 +66,7 @@ export default function FollowingPage({
 
     if (accountError || !account) {
         return (
-            <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
+            <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
                 <h2 style={{ color: 'var(--red-6)', marginBottom: 'var(--size-3)' }}>
                     Profile Not Found
                 </h2>
@@ -78,7 +78,7 @@ export default function FollowingPage({
     }
 
     return (
-        <div className="container full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
             {/* Header */}
             <div style={{
                 display: 'flex',

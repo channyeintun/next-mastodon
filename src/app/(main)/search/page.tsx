@@ -209,13 +209,13 @@ export default function SearchPage() {
   // We can show a common loading indicator if the *current* tab is loading and has no data.
 
   return (
-    <div className="container" style={{ maxWidth: '600px', margin: '0 auto', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ maxWidth: '600px', margin: '0 auto', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <div style={{
         flexShrink: 0,
         background: 'var(--surface-1)',
         zIndex: 10,
-        padding: 'var(--size-4) 0',
+        padding: 'var(--size-4) var(--size-2)',
         marginBottom: 'var(--size-4)',
         borderBottom: '1px solid var(--surface-3)',
       }}>
@@ -384,7 +384,7 @@ export default function SearchPage() {
           <>
             {/* All Tab */}
             <Activity mode={activeTab === 'all' ? 'visible' : 'hidden'}>
-              <div style={{ height: '100%', overflowY: 'auto' }}>
+              <div style={{ height: '100%', overflowY: 'auto', padding: '0 var(--size-2)' }}>
                 {isLoadingAll ? (
                   <div style={{ display: 'grid', placeItems: 'center', marginTop: 'var(--size-8)' }}>
                     <Spinner />

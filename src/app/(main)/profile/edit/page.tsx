@@ -153,7 +153,7 @@ export default function ProfileEditPage() {
     // Show loading state until account data is loaded
     if (isLoading || !currentAccount) {
         return (
-            <div className="container" style={{ maxWidth: '700px', margin: '0 auto', padding: 'var(--size-4)' }}>
+            <div style={{ maxWidth: '700px', margin: '0 auto', padding: 'var(--size-4)' }}>
                 {/* Header Skeleton */}
                 <div style={{
                     display: 'flex',
@@ -307,7 +307,7 @@ export default function ProfileEditPage() {
     }
 
     return (
-        <div className="container" style={{ maxWidth: '700px', margin: '0 auto', padding: 'var(--size-4)' }}>
+        <div style={{ maxWidth: '700px', margin: '0 auto', padding: 'var(--size-4)' }}>
             {/* Image Cropper Modal */}
             {cropperImage && (
                 <ImageCropper

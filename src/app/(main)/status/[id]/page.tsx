@@ -37,7 +37,7 @@ export default function StatusPage({
 
   if (isLoading) {
     return (
-      <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
         {/* Header */}
         <div style={{
           position: 'sticky',
@@ -97,7 +97,7 @@ export default function StatusPage({
 
   if (isError || !status) {
     return (
-      <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
+      <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
         <h2 style={{ color: 'var(--red-6)', marginBottom: 'var(--size-3)' }}>
           Error Loading Post
         </h2>
@@ -115,7 +115,7 @@ export default function StatusPage({
   const descendants = context?.descendants ?? [];
 
   return (
-    <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '600px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{
         position: 'sticky',

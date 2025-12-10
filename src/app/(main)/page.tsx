@@ -44,7 +44,7 @@ const TimelinePage = observer(() => {
 
   if (isLoading) {
     return (
-      <div className="container full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+      <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
         {/* Header */}
         <div style={{
           background: 'var(--surface-1)',
@@ -94,7 +94,7 @@ const TimelinePage = observer(() => {
 
   if (isError) {
     return (
-      <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
+      <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
         <h2 style={{ color: 'var(--red-6)', marginBottom: 'var(--size-3)' }}>
           Error Loading Timeline
         </h2>
@@ -110,7 +110,7 @@ const TimelinePage = observer(() => {
 
   if (uniqueStatuses.length === 0) {
     return (
-      <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
+      <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
         <h2 style={{ marginBottom: 'var(--size-3)' }}>Your Timeline is Empty</h2>
         <p style={{ color: 'var(--text-2)', marginBottom: 'var(--size-4)' }}>
           Follow some accounts to see their posts here!
@@ -126,7 +126,7 @@ const TimelinePage = observer(() => {
   }
 
   return (
-    <div className="container full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+    <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{
         background: 'var(--surface-1)',

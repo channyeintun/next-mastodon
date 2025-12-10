@@ -31,19 +31,18 @@ export default function BookmarksPage() {
 
   if (isLoading) {
     return (
-      <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+      <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
         {/* Header */}
         <div style={{
-          position: 'sticky',
-          top: 0,
           background: 'var(--surface-1)',
           zIndex: 10,
-          padding: 'var(--size-4) 0',
+          padding: 'var(--size-4)',
           marginBottom: 'var(--size-4)',
           borderBottom: '1px solid var(--surface-3)',
           display: 'flex',
           alignItems: 'center',
           gap: 'var(--size-3)',
+          flexShrink: 0,
         }}>
           <IconButton onClick={() => router.back()}>
             <ArrowLeft size={20} />
@@ -54,14 +53,16 @@ export default function BookmarksPage() {
         </div>
 
         {/* Skeleton loading */}
-        <PostCardSkeletonList count={5} />
+        <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+          <PostCardSkeletonList count={5} />
+        </div>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
+      <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
         <h2 style={{ color: 'var(--red-6)', marginBottom: 'var(--size-3)' }}>
           Error Loading Bookmarks
         </h2>
@@ -77,7 +78,7 @@ export default function BookmarksPage() {
 
   if (uniqueStatuses.length === 0) {
     return (
-      <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
         {/* Header */}
         <div style={{
           position: 'sticky',
@@ -115,7 +116,7 @@ export default function BookmarksPage() {
   }
 
   return (
-    <div className="container full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+    <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{
         background: 'var(--surface-1)',

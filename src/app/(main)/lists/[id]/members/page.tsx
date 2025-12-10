@@ -66,7 +66,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
 
     if (isLoadingList) {
         return (
-            <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
                 <div
                     style={{
                         display: 'flex',
@@ -91,7 +91,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
 
     if (!list) {
         return (
-            <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
                 <div
                     style={{
                         display: 'flex',
@@ -111,7 +111,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
     }
 
     return (
-        <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
             {/* Header */}
             <div
                 style={{

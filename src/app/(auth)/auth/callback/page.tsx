@@ -68,7 +68,7 @@ function CallbackContent() {
   }, [searchParams, authStore, router]);
 
   return (
-    <div className="container" style={{ maxWidth: '500px', marginTop: 'var(--size-8)', textAlign: 'center' }}>
+    <div style={{ maxWidth: '500px', marginTop: 'var(--size-8)', textAlign: 'center' }}>
       {error ? (
         <>
           <h1 style={{ fontSize: 'var(--font-size-5)', marginBottom: 'var(--size-4)', color: 'var(--red-9)' }}>
@@ -115,7 +115,7 @@ function CallbackContent() {
 export default function CallbackPage() {
   return (
     <Suspense fallback={
-      <div className="container" style={{ maxWidth: '500px', marginTop: 'var(--size-8)', textAlign: 'center' }}>
+      <div style={{ maxWidth: '500px', marginTop: 'var(--size-8)', textAlign: 'center' }}>
         <div
           className="spinner"
           style={{

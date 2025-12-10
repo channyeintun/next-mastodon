@@ -59,7 +59,7 @@ export default function NotificationsPage() {
     }
 
     return (
-        <div className="container full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
             {/* Header */}
             <div style={{
                 background: 'var(--surface-1)',
@@ -136,7 +136,11 @@ export default function NotificationsPage() {
             </div>
 
             {/* Loading state */}
-            {isLoading && <NotificationSkeletonList count={6} />}
+            {isLoading && (
+                <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+                    <NotificationSkeletonList count={6} />
+                </div>
+            )}
 
             {/* Error state */}
             {isError && (

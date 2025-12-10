@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useId } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Plus, List, MoreVertical, Pencil, Trash2, Users, MessageCircle } from 'lucide-react';
@@ -550,7 +550,7 @@ export default function ListsPage() {
     };
 
     return (
-        <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
             {/* Header */}
             <div
                 style={{
@@ -588,11 +588,11 @@ export default function ListsPage() {
 
             {/* Lists */}
             {isLoading ? (
-                <>
+                <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
                     {Array.from({ length: 3 }).map((_, i) => (
                         <ListItemSkeleton key={i} />
                     ))}
-                </>
+                </div>
             ) : lists && lists.length > 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-3)', padding: 'var(--size-4)' }}>
                     {lists.map((list) => (

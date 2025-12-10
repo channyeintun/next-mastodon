@@ -159,11 +159,6 @@ a {
 }
 
 /* Container utilities */
-.container {
-  max-width: var(--app-max-width);
-  margin: 0 auto;
-  padding: var(--size-4);
-}
 
 .full-height-container {
   height: 100dvh;

@@ -21,7 +21,7 @@ const AuthGuard = observer(({ children }: AuthGuardProps) => {
 
   if (!authStore.isAuthenticated) {
     return (
-      <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
+      <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
         <div
           className="spinner"
           style={{

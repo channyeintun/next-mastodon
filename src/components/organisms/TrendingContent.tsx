@@ -74,7 +74,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
     );
 
     return (
-        <div className="container full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
             {/* Header */}
             {header}
 
@@ -91,7 +91,9 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
             <Activity mode={activeTab === 'posts' ? 'visible' : 'hidden'}>
                 <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
                     {statusesLoading ? (
-                        <PostCardSkeletonList count={5} />
+                        <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+                            <PostCardSkeletonList count={5} />
+                        </div>
                     ) : statusesError ? (
                         <div style={{ textAlign: 'center', padding: 'var(--size-8)' }}>
                             <p style={{ color: 'var(--red-6)', marginBottom: 'var(--size-3)' }}>
@@ -129,10 +131,12 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
             <Activity mode={activeTab === 'tags' ? 'visible' : 'hidden'}>
                 <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%', padding: '0 var(--size-4)' }}>
                     {tagsLoading ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
-                            {Array.from({ length: 8 }).map((_, i) => (
-                                <TrendingTagCardSkeleton key={i} />
-                            ))}
+                        <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
+                                {Array.from({ length: 8 }).map((_, i) => (
+                                    <TrendingTagCardSkeleton key={i} />
+                                ))}
+                            </div>
                         </div>
                     ) : tagsError ? (
                         <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
@@ -168,10 +172,12 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
             <Activity mode={activeTab === 'links' ? 'visible' : 'hidden'}>
                 <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%', padding: '0 var(--size-4)' }}>
                     {linksLoading ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
-                            {Array.from({ length: 5 }).map((_, i) => (
-                                <TrendingLinkCardSkeleton key={i} />
-                            ))}
+                        <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                    <TrendingLinkCardSkeleton key={i} />
+                                ))}
+                            </div>
                         </div>
                     ) : linksError ? (
                         <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>

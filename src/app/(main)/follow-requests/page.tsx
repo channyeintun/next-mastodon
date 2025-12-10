@@ -22,7 +22,7 @@ export default function FollowRequestsPage() {
 
     if (isLoading) {
         return (
-            <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -44,7 +44,7 @@ export default function FollowRequestsPage() {
     }
 
     return (
-        <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
             {/* Header */}
             <div style={{
                 display: 'flex',

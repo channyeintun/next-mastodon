@@ -40,7 +40,7 @@ export default function HashtagPage({
 
   if (isLoading) {
     return (
-      <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
         {/* Header */}
         <div style={{
           position: 'sticky',
@@ -84,14 +84,14 @@ export default function HashtagPage({
 
   if (isError) {
     return (
-      <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
+      <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
         <p style={{ color: 'var(--red-6)' }}>Failed to load hashtag timeline</p>
       </div>
     );
   }
 
   return (
-    <div className="container full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+    <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{
         background: 'var(--surface-1)',

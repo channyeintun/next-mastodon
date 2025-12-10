@@ -23,7 +23,7 @@ export default function MutedAccountsPage() {
 
     if (isLoading) {
         return (
-            <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -45,7 +45,7 @@ export default function MutedAccountsPage() {
     }
 
     return (
-        <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
             {/* Header */}
             <div style={{
                 display: 'flex',

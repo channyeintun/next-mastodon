@@ -80,7 +80,7 @@ export default function SignInPage() {
   const [error, formAction] = useActionState(handleSubmit, null);
 
   return (
-    <div className="container" style={{ maxWidth: '500px', marginTop: 'var(--size-8)' }}>
+    <div style={{ maxWidth: '500px', marginTop: 'var(--size-8)' }}>
       <h1 style={{ fontSize: 'var(--font-size-6)', marginBottom: 'var(--size-4)', textAlign: 'center' }}>
         Sign in to Mastodon
       </h1>

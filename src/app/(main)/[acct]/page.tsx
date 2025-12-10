@@ -126,7 +126,7 @@ export default function AccountPage({
 
   if (accountLoading) {
     return (
-      <div className="container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0 }}>
+      <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0 }}>
         {/* Header */}
         <div style={{
           position: 'sticky',
@@ -138,7 +138,7 @@ export default function AccountPage({
           borderBottom: '1px solid var(--surface-3)',
           display: 'flex',
           alignItems: 'center',
-          gap: 'var(--size-3)',
+          flexShrink: 0,
         }}>
           <IconButton onClick={() => router.back()}>
             <ArrowLeft size={20} />
@@ -183,7 +183,9 @@ export default function AccountPage({
           }}>
             Posts
           </h3>
-          <PostCardSkeletonList count={3} />
+          <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+            <PostCardSkeletonList count={3} />
+          </div>
         </div>
       </div>
     );
@@ -191,7 +193,7 @@ export default function AccountPage({
 
   if (accountError || !account) {
     return (
-      <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
+      <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
         <h2 style={{ color: 'var(--red-6)', marginBottom: 'var(--size-3)' }}>
           Profile Not Found
         </h2>
@@ -209,7 +211,7 @@ export default function AccountPage({
   const isLoading = followMutation.isPending || unfollowMutation.isPending;
 
   return (
-    <div className="container full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0 }}>
+    <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0 }}>
       {/* Header */}
       <div style={{
         background: 'var(--surface-1)',
@@ -543,7 +545,9 @@ export default function AccountPage({
         </h3>
 
         {statusesLoading && uniqueStatuses.length === 0 ? (
-          <PostCardSkeletonList count={3} />
+          <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+            <PostCardSkeletonList count={3} />
+          </div>
         ) : (
           <VirtualizedList<Status>
             items={uniqueStatuses}

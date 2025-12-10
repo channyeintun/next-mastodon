@@ -33,7 +33,7 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
   // Show skeleton until account data is loaded
   if (isLoading || !currentAccount) {
     return (
-      <div className="container" style={{ maxWidth: '600px', margin: '0 auto', padding: 'var(--size-4)' }}>
+      <div style={{ maxWidth: '600px', margin: '0 auto', padding: 'var(--size-4) var(--size-2)' }}>
         {/* Header Skeleton */}
         <div style={{
           display: 'flex',
@@ -86,7 +86,7 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
   }
 
   return (
-    <div className="container" style={{ maxWidth: '600px', margin: '0 auto', padding: 'var(--size-4)' }}>
+    <div style={{ maxWidth: '600px', margin: '0 auto', padding: 'var(--size-4) var(--size-2)' }}>
       {/* Header */}
       <div style={{
         display: 'flex',

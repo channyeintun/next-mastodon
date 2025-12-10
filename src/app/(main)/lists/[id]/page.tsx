@@ -3,7 +3,7 @@
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, List, Users, Settings, Loader2 } from 'lucide-react';
+import { ArrowLeft, List, Users, Settings } from 'lucide-react';
 import { useList, useInfiniteListTimeline } from '@/api';
 import { IconButton } from '@/components/atoms';
 import { PostCard, PostCardSkeleton, PostCardSkeletonList } from '@/components/molecules';
@@ -28,7 +28,7 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
 
     if (isLoadingList) {
         return (
-            <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
                 <div
                     style={{
                         display: 'flex',
@@ -45,15 +45,16 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
                         <div className="skeleton" style={{ width: 100, height: 14 }} />
                     </div>
                 </div>
-                <PostCardSkeletonList count={5} />
+                <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+                    <PostCardSkeletonList count={5} />
+                </div>
             </div>
         );
     }
 
     if (!list) {
-        // ... (keep generic not found state)
         return (
-            <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
                 <div
                     style={{
                         display: 'flex',
@@ -85,7 +86,7 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
     }
 
     return (
-        <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
             {/* ... Header ... */}
             <div
                 style={{
@@ -140,7 +141,9 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
 
             {/* Timeline */}
             {isLoadingTimeline ? (
-                <PostCardSkeletonList count={5} />
+                <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+                    <PostCardSkeletonList count={5} />
+                </div>
             ) : statuses.length > 0 ? (
                 <VirtualizedList<Status>
                     items={statuses}
