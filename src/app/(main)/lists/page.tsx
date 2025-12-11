@@ -63,7 +63,7 @@ export default function ListsPage() {
     };
 
     return (
-        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0 }}>
             {/* Header */}
             <div style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
