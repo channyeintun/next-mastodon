@@ -33,6 +33,7 @@ export { ProfilePillSkeleton } from './ProfilePillSkeleton';
 export { ProfileStats } from './ProfileStats';
 export { ReblogIndicator } from './ReblogIndicator';
 export { ScheduledCardSkeletonList } from './ScheduledCardSkeleton';
+export { SearchHistory } from './SearchHistory';
 export { StatusContent } from './StatusContent';
 export { StatusEditHistory } from './StatusEditHistory';
 export { ThemeSelector } from './ThemeSelector';

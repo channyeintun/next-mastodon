@@ -6,7 +6,7 @@ import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendi
 import { PostCard } from '@/components/organisms';
 import { PostCardSkeletonList, PostCardSkeleton, TrendingTagCard, TrendingTagCardSkeleton, TrendingLinkCard, TrendingLinkCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { Button, Tabs } from '@/components/atoms';
+import { Button, Tabs, EmptyState } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
 import { Hash, Newspaper, FileText } from 'lucide-react';
 import { flattenAndUniqById, flattenAndUniqByKey } from '@/utils/fp';
@@ -91,9 +91,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             <Button onClick={() => window.location.reload()}>Retry</Button>
                         </div>
                     ) : uniqueStatuses.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
-                            No trending posts at the moment.
-                        </div>
+                        <EmptyState title="No trending posts at the moment" />
                     ) : (
                         <VirtualizedList<Status>
                             items={uniqueStatuses}
@@ -128,13 +126,9 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             </div>
                         </div>
                     ) : tagsError ? (
-                        <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
-                            Failed to load trending tags.
-                        </div>
+                        <EmptyState title="Failed to load trending tags" />
                     ) : uniqueTags.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
-                            No trending tags at the moment.
-                        </div>
+                        <EmptyState title="No trending tags at the moment" />
                     ) : (
                         <VirtualizedList<Tag>
                             items={uniqueTags}
@@ -169,13 +163,9 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             </div>
                         </div>
                     ) : linksError ? (
-                        <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
-                            Failed to load trending news.
-                        </div>
+                        <EmptyState title="Failed to load trending news" />
                     ) : uniqueLinks.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
-                            No trending news at the moment.
-                        </div>
+                        <EmptyState title="No trending news at the moment" />
                     ) : (
                         <VirtualizedList<TrendingLink>
                             items={uniqueLinks}

@@ -7,7 +7,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useLookupAccount, useInfiniteFollowing } from '@/api';
 import { AccountCard, AccountCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { IconButton, EmojiText, Button } from '@/components/atoms';
+import { IconButton, EmojiText, Button, EmptyState } from '@/components/atoms';
 import { flattenPages } from '@/utils/fp';
 import type { Account } from '@/types';
 
@@ -115,13 +115,9 @@ export default function FollowingPage({
                 endIndicator="No more accounts"
                 emptyState={
                     account.following_count > 0 ? (
-                        <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
-                            This user has chosen to not make this information available
-                        </div>
+                        <EmptyState title="This user has chosen to not make this information available" />
                     ) : (
-                        <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
-                            Not following anyone yet
-                        </div>
+                        <EmptyState title="Not following anyone yet" />
                     )
                 }
             />

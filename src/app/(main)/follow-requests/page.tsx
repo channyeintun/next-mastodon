@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft, UserPlus } from 'lucide-react';
 import { useFollowRequests } from '@/api';
 import { AccountCard, AccountCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
-import { IconButton, Button, TextSkeleton } from '@/components/atoms';
+import { IconButton, Button, TextSkeleton, EmptyState } from '@/components/atoms';
 import { flattenPages } from '@/utils/fp';
 import type { Account } from '@/types';
 
@@ -64,10 +64,7 @@ export default function FollowRequestsPage() {
             {/* Requests List */}
             <div>
                 {requests.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
-                        <UserPlus size={48} style={{ opacity: 0.3, marginBottom: 'var(--size-4)' }} />
-                        <p>No pending follow requests</p>
-                    </div>
+                    <EmptyState icon={<UserPlus size={48} />} title="No pending follow requests" />
                 ) : (
                     requests.map((account: Account) => (
                         <AccountCard

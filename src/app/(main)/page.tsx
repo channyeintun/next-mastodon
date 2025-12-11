@@ -8,7 +8,7 @@ import { PostCard } from '@/components/organisms';
 import { PostCardSkeletonList, PostCardSkeleton, ProfilePillSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { TrendingContent } from '@/components/organisms/TrendingContent';
-import { EmojiText, Button, IconButton, CircleSkeleton } from '@/components/atoms';
+import { EmojiText, Button, IconButton, CircleSkeleton, EmptyState } from '@/components/atoms';
 import { Plus, TrendingUp, Search } from 'lucide-react';
 import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';
@@ -191,6 +191,7 @@ const TimelinePage = observer(() => {
         scrollRestorationKey="home-timeline"
         loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
         endIndicator="You've reached the end of your timeline"
+        emptyState={<EmptyState title="No posts yet" description="Follow some people to see their posts here." />}
       />
     </div>
   );
