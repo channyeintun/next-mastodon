@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Bell, Trash2, Check } from 'lucide-react';
 import { NotificationCard, NotificationSkeletonList } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { Button } from '@/components/atoms';
-import { useInfiniteNotifications, useClearNotifications, useMarkNotificationsAsRead } from '@/api';
+import { useInfiniteNotifications, useClearNotifications, useMarkNotificationsAsRead, useNotificationMarker } from '@/api';
 import { useNotificationStream } from '@/hooks/useStreaming';
 import { useAuthStore } from '@/hooks/useStores';
 import { useRouter } from 'next/navigation';
@@ -31,6 +31,24 @@ export default function NotificationsPage() {
     const clearMutation = useClearNotifications();
     const markAsReadMutation = useMarkNotificationsAsRead();
 
+    // Fetch the notification marker to determine which notifications are "new"
+    const { data: markerData } = useNotificationMarker();
+
+    // Store the initial marker value when we first load the page
+    // This persists during the session for highlighting, even after we update the marker
+    const initialMarkerRef = useRef<string | null>(null);
+    const hasAutoMarkedRef = useRef(false);
+
+    // Capture the initial marker value on first load
+    useEffect(() => {
+        if (markerData?.notifications?.last_read_id && initialMarkerRef.current === null) {
+            initialMarkerRef.current = markerData.notifications.last_read_id;
+        }
+    }, [markerData]);
+
+    // Use the initial marker for highlighting during this session
+    const lastReadIdForHighlight = initialMarkerRef.current;
+
     // Redirect if not authenticated
     useEffect(() => {
         if (!authStore.isAuthenticated) {
@@ -39,6 +57,27 @@ export default function NotificationsPage() {
     }, [authStore.isAuthenticated, router]);
 
     const allNotifications = data?.pages.flatMap((page) => page) ?? [];
+
+    // Auto-update marker when visiting the page (like Mastodon does)
+    // This runs once when we have notifications and haven't auto-marked yet
+    useEffect(() => {
+        if (allNotifications.length > 0 && !hasAutoMarkedRef.current) {
+            const latestId = allNotifications[0].id;
+            // Only update if there are new notifications
+            if (!lastReadIdForHighlight || latestId > lastReadIdForHighlight) {
+                hasAutoMarkedRef.current = true;
+                markAsReadMutation.mutate(latestId);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [allNotifications.length, lastReadIdForHighlight]);
+
+    // Helper to check if a notification is new (has ID greater than lastReadId)
+    const isNotificationNew = (notificationId: string): boolean => {
+        if (!lastReadIdForHighlight) return false;
+        // Mastodon uses Snowflake IDs - larger IDs are newer
+        return notificationId > lastReadIdForHighlight;
+    };
 
     const handleMarkAsRead = () => {
         // Get the most recent notification ID to mark as the last read
@@ -115,7 +154,6 @@ export default function NotificationsPage() {
                             variant="ghost"
                             size="small"
                             onClick={handleMarkAsRead}
-                            disabled={markAsReadMutation.isPending}
                             aria-label="Mark as read"
                         >
                             <Check size={16} />
@@ -125,7 +163,6 @@ export default function NotificationsPage() {
                             variant="ghost"
                             size="small"
                             onClick={handleClearAll}
-                            disabled={clearMutation.isPending}
                             aria-label="Clear all"
                         >
                             <Trash2 size={16} />
@@ -164,6 +201,7 @@ export default function NotificationsPage() {
                             key={notification.id}
                             notification={notification}
                             style={{ marginBottom: 'var(--size-2)' }}
+                            isNew={isNotificationNew(notification.id)}
                         />
                     )}
                     getItemKey={(notification) => notification.id}

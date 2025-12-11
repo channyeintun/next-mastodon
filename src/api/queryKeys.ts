@@ -100,4 +100,11 @@ export const queryKeys = {
     accounts: (id: string, params?: object) => ['lists', id, 'accounts', params] as const,
     timeline: (id: string, params?: object) => ['timelines', 'list', id, params] as const,
   },
+
+  // Markers (for tracking read position)
+  markers: {
+    all: () => ['markers'] as const,
+    notifications: () => ['markers', 'notifications'] as const,
+    home: () => ['markers', 'home'] as const,
+  },
 }

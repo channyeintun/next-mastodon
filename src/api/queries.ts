@@ -38,6 +38,7 @@ import {
   getStatusSource,
   getScheduledStatuses,
   getScheduledStatus,
+  getMarkers,
 } from './client'
 import { queryKeys } from './queryKeys'
 import type { TimelineParams, SearchParams, Status, NotificationParams, Account, ScheduledStatus, Tag, TrendingLink } from '../types/mastodon'
@@ -382,6 +383,7 @@ export const infiniteNotificationsOptions = () =>
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
+    staleTime: 0, // Always refetch when mounting to get new notifications
   })
 
 export const notificationOptions = (id: string) =>
@@ -505,6 +507,14 @@ export const scheduledStatusOptions = (id: string) =>
   queryOptions({
     queryKey: queryKeys.scheduledStatuses.detail(id),
     queryFn: ({ signal }) => getScheduledStatus(id, signal),
+  })
+
+// Marker Options (for tracking read position)
+export const notificationMarkerOptions = () =>
+  queryOptions({
+    queryKey: queryKeys.markers.notifications(),
+    queryFn: ({ signal }) => getMarkers(['notifications'], signal),
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   })
 
 // ============================================================================
@@ -820,5 +830,14 @@ export function useScheduledStatus(id: string) {
   return useQuery({
     ...scheduledStatusOptions(id),
     enabled: !!id && authStore.isAuthenticated,
+  })
+}
+
+// Markers
+export function useNotificationMarker() {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...notificationMarkerOptions(),
+    enabled: authStore.isAuthenticated,
   })
 }

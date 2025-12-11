@@ -26,38 +26,41 @@ export function useNotificationStream() {
     // Handle incoming notifications - using useEffectEvent to always access
     // the latest queryClient without making it a reactive dependency
     const handleNotification = useEffectEvent((notification: Notification) => {
-        // Add to the beginning of the notifications list
-        queryClient.setQueryData<InfiniteData<Notification[]>>(
-            queryKeys.notifications.list(),
-            (old) => {
-                if (!old?.pages) {
-                    return {
-                        pages: [[notification]],
-                        pageParams: [undefined],
-                    }
-                }
-
-                // Check if notification already exists
-                const exists = old.pages.some(page =>
-                    page.some(n => n.id === notification.id)
-                )
-                if (exists) return old
-
-                // Prepend to first page
-                return {
-                    ...old,
-                    pages: [
-                        [notification, ...old.pages[0]],
-                        ...old.pages.slice(1)
-                    ],
-                }
-            }
+        // Only update notifications cache if it already exists (user has visited the page)
+        // If no cache exists, don't create one - let the page fetch fresh data with proper loading
+        const existingData = queryClient.getQueryData<InfiniteData<Notification[]>>(
+            queryKeys.notifications.list()
         )
 
-        // Invalidate unread count to refetch
-        queryClient.invalidateQueries({
-            queryKey: queryKeys.notifications.unreadCount()
-        })
+        if (existingData?.pages) {
+            // Check if notification already exists
+            const exists = existingData.pages.some(page =>
+                page.some(n => n.id === notification.id)
+            )
+
+            if (!exists) {
+                // Prepend to first page
+                queryClient.setQueryData<InfiniteData<Notification[]>>(
+                    queryKeys.notifications.list(),
+                    {
+                        ...existingData,
+                        pages: [
+                            [notification, ...existingData.pages[0]],
+                            ...existingData.pages.slice(1)
+                        ],
+                    }
+                )
+            }
+        }
+
+        // Optimistically increment unread count for immediate badge update
+        queryClient.setQueryData<{ count: number }>(
+            queryKeys.notifications.unreadCount(),
+            (old) => {
+                const currentCount = old?.count ?? 0
+                return { count: currentCount + 1 }
+            }
+        )
     })
 
     // Set up notification handler

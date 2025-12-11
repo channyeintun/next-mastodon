@@ -3,7 +3,7 @@
 import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, PenSquare, Search, Settings, Coffee, Github, Bell, List, Calendar, TrendingUp } from 'lucide-react';
-import { useInstance, useUnreadNotificationCount } from '@/api';
+import { useInstance, useUnreadNotificationCount, useNotificationMarker } from '@/api';
 import type { Account } from '@/types';
 
 interface NavigationProps {
@@ -16,6 +16,9 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
   const pathname = usePathname();
   const { data: instance, isLoading: isLoadingInstance } = useInstance();
   const { data: unreadCount } = useUnreadNotificationCount();
+
+  // Prefetch notification marker globally so it's available immediately when visiting notifications
+  useNotificationMarker();
 
   // Desktop sidebar includes all links
   const sidebarNavLinks = [

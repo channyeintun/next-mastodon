@@ -790,6 +790,8 @@ export function useMarkNotificationsAsRead() {
     onSuccess: () => {
       // Reset unread count after marking as read
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.unreadCount() })
+      // Invalidate markers cache so the UI updates
+      queryClient.invalidateQueries({ queryKey: queryKeys.markers.notifications() })
     },
   })
 }

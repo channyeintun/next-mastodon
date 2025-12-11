@@ -21,6 +21,7 @@ interface NotificationCardProps {
     notification: Notification;
     onDismiss?: (id: string) => void;
     style?: React.CSSProperties;
+    isNew?: boolean;
 }
 
 // Format relative time
@@ -95,7 +96,7 @@ const NOTIFICATION_CONFIG: Record<NotificationType, {
     },
 };
 
-export function NotificationCard({ notification, onDismiss, style }: NotificationCardProps) {
+export function NotificationCard({ notification, onDismiss, style, isNew }: NotificationCardProps) {
     const router = useRouter();
     const dismissMutation = useDismissNotification();
 
@@ -127,7 +128,14 @@ export function NotificationCard({ notification, onDismiss, style }: Notificatio
 
     return (
         <div style={style}>
-            <Card padding="medium" onClick={handleCardClick}>
+            <Card
+                padding="medium"
+                onClick={handleCardClick}
+                style={isNew ? {
+                    borderLeft: '3px solid var(--blue-6)',
+                    background: 'color-mix(in srgb, var(--blue-6) 5%, var(--surface-2))',
+                } : undefined}
+            >
                 <div style={{
                     display: 'flex',
                     gap: 'var(--size-3)',
