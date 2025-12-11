@@ -52,7 +52,7 @@ export function ProfileContent({
     return (
         <>
             {/* Tabs */}
-            <div style={{ padding: '0 var(--size-4)' }}>
+            <div style={{ padding: '0' }}>
                 <Tabs
                     tabs={profileTabs}
                     activeTab={activeTab}
@@ -103,6 +103,7 @@ export function ProfileContent({
                             </div>
                         ) : (
                             <VirtualizedList<Status>
+                                style={{ padding: 0 }}
                                 items={statuses}
                                 renderItem={(status) => (
                                     <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
@@ -133,6 +134,7 @@ export function ProfileContent({
                             </div>
                         ) : (
                             <VirtualizedList<Status>
+                                style={{ padding: 0 }}
                                 items={statuses}
                                 renderItem={(status) => (
                                     <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />

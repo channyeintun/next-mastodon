@@ -176,7 +176,7 @@ export default function AccountPage({
           )}
 
           {/* Profile Details Container */}
-          <div style={{ padding: 'var(--size-4)', paddingTop: 'var(--size-2)' }}>
+          <div style={{ padding: 'var(--size-2)', paddingTop: 'var(--size-2)' }}>
             {/* Avatar and Actions */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--size-4)' }}>
               <Avatar
