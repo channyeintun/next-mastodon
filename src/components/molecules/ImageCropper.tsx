@@ -1,11 +1,84 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { useState, useRef } from 'react';
 import { Cropper, ReactCropperElement } from 'react-cropper';
 import 'react-cropper/node_modules/cropperjs/dist/cropper.min.css';
 import { X, Check, RotateCw, RotateCcw, FlipHorizontal, FlipVertical, ZoomIn, ZoomOut } from 'lucide-react';
 import { Button } from '../atoms/Button';
 import { IconButton } from '../atoms/IconButton';
+
+// Styled components
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--size-3);
+  background: rgba(0, 0, 0, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
+const Title = styled.h2`
+  margin: 0;
+  color: white;
+  font-size: var(--font-size-3);
+  font-weight: var(--font-weight-6);
+`;
+
+const CropperContainer = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--size-4);
+  overflow: hidden;
+`;
+
+const Controls = styled.div`
+  padding: var(--size-4);
+  background: rgba(0, 0, 0, 0.8);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
+const ToolButtons = styled.div`
+  display: flex;
+  gap: var(--size-2);
+  justify-content: center;
+  margin-bottom: var(--size-4);
+  flex-wrap: wrap;
+`;
+
+const ToolButton = styled(IconButton)`
+  background: rgba(255, 255, 255, 0.1);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+`;
+
+const ActionButtons = styled.div`
+  display: flex;
+  gap: var(--size-2);
+  justify-content: flex-end;
+`;
+
+const ApplyButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  gap: var(--size-1);
+`;
 
 interface ImageCropperProps {
   image: string;
@@ -85,56 +158,17 @@ export function ImageCropper({
   };
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: 'rgba(0, 0, 0, 0.95)',
-        zIndex: 1000,
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
+    <Overlay>
       {/* Header */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: 'var(--size-3)',
-          background: 'rgba(0, 0, 0, 0.8)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-        }}
-      >
-        <h2
-          style={{
-            margin: 0,
-            color: 'white',
-            fontSize: 'var(--font-size-3)',
-            fontWeight: 'var(--font-weight-6)',
-          }}
-        >
-          Crop Image
-        </h2>
+      <Header>
+        <Title>Crop Image</Title>
         <IconButton onClick={onCancel} title="Cancel" size="small">
           <X size={20} color="white" />
         </IconButton>
-      </div>
+      </Header>
 
       {/* Cropper Area */}
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 'var(--size-4)',
-          overflow: 'hidden',
-        }}
-      >
+      <CropperContainer>
         <Cropper
           ref={cropperRef}
           src={image}
@@ -157,101 +191,43 @@ export function ImageCropper({
           zoomOnWheel={true}
           wheelZoomRatio={0.1}
         />
-      </div>
+      </CropperContainer>
 
       {/* Controls */}
-      <div
-        style={{
-          padding: 'var(--size-4)',
-          background: 'rgba(0, 0, 0, 0.8)',
-          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-        }}
-      >
+      <Controls>
         {/* Tool Buttons */}
-        <div
-          style={{
-            display: 'flex',
-            gap: 'var(--size-2)',
-            justifyContent: 'center',
-            marginBottom: 'var(--size-4)',
-            flexWrap: 'wrap',
-          }}
-        >
-          <IconButton
-            onClick={handleZoomIn}
-            title="Zoom In"
-            size="small"
-            style={{ background: 'rgba(255, 255, 255, 0.1)' }}
-          >
+        <ToolButtons>
+          <ToolButton onClick={handleZoomIn} title="Zoom In" size="small">
             <ZoomIn size={18} color="white" />
-          </IconButton>
-          <IconButton
-            onClick={handleZoomOut}
-            title="Zoom Out"
-            size="small"
-            style={{ background: 'rgba(255, 255, 255, 0.1)' }}
-          >
+          </ToolButton>
+          <ToolButton onClick={handleZoomOut} title="Zoom Out" size="small">
             <ZoomOut size={18} color="white" />
-          </IconButton>
-          <IconButton
-            onClick={handleRotateLeft}
-            title="Rotate Left 90°"
-            size="small"
-            style={{ background: 'rgba(255, 255, 255, 0.1)' }}
-          >
+          </ToolButton>
+          <ToolButton onClick={handleRotateLeft} title="Rotate Left 90°" size="small">
             <RotateCcw size={18} color="white" />
-          </IconButton>
-          <IconButton
-            onClick={handleRotateRight}
-            title="Rotate Right 90°"
-            size="small"
-            style={{ background: 'rgba(255, 255, 255, 0.1)' }}
-          >
+          </ToolButton>
+          <ToolButton onClick={handleRotateRight} title="Rotate Right 90°" size="small">
             <RotateCw size={18} color="white" />
-          </IconButton>
-          <IconButton
-            onClick={handleFlipHorizontal}
-            title="Flip Horizontal"
-            size="small"
-            style={{ background: 'rgba(255, 255, 255, 0.1)' }}
-          >
+          </ToolButton>
+          <ToolButton onClick={handleFlipHorizontal} title="Flip Horizontal" size="small">
             <FlipHorizontal size={18} color="white" />
-          </IconButton>
-          <IconButton
-            onClick={handleFlipVertical}
-            title="Flip Vertical"
-            size="small"
-            style={{ background: 'rgba(255, 255, 255, 0.1)' }}
-          >
+          </ToolButton>
+          <ToolButton onClick={handleFlipVertical} title="Flip Vertical" size="small">
             <FlipVertical size={18} color="white" />
-          </IconButton>
-        </div>
+          </ToolButton>
+        </ToolButtons>
 
         {/* Action Buttons */}
-        <div
-          style={{
-            display: 'flex',
-            gap: 'var(--size-2)',
-            justifyContent: 'flex-end',
-          }}
-        >
+        <ActionButtons>
           <Button variant="secondary" onClick={onCancel}>
             Cancel
           </Button>
-          <Button
-            onClick={handleCropConfirm}
-            disabled={isProcessing}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--size-1)',
-            }}
-          >
+          <ApplyButton onClick={handleCropConfirm} disabled={isProcessing}>
             <Check size={16} />
             {isProcessing ? 'Processing...' : 'Apply Crop'}
-          </Button>
-        </div>
-      </div>
-    </div>
+          </ApplyButton>
+        </ActionButtons>
+      </Controls>
+    </Overlay>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrentAccount, useCustomEmojis, useStatus, usePreferences, useScheduledStatus, useCreateStatus, useUpdateStatus, useDeleteScheduledStatus } from '@/api';
@@ -17,6 +18,60 @@ import { Globe, Lock, Users, Mail } from 'lucide-react';
 import type { CreateStatusParams, MediaAttachment } from '@/types';
 
 const MAX_CHAR_COUNT = 500;
+
+// Styled components
+const LoadingContainer = styled.div`
+  padding: var(--size-4);
+  text-align: center;
+  color: var(--text-2);
+`;
+
+const DisplayName = styled.div`
+  font-weight: var(--font-weight-7);
+  font-size: var(--font-size-2);
+`;
+
+const VisibilityButtonWrapper = styled.div`
+  margin-top: 4px;
+`;
+
+const VisibilityButton = styled.button`
+  padding: 0;
+  background: transparent;
+  color: var(--text-2);
+  font-size: var(--font-size-1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  border: none;
+
+  &:hover {
+    color: var(--text-1);
+  }
+`;
+
+const VisibilityLabel = styled.span`
+  font-weight: 500;
+`;
+
+const InputsContainer = styled.div`
+  margin-bottom: var(--size-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2);
+`;
+
+const HiddenInput = styled.input`
+  display: none;
+`;
+
+const QuotePreview = styled.div`
+  margin-top: var(--size-4);
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.8;
+`;
 
 export const visibilityOptions: Array<{ value: Visibility; label: string; icon: typeof Globe; description: string }> = [
   { value: 'public', label: 'Public', icon: Globe, description: 'Visible to everyone' },
@@ -286,11 +341,7 @@ export function ComposerPanel({
       : (isReply ? 'Reply' : 'Publish'));
 
   if (!currentAccount) {
-    return (
-      <div style={{ padding: 'var(--size-4)', textAlign: 'center', color: 'var(--text-2)' }}>
-        Loading...
-      </div>
-    );
+    return <LoadingContainer>Loading...</LoadingContainer>;
   }
 
   return (
@@ -315,36 +366,25 @@ export function ComposerPanel({
           />
           <div className="compose-user-info">
             <div className="compose-user-details">
-              <div style={{ fontWeight: 'var(--font-weight-7)', fontSize: 'var(--font-size-2)' }}>
+              <DisplayName>
                 <EmojiText
                   text={currentAccount.display_name || currentAccount.username}
                   emojis={currentAccount.emojis}
                 />
-              </div>
+              </DisplayName>
 
               {/* Visibility Settings Trigger Button */}
-              <div style={{ marginTop: '4px' }}>
-                <button
+              <VisibilityButtonWrapper>
+                <VisibilityButton
                   className="compose-visibility-selector"
                   onClick={handleOpenVisibilitySettings}
                   title="Adjust visibility and interaction"
                   type="button"
-                  style={{
-                    padding: 0,
-                    background: 'transparent',
-                    color: 'var(--text-2)',
-                    fontSize: 'var(--font-size-1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    cursor: 'pointer',
-                    border: 'none',
-                  }}
                 >
                   <VisibilityIcon size={16} />
-                  <span style={{ fontWeight: 500 }}>{currentVisibility?.label}</span>
-                </button>
-              </div>
+                  <VisibilityLabel>{currentVisibility?.label}</VisibilityLabel>
+                </VisibilityButton>
+              </VisibilityButtonWrapper>
             </div>
           </div>
         </div>
@@ -352,7 +392,7 @@ export function ComposerPanel({
 
       {/* Content Warning and Schedule Inputs */}
       {(showCWInput || showScheduleInput) && (
-        <div style={{ marginBottom: 'var(--size-3)', display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
+        <InputsContainer>
           {showCWInput && (
             <ContentWarningInput
               value={contentWarning}
@@ -373,7 +413,7 @@ export function ComposerPanel({
               }}
             />
           )}
-        </div>
+        </InputsContainer>
       )}
 
       {/* Editor */}
@@ -412,13 +452,12 @@ export function ComposerPanel({
       )}
 
       {/* Hidden File Input */}
-      <input
+      <HiddenInput
         ref={fileInputRef}
         type="file"
         accept="image/*,video/*"
         multiple
         onChange={onFileInputChange}
-        style={{ display: 'none' }}
       />
 
       {/* Toolbar */}
@@ -454,14 +493,9 @@ export function ComposerPanel({
 
       {/* Quote Preview */}
       {quotedStatus && (
-        <div style={{
-          marginTop: 'var(--size-4)',
-          pointerEvents: 'none',
-          userSelect: 'none',
-          opacity: 0.8
-        }}>
+        <QuotePreview>
           <PostCard status={quotedStatus} hideActions />
-        </div>
+        </QuotePreview>
       )}
     </div>
   );

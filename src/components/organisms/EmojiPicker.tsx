@@ -1,8 +1,20 @@
 'use client';
 
+import styled from '@emotion/styled';
 import EmojiPickerReact, { Theme } from 'emoji-picker-react';
 import { useCustomEmojis } from '@/api';
 import type { Emoji } from '@/types';
+
+// Styled components
+const Backdrop = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+`;
+
+const PickerContainer = styled.div`
+  z-index: 50;
+`;
 
 interface EmojiPickerProps {
   onEmojiSelect: (emoji: string) => void;
@@ -44,17 +56,9 @@ export function EmojiPicker({ onEmojiSelect, onClose }: EmojiPickerProps) {
 
   return (
     <>
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 40,
-        }}
-        onClick={onClose}
-      />
+      <Backdrop onClick={onClose} />
       {/* Picker */}
-      <div
-        style={{ zIndex: 50 }}
+      <PickerContainer
         className='emoji-picker'
         onClick={(e) => e.stopPropagation()}
       >
@@ -69,7 +73,7 @@ export function EmojiPicker({ onEmojiSelect, onClose }: EmojiPickerProps) {
           height={350}
           width="100%"
         />
-      </div>
+      </PickerContainer>
     </>
   );
 }

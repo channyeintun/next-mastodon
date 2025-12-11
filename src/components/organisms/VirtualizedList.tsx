@@ -1,9 +1,40 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { useRef, useEffect, type CSSProperties, type ReactNode } from 'react';
 import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
+
+// Styled components
+const Container = styled.div<{ $height: string }>`
+  height: ${props => props.$height};
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  contain: strict;
+  position: relative;
+`;
+
+const VirtualContent = styled.div<{ $height: number }>`
+  height: ${props => props.$height}px;
+  width: 100%;
+  position: relative;
+`;
+
+const VirtualItemWrapper = styled.div<{ $translateY: number }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(${props => props.$translateY}px);
+  will-change: transform;
+`;
+
+const EndIndicator = styled.div`
+  text-align: center;
+  padding: var(--size-4);
+  color: var(--text-2);
+`;
 
 interface VirtualizedListProps<T> {
   /**
@@ -174,52 +205,33 @@ export function VirtualizedList<T>({
   ]);
 
   return (
-    <div
+    <Container
       ref={parentRef}
       className="virtualized-list-container"
-      style={{
-        height,
-        overflow: 'auto',
-        WebkitOverflowScrolling: 'touch',
-        contain: 'strict',
-        position: 'relative',
-        ...style,
-      }}
+      $height={height}
+      style={style}
     >
       {items.length === 0 && emptyState && emptyState}
 
       {items.length > 0 && (
-        <div
-          style={{
-            height: `${virtualizer.getTotalSize()}px`,
-            width: '100%',
-            position: 'relative',
-          }}
-        >
+        <VirtualContent $height={virtualizer.getTotalSize()}>
           {virtualItems.map((virtualItem) => {
             const item = items[virtualItem.index];
             if (!item) return null;
 
             return (
-              <div
+              <VirtualItemWrapper
                 key={virtualItem.key}
                 data-index={virtualItem.index}
                 ref={virtualizer.measureElement}
                 className='virtualized-list-item'
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  transform: `translateY(${virtualItem.start}px)`,
-                  willChange: 'transform',
-                }}
+                $translateY={virtualItem.start}
               >
                 {renderItem(item, virtualItem.index)}
-              </div>
+              </VirtualItemWrapper>
             );
           })}
-        </div>
+        </VirtualContent>
       )}
 
       {/* Loading indicator */}
@@ -227,19 +239,11 @@ export function VirtualizedList<T>({
 
       {/* End of list indicator */}
       {!hasMore && items.length > 0 && endIndicator && (
-        <div
-          style={{
-            textAlign: 'center',
-            padding: 'var(--size-4)',
-            color: 'var(--text-2)',
-          }}
-        >
-          {endIndicator}
-        </div>
+        <EndIndicator>{endIndicator}</EndIndicator>
       )}
 
       {/* Scroll to top button */}
       <ScrollToTopButton visible={showScrollTop} onClick={handleScrollToTop} />
-    </div>
+    </Container>
   );
 }

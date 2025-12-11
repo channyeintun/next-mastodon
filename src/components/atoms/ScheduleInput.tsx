@@ -1,6 +1,51 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { X } from 'lucide-react';
+
+// Styled components
+const Container = styled.div``;
+
+const Header = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--size-2);
+`;
+
+const Label = styled.label`
+    font-size: var(--font-size-1);
+    font-weight: var(--font-weight-6);
+    color: var(--text-2);
+`;
+
+const RemoveButton = styled.button`
+    padding: var(--size-1);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text-2);
+
+    &:hover {
+        color: var(--text-1);
+    }
+`;
+
+const DateTimeInput = styled.input`
+    width: 100%;
+    padding: var(--size-2) var(--size-3);
+    border: 1px solid var(--surface-3);
+    border-radius: var(--radius-2);
+    background: var(--surface-1);
+    color: var(--text-1);
+    font-size: var(--font-size-2);
+`;
+
+const HelpText = styled.div`
+    font-size: var(--font-size-0);
+    color: var(--text-3);
+    margin-top: 4px;
+`;
 
 interface ScheduleInputProps {
     value: string;
@@ -17,56 +62,21 @@ export function ScheduleInput({
     onRemove,
 }: ScheduleInputProps) {
     return (
-        <div>
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: 'var(--size-2)',
-            }}>
-                <label
-                    htmlFor="schedule-input"
-                    style={{
-                        fontSize: 'var(--font-size-1)',
-                        fontWeight: 'var(--font-weight-6)',
-                        color: 'var(--text-2)',
-                    }}
-                >
-                    Schedule Post
-                </label>
-                <button
-                    aria-label="Remove schedule"
-                    onClick={onRemove}
-                    style={{
-                        padding: 'var(--size-1)',
-                        border: 'none',
-                        background: 'transparent',
-                        cursor: 'pointer',
-                        color: 'var(--text-2)',
-                    }}
-                >
+        <Container>
+            <Header>
+                <Label htmlFor="schedule-input">Schedule Post</Label>
+                <RemoveButton aria-label="Remove schedule" onClick={onRemove}>
                     <X size={16} />
-                </button>
-            </div>
-            <input
+                </RemoveButton>
+            </Header>
+            <DateTimeInput
                 id="schedule-input"
                 type="datetime-local"
                 value={value}
                 min={new Date().toISOString().slice(0, 16)}
                 onChange={(e) => onChange(e.target.value)}
-                style={{
-                    width: '100%',
-                    padding: 'var(--size-2) var(--size-3)',
-                    border: '1px solid var(--surface-3)',
-                    borderRadius: 'var(--radius-2)',
-                    background: 'var(--surface-1)',
-                    color: 'var(--text-1)',
-                    fontSize: 'var(--font-size-2)',
-                }}
             />
-            <div style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-3)', marginTop: '4px' }}>
-                Post will be published automatically at this time.
-            </div>
-        </div>
+            <HelpText>Post will be published automatically at this time.</HelpText>
+        </Container>
     );
 }
