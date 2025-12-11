@@ -1,5 +1,7 @@
 'use client';
 
+import { ChevronUp } from 'lucide-react';
+
 interface ScrollToTopButtonProps {
     visible: boolean;
     onClick: () => void;
@@ -34,18 +36,7 @@ export function ScrollToTopButton({ visible, onClick }: ScrollToTopButtonProps) 
                 pointerEvents: visible ? 'auto' : 'none',
             }}
         >
-            <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            >
-                <path d="M18 15l-6-6-6 6" />
-            </svg>
+            <ChevronUp size={16} />
             Back to top
         </button>
     );
