@@ -146,7 +146,7 @@ export default function AccountPage({
       {/* Header */}
       <div style={{
         position: 'sticky', top: 0, background: 'var(--surface-1)', zIndex: 10,
-        padding: 'var(--size-4)', borderBottom: '1px solid var(--surface-3)',
+        padding: 'var(--size-4)', marginBottom: 'var(--size-4)', borderBottom: '1px solid var(--surface-3)',
         display: 'flex', alignItems: 'center', gap: 'var(--size-3)', flexShrink: 0,
       }}>
         <IconButton onClick={() => router.back()}>
