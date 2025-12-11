@@ -1,31 +1,25 @@
+import { UseFormRegister, Control, FieldErrors, UseFormWatch } from 'react-hook-form';
 import { Check, Copy, ChevronDown } from 'lucide-react';
 import { Card, Input, FormField } from '@/components/atoms';
-
-interface ProfileField {
-  name: string;
-  value: string;
-  verified_at: string | null;
-}
+import type { ProfileFormData } from '@/schemas/profileFormSchema';
 
 interface ProfileFieldsEditorProps {
-  displayName: string;
-  bio: string;
-  fields: ProfileField[];
+  register: UseFormRegister<ProfileFormData>;
+  control: Control<ProfileFormData>;
+  errors: FieldErrors<ProfileFormData>;
+  watch: UseFormWatch<ProfileFormData>;
   profileUrl: string;
-  onDisplayNameChange: (value: string) => void;
-  onBioChange: (value: string) => void;
-  onFieldChange: (index: number, field: 'name' | 'value', value: string) => void;
 }
 
 export function ProfileFieldsEditor({
-  displayName,
-  bio,
-  fields,
+  register,
+  errors,
+  watch,
   profileUrl,
-  onDisplayNameChange,
-  onBioChange,
-  onFieldChange,
 }: ProfileFieldsEditorProps) {
+  const bio = watch('bio');
+  const fields = watch('fields');
+
   return (
     <>
       {/* Profile Information */}
@@ -40,21 +34,28 @@ export function ProfileFieldsEditor({
           Profile Information
         </h2>
 
-        <FormField label="Display Name" htmlFor="display-name">
+        <FormField
+          label="Display Name"
+          htmlFor="display-name"
+          error={errors.displayName?.message}
+        >
           <Input
             id="display-name"
             type="text"
-            value={displayName}
-            onChange={(e) => onDisplayNameChange(e.target.value)}
+            {...register('displayName')}
             maxLength={30}
           />
         </FormField>
 
-        <FormField label="Bio" htmlFor="bio" description={`${bio.length} / 500`}>
+        <FormField
+          label="Bio"
+          htmlFor="bio"
+          description={`${bio?.length || 0} / 500`}
+          error={errors.bio?.message}
+        >
           <textarea
             id="bio"
-            value={bio}
-            onChange={(e) => onBioChange(e.target.value)}
+            {...register('bio')}
             maxLength={500}
             rows={4}
             style={{
@@ -99,8 +100,7 @@ export function ProfileFieldsEditor({
               <input
                 type="text"
                 placeholder={`Label ${index + 1}`}
-                value={field.name}
-                onChange={(e) => onFieldChange(index, 'name', e.target.value)}
+                {...register(`fields.${index}.name`)}
                 style={{
                   padding: 'var(--size-2)',
                   border: '1px solid var(--surface-4)',
@@ -113,8 +113,7 @@ export function ProfileFieldsEditor({
               <input
                 type="text"
                 placeholder="Content"
-                value={field.value}
-                onChange={(e) => onFieldChange(index, 'value', e.target.value)}
+                {...register(`fields.${index}.value`)}
                 style={{
                   padding: 'var(--size-2)',
                   border: field.verified_at

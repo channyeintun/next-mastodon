@@ -1,22 +1,12 @@
+import { Control, Controller } from 'react-hook-form';
 import { Card, CheckboxField } from '@/components/atoms';
+import type { ProfileFormData } from '@/schemas/profileFormSchema';
 
 interface PrivacySettingsFormProps {
-  locked: boolean;
-  bot: boolean;
-  discoverable: boolean;
-  onLockedChange: (checked: boolean) => void;
-  onBotChange: (checked: boolean) => void;
-  onDiscoverableChange: (checked: boolean) => void;
+  control: Control<ProfileFormData>;
 }
 
-export function PrivacySettingsForm({
-  locked,
-  bot,
-  discoverable,
-  onLockedChange,
-  onBotChange,
-  onDiscoverableChange,
-}: PrivacySettingsFormProps) {
+export function PrivacySettingsForm({ control }: PrivacySettingsFormProps) {
   return (
     <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
       <h2
@@ -30,28 +20,46 @@ export function PrivacySettingsForm({
       </h2>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-3)' }}>
-        <CheckboxField
-          id="locked"
-          label="Locked Account"
-          description="Manually approve followers"
-          checked={locked}
-          onChange={onLockedChange}
+        <Controller
+          name="locked"
+          control={control}
+          render={({ field }) => (
+            <CheckboxField
+              id="locked"
+              label="Locked Account"
+              description="Manually approve followers"
+              checked={field.value}
+              onChange={field.onChange}
+            />
+          )}
         />
 
-        <CheckboxField
-          id="bot"
-          label="Bot Account"
-          description="This account mainly performs automated actions"
-          checked={bot}
-          onChange={onBotChange}
+        <Controller
+          name="bot"
+          control={control}
+          render={({ field }) => (
+            <CheckboxField
+              id="bot"
+              label="Bot Account"
+              description="This account mainly performs automated actions"
+              checked={field.value}
+              onChange={field.onChange}
+            />
+          )}
         />
 
-        <CheckboxField
-          id="discoverable"
-          label="Suggest Account to Others"
-          description="Allow your account to be discovered"
-          checked={discoverable}
-          onChange={onDiscoverableChange}
+        <Controller
+          name="discoverable"
+          control={control}
+          render={({ field }) => (
+            <CheckboxField
+              id="discoverable"
+              label="Suggest Account to Others"
+              description="Allow your account to be discovered"
+              checked={field.value}
+              onChange={field.onChange}
+            />
+          )}
         />
       </div>
     </Card>

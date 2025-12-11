@@ -2,55 +2,61 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft } from 'lucide-react';
 import { useCurrentAccount, useUpdateAccount } from '@/api';
 import { Button, IconButton } from '@/components/atoms';
 import {
-  ImageCropper,
-  ProfileEditorSkeleton,
-  ProfileImageUploader,
-  ProfileFieldsEditor,
-  PrivacySettingsForm,
+    ImageCropper,
+    ProfileEditorSkeleton,
+    ProfileImageUploader,
+    ProfileFieldsEditor,
+    PrivacySettingsForm,
 } from '@/components/molecules';
 import { useCropper } from '@/hooks/useCropper';
+import { profileFormSchema, type ProfileFormData, type ProfileField } from '@/schemas/profileFormSchema';
 
 export default function ProfileEditPage() {
     const router = useRouter();
     const { data: currentAccount, isLoading } = useCurrentAccount();
     const updateAccountMutation = useUpdateAccount();
-
-    const [displayName, setDisplayName] = useState('');
-    const [bio, setBio] = useState('');
-    const [locked, setLocked] = useState(false);
-    const [bot, setBot] = useState(false);
-    const [discoverable, setDiscoverable] = useState(true);
-    const [avatarFile, setAvatarFile] = useState<File | null>(null);
-    const [headerFile, setHeaderFile] = useState<File | null>(null);
-    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-    const [headerPreview, setHeaderPreview] = useState<string | null>(null);
     const [cropperType, setCropperType] = useState<'avatar' | 'header' | null>(null);
-    const { cropperImage, openCropper, closeCropper, handleCropComplete } = useCropper();
 
-    // Profile metadata fields (up to 4)
-    const [fields, setFields] = useState<Array<{ name: string; value: string; verified_at: string | null }>>([
-        { name: '', value: '', verified_at: null },
-        { name: '', value: '', verified_at: null },
-        { name: '', value: '', verified_at: null },
-        { name: '', value: '', verified_at: null },
-    ]);
+    const {
+        register,
+        handleSubmit,
+        control,
+        watch,
+        setValue,
+        reset,
+        formState: { errors },
+    } = useForm<ProfileFormData>({
+        resolver: zodResolver(profileFormSchema),
+        defaultValues: {
+            displayName: '',
+            bio: '',
+            locked: false,
+            bot: false,
+            discoverable: true,
+            fields: [
+                { name: '', value: '', verified_at: null },
+                { name: '', value: '', verified_at: null },
+                { name: '', value: '', verified_at: null },
+                { name: '', value: '', verified_at: null },
+            ],
+            avatarFile: undefined,
+            headerFile: undefined,
+        },
+    });
+
+    const { cropperImage, openCropper, closeCropper, handleCropComplete } = useCropper();
 
     // Initialize form with current account data
     useEffect(() => {
         if (currentAccount) {
-            setDisplayName(currentAccount.display_name);
-            setBio(currentAccount.note.replace(/<[^>]*>/g, '')); // Strip HTML
-            setLocked(currentAccount.locked);
-            setBot(currentAccount.bot);
-            setDiscoverable(currentAccount.discoverable ?? true);
-
-            // Initialize fields from source (plain text) or fields (HTML)
             const sourceFields = currentAccount.source?.fields || currentAccount.fields || [];
-            const initialFields: Array<{ name: string; value: string; verified_at: string | null }> = [
+            const initialFields: ProfileField[] = [
                 { name: '', value: '', verified_at: null },
                 { name: '', value: '', verified_at: null },
                 { name: '', value: '', verified_at: null },
@@ -60,22 +66,30 @@ export default function ProfileEditPage() {
                 if (index < 4) {
                     initialFields[index] = {
                         name: field.name || '',
-                        // Use source.fields for plain text value, otherwise strip HTML
                         value: currentAccount.source?.fields?.[index]?.value || field.value.replace(/<[^>]*>/g, '') || '',
                         verified_at: currentAccount.fields?.[index]?.verified_at || null,
                     };
                 }
             });
-            setFields(initialFields);
+
+            reset({
+                displayName: currentAccount.display_name,
+                bio: currentAccount.note.replace(/<[^>]*>/g, ''),
+                locked: currentAccount.locked,
+                bot: currentAccount.bot,
+                discoverable: currentAccount.discoverable ?? true,
+                fields: initialFields,
+                avatarFile: undefined,
+                headerFile: undefined,
+            });
         }
-    }, [currentAccount]);
+    }, [currentAccount, reset]);
 
     const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file && openCropper(file)) {
             setCropperType('avatar');
         }
-        // Reset input to allow selecting the same file again
         e.target.value = '';
     };
 
@@ -84,24 +98,15 @@ export default function ProfileEditPage() {
         if (file && openCropper(file)) {
             setCropperType('header');
         }
-        // Reset input to allow selecting the same file again
         e.target.value = '';
     };
 
     const onCropComplete = (croppedFile: File) => {
-        // Create preview URL
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const previewUrl = reader.result as string;
-            if (cropperType === 'avatar') {
-                setAvatarFile(croppedFile);
-                setAvatarPreview(previewUrl);
-            } else {
-                setHeaderFile(croppedFile);
-                setHeaderPreview(previewUrl);
-            }
-        };
-        reader.readAsDataURL(croppedFile);
+        if (cropperType === 'avatar') {
+            setValue('avatarFile', croppedFile);
+        } else {
+            setValue('headerFile', croppedFile);
+        }
         setCropperType(null);
     };
 
@@ -110,35 +115,32 @@ export default function ProfileEditPage() {
         setCropperType(null);
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
+    const onSubmit = async (data: ProfileFormData) => {
         const params: Record<string, string | File | boolean | Array<{ name: string; value: string }>> = {};
 
-        if (displayName !== currentAccount?.display_name) {
-            params.display_name = displayName;
+        if (data.displayName !== currentAccount?.display_name) {
+            params.display_name = data.displayName;
         }
-        if (bio !== currentAccount?.note.replace(/<[^>]*>/g, '')) {
-            params.note = bio;
+        if (data.bio !== currentAccount?.note.replace(/<[^>]*>/g, '')) {
+            params.note = data.bio;
         }
-        if (locked !== currentAccount?.locked) {
-            params.locked = locked;
+        if (data.locked !== currentAccount?.locked) {
+            params.locked = data.locked;
         }
-        if (bot !== currentAccount?.bot) {
-            params.bot = bot;
+        if (data.bot !== currentAccount?.bot) {
+            params.bot = data.bot;
         }
-        if (discoverable !== (currentAccount?.discoverable ?? true)) {
-            params.discoverable = discoverable;
+        if (data.discoverable !== (currentAccount?.discoverable ?? true)) {
+            params.discoverable = data.discoverable;
         }
-        if (avatarFile) {
-            params.avatar = avatarFile;
+        if (data.avatarFile) {
+            params.avatar = data.avatarFile;
         }
-        if (headerFile) {
-            params.header = headerFile;
+        if (data.headerFile) {
+            params.header = data.headerFile;
         }
 
-        // Add fields_attributes - filter out empty fields
-        const fieldsToSubmit = fields
+        const fieldsToSubmit = data.fields
             .filter(f => f.name.trim() || f.value.trim())
             .map(f => ({ name: f.name, value: f.value }));
         params.fields_attributes = fieldsToSubmit;
@@ -151,11 +153,14 @@ export default function ProfileEditPage() {
         }
     };
 
-    // Note: Auth protection is handled by middleware (proxy.ts)
-    // Show loading state until account data is loaded
     if (isLoading || !currentAccount) {
         return <ProfileEditorSkeleton />;
     }
+
+    const avatarFile = watch('avatarFile');
+    const headerFile = watch('headerFile');
+    const avatarPreview = avatarFile ? URL.createObjectURL(avatarFile) : null;
+    const headerPreview = headerFile ? URL.createObjectURL(headerFile) : null;
 
     return (
         <div style={{ maxWidth: '700px', margin: '0 auto', padding: 'var(--size-4)' }}>
@@ -188,7 +193,7 @@ export default function ProfileEditPage() {
                 </h1>
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <ProfileImageUploader
                     currentAccount={currentAccount}
                     avatarPreview={avatarPreview}
@@ -196,33 +201,19 @@ export default function ProfileEditPage() {
                     onAvatarChange={handleAvatarChange}
                     onHeaderChange={handleHeaderChange}
                     onRemoveHeader={() => {
-                        setHeaderFile(null);
-                        setHeaderPreview(null);
+                        setValue('headerFile', undefined);
                     }}
                 />
 
                 <ProfileFieldsEditor
-                    displayName={displayName}
-                    bio={bio}
-                    fields={fields}
+                    register={register}
+                    control={control}
+                    errors={errors}
+                    watch={watch}
                     profileUrl={currentAccount.url || ''}
-                    onDisplayNameChange={setDisplayName}
-                    onBioChange={setBio}
-                    onFieldChange={(index, field, value) => {
-                        const newFields = [...fields];
-                        newFields[index] = { ...newFields[index], [field]: value };
-                        setFields(newFields);
-                    }}
                 />
 
-                <PrivacySettingsForm
-                    locked={locked}
-                    bot={bot}
-                    discoverable={discoverable}
-                    onLockedChange={setLocked}
-                    onBotChange={setBot}
-                    onDiscoverableChange={setDiscoverable}
-                />
+                <PrivacySettingsForm control={control} />
 
                 {/* Actions */}
                 <div style={{
