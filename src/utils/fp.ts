@@ -3,7 +3,23 @@
  * Reusable combinators for common data transformation patterns
  */
 
-import { pipe, map, flatten, uniqBy, prop, filter, reject, isNil, defaultTo } from 'ramda'
+import {
+  pipe,
+  map,
+  flatten,
+  uniqBy,
+  prop,
+  filter,
+  reject,
+  isNil,
+  defaultTo,
+  cond,
+  T,
+  identity,
+  find,
+  chain,
+  complement
+} from 'ramda'
 import type { Status, Tag, TrendingLink } from '@/types'
 
 // ============================================================================
@@ -94,3 +110,72 @@ export { reject }
 // ============================================================================
 
 export { prop, map, filter, pipe, flatten, uniqBy, defaultTo }
+
+// ============================================================================
+// STATUS HELPERS (for mutations and cache updates)
+// ============================================================================
+
+/**
+ * Check if a status matches by ID (either the status itself or its reblog)
+ */
+export const statusMatchesId = (statusId: string) => (status: Status): boolean =>
+  status.id === statusId || status.reblog?.id === statusId
+
+/**
+ * Get the matching status (either the status itself or its reblog)
+ */
+export const getMatchingStatus = (statusId: string) => (status: Status): Status | undefined =>
+  cond([
+    [(s: Status) => s.id === statusId, identity],
+    [(s: Status) => s.reblog?.id === statusId, (s: Status) => s.reblog!],
+    [T, () => undefined]
+  ])(status)
+
+/**
+ * Find status in a flat array of statuses
+ * Returns the actual status (unwrapping reblog if needed)
+ */
+export const findStatusInArray = (statusId: string) => (statuses: Status[]): Status | undefined => {
+  const found = find(statusMatchesId(statusId), statuses)
+  return found ? getMatchingStatus(statusId)(found) : undefined
+}
+
+/**
+ * Find status in paginated data (InfiniteData pattern)
+ * Returns the actual status (unwrapping reblog if needed)
+ */
+export const findStatusInPages = (statusId: string) => (pages?: Status[][]): Status | undefined => {
+  if (!pages) return undefined
+  const flattened = flatten(pages)
+  return findStatusInArray(statusId)(flattened)
+}
+
+/**
+ * Update a status using cond for cleaner conditional logic
+ * Handles both direct status and reblog status updates
+ */
+export const updateStatusById = (statusId: string, updateFn: (status: Status) => Status) =>
+  (status: Status): Status =>
+    cond([
+      // If this status matches, update it
+      [(s: Status) => s.id === statusId, updateFn],
+      // If this is a reblog and the reblogged status matches, update the reblog
+      [
+        (s: Status) => Boolean(s.reblog && s.reblog.id === statusId),
+        (s: Status) => ({ ...s, reblog: updateFn(s.reblog!) })
+      ],
+      // No match, return unchanged
+      [T, identity]
+    ])(status)
+
+// ============================================================================
+// NIL/UNDEFINED HELPERS
+// ============================================================================
+
+export const isNotNil = complement(isNil)
+
+/**
+ * Find the first non-nil value in an array of values
+ */
+export const findFirstNonNil = <T>(values: (T | null | undefined)[]): T | undefined =>
+  find(isNotNil, values) as T | undefined

@@ -41,28 +41,17 @@ import {
   deleteScheduledStatus,
 } from './client'
 import { queryKeys } from './queryKeys'
-import { mapPages } from '@/utils/fp'
+import { mapPages, findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
 import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams } from '../types/mastodon'
 
 // Helper to update a status or its nested reblog
+// This function is now a thin wrapper around updateStatusById for backwards compatibility
 function updateStatusOrReblog(
   status: Status,
   statusId: string,
   updateFn: (status: Status) => Status
 ): Status {
-  // Check if this status matches
-  if (status.id === statusId) {
-    return updateFn(status)
-  }
-  // Check if this is a reblog and the reblogged status matches
-  if (status.reblog && status.reblog.id === statusId) {
-    return {
-      ...status,
-      reblog: updateFn(status.reblog),
-    }
-  }
-  // No match
-  return status
+  return updateStatusById(statusId, updateFn)(status)
 }
 
 // Helper to find a status in any cache (for rollback purposes)
@@ -76,14 +65,8 @@ function findStatusInCaches(
 
   // 2. Try trending statuses
   const trendingData = queryClient.getQueryData<InfiniteData<Status[]>>(queryKeys.trends.statuses())
-  if (trendingData?.pages) {
-    for (const page of trendingData.pages) {
-      const found = page.find((s) => s.id === statusId || s.reblog?.id === statusId)
-      if (found) {
-        return found.id === statusId ? found : found.reblog!
-      }
-    }
-  }
+  const foundInTrending = findStatusInPages(statusId)(trendingData?.pages)
+  if (foundInTrending) return foundInTrending
 
   // 3. Try timelines
   const timelines = queryClient.getQueriesData<InfiniteData<Status[]>>({
@@ -93,27 +76,15 @@ function findStatusInCaches(
     }
   })
 
-  for (const [_, data] of timelines) {
-    if (data?.pages) {
-      for (const page of data.pages) {
-        const found = page.find((s) => s.id === statusId || s.reblog?.id === statusId)
-        if (found) {
-          return found.id === statusId ? found : found.reblog!
-        }
-      }
-    }
-  }
+  const foundInTimelines = findFirstNonNil(
+    timelines.map(([_, data]) => findStatusInPages(statusId)(data?.pages))
+  )
+  if (foundInTimelines) return foundInTimelines
 
   // 4. Try bookmarks
   const bookmarks = queryClient.getQueryData<InfiniteData<Status[]>>(queryKeys.bookmarks.all())
-  if (bookmarks?.pages) {
-    for (const page of bookmarks.pages) {
-      const found = page.find((s) => s.id === statusId || s.reblog?.id === statusId)
-      if (found) {
-        return found.id === statusId ? found : found.reblog!
-      }
-    }
-  }
+  const foundInBookmarks = findStatusInPages(statusId)(bookmarks?.pages)
+  if (foundInBookmarks) return foundInBookmarks
 
   // 5. Try account statuses
   const accounts = queryClient.getQueriesData<InfiniteData<Status[]>>({ queryKey: ['accounts'] })
@@ -122,26 +93,36 @@ function findStatusInCaches(
     if (Array.isArray(key) && key[2] === 'pinned_statuses') {
       const pinnedStatuses = data as unknown as Status[]
       if (Array.isArray(pinnedStatuses)) {
-        const found = pinnedStatuses.find((s) => s.id === statusId || s.reblog?.id === statusId)
-        if (found) {
-          return found.id === statusId ? found : found.reblog!
-        }
+        const found = findStatusInArray(statusId)(pinnedStatuses)
+        if (found) return found
       }
       continue
     }
 
     // Regular account timeline (InfiniteData)
-    if (data?.pages) {
-      for (const page of data.pages) {
-        const found = page.find((s) => s.id === statusId || s.reblog?.id === statusId)
-        if (found) {
-          return found.id === statusId ? found : found.reblog!
-        }
-      }
-    }
+    const foundInAccount = findStatusInPages(statusId)(data?.pages)
+    if (foundInAccount) return foundInAccount
   }
 
   return undefined
+}
+
+// Helper to update InfiniteData cache with status pages
+function updateInfiniteStatusCache(
+  queryClient: QueryClient,
+  queryOptions: Parameters<QueryClient['setQueriesData']>[0],
+  updateFn: (pages: Status[][]) => Status[][]
+) {
+  queryClient.setQueriesData<InfiniteData<Status[]>>(
+    queryOptions,
+    (old) => {
+      if (!old?.pages) return old
+      return {
+        ...old,
+        pages: updateFn(old.pages),
+      }
+    }
+  )
 }
 
 // Helper function to update status in all infinite query caches
@@ -155,57 +136,36 @@ function updateStatusInCaches(
   )
 
   // Update all timeline types (home, public, list, hashtag, etc.)
-  // Using predicate to ensure we match all queries starting with 'timelines'
-  queryClient.setQueriesData<InfiniteData<Status[]>>(
+  updateInfiniteStatusCache(
+    queryClient,
     {
       predicate: (query) => {
         const key = query.queryKey as readonly unknown[]
         return key[0] === 'timelines'
       }
     },
-    (old) => {
-      if (!old?.pages) return old
-      return {
-        ...old,
-        pages: updateStatusPage(old.pages),
-      }
-    }
+    updateStatusPage
   )
 
   // Update bookmarks
-  queryClient.setQueriesData<InfiniteData<Status[]>>(
+  updateInfiniteStatusCache(
+    queryClient,
     { queryKey: queryKeys.bookmarks.all() },
-    (old) => {
-      if (!old?.pages) return old
-      return {
-        ...old,
-        pages: updateStatusPage(old.pages),
-      }
-    }
+    updateStatusPage
   )
 
   // Update account statuses
-  queryClient.setQueriesData<InfiniteData<Status[]>>(
+  updateInfiniteStatusCache(
+    queryClient,
     { queryKey: ['accounts'] },
-    (old) => {
-      if (!old?.pages) return old
-      return {
-        ...old,
-        pages: updateStatusPage(old.pages),
-      }
-    }
+    updateStatusPage
   )
 
   // Update trending statuses
-  queryClient.setQueriesData<InfiniteData<Status[]>>(
+  updateInfiniteStatusCache(
+    queryClient,
     { queryKey: queryKeys.trends.statuses() },
-    (old) => {
-      if (!old?.pages) return old
-      return {
-        ...old,
-        pages: updateStatusPage(old.pages),
-      }
-    }
+    updateStatusPage
   )
 
   // Update search results - infinite search (Statuses, Accounts, Hashtags tabs)
@@ -272,57 +232,36 @@ function updatePollInCaches(
   )
 
   // Update all timeline types (home, public, list, hashtag, etc.)
-  // Using predicate to ensure we match all queries starting with 'timelines'
-  queryClient.setQueriesData<InfiniteData<Status[]>>(
+  updateInfiniteStatusCache(
+    queryClient,
     {
       predicate: (query) => {
         const key = query.queryKey as readonly unknown[]
         return key[0] === 'timelines'
       }
     },
-    (old) => {
-      if (!old?.pages) return old
-      return {
-        ...old,
-        pages: updatePollPage(old.pages),
-      }
-    }
+    updatePollPage
   )
 
   // Update bookmarks
-  queryClient.setQueriesData<InfiniteData<Status[]>>(
+  updateInfiniteStatusCache(
+    queryClient,
     { queryKey: queryKeys.bookmarks.all() },
-    (old) => {
-      if (!old?.pages) return old
-      return {
-        ...old,
-        pages: updatePollPage(old.pages),
-      }
-    }
+    updatePollPage
   )
 
   // Update account statuses
-  queryClient.setQueriesData<InfiniteData<Status[]>>(
+  updateInfiniteStatusCache(
+    queryClient,
     { queryKey: ['accounts'] },
-    (old) => {
-      if (!old?.pages) return old
-      return {
-        ...old,
-        pages: updatePollPage(old.pages),
-      }
-    }
+    updatePollPage
   )
 
   // Update trending statuses
-  queryClient.setQueriesData<InfiniteData<Status[]>>(
+  updateInfiniteStatusCache(
+    queryClient,
     { queryKey: queryKeys.trends.statuses() },
-    (old) => {
-      if (!old?.pages) return old
-      return {
-        ...old,
-        pages: updatePollPage(old.pages),
-      }
-    }
+    updatePollPage
   )
 
   // Update search results - infinite search (Statuses, Accounts, Hashtags tabs)
