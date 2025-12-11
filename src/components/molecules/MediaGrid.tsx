@@ -12,6 +12,7 @@ interface MediaGridProps {
 interface MediaItem {
     attachment: MediaAttachment;
     status: Status;
+    originalStatusId: string;
 }
 
 /**
@@ -140,6 +141,7 @@ export function MediaGrid({ statuses, style }: MediaGridProps) {
         return displayStatus.media_attachments.map((attachment) => ({
             attachment,
             status: displayStatus,
+            originalStatusId: status.id,
         }));
     });
 
@@ -178,7 +180,7 @@ export function MediaGrid({ statuses, style }: MediaGridProps) {
 
                 return (
                     <button
-                        key={`${item.status.id}-${attachment.id}`}
+                        key={`${item.originalStatusId}-${attachment.id}`}
                         onClick={() => handleMediaClick(item)}
                         style={{
                             position: 'relative',
