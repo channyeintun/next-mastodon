@@ -79,6 +79,14 @@ const LoadingContainer = styled.div`
   overflow: auto;
 `;
 
+const StyledPostCard = styled(PostCard)`
+  margin-bottom: var(--size-3);
+`;
+
+const StyledPostCardSkeleton = styled(PostCardSkeleton)`
+  margin-bottom: var(--size-3);
+`;
+
 interface ProfileContentProps {
     /** Account handle for scroll restoration */
     acct: string;
@@ -133,10 +141,9 @@ export function ProfileContent({
                         Pinned Posts
                     </PinnedHeader>
                     {pinnedStatuses.map(status => (
-                        <PostCard
+                        <StyledPostCard
                             key={status.id}
                             status={status}
-                            style={{ marginBottom: 'var(--size-3)' }}
                         />
                     ))}
                 </PinnedSection>
@@ -156,7 +163,7 @@ export function ProfileContent({
                                 style={{ padding: 0 }}
                                 items={statuses}
                                 renderItem={(status) => (
-                                    <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
+                                    <StyledPostCard status={status} />
                                 )}
                                 getItemKey={(status) => status.id}
                                 estimateSize={300}
@@ -167,7 +174,7 @@ export function ProfileContent({
                                 loadMoreThreshold={1}
                                 height="100dvh"
                                 scrollRestorationKey={`account-${acct}-posts`}
-                                loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
+                                loadingIndicator={<StyledPostCardSkeleton />}
                                 endIndicator="No more posts"
                                 emptyState={<EmptyState title="No posts yet" />}
                             />
@@ -187,7 +194,7 @@ export function ProfileContent({
                                 style={{ padding: 0 }}
                                 items={statuses}
                                 renderItem={(status) => (
-                                    <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
+                                    <StyledPostCard status={status} />
                                 )}
                                 getItemKey={(status) => status.id}
                                 estimateSize={300}
@@ -198,7 +205,7 @@ export function ProfileContent({
                                 loadMoreThreshold={1}
                                 height="100dvh"
                                 scrollRestorationKey={`account-${acct}-posts_replies`}
-                                loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
+                                loadingIndicator={<StyledPostCardSkeleton />}
                                 endIndicator="No more posts"
                                 emptyState={<EmptyState title="No posts yet" />}
                             />

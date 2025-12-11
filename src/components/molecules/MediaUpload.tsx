@@ -1,10 +1,143 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { useState, useRef } from 'react';
 import { X, Edit2, Image as ImageIcon } from 'lucide-react';
 import { Button } from '../atoms/Button';
 import { IconButton } from '../atoms/IconButton';
 import type { MediaAttachment } from '@/types/mastodon';
+
+// Styled components
+const HiddenInput = styled.input`
+    display: none;
+`;
+
+const AltEditor = styled.div`
+    margin-bottom: var(--size-3);
+    padding: var(--size-3);
+    background: var(--surface-2);
+    border-radius: var(--radius-2);
+`;
+
+const AltEditorHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--size-2);
+`;
+
+const AltLabel = styled.label`
+    font-size: var(--font-size-1);
+    font-weight: var(--font-weight-6);
+    color: var(--text-1);
+`;
+
+const CloseButton = styled.button`
+    padding: var(--size-1);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text-2);
+`;
+
+const AltTextarea = styled.textarea`
+    width: 100%;
+    padding: var(--size-2);
+    border: 1px solid var(--surface-4);
+    border-radius: var(--radius-2);
+    background: var(--surface-1);
+    color: var(--text-1);
+    font-size: var(--font-size-1);
+    resize: vertical;
+    font-family: inherit;
+    margin-bottom: var(--size-2);
+`;
+
+const AltFooter = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const CharCount = styled.span`
+    font-size: var(--font-size-0);
+    color: var(--text-2);
+`;
+
+const MediaGrid = styled.div<{ $columns: number }>`
+    display: grid;
+    grid-template-columns: ${props => props.$columns === 1 ? '1fr' : 'repeat(2, 1fr)'};
+    gap: var(--size-2);
+    margin-bottom: var(--size-3);
+`;
+
+const MediaItem = styled.div`
+    position: relative;
+    aspect-ratio: 16/9;
+    background: var(--surface-3);
+    border-radius: var(--radius-2);
+    overflow: hidden;
+`;
+
+const MediaPreview = styled.img`
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+`;
+
+const VideoPreview = styled.video`
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+`;
+
+const MediaControls = styled.div`
+    position: absolute;
+    top: var(--size-2);
+    right: var(--size-2);
+    display: flex;
+    gap: var(--size-1);
+`;
+
+const OverlayButton = styled(IconButton)`
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+`;
+
+const AltBadge = styled.div`
+    position: absolute;
+    bottom: var(--size-2);
+    left: var(--size-2);
+    padding: 2px var(--size-2);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: var(--font-size-0);
+    border-radius: var(--radius-1);
+`;
+
+const AddButton = styled.button`
+    aspect-ratio: 16/9;
+    border: 2px dashed var(--surface-4);
+    background: var(--surface-2);
+    border-radius: var(--radius-2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-2);
+    font-size: var(--font-size-1);
+
+    &:hover {
+        background: var(--surface-3);
+        border-color: var(--surface-5);
+    }
+`;
+
+const UploadingText = styled.div`
+    padding: var(--size-2);
+    color: var(--text-2);
+    font-size: var(--font-size-1);
+`;
 
 interface MediaUploadProps {
   media: MediaAttachment[];
@@ -60,201 +193,94 @@ export function MediaUpload({
 
   return (
     <div>
-      <input
+      <HiddenInput
         ref={fileInputRef}
         type="file"
         accept="image/*,video/*"
         multiple
         onChange={handleFileChange}
-        style={{ display: 'none' }}
       />
 
       {/* Alt Text Editor - Above Media Grid */}
       {editingAlt && (
-        <div style={{
-          marginBottom: 'var(--size-3)',
-          padding: 'var(--size-3)',
-          background: 'var(--surface-2)',
-          borderRadius: 'var(--radius-2)',
-        }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: 'var(--size-2)',
-          }}>
-            <label style={{
-              fontSize: 'var(--font-size-1)',
-              fontWeight: 'var(--font-weight-6)',
-              color: 'var(--text-1)',
-            }}>
-              Alt Text
-            </label>
-            <button
+        <AltEditor>
+          <AltEditorHeader>
+            <AltLabel>Alt Text</AltLabel>
+            <CloseButton
               onClick={() => {
                 setEditingAlt(null);
                 setAltText('');
               }}
-              style={{
-                padding: 'var(--size-1)',
-                border: 'none',
-                background: 'transparent',
-                cursor: 'pointer',
-                color: 'var(--text-2)',
-              }}
             >
               <X size={16} />
-            </button>
-          </div>
-          <textarea
+            </CloseButton>
+          </AltEditorHeader>
+          <AltTextarea
             value={altText}
             onChange={(e) => setAltText(e.target.value)}
             placeholder="Describe this media for visually impaired users..."
             maxLength={1500}
             rows={3}
-            style={{
-              width: '100%',
-              padding: 'var(--size-2)',
-              border: '1px solid var(--surface-4)',
-              borderRadius: 'var(--radius-2)',
-              background: 'var(--surface-1)',
-              color: 'var(--text-1)',
-              fontSize: 'var(--font-size-1)',
-              resize: 'vertical',
-              fontFamily: 'inherit',
-              marginBottom: 'var(--size-2)',
-            }}
           />
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-            <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-              {altText.length} / 1500
-            </span>
+          <AltFooter>
+            <CharCount>{altText.length} / 1500</CharCount>
             <Button size="small" onClick={handleAltSave}>
               Save
             </Button>
-          </div>
-        </div>
+          </AltFooter>
+        </AltEditor>
       )}
 
       {/* Media Grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: media.length === 1 ? '1fr' : 'repeat(2, 1fr)',
-        gap: 'var(--size-2)',
-        marginBottom: 'var(--size-3)',
-      }}>
+      <MediaGrid $columns={media.length === 1 ? 1 : 2}>
         {media.map((attachment) => (
-          <div
-            key={attachment.id}
-            style={{
-              position: 'relative',
-              aspectRatio: '16/9',
-              background: 'var(--surface-3)',
-              borderRadius: 'var(--radius-2)',
-              overflow: 'hidden',
-            }}
-          >
+          <MediaItem key={attachment.id}>
             {/* Media Preview */}
             {attachment.type === 'image' && attachment.preview_url && (
-              <img
+              <MediaPreview
                 src={attachment.preview_url}
                 alt={attachment.description || ''}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                }}
               />
             )}
             {attachment.type === 'video' && attachment.url && (
-              <video
-                src={attachment.url}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                }}
-              />
+              <VideoPreview src={attachment.url} />
             )}
 
             {/* Controls */}
-            <div style={{
-              position: 'absolute',
-              top: 'var(--size-2)',
-              right: 'var(--size-2)',
-              display: 'flex',
-              gap: 'var(--size-1)',
-            }}>
-              <IconButton
+            <MediaControls>
+              <OverlayButton
                 size="small"
                 onClick={() => handleAltEdit(attachment)}
                 title="Edit alt text"
-                style={{ background: 'rgba(0, 0, 0, 0.6)', color: 'white' }}
               >
                 <Edit2 size={14} />
-              </IconButton>
-              <IconButton
+              </OverlayButton>
+              <OverlayButton
                 size="small"
                 onClick={() => onMediaRemove(attachment.id)}
                 title="Remove"
-                style={{ background: 'rgba(0, 0, 0, 0.6)', color: 'white' }}
               >
                 <X size={14} />
-              </IconButton>
-            </div>
+              </OverlayButton>
+            </MediaControls>
 
             {/* Alt text indicator */}
             {attachment.description && (
-              <div style={{
-                position: 'absolute',
-                bottom: 'var(--size-2)',
-                left: 'var(--size-2)',
-                padding: '2px var(--size-2)',
-                background: 'rgba(0, 0, 0, 0.6)',
-                color: 'white',
-                fontSize: 'var(--font-size-0)',
-                borderRadius: 'var(--radius-1)',
-              }}>
-                ALT
-              </div>
+              <AltBadge>ALT</AltBadge>
             )}
-          </div>
+          </MediaItem>
         ))}
 
         {/* Add more button */}
         {media.length < maxMedia && !isUploading && (
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            style={{
-              aspectRatio: '16/9',
-              border: '2px dashed var(--surface-4)',
-              background: 'var(--surface-2)',
-              borderRadius: 'var(--radius-2)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--text-2)',
-              fontSize: 'var(--font-size-1)',
-            }}
-          >
+          <AddButton onClick={() => fileInputRef.current?.click()}>
             <ImageIcon size={32} />
-          </button>
+          </AddButton>
         )}
-      </div>
+      </MediaGrid>
 
       {isUploading && (
-        <div style={{
-          padding: 'var(--size-2)',
-          color: 'var(--text-2)',
-          fontSize: 'var(--font-size-1)',
-        }}>
-          Uploading...
-        </div>
+        <UploadingText>Uploading...</UploadingText>
       )}
     </div>
   );

@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { Activity } from 'react';
 import { Hash } from 'lucide-react';
 import { PostCard } from '@/components/organisms';
@@ -7,6 +8,108 @@ import { PostCardSkeleton, TrendingTagCardSkeleton, UserCard, UserCardSkeleton }
 import { Spinner, Card, EmptyState } from '@/components/atoms';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import type { Account, Status, Tag, SearchResults } from '@/types';
+
+// Styled components
+const LoadingContainer = styled.div`
+    display: grid;
+    place-items: center;
+    margin-top: var(--size-8);
+`;
+
+const LoadingText = styled.p`
+    margin-top: var(--size-4);
+    color: var(--text-2);
+`;
+
+const ErrorContainer = styled.div`
+    text-align: center;
+    margin-top: var(--size-8);
+    color: var(--red-6);
+`;
+
+const AllTabContainer = styled.div`
+    height: 100%;
+    overflow-y: auto;
+    padding: 0 var(--size-2);
+`;
+
+const TabContainer = styled.div`
+    height: 100%;
+`;
+
+const ResultSection = styled.div`
+    margin-bottom: var(--size-6);
+`;
+
+const SectionTitle = styled.h2`
+    font-size: var(--font-size-3);
+    font-weight: var(--font-weight-6);
+    margin-bottom: var(--size-4);
+    color: var(--text-1);
+`;
+
+const ResultList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-3);
+`;
+
+const HashtagCardWrapper = styled.div`
+    margin-bottom: var(--size-3);
+`;
+
+const HashtagContent = styled.div`
+    display: flex;
+    align-items: center;
+    gap: var(--size-3);
+    padding: var(--size-2);
+`;
+
+const HashtagIcon = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-9);
+    height: var(--size-9);
+    border-radius: 50%;
+    background: var(--surface-3);
+`;
+
+const HashIcon = styled(Hash)`
+    color: var(--text-2);
+`;
+
+const HashtagInfo = styled.div`
+    flex: 1;
+`;
+
+const HashtagName = styled.div`
+    font-size: var(--font-size-2);
+    font-weight: var(--font-weight-6);
+    color: var(--text-1);
+`;
+
+const HashtagStats = styled.div`
+    font-size: var(--font-size-0);
+    color: var(--text-2);
+    margin-top: var(--size-1);
+`;
+
+const ItemWrapper = styled.div`
+    margin-bottom: var(--size-3);
+`;
+
+const StyledPostCardSkeleton = styled(PostCardSkeleton)`
+    margin-bottom: var(--size-3);
+`;
+
+const StyledUserCardSkeleton = styled(UserCardSkeleton)`
+    margin-bottom: var(--size-3);
+`;
+
+const StyledTrendingTagCardSkeleton = styled(TrendingTagCardSkeleton)`
+    margin-bottom: var(--size-3);
+`;
 
 type TabType = 'all' | 'accounts' | 'statuses' | 'hashtags';
 
@@ -43,59 +146,34 @@ interface SearchContentProps {
 }
 
 const LoadingState = () => (
-    <div style={{ display: 'grid', placeItems: 'center', marginTop: 'var(--size-8)' }}>
+    <LoadingContainer>
         <Spinner />
-        <p style={{ marginTop: 'var(--size-4)', color: 'var(--text-2)' }}>Searching...</p>
-    </div>
+        <LoadingText>Searching...</LoadingText>
+    </LoadingContainer>
 );
 
 const ErrorState = () => (
-    <div style={{ textAlign: 'center', marginTop: 'var(--size-8)', color: 'var(--red-6)' }}>
+    <ErrorContainer>
         <p>An error occurred while searching</p>
-    </div>
+    </ErrorContainer>
 );
 
 const HashtagCard = ({ tag }: { tag: Tag }) => (
-    <div style={{ marginBottom: 'var(--size-3)' }}>
+    <HashtagCardWrapper>
         <Card hoverable>
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--size-3)',
-                padding: 'var(--size-2)',
-            }}>
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: 'var(--size-9)',
-                    height: 'var(--size-9)',
-                    borderRadius: '50%',
-                    background: 'var(--surface-3)',
-                }}>
-                    <Hash size={20} style={{ color: 'var(--text-2)' }} />
-                </div>
-                <div style={{ flex: 1 }}>
-                    <div style={{
-                        fontSize: 'var(--font-size-2)',
-                        fontWeight: 'var(--font-weight-6)',
-                        color: 'var(--text-1)',
-                    }}>
-                        #{tag.name}
-                    </div>
+            <HashtagContent>
+                <HashtagIcon>
+                    <HashIcon size={20} />
+                </HashtagIcon>
+                <HashtagInfo>
+                    <HashtagName>#{tag.name}</HashtagName>
                     {tag.history && tag.history.length > 0 && (
-                        <div style={{
-                            fontSize: 'var(--font-size-0)',
-                            color: 'var(--text-2)',
-                            marginTop: 'var(--size-1)',
-                        }}>
-                            {tag.history[0].uses} posts
-                        </div>
+                        <HashtagStats>{tag.history[0].uses} posts</HashtagStats>
                     )}
-                </div>
-            </div>
+                </HashtagInfo>
+            </HashtagContent>
         </Card>
-    </div>
+    </HashtagCardWrapper>
 );
 
 /**
@@ -130,7 +208,7 @@ export function SearchContent({
         <>
             {/* All Tab */}
             <Activity mode={activeTab === 'all' ? 'visible' : 'hidden'}>
-                <div style={{ height: '100%', overflowY: 'auto', padding: '0 var(--size-2)' }}>
+                <AllTabContainer>
                     {isLoadingAll ? (
                         <LoadingState />
                     ) : isErrorAll ? (
@@ -142,51 +220,51 @@ export function SearchContent({
                             )}
 
                             {allResults.accounts.length > 0 && (
-                                <div style={{ marginBottom: 'var(--size-6)' }}>
-                                    <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', marginBottom: 'var(--size-4)', color: 'var(--text-1)' }}>
+                                <ResultSection>
+                                    <SectionTitle>
                                         Accounts ({allResults.accounts.length})
-                                    </h2>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-3)' }}>
+                                    </SectionTitle>
+                                    <ResultList>
                                         {allResults.accounts.map((account) => (
                                             <UserCard key={account.id} account={account} />
                                         ))}
-                                    </div>
-                                </div>
+                                    </ResultList>
+                                </ResultSection>
                             )}
 
                             {allResults.statuses.length > 0 && (
-                                <div style={{ marginBottom: 'var(--size-6)' }}>
-                                    <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', marginBottom: 'var(--size-4)', color: 'var(--text-1)' }}>
+                                <ResultSection>
+                                    <SectionTitle>
                                         Posts ({allResults.statuses.length})
-                                    </h2>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-3)' }}>
+                                    </SectionTitle>
+                                    <ResultList>
                                         {allResults.statuses.map((status) => (
                                             <PostCard key={status.id} status={status} />
                                         ))}
-                                    </div>
-                                </div>
+                                    </ResultList>
+                                </ResultSection>
                             )}
 
                             {allResults.hashtags.length > 0 && (
-                                <div style={{ marginBottom: 'var(--size-6)' }}>
-                                    <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', marginBottom: 'var(--size-4)', color: 'var(--text-1)' }}>
+                                <ResultSection>
+                                    <SectionTitle>
                                         Hashtags ({allResults.hashtags.length})
-                                    </h2>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-3)' }}>
+                                    </SectionTitle>
+                                    <ResultList>
                                         {allResults.hashtags.map((tag) => (
                                             <HashtagCard key={tag.name} tag={tag} />
                                         ))}
-                                    </div>
-                                </div>
+                                    </ResultList>
+                                </ResultSection>
                             )}
                         </>
                     )}
-                </div>
+                </AllTabContainer>
             </Activity>
 
             {/* Accounts Tab */}
             <Activity mode={activeTab === 'accounts' ? 'visible' : 'hidden'}>
-                <div style={{ height: '100%' }}>
+                <TabContainer>
                     {isLoadingAccounts ? (
                         <LoadingState />
                     ) : isErrorAccounts ? (
@@ -197,9 +275,9 @@ export function SearchContent({
                         <VirtualizedList<Account>
                             items={accounts}
                             renderItem={(account) => (
-                                <div style={{ marginBottom: 'var(--size-3)' }}>
+                                <ItemWrapper>
                                     <UserCard account={account} />
-                                </div>
+                                </ItemWrapper>
                             )}
                             getItemKey={(account) => account.id}
                             estimateSize={80}
@@ -208,15 +286,15 @@ export function SearchContent({
                             onLoadMore={fetchNextAccounts}
                             hasMore={hasNextAccounts}
                             isLoadingMore={isFetchingNextAccounts}
-                            loadingIndicator={<UserCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
+                            loadingIndicator={<StyledUserCardSkeleton />}
                         />
                     )}
-                </div>
+                </TabContainer>
             </Activity>
 
             {/* Statuses Tab */}
             <Activity mode={activeTab === 'statuses' ? 'visible' : 'hidden'}>
-                <div style={{ height: '100%' }}>
+                <TabContainer>
                     {isLoadingStatuses ? (
                         <LoadingState />
                     ) : isErrorStatuses ? (
@@ -227,9 +305,9 @@ export function SearchContent({
                         <VirtualizedList<Status>
                             items={statuses}
                             renderItem={(status) => (
-                                <div style={{ marginBottom: 'var(--size-3)' }}>
+                                <ItemWrapper>
                                     <PostCard status={status} />
-                                </div>
+                                </ItemWrapper>
                             )}
                             getItemKey={(status) => status.id}
                             estimateSize={200}
@@ -238,15 +316,15 @@ export function SearchContent({
                             onLoadMore={fetchNextStatuses}
                             hasMore={hasNextStatuses}
                             isLoadingMore={isFetchingNextStatuses}
-                            loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
+                            loadingIndicator={<StyledPostCardSkeleton />}
                         />
                     )}
-                </div>
+                </TabContainer>
             </Activity>
 
             {/* Hashtags Tab */}
             <Activity mode={activeTab === 'hashtags' ? 'visible' : 'hidden'}>
-                <div style={{ height: '100%' }}>
+                <TabContainer>
                     {isLoadingHashtags ? (
                         <LoadingState />
                     ) : isErrorHashtags ? (
@@ -264,10 +342,10 @@ export function SearchContent({
                             onLoadMore={fetchNextHashtags}
                             hasMore={hasNextHashtags}
                             isLoadingMore={isFetchingNextHashtags}
-                            loadingIndicator={<TrendingTagCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
+                            loadingIndicator={<StyledTrendingTagCardSkeleton />}
                         />
                     )}
-                </div>
+                </TabContainer>
             </Activity>
         </>
     );

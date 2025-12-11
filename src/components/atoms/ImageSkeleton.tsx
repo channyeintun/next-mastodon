@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
 
 interface ImageSkeletonProps {
@@ -14,6 +15,20 @@ interface ImageSkeletonProps {
   /** Additional CSS class names */
   className?: string;
 }
+
+const Skeleton = styled.div<{
+  $width?: string | number;
+  $height?: string | number;
+  $aspectRatio?: string;
+  $borderRadius: string;
+}>`
+  width: ${props => props.$width ? (typeof props.$width === 'number' ? `${props.$width}px` : props.$width) : 'auto'};
+  height: ${props => props.$height ? (typeof props.$height === 'number' ? `${props.$height}px` : props.$height) : 'auto'};
+  aspect-ratio: ${props => props.$aspectRatio || 'auto'};
+  background: var(--surface-3);
+  border-radius: ${props => props.$borderRadius};
+  animation: var(--animation-blink);
+`;
 
 /**
  * ImageSkeleton - A skeleton loader for images and media content
@@ -37,17 +52,13 @@ export const ImageSkeleton = ({
   className = '',
 }: ImageSkeletonProps) => {
   return (
-    <div
+    <Skeleton
+      $width={width}
+      $height={height}
+      $aspectRatio={aspectRatio}
+      $borderRadius={borderRadius}
       className={className}
-      style={{
-        width,
-        height,
-        aspectRatio,
-        background: 'var(--surface-3)',
-        borderRadius,
-        animation: 'var(--animation-blink)',
-        ...style,
-      }}
+      style={style}
       aria-label="Loading image..."
       role="status"
     />
