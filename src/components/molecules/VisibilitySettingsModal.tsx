@@ -199,7 +199,6 @@ export function VisibilitySettingsModal({
                         styles={customStyles}
                         components={{ Option: CustomOption, SingleValue: CustomSingleValue }}
                         isSearchable={false}
-                        menuPortalTarget={document.body}
                     />
                 </div>
 
@@ -213,7 +212,6 @@ export function VisibilitySettingsModal({
                         components={{ Option: CustomOption, SingleValue: CustomSingleValue }}
                         isDisabled={isQuoteDisabled}
                         isSearchable={false}
-                        menuPortalTarget={document.body}
                     />
                     {isQuoteDisabled && (
                         <div style={{ padding: 'var(--size-2)', fontSize: '0.85em', color: 'var(--text-2)' }}>

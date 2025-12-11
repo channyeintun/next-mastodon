@@ -14,14 +14,15 @@ import {
 } from 'lucide-react';
 import { Avatar, Card, EmojiText, IconButton } from '@/components/atoms';
 import { StatusContent } from '@/components/molecules';
-import type { Notification, NotificationType } from '@/types';
-import { useDismissNotification } from '@/api';
+import type { NotificationGroup, Account, PartialAccountWithAvatar, Status, NotificationType } from '@/types';
+import { useDismissNotificationGroup } from '@/api';
 
-interface NotificationCardProps {
-    notification: Notification;
-    onDismiss?: (id: string) => void;
-    style?: React.CSSProperties;
+interface GroupedNotificationCardProps {
+    group: NotificationGroup;
+    accounts: Map<string, Account | PartialAccountWithAvatar>;
+    statuses: Map<string, Status>;
     isNew?: boolean;
+    style?: React.CSSProperties;
 }
 
 // Format relative time
@@ -42,37 +43,45 @@ function formatRelativeTime(dateString: string): string {
 const NOTIFICATION_CONFIG: Record<NotificationType, {
     icon: React.ReactNode;
     color: string;
-    getMessage: (displayName: string) => string;
+    getMessage: (count: number, firstName: string) => string;
 }> = {
     mention: {
         icon: <MessageCircle size={16} />,
         color: 'var(--blue-6)',
-        getMessage: (name) => `${name} mentioned you`,
+        getMessage: (_count, name) => `${name} mentioned you`,
     },
     status: {
         icon: <Bell size={16} />,
         color: 'var(--purple-6)',
-        getMessage: (name) => `${name} posted`,
+        getMessage: (_count, name) => `${name} posted`,
     },
     reblog: {
         icon: <Repeat2 size={16} />,
         color: 'var(--green-6)',
-        getMessage: (name) => `${name} boosted your post`,
+        getMessage: (count, name) => count > 1
+            ? `${name} and ${count - 1} other${count > 2 ? 's' : ''} boosted your post`
+            : `${name} boosted your post`,
     },
     follow: {
         icon: <UserPlus size={16} />,
         color: 'var(--indigo-6)',
-        getMessage: (name) => `${name} followed you`,
+        getMessage: (count, name) => count > 1
+            ? `${name} and ${count - 1} other${count > 2 ? 's' : ''} followed you`
+            : `${name} followed you`,
     },
     follow_request: {
         icon: <UserPlus size={16} />,
         color: 'var(--orange-6)',
-        getMessage: (name) => `${name} requested to follow you`,
+        getMessage: (count, name) => count > 1
+            ? `${name} and ${count - 1} other${count > 2 ? 's' : ''} requested to follow you`
+            : `${name} requested to follow you`,
     },
     favourite: {
         icon: <Heart size={16} />,
         color: 'var(--red-6)',
-        getMessage: (name) => `${name} favourited your post`,
+        getMessage: (count, name) => count > 1
+            ? `${name} and ${count - 1} other${count > 2 ? 's' : ''} favourited your post`
+            : `${name} favourited your post`,
     },
     poll: {
         icon: <BarChart2 size={16} />,
@@ -87,12 +96,14 @@ const NOTIFICATION_CONFIG: Record<NotificationType, {
     'admin.sign_up': {
         icon: <UserPlus size={16} />,
         color: 'var(--cyan-6)',
-        getMessage: (name) => `${name} signed up`,
+        getMessage: (count, name) => count > 1
+            ? `${name} and ${count - 1} other${count > 2 ? 's' : ''} signed up`
+            : `${name} signed up`,
     },
     'admin.report': {
         icon: <Bell size={16} />,
         color: 'var(--red-6)',
-        getMessage: (name) => `${name} filed a report`,
+        getMessage: (_count, name) => `${name} filed a report`,
     },
     'severed_relationships': {
         icon: <Bell size={16} />,
@@ -106,13 +117,35 @@ const NOTIFICATION_CONFIG: Record<NotificationType, {
     },
 };
 
-export function NotificationCard({ notification, onDismiss, style, isNew }: NotificationCardProps) {
-    const router = useRouter();
-    const dismissMutation = useDismissNotification();
+// Check if an account is a full account (has display_name)
+function isFullAccount(account: Account | PartialAccountWithAvatar): account is Account {
+    return 'display_name' in account;
+}
 
-    const config = NOTIFICATION_CONFIG[notification.type];
-    const account = notification.account;
-    const displayName = account.display_name || account.username;
+export function GroupedNotificationCard({
+    group,
+    accounts,
+    statuses,
+    isNew,
+    style
+}: GroupedNotificationCardProps) {
+    const router = useRouter();
+    const dismissMutation = useDismissNotificationGroup();
+
+    const config = NOTIFICATION_CONFIG[group.type];
+
+    // Get sample accounts for this group
+    const sampleAccounts = group.sample_account_ids
+        .map(id => accounts.get(id))
+        .filter((acc): acc is Account | PartialAccountWithAvatar => acc !== undefined);
+
+    const primaryAccount = sampleAccounts[0];
+    const primaryDisplayName = primaryAccount
+        ? (isFullAccount(primaryAccount) ? primaryAccount.display_name || primaryAccount.acct : primaryAccount.acct)
+        : 'Someone';
+
+    // Get status if applicable
+    const relatedStatus = group.status_id ? statuses.get(group.status_id) : undefined;
 
     const handleCardClick = (e: React.MouseEvent) => {
         // Don't navigate if clicking on interactive elements
@@ -122,18 +155,63 @@ export function NotificationCard({ notification, onDismiss, style, isNew }: Noti
         }
 
         // Navigate based on notification type
-        if (notification.status) {
-            router.push(`/status/${notification.status.id}`);
-        } else {
-            router.push(`/@${account.acct}`);
+        if (relatedStatus) {
+            router.push(`/status/${relatedStatus.id}`);
+        } else if (primaryAccount) {
+            router.push(`/@${primaryAccount.acct}`);
         }
     };
 
     const handleDismiss = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        dismissMutation.mutate(notification.id);
-        onDismiss?.(notification.id);
+        dismissMutation.mutate(group.group_key);
+    };
+
+    // Render stacked avatars for grouped notifications
+    const renderAvatars = () => {
+        const maxAvatars = 3;
+        const visibleAccounts = sampleAccounts.slice(0, maxAvatars);
+        const remainingCount = group.notifications_count - visibleAccounts.length;
+
+        return (
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginRight: 'var(--size-2)',
+            }}>
+                {visibleAccounts.map((account, index) => (
+                    <Link
+                        key={account.id}
+                        href={`/@${account.acct}`}
+                        style={{
+                            marginLeft: index > 0 ? '-8px' : 0,
+                            position: 'relative',
+                            zIndex: visibleAccounts.length - index,
+                        }}
+                    >
+                        <Avatar
+                            src={account.avatar}
+                            alt={isFullAccount(account) ? account.display_name || account.acct : account.acct}
+                            size="small"
+                            style={{
+                                border: '2px solid var(--surface-1)',
+                                boxSizing: 'content-box',
+                            }}
+                        />
+                    </Link>
+                ))}
+                {remainingCount > 0 && (
+                    <span style={{
+                        marginLeft: 'var(--size-1)',
+                        fontSize: 'var(--font-size-0)',
+                        color: 'var(--text-3)',
+                    }}>
+                        +{remainingCount}
+                    </span>
+                )}
+            </div>
+        );
     };
 
     return (
@@ -173,20 +251,14 @@ export function NotificationCard({ notification, onDismiss, style, isNew }: Noti
 
                     {/* Content */}
                     <div style={{ flex: 1, minWidth: 0 }}>
-                        {/* Header with avatar, message, and time */}
+                        {/* Header with avatars, message, and time */}
                         <div style={{
                             display: 'flex',
                             alignItems: 'flex-start',
                             gap: 'var(--size-2)',
                             marginBottom: 'var(--size-2)',
                         }}>
-                            <Link href={`/@${account.acct}`} style={{ flexShrink: 0 }}>
-                                <Avatar
-                                    src={account.avatar}
-                                    alt={displayName}
-                                    size="small"
-                                />
-                            </Link>
+                            {renderAvatars()}
 
                             <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{
@@ -194,28 +266,34 @@ export function NotificationCard({ notification, onDismiss, style, isNew }: Noti
                                     color: 'var(--text-1)',
                                     lineHeight: 1.4,
                                 }}>
-                                    <Link
-                                        href={`/@${account.acct}`}
-                                        style={{
-                                            textDecoration: 'none',
-                                            color: 'var(--text-1)',
-                                            fontWeight: 'var(--font-weight-6)',
-                                        }}
-                                    >
-                                        <EmojiText text={displayName} emojis={account.emojis} />
-                                    </Link>
-                                    {' '}
+                                    {primaryAccount && isFullAccount(primaryAccount) ? (
+                                        <>
+                                            <Link
+                                                href={`/@${primaryAccount.acct}`}
+                                                style={{
+                                                    textDecoration: 'none',
+                                                    color: 'var(--text-1)',
+                                                    fontWeight: 'var(--font-weight-6)',
+                                                }}
+                                            >
+                                                <EmojiText text={primaryDisplayName} emojis={primaryAccount.emojis} />
+                                            </Link>
+                                            {' '}
+                                        </>
+                                    ) : null}
                                     <span style={{ color: 'var(--text-2)' }}>
-                                        {config.getMessage(displayName).replace(displayName, '').trim()}
+                                        {config.getMessage(group.notifications_count, primaryDisplayName).replace(primaryDisplayName, '').trim()}
                                     </span>
                                 </div>
-                                <div style={{
-                                    fontSize: 'var(--font-size-0)',
-                                    color: 'var(--text-3)',
-                                    marginTop: 'var(--size-1)',
-                                }}>
-                                    {formatRelativeTime(notification.created_at)}
-                                </div>
+                                {group.latest_page_notification_at && (
+                                    <div style={{
+                                        fontSize: 'var(--font-size-0)',
+                                        color: 'var(--text-3)',
+                                        marginTop: 'var(--size-1)',
+                                    }}>
+                                        {formatRelativeTime(group.latest_page_notification_at)}
+                                    </div>
+                                )}
                             </div>
 
                             {/* Dismiss button */}
@@ -229,18 +307,18 @@ export function NotificationCard({ notification, onDismiss, style, isNew }: Noti
                         </div>
 
                         {/* Status preview (for mention, status, reblog, favourite, poll, update) */}
-                        {notification.status && (
+                        {relatedStatus && (
                             <div style={{
                                 padding: 'var(--size-2)',
                                 background: 'var(--surface-2)',
                                 borderRadius: 'var(--radius-2)',
                                 marginTop: 'var(--size-2)',
                             }}>
-                                {notification.type === 'mention' ? (
+                                {group.type === 'mention' ? (
                                     // Full content for mentions
                                     <StatusContent
-                                        html={notification.status.content}
-                                        emojis={notification.status.emojis}
+                                        html={relatedStatus.content}
+                                        emojis={relatedStatus.emojis}
                                         style={{ fontSize: 'var(--font-size-1)' }}
                                     />
                                 ) : (
@@ -255,8 +333,8 @@ export function NotificationCard({ notification, onDismiss, style, isNew }: Noti
                                         WebkitBoxOrient: 'vertical',
                                     }}>
                                         <StatusContent
-                                            html={notification.status.content}
-                                            emojis={notification.status.emojis}
+                                            html={relatedStatus.content}
+                                            emojis={relatedStatus.emojis}
                                         />
                                     </div>
                                 )}

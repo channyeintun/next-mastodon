@@ -13,6 +13,8 @@ import type {
   CreateListParams,
   CreateStatusParams,
   Emoji,
+  GroupedNotificationParams,
+  GroupedNotificationsResults,
   Instance,
   List,
   MediaAttachment,
@@ -455,7 +457,7 @@ export async function getTrendingLinks(params?: { limit?: number; offset?: numbe
   return data
 }
 
-// Notifications
+// Notifications (v1)
 export async function getNotifications(params?: NotificationParams, signal?: AbortSignal): Promise<Notification[]> {
   const { data } = await api.get<Notification[]>('/api/v1/notifications', { params, signal })
   return data
@@ -477,6 +479,19 @@ export async function clearNotifications(): Promise<void> {
 export async function getUnreadNotificationCount(signal?: AbortSignal): Promise<UnreadCount> {
   const { data } = await api.get<UnreadCount>('/api/v1/notifications/unread_count', { signal })
   return data
+}
+
+// Grouped Notifications (v2)
+export async function getGroupedNotifications(
+  params?: GroupedNotificationParams,
+  signal?: AbortSignal
+): Promise<GroupedNotificationsResults> {
+  const { data } = await api.get<GroupedNotificationsResults>('/api/v2/notifications', { params, signal })
+  return data
+}
+
+export async function dismissNotificationGroup(groupKey: string): Promise<void> {
+  await api.post(`/api/v2/notifications/${encodeURIComponent(groupKey)}/dismiss`)
 }
 
 // Markers (for tracking read position)

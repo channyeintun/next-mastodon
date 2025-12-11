@@ -23,6 +23,7 @@ import {
   updateCredentials,
   votePoll,
   dismissNotification,
+  dismissNotificationGroup,
   clearNotifications,
   updateMarkers,
   acceptFollowRequest,
@@ -792,6 +793,23 @@ export function useMarkNotificationsAsRead() {
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.unreadCount() })
       // Invalidate markers cache so the UI updates
       queryClient.invalidateQueries({ queryKey: queryKeys.markers.notifications() })
+    },
+  })
+}
+
+// Grouped Notifications (v2)
+export function useDismissNotificationGroup() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (groupKey: string) => dismissNotificationGroup(groupKey),
+    onSuccess: () => {
+      // Invalidate grouped notifications cache
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.grouped() })
+      // Also invalidate v1 notifications in case they're used
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
+      // Update unread count
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.unreadCount() })
     },
   })
 }

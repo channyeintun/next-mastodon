@@ -28,6 +28,7 @@ import {
   getNotifications,
   getNotification,
   getUnreadNotificationCount,
+  getGroupedNotifications,
   getPreferences,
   getLists,
   getList,
@@ -41,7 +42,7 @@ import {
   getMarkers,
 } from './client'
 import { queryKeys } from './queryKeys'
-import type { TimelineParams, SearchParams, Status, NotificationParams, Account, ScheduledStatus, Tag, TrendingLink } from '../types/mastodon'
+import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, GroupedNotificationsResults, Account, ScheduledStatus, Tag, TrendingLink } from '../types/mastodon'
 import { useAuthStore } from '../hooks/useStores'
 
 // ============================================================================
@@ -399,6 +400,31 @@ export const unreadNotificationCountOptions = () =>
     refetchInterval: 60000, // Refetch every minute
   })
 
+// Grouped Notifications Options (v2)
+export const infiniteGroupedNotificationsOptions = (params?: Omit<GroupedNotificationParams, 'max_id' | 'min_id' | 'since_id' | 'limit'>) =>
+  infiniteQueryOptions({
+    queryKey: queryKeys.notifications.grouped(params),
+    queryFn: ({ pageParam, signal }) => {
+      const queryParams: GroupedNotificationParams = {
+        limit: 20,
+        expand_accounts: 'full',
+        // Include grouped types for favourite, reblog, follow
+        grouped_types: ['favourite', 'reblog', 'follow'],
+        ...params,
+      }
+      if (pageParam) queryParams.max_id = pageParam
+      return getGroupedNotifications(queryParams, signal)
+    },
+    getNextPageParam: (lastPage: GroupedNotificationsResults) => {
+      if (lastPage.notification_groups.length === 0 || lastPage.notification_groups.length < 20) return undefined
+      // Use the most_recent_notification_id of the last group for pagination
+      const lastGroup = lastPage.notification_groups[lastPage.notification_groups.length - 1]
+      return lastGroup?.most_recent_notification_id
+    },
+    initialPageParam: undefined as string | undefined,
+    staleTime: 0, // Always refetch when mounting to get new notifications
+  })
+
 // Blocked/Muted Accounts Options
 export const infiniteBlockedAccountsOptions = () =>
   infiniteQueryOptions({
@@ -744,6 +770,15 @@ export function useUnreadNotificationCount() {
   const authStore = useAuthStore()
   return useQuery({
     ...unreadNotificationCountOptions(),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+// Grouped Notifications (v2)
+export function useInfiniteGroupedNotifications() {
+  const authStore = useAuthStore()
+  return useInfiniteQuery({
+    ...infiniteGroupedNotificationsOptions(),
     enabled: authStore.isAuthenticated,
   })
 }

@@ -1,53 +1,39 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { Bell, Trash2, Check } from 'lucide-react';
-import { NotificationCard, NotificationSkeletonList } from '@/components/molecules';
-import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { Button } from '@/components/atoms';
-import { useInfiniteNotifications, useClearNotifications, useMarkNotificationsAsRead, useNotificationMarker } from '@/api';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useInstance } from '@/api';
 import { useNotificationStream } from '@/hooks/useStreaming';
 import { useAuthStore } from '@/hooks/useStores';
-import { useRouter } from 'next/navigation';
-import type { Notification } from '@/types';
+import { NotificationsV1 } from './NotificationsV1';
+import { NotificationsV2 } from './NotificationsV2';
+import { NotificationSkeletonList } from '@/components/molecules';
+
+// Helper to check if the Mastodon version supports grouped notifications (v2 API)
+// Grouped notifications were added in Mastodon 4.3.0
+function supportsGroupedNotifications(version: string | undefined): boolean {
+    if (!version) return false;
+
+    // Parse version string (e.g., "4.3.0", "4.3.0-alpha.1", "4.2.1+glitch")
+    const match = version.match(/^(\d+)\.(\d+)\.(\d+)/);
+    if (!match) return false;
+
+    const major = parseInt(match[1], 10);
+    const minor = parseInt(match[2], 10);
+
+    // v2 grouped notifications require Mastodon 4.3.0+
+    return major > 4 || (major === 4 && minor >= 3);
+}
 
 export default function NotificationsPage() {
     const router = useRouter();
     const authStore = useAuthStore();
 
+    // Get instance info to check version
+    const { data: instanceData, isLoading: isLoadingInstance } = useInstance();
+
     // Start streaming connection
     const { status: streamingStatus } = useNotificationStream();
-
-    const {
-        data,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-        isLoading,
-        isError,
-        error,
-    } = useInfiniteNotifications();
-
-    const clearMutation = useClearNotifications();
-    const markAsReadMutation = useMarkNotificationsAsRead();
-
-    // Fetch the notification marker to determine which notifications are "new"
-    const { data: markerData } = useNotificationMarker();
-
-    // Store the initial marker value when we first load the page
-    // This persists during the session for highlighting, even after we update the marker
-    const initialMarkerRef = useRef<string | null>(null);
-    const hasAutoMarkedRef = useRef(false);
-
-    // Capture the initial marker value on first load
-    useEffect(() => {
-        if (markerData?.notifications?.last_read_id && initialMarkerRef.current === null) {
-            initialMarkerRef.current = markerData.notifications.last_read_id;
-        }
-    }, [markerData]);
-
-    // Use the initial marker for highlighting during this session
-    const lastReadIdForHighlight = initialMarkerRef.current;
 
     // Redirect if not authenticated
     useEffect(() => {
@@ -56,199 +42,28 @@ export default function NotificationsPage() {
         }
     }, [authStore.isAuthenticated, router]);
 
-    const allNotifications = data?.pages.flatMap((page) => page) ?? [];
-
-    // Auto-update marker when visiting the page (like Mastodon does)
-    // This runs once when we have notifications and haven't auto-marked yet
-    useEffect(() => {
-        if (allNotifications.length > 0 && !hasAutoMarkedRef.current) {
-            const latestId = allNotifications[0].id;
-            // Only update if there are new notifications
-            if (!lastReadIdForHighlight || latestId > lastReadIdForHighlight) {
-                hasAutoMarkedRef.current = true;
-                markAsReadMutation.mutate(latestId);
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [allNotifications.length, lastReadIdForHighlight]);
-
-    // Helper to check if a notification is new (has ID greater than lastReadId)
-    const isNotificationNew = (notificationId: string): boolean => {
-        if (!lastReadIdForHighlight) return false;
-        // Mastodon uses Snowflake IDs - larger IDs are newer
-        return notificationId > lastReadIdForHighlight;
-    };
-
-    const handleMarkAsRead = () => {
-        // Get the most recent notification ID to mark as the last read
-        if (allNotifications.length > 0) {
-            const latestId = allNotifications[0].id;
-            markAsReadMutation.mutate(latestId);
-        }
-    };
-
-    const handleClearAll = () => {
-        if (confirm('Are you sure you want to clear all notifications?')) {
-            clearMutation.mutate();
-        }
-    };
-
     if (!authStore.isAuthenticated) {
         return null;
     }
 
-    return (
-        <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
-            {/* Header */}
-            <div style={{
-                background: 'var(--surface-1)',
-                zIndex: 10,
-                padding: 'var(--size-4)',
-                marginBottom: 'var(--size-4)',
-                borderBottom: '1px solid var(--surface-3)',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexShrink: 0,
-                flexWrap: 'wrap',
-                gap: 'var(--size-3)',
-            }}>
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 'var(--size-2)',
-                }}>
-                    <Bell size={24} />
-                    <h1 style={{
-                        fontSize: 'var(--font-size-4)',
-                        fontWeight: 'var(--font-weight-7)',
-                        margin: 0,
-                    }}>
-                        Notifications
-                    </h1>
-                    {streamingStatus === 'connected' && (
-                        <span style={{
-                            fontSize: 'var(--font-size-0)',
-                            color: 'var(--green-6)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 'var(--size-1)',
-                        }}>
-                            <span style={{
-                                width: '6px',
-                                height: '6px',
-                                borderRadius: '50%',
-                                background: 'var(--green-6)',
-                            }} />
-                            Live
-                        </span>
-                    )}
-                </div>
-
-                {allNotifications.length > 0 && (
-                    <div style={{
-                        display: 'flex',
-                        gap: 'var(--size-2)',
-                    }}>
-                        <Button
-                            variant="ghost"
-                            size="small"
-                            onClick={handleMarkAsRead}
-                            aria-label="Mark as read"
-                        >
-                            <Check size={16} />
-                            <span className="hide-on-mobile">Mark as read</span>
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="small"
-                            onClick={handleClearAll}
-                            aria-label="Clear all"
-                        >
-                            <Trash2 size={16} />
-                            <span className="hide-on-mobile">Clear all</span>
-                        </Button>
-                    </div>
-                )}
-            </div>
-
-            {/* Loading state */}
-            {isLoading && (
-                <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+    // Show loading state while checking instance version
+    if (isLoadingInstance) {
+        return (
+            <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+                <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto', padding: 'var(--size-4)' }}>
                     <NotificationSkeletonList count={6} />
                 </div>
-            )}
+            </div>
+        );
+    }
 
-            {/* Error state */}
-            {isError && (
-                <div style={{
-                    padding: 'var(--size-4)',
-                    background: 'var(--red-2)',
-                    borderRadius: 'var(--radius-2)',
-                    color: 'var(--red-9)',
-                    textAlign: 'center',
-                }}>
-                    {error?.message || 'Failed to load notifications'}
-                </div>
-            )}
+    // Determine which version to use based on server capabilities
+    const useV2 = supportsGroupedNotifications(instanceData?.version);
 
-            {/* Virtualized Notifications list */}
-            {!isLoading && !isError && (
-                <VirtualizedList<Notification>
-                    items={allNotifications}
-                    renderItem={(notification) => (
-                        <NotificationCard
-                            key={notification.id}
-                            notification={notification}
-                            style={{ marginBottom: 'var(--size-2)' }}
-                            isNew={isNotificationNew(notification.id)}
-                        />
-                    )}
-                    getItemKey={(notification) => notification.id}
-                    estimateSize={100}
-                    onLoadMore={fetchNextPage}
-                    isLoadingMore={isFetchingNextPage}
-                    hasMore={hasNextPage}
-                    scrollRestorationKey="notifications"
-                    height="100%"
-                    loadingIndicator={
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            padding: 'var(--size-4)',
-                        }}>
-                            <div className="spinner" />
-                        </div>
-                    }
-                    endIndicator="You've reached the end of your notifications"
-                    emptyState={
-                        <div style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            padding: 'var(--size-8)',
-                            textAlign: 'center',
-                        }}>
-                            <Bell size={48} style={{ color: 'var(--text-3)', marginBottom: 'var(--size-4)' }} />
-                            <h2 style={{
-                                fontSize: 'var(--font-size-3)',
-                                fontWeight: 'var(--font-weight-6)',
-                                color: 'var(--text-2)',
-                                marginBottom: 'var(--size-2)',
-                            }}>
-                                No notifications yet
-                            </h2>
-                            <p style={{
-                                fontSize: 'var(--font-size-1)',
-                                color: 'var(--text-3)',
-                            }}>
-                                When someone interacts with your posts, you&apos;ll see it here.
-                            </p>
-                        </div>
-                    }
-                />
-            )}
-        </div>
-    );
+    // Render the appropriate notifications component
+    if (useV2) {
+        return <NotificationsV2 streamingStatus={streamingStatus} />;
+    }
+
+    return <NotificationsV1 streamingStatus={streamingStatus} />;
 }

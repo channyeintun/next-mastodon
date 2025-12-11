@@ -400,7 +400,10 @@ export type NotificationType =
   | 'update'
   | 'admin.sign_up'
   | 'admin.report'
+  | 'severed_relationships'
+  | 'moderation_warning'
 
+// V1 Notification (individual)
 export interface Notification {
   id: string
   type: NotificationType
@@ -421,6 +424,44 @@ export interface NotificationParams {
 
 export interface UnreadCount {
   count: number
+}
+
+// V2 Grouped Notifications
+export interface PartialAccountWithAvatar {
+  id: string
+  acct: string
+  avatar: string
+  avatar_static: string
+}
+
+export interface NotificationGroup {
+  group_key: string
+  notifications_count: number
+  type: NotificationType
+  most_recent_notification_id: string
+  page_min_id?: string
+  page_max_id?: string
+  latest_page_notification_at?: string
+  sample_account_ids: string[]
+  status_id?: string
+}
+
+export interface GroupedNotificationsResults {
+  accounts: Account[]
+  partial_accounts?: PartialAccountWithAvatar[]
+  statuses: Status[]
+  notification_groups: NotificationGroup[]
+}
+
+export interface GroupedNotificationParams {
+  max_id?: string
+  since_id?: string
+  min_id?: string
+  limit?: number
+  types?: NotificationType[]
+  exclude_types?: NotificationType[]
+  grouped_types?: NotificationType[]
+  expand_accounts?: 'full' | 'partial_avatars'
 }
 
 // Mute account params

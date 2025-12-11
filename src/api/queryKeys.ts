@@ -67,6 +67,7 @@ export const queryKeys = {
   notifications: {
     all: ['notifications'] as const,
     list: (params?: object) => ['notifications', 'list', params] as const,
+    grouped: (params?: object) => ['notifications', 'grouped', params] as const,
     detail: (id: string) => ['notifications', id] as const,
     unreadCount: () => ['notifications', 'unread_count'] as const,
   },
