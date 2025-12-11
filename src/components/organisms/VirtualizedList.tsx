@@ -6,36 +6,6 @@ import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
 
-// Styled components
-const Container = styled.div<{ $height: string }>`
-  height: ${props => props.$height};
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  contain: strict;
-  position: relative;
-`;
-
-const VirtualContent = styled.div<{ $height: number }>`
-  height: ${props => props.$height}px;
-  width: 100%;
-  position: relative;
-`;
-
-const VirtualItemWrapper = styled.div<{ $translateY: number }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  transform: translateY(${props => props.$translateY}px);
-  will-change: transform;
-`;
-
-const EndIndicator = styled.div`
-  text-align: center;
-  padding: var(--size-4);
-  color: var(--text-2);
-`;
-
 interface VirtualizedListProps<T> {
   /**
    * Array of items to render
@@ -247,3 +217,33 @@ export function VirtualizedList<T>({
     </Container>
   );
 }
+
+// Styled components
+const Container = styled.div<{ $height: string }>`
+  height: ${props => props.$height};
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  contain: strict;
+  position: relative;
+`;
+
+const VirtualContent = styled.div<{ $height: number }>`
+  height: ${props => props.$height}px;
+  width: 100%;
+  position: relative;
+`;
+
+const VirtualItemWrapper = styled.div<{ $translateY: number }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(${props => props.$translateY}px);
+  will-change: transform;
+`;
+
+const EndIndicator = styled.div`
+  text-align: center;
+  padding: var(--size-4);
+  color: var(--text-2);
+`;

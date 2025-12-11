@@ -16,70 +16,8 @@ import {
 import type { Status } from '@/types';
 import { usePostActions } from '@/hooks/usePostActions';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
+import { removeQuotePrefix } from '@/utils/fp';
 import { CSSProperties } from 'react';
-
-// Styled components
-const PostContent = styled.div`
-  margin-bottom: var(--size-3);
-`;
-
-const StyledStatusContent = styled(StatusContent)`
-  margin-top: var(--size-3);
-`;
-
-const MediaContainer = styled.div`
-  margin-top: var(--size-3);
-  position: relative;
-`;
-
-const MediaGrid = styled.div<{ $columns: number; $blurred: boolean }>`
-  display: grid;
-  grid-template-columns: ${props => props.$columns === 1 ? '1fr' : 'repeat(2, 1fr)'};
-  gap: var(--size-2);
-  border-radius: var(--radius-2);
-  overflow: hidden;
-  filter: ${props => props.$blurred ? 'blur(32px)' : 'none'};
-  transition: filter 0.2s ease;
-`;
-
-const MediaItem = styled.div`
-  position: relative;
-  aspect-ratio: 16/9;
-  background: var(--surface-3);
-`;
-
-const MediaImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-`;
-
-const MediaVideo = styled.video`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-`;
-
-const SensitiveOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: var(--radius-2);
-`;
-
-const StyledLinkPreview = styled(LinkPreview)`
-  margin-top: var(--size-3);
-`;
-
-const QuotedPostWrapper = styled.div`
-  margin-top: var(--size-3);
-`;
 
 interface PostCardProps {
   status: Status;
@@ -137,22 +75,8 @@ export function PostCard({
   } = actions;
 
   // Remove "RE: [link]" from content when displaying quotes
-  // Mastodon automatically adds "RE: [url]" to quote posts, we remove it since we show the quoted status
   const contentToDisplay = displayStatus.quote?.quoted_status
-    ? displayStatus.content
-      // Remove <p class="quote-inline">RE: <a>...</a></p> (with nested spans)
-      .replace(/<p\s+class="quote-inline">RE:\s*<a[^>]*>.*?<\/a><\/p>\s*/gi, '')
-      // Remove RE: with link wrapped in regular <p> tag: <p>RE: <a>...</a></p>
-      .replace(/^<p>\s*RE:\s*<a[^>]*>.*?<\/a>\s*<\/p>\s*/i, '')
-      // Remove RE: with plain URL in <p>: <p>RE: https://...</p>
-      .replace(/^<p>\s*RE:\s*https?:\/\/[^\s<]+\s*<\/p>\s*/i, '')
-      // Remove RE: with link not in <p>: RE: <a>...</a>
-      .replace(/^RE:\s*<a[^>]*>.*?<\/a>\s*/i, '')
-      // Remove RE: with plain URL not in <p>: RE: https://...
-      .replace(/^RE:\s*https?:\/\/\S+\s*/i, '')
-      // Remove leftover empty paragraphs
-      .replace(/^<p>\s*<\/p>\s*/, '')
-      .trim()
+    ? removeQuotePrefix(displayStatus.content)
     : displayStatus.content;
 
   return (
@@ -303,3 +227,66 @@ export function PostCard({
     </Card>
   );
 }
+
+// Styled components
+const PostContent = styled.div`
+  margin-bottom: var(--size-3);
+`;
+
+const StyledStatusContent = styled(StatusContent)`
+  margin-top: var(--size-3);
+`;
+
+const MediaContainer = styled.div`
+  margin-top: var(--size-3);
+  position: relative;
+`;
+
+const MediaGrid = styled.div<{ $columns: number; $blurred: boolean }>`
+  display: grid;
+  grid-template-columns: ${props => props.$columns === 1 ? '1fr' : 'repeat(2, 1fr)'};
+  gap: var(--size-2);
+  border-radius: var(--radius-2);
+  overflow: hidden;
+  filter: ${props => props.$blurred ? 'blur(32px)' : 'none'};
+  transition: filter 0.2s ease;
+`;
+
+const MediaItem = styled.div`
+  position: relative;
+  aspect-ratio: 16/9;
+  background: var(--surface-3);
+`;
+
+const MediaImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const MediaVideo = styled.video`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const SensitiveOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-2);
+`;
+
+const StyledLinkPreview = styled(LinkPreview)`
+  margin-top: var(--size-3);
+`;
+
+const QuotedPostWrapper = styled.div`
+  margin-top: var(--size-3);
+`;

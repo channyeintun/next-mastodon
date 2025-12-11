@@ -195,3 +195,30 @@ export const getStatusFilters = cond<[string], AccountStatusFilters>([
   [equals('media'), always({ only_media: true })],
   [T, always({ exclude_replies: true })],
 ])
+
+// ============================================================================
+// CONTENT HELPERS
+// ============================================================================
+
+/**
+ * Remove "RE: [link]" quote prefix patterns from post content.
+ * Mastodon automatically adds "RE: [url]" to quote posts.
+ * We remove it since we display the quoted status separately.
+ */
+export const removeQuotePrefix: (content: string) => string = pipe(
+  // Remove <p class="quote-inline">RE: <a>...</a></p> (with nested spans)
+  (s: string) => s.replace(/<p\s+class="quote-inline">RE:\s*<a[^>]*>.*?<\/a><\/p>\s*/gi, ''),
+  // Remove RE: with link wrapped in regular <p> tag: <p>RE: <a>...</a></p>
+  (s: string) => s.replace(/^<p>\s*RE:\s*<a[^>]*>.*?<\/a>\s*<\/p>\s*/i, ''),
+  // Remove RE: with plain URL in <p>: <p>RE: https://...</p>
+  (s: string) => s.replace(/^<p>\s*RE:\s*https?:\/\/[^\s<]+\s*<\/p>\s*/i, ''),
+  // Remove RE: with link not in <p>: RE: <a>...</a>
+  (s: string) => s.replace(/^RE:\s*<a[^>]*>.*?<\/a>\s*/i, ''),
+  // Remove RE: with plain URL not in <p>: RE: https://...
+  (s: string) => s.replace(/^RE:\s*https?:\/\/\S+\s*/i, ''),
+  // Remove leftover empty paragraphs
+  (s: string) => s.replace(/^<p>\s*<\/p>\s*/, ''),
+  // Trim whitespace
+  (s: string) => s.trim()
+)
+

@@ -9,108 +9,6 @@ import { Spinner, Card, EmptyState } from '@/components/atoms';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import type { Account, Status, Tag, SearchResults } from '@/types';
 
-// Styled components
-const LoadingContainer = styled.div`
-    display: grid;
-    place-items: center;
-    margin-top: var(--size-8);
-`;
-
-const LoadingText = styled.p`
-    margin-top: var(--size-4);
-    color: var(--text-2);
-`;
-
-const ErrorContainer = styled.div`
-    text-align: center;
-    margin-top: var(--size-8);
-    color: var(--red-6);
-`;
-
-const AllTabContainer = styled.div`
-    height: 100%;
-    overflow-y: auto;
-    padding: 0 var(--size-2);
-`;
-
-const TabContainer = styled.div`
-    height: 100%;
-`;
-
-const ResultSection = styled.div`
-    margin-bottom: var(--size-6);
-`;
-
-const SectionTitle = styled.h2`
-    font-size: var(--font-size-3);
-    font-weight: var(--font-weight-6);
-    margin-bottom: var(--size-4);
-    color: var(--text-1);
-`;
-
-const ResultList = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: var(--size-3);
-`;
-
-const HashtagCardWrapper = styled.div`
-    margin-bottom: var(--size-3);
-`;
-
-const HashtagContent = styled.div`
-    display: flex;
-    align-items: center;
-    gap: var(--size-3);
-    padding: var(--size-2);
-`;
-
-const HashtagIcon = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--size-9);
-    height: var(--size-9);
-    border-radius: 50%;
-    background: var(--surface-3);
-`;
-
-const HashIcon = styled(Hash)`
-    color: var(--text-2);
-`;
-
-const HashtagInfo = styled.div`
-    flex: 1;
-`;
-
-const HashtagName = styled.div`
-    font-size: var(--font-size-2);
-    font-weight: var(--font-weight-6);
-    color: var(--text-1);
-`;
-
-const HashtagStats = styled.div`
-    font-size: var(--font-size-0);
-    color: var(--text-2);
-    margin-top: var(--size-1);
-`;
-
-const ItemWrapper = styled.div`
-    margin-bottom: var(--size-3);
-`;
-
-const StyledPostCardSkeleton = styled(PostCardSkeleton)`
-    margin-bottom: var(--size-3);
-`;
-
-const StyledUserCardSkeleton = styled(UserCardSkeleton)`
-    margin-bottom: var(--size-3);
-`;
-
-const StyledTrendingTagCardSkeleton = styled(TrendingTagCardSkeleton)`
-    margin-bottom: var(--size-3);
-`;
-
 type TabType = 'all' | 'accounts' | 'statuses' | 'hashtags';
 
 interface SearchContentProps {
@@ -350,3 +248,106 @@ export function SearchContent({
         </>
     );
 }
+
+// Styled components
+const LoadingContainer = styled.div`
+    display: grid;
+    place-items: center;
+    margin-top: var(--size-8);
+`;
+
+const LoadingText = styled.p`
+    margin-top: var(--size-4);
+    color: var(--text-2);
+`;
+
+const ErrorContainer = styled.div`
+    text-align: center;
+    margin-top: var(--size-8);
+    color: var(--red-6);
+`;
+
+const AllTabContainer = styled.div`
+    height: 100%;
+    overflow-y: auto;
+    padding: 0 var(--size-2);
+`;
+
+const TabContainer = styled.div`
+    height: 100%;
+`;
+
+const ResultSection = styled.div`
+    margin-bottom: var(--size-6);
+`;
+
+const SectionTitle = styled.h2`
+    font-size: var(--font-size-3);
+    font-weight: var(--font-weight-6);
+    margin-bottom: var(--size-4);
+    color: var(--text-1);
+`;
+
+const ResultList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-3);
+`;
+
+const HashtagCardWrapper = styled.div`
+    margin-bottom: var(--size-3);
+`;
+
+const HashtagContent = styled.div`
+    display: flex;
+    align-items: center;
+    gap: var(--size-3);
+    padding: var(--size-2);
+`;
+
+const HashtagIcon = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-9);
+    height: var(--size-9);
+    border-radius: 50%;
+    background: var(--surface-3);
+`;
+
+const HashIcon = styled(Hash)`
+    color: var(--text-2);
+`;
+
+const HashtagInfo = styled.div`
+    flex: 1;
+`;
+
+const HashtagName = styled.div`
+    font-size: var(--font-size-2);
+    font-weight: var(--font-weight-6);
+    color: var(--text-1);
+`;
+
+const HashtagStats = styled.div`
+    font-size: var(--font-size-0);
+    color: var(--text-2);
+    margin-top: var(--size-1);
+`;
+
+const ItemWrapper = styled.div`
+    margin-bottom: var(--size-3);
+`;
+
+const StyledPostCardSkeleton = styled(PostCardSkeleton)`
+    margin-bottom: var(--size-3);
+`;
+
+const StyledUserCardSkeleton = styled(UserCardSkeleton)`
+    margin-bottom: var(--size-3);
+`;
+
+const StyledTrendingTagCardSkeleton = styled(TrendingTagCardSkeleton)`
+    margin-bottom: var(--size-3);
+`;
+

@@ -17,6 +17,160 @@ const profileTabs: TabItem<ProfileTab>[] = [
     { value: 'media', label: 'Media' },
 ];
 
+interface ProfileContentProps {
+    /** Account handle for scroll restoration */
+    acct: string;
+    /** Currently active tab */
+    activeTab: ProfileTab;
+    /** Tab change handler */
+    onTabChange: (tab: ProfileTab) => void;
+    /** Pinned statuses */
+    pinnedStatuses?: Status[];
+    /** Account statuses */
+    statuses: Status[];
+    /** Loading state */
+    isLoading: boolean;
+    /** Fetch next page */
+    fetchNextPage: () => void;
+    /** Has more pages */
+    hasNextPage: boolean;
+    /** Is fetching next page */
+    isFetchingNextPage: boolean;
+}
+
+/**
+ * ProfileContent - Displays user's posts with tabs and infinite scroll
+ */
+export function ProfileContent({
+    acct,
+    activeTab,
+    onTabChange,
+    pinnedStatuses,
+    statuses,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+}: ProfileContentProps) {
+    const showPinned = (activeTab === 'posts' || activeTab === 'posts_replies') &&
+        pinnedStatuses &&
+        pinnedStatuses.length > 0;
+
+    return (
+        <>
+            <TabsContainer>
+                <Tabs
+                    tabs={profileTabs}
+                    activeTab={activeTab}
+                    onTabChange={onTabChange}
+                />
+            </TabsContainer>
+
+            <ContentSection>
+                {/* Pinned Posts - Only show for Posts and Posts & Replies tabs */}
+                {showPinned && (
+                    <PinnedSection>
+                        <PinnedHeader>
+                            <Pin size={16} />
+                            Pinned Posts
+                        </PinnedHeader>
+                        {pinnedStatuses.map(status => (
+                            <StyledPostCard
+                                key={status.id}
+                                status={status}
+                            />
+                        ))}
+                    </PinnedSection>
+                )}
+
+                {/* Posts Tab Content */}
+                <Activity mode={activeTab === 'posts' ? 'visible' : 'hidden'}>
+                    <TabContent>
+                        {isLoading && statuses.length === 0 ? (
+                            <LoadingContainer>
+                                <PostCardSkeletonList count={5} />
+                            </LoadingContainer>
+                        ) : (
+                            <VirtualizedList<Status>
+                                style={{ padding: 0 }}
+                                items={statuses}
+                                renderItem={(status) => (
+                                    <StyledPostCard status={status} />
+                                )}
+                                getItemKey={(status) => status.id}
+                                estimateSize={300}
+                                overscan={5}
+                                onLoadMore={fetchNextPage}
+                                isLoadingMore={isFetchingNextPage}
+                                hasMore={hasNextPage}
+                                loadMoreThreshold={1}
+                                height="100dvh"
+                                scrollRestorationKey={`account-${acct}-posts`}
+                                loadingIndicator={<StyledPostCardSkeleton />}
+                                endIndicator="No more posts"
+                                emptyState={<EmptyState title="No posts yet" />}
+                            />
+                        )}
+                    </TabContent>
+                </Activity>
+
+                {/* Posts & Replies Tab Content */}
+                <Activity mode={activeTab === 'posts_replies' ? 'visible' : 'hidden'}>
+                    <TabContent>
+                        {isLoading && statuses.length === 0 ? (
+                            <LoadingContainer>
+                                <PostCardSkeletonList count={5} />
+                            </LoadingContainer>
+                        ) : (
+                            <VirtualizedList<Status>
+                                style={{ padding: 0 }}
+                                items={statuses}
+                                renderItem={(status) => (
+                                    <StyledPostCard status={status} />
+                                )}
+                                getItemKey={(status) => status.id}
+                                estimateSize={300}
+                                overscan={5}
+                                onLoadMore={fetchNextPage}
+                                isLoadingMore={isFetchingNextPage}
+                                hasMore={hasNextPage}
+                                loadMoreThreshold={1}
+                                height="100dvh"
+                                scrollRestorationKey={`account-${acct}-posts_replies`}
+                                loadingIndicator={<StyledPostCardSkeleton />}
+                                endIndicator="No more posts"
+                                emptyState={<EmptyState title="No posts yet" />}
+                            />
+                        )}
+                    </TabContent>
+                </Activity>
+
+                {/* Media Tab Content */}
+                <Activity mode={activeTab === 'media' ? 'visible' : 'hidden'}>
+                    <MediaTabContent>
+                        {isLoading && statuses.length === 0 ? (
+                            <MediaGridSkeleton />
+                        ) : (
+                            <>
+                                <MediaGrid statuses={statuses} />
+                                {hasNextPage && (
+                                    <LoadMoreButton
+                                        onClick={() => fetchNextPage()}
+                                        disabled={isFetchingNextPage}
+                                    >
+                                        {isFetchingNextPage ? 'Loading...' : 'Load more'}
+                                    </LoadMoreButton>
+                                )}
+                            </>
+                        )}
+                    </MediaTabContent>
+                </Activity>
+            </ContentSection>
+        </>
+    );
+}
+
+// Styled components
 const TabsContainer = styled.div`
   padding: 0;
 `;
@@ -86,154 +240,3 @@ const StyledPostCard = styled(PostCard)`
 const StyledPostCardSkeleton = styled(PostCardSkeleton)`
   margin-bottom: var(--size-3);
 `;
-
-interface ProfileContentProps {
-    /** Account handle for scroll restoration */
-    acct: string;
-    /** Currently active tab */
-    activeTab: ProfileTab;
-    /** Tab change handler */
-    onTabChange: (tab: ProfileTab) => void;
-    /** Pinned statuses */
-    pinnedStatuses?: Status[];
-    /** Account statuses */
-    statuses: Status[];
-    /** Whether statuses are loading */
-    isLoading: boolean;
-    /** Pagination callbacks */
-    fetchNextPage: () => void;
-    hasNextPage: boolean;
-    isFetchingNextPage: boolean;
-}
-
-/**
- * ProfileContent - Profile page tab content with posts, replies, and media
- */
-export function ProfileContent({
-    acct,
-    activeTab,
-    onTabChange,
-    pinnedStatuses,
-    statuses,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-}: ProfileContentProps) {
-    return (
-        <>
-            {/* Tabs */}
-            <TabsContainer>
-                <Tabs
-                    tabs={profileTabs}
-                    activeTab={activeTab}
-                    onTabChange={onTabChange}
-                    variant="underline"
-                    fullWidth
-                />
-            </TabsContainer>
-
-            {/* Pinned Posts Section */}
-            {activeTab !== 'media' && pinnedStatuses && pinnedStatuses.length > 0 && (
-                <PinnedSection>
-                    <PinnedHeader>
-                        <Pin size={16} />
-                        Pinned Posts
-                    </PinnedHeader>
-                    {pinnedStatuses.map(status => (
-                        <StyledPostCard
-                            key={status.id}
-                            status={status}
-                        />
-                    ))}
-                </PinnedSection>
-            )}
-
-            {/* Content Section */}
-            <ContentSection>
-                {/* Posts Tab Content */}
-                <Activity mode={activeTab === 'posts' ? 'visible' : 'hidden'}>
-                    <TabContent>
-                        {isLoading && statuses.length === 0 ? (
-                            <LoadingContainer className="virtualized-list-container">
-                                <PostCardSkeletonList count={3} />
-                            </LoadingContainer>
-                        ) : (
-                            <VirtualizedList<Status>
-                                style={{ padding: 0 }}
-                                items={statuses}
-                                renderItem={(status) => (
-                                    <StyledPostCard status={status} />
-                                )}
-                                getItemKey={(status) => status.id}
-                                estimateSize={300}
-                                overscan={5}
-                                onLoadMore={fetchNextPage}
-                                isLoadingMore={isFetchingNextPage}
-                                hasMore={hasNextPage}
-                                loadMoreThreshold={1}
-                                height="100dvh"
-                                scrollRestorationKey={`account-${acct}-posts`}
-                                loadingIndicator={<StyledPostCardSkeleton />}
-                                endIndicator="No more posts"
-                                emptyState={<EmptyState title="No posts yet" />}
-                            />
-                        )}
-                    </TabContent>
-                </Activity>
-
-                {/* Posts & Replies Tab Content */}
-                <Activity mode={activeTab === 'posts_replies' ? 'visible' : 'hidden'}>
-                    <TabContent>
-                        {isLoading && statuses.length === 0 ? (
-                            <LoadingContainer className="virtualized-list-container">
-                                <PostCardSkeletonList count={3} />
-                            </LoadingContainer>
-                        ) : (
-                            <VirtualizedList<Status>
-                                style={{ padding: 0 }}
-                                items={statuses}
-                                renderItem={(status) => (
-                                    <StyledPostCard status={status} />
-                                )}
-                                getItemKey={(status) => status.id}
-                                estimateSize={300}
-                                overscan={5}
-                                onLoadMore={fetchNextPage}
-                                isLoadingMore={isFetchingNextPage}
-                                hasMore={hasNextPage}
-                                loadMoreThreshold={1}
-                                height="100dvh"
-                                scrollRestorationKey={`account-${acct}-posts_replies`}
-                                loadingIndicator={<StyledPostCardSkeleton />}
-                                endIndicator="No more posts"
-                                emptyState={<EmptyState title="No posts yet" />}
-                            />
-                        )}
-                    </TabContent>
-                </Activity>
-
-                {/* Media Tab Content */}
-                <Activity mode={activeTab === 'media' ? 'visible' : 'hidden'}>
-                    <MediaTabContent>
-                        {isLoading && statuses.length === 0 ? (
-                            <MediaGridSkeleton />
-                        ) : (
-                            <>
-                                <MediaGrid statuses={statuses} />
-                                {hasNextPage && (
-                                    <LoadMoreButton
-                                        onClick={() => fetchNextPage()}
-                                        disabled={isFetchingNextPage}
-                                    >
-                                        {isFetchingNextPage ? 'Loading...' : 'Load more'}
-                                    </LoadMoreButton>
-                                )}
-                            </>
-                        )}
-                    </MediaTabContent>
-                </Activity>
-            </ContentSection>
-        </>
-    );
-}

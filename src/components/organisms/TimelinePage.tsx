@@ -3,7 +3,6 @@
 import styled from '@emotion/styled';
 import { observer } from 'mobx-react-lite';
 import Link from 'next/link';
-import { useAuthStore } from '@/hooks/useStores';
 import { useInfiniteHomeTimeline, useCurrentAccount } from '@/api';
 import { PostCard } from './PostCard';
 import { PostCardSkeletonList, PostCardSkeleton, ProfilePillSkeleton } from '@/components/molecules';
@@ -12,6 +11,133 @@ import { EmojiText, Button, CircleSkeleton, EmptyState } from '@/components/atom
 import { Plus, Search } from 'lucide-react';
 import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';
+
+export const TimelinePage = observer(() => {
+    const { data: statusPages, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteHomeTimeline();
+    const { data: user, isLoading: isLoadingUser } = useCurrentAccount();
+
+    const uniqueStatuses = flattenAndUniqById(statusPages?.pages);
+
+    // Loading state
+    if (isLoading) {
+        return (
+            <Container>
+                <Header>
+                    <div>
+                        <Title>Home</Title>
+                        <Subtitle>Your personal timeline</Subtitle>
+                    </div>
+                    <HeaderActions>
+                        <SearchLink href="/search">
+                            <Search size={20} />
+                        </SearchLink>
+                        <CircleSkeleton size="var(--size-7)" />
+                    </HeaderActions>
+                </Header>
+                <ListContainer className="virtualized-list-container">
+                    <PostCardSkeletonList count={3} />
+                </ListContainer>
+            </Container>
+        );
+    }
+
+    // Error state
+    if (isError) {
+        return (
+            <Container>
+                <Header>
+                    <div>
+                        <Title>Home</Title>
+                        <Subtitle>Your personal timeline</Subtitle>
+                    </div>
+                </Header>
+                <ErrorContainer>
+                    <ErrorTitle>Error loading timeline</ErrorTitle>
+                    <ErrorMessage>Please check your connection and try again.</ErrorMessage>
+                    <Button onClick={() => window.location.reload()}>Retry</Button>
+                </ErrorContainer>
+            </Container>
+        );
+    }
+
+    // Empty state
+    if (!isLoading && uniqueStatuses.length === 0) {
+        return (
+            <Container>
+                <Header>
+                    <div>
+                        <Title>Home</Title>
+                        <Subtitle>Your personal timeline</Subtitle>
+                    </div>
+                </Header>
+                <EmptyContainer>
+                    <EmptyTitle>Your timeline is empty</EmptyTitle>
+                    <EmptyMessage>
+                        Follow some people to see their posts here.
+                    </EmptyMessage>
+                    <Link href="/explore">
+                        <Button>Explore</Button>
+                    </Link>
+                </EmptyContainer>
+            </Container>
+        );
+    }
+
+    return (
+        <Container className="full-height-container">
+            {/* Sticky Header */}
+            <Header>
+                <div>
+                    <Title>Home</Title>
+                    <Subtitle>Your personal timeline</Subtitle>
+                </div>
+                <HeaderActions>
+                    <SearchLink href="/search">
+                        <Search size={20} />
+                    </SearchLink>
+                    <Link href="/compose" className="icon-button">
+                        <Plus size={20} />
+                    </Link>
+                    {!isLoadingUser && user ? (
+                        <Link href={`/@${user.acct}`} className="profile-pill">
+                            <img
+                                src={user.avatar}
+                                alt={user.display_name}
+                                className="profile-pill-avatar"
+                            />
+                            <span className="profile-pill-name">
+                                <EmojiText text={user.display_name} emojis={user.emojis} />
+                            </span>
+                        </Link>
+                    ) : (
+                        <ProfilePillSkeleton />
+                    )}
+                </HeaderActions>
+            </Header>
+
+            {/* Virtual scrolling container with scroll restoration */}
+            <VirtualizedList<Status>
+                items={uniqueStatuses}
+                renderItem={(status) => (
+                    <PostCardWrapper status={status} />
+                )}
+                getItemKey={(status) => status.id}
+                estimateSize={300}
+                overscan={5}
+                onLoadMore={fetchNextPage}
+                isLoadingMore={isFetchingNextPage}
+                hasMore={hasNextPage}
+                loadMoreThreshold={1}
+                height="auto"
+                style={{ flex: 1, minHeight: 0 }}
+                scrollRestorationKey="home-timeline"
+                loadingIndicator={<PostCardSkeletonWrapper />}
+                endIndicator="You've reached the end of your timeline"
+                emptyState={<EmptyState title="No posts yet" description="Follow some people to see their posts here." />}
+            />
+        </Container>
+    );
+});
 
 // Styled components
 const Container = styled.div`
@@ -96,11 +222,6 @@ const EmptyMessage = styled.p`
     margin-bottom: var(--size-4);
 `;
 
-const VirtualListWrapper = styled(VirtualizedList)`
-    flex: 1;
-    min-height: 0;
-` as typeof VirtualizedList;
-
 const PostCardWrapper = styled(PostCard)`
     margin-bottom: var(--size-3);
 `;
@@ -108,130 +229,3 @@ const PostCardWrapper = styled(PostCard)`
 const PostCardSkeletonWrapper = styled(PostCardSkeleton)`
     margin-bottom: var(--size-3);
 `;
-
-export const TimelinePage = observer(() => {
-    const authStore = useAuthStore();
-    const { data: user } = useCurrentAccount();
-    const {
-        data,
-        isLoading,
-        isError,
-        error,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-    } = useInfiniteHomeTimeline();
-
-    // Flatten and deduplicate statuses using FP utility
-    const uniqueStatuses = flattenAndUniqById(data?.pages);
-
-    if (isLoading) {
-        return (
-            <Container className="full-height-container">
-                {/* Header */}
-                <Header>
-                    <div>
-                        <Title>Home</Title>
-                        <Subtitle>
-                            {authStore.instanceURL?.replace('https://', '')}
-                        </Subtitle>
-                    </div>
-                    <HeaderActions>
-                        <CircleSkeleton />
-                        <ProfilePillSkeleton />
-                    </HeaderActions>
-                </Header>
-
-                {/* Skeleton loading */}
-                <ListContainer className="virtualized-list-container">
-                    <PostCardSkeletonList count={5} />
-                </ListContainer>
-            </Container>
-        );
-    }
-
-    if (isError) {
-        return (
-            <ErrorContainer>
-                <ErrorTitle>Error Loading Timeline</ErrorTitle>
-                <ErrorMessage>
-                    {error instanceof Error ? error.message : 'An unknown error occurred'}
-                </ErrorMessage>
-                <Button onClick={() => window.location.reload()}>
-                    Retry
-                </Button>
-            </ErrorContainer>
-        );
-    }
-
-    if (uniqueStatuses.length === 0) {
-        return (
-            <EmptyContainer>
-                <EmptyTitle>Your Timeline is Empty</EmptyTitle>
-                <EmptyMessage>
-                    Follow some accounts to see their posts here!
-                </EmptyMessage>
-                <Link href="/compose">
-                    <Button>
-                        <Plus size={18} />
-                        Create Your First Post
-                    </Button>
-                </Link>
-            </EmptyContainer>
-        );
-    }
-
-    return (
-        <Container className="full-height-container">
-            {/* Header */}
-            <Header>
-                <div>
-                    <Title>Home</Title>
-                    <Subtitle>
-                        {authStore.instanceURL?.replace('https://', '')}
-                    </Subtitle>
-                </div>
-                <HeaderActions>
-                    <SearchLink href="/search">
-                        <Search size={20} />
-                    </SearchLink>
-                    {user ? (
-                        <Link href={`/@${user.acct}`} className="profile-pill profile-pill-static">
-                            <img
-                                src={user.avatar}
-                                alt={user.display_name}
-                                className="profile-pill-avatar"
-                            />
-                            <span className="profile-pill-name">
-                                <EmojiText text={user.display_name} emojis={user.emojis} />
-                            </span>
-                        </Link>
-                    ) : (
-                        <ProfilePillSkeleton />
-                    )}
-                </HeaderActions>
-            </Header>
-
-            {/* Virtual scrolling container with scroll restoration */}
-            <VirtualizedList<Status>
-                items={uniqueStatuses}
-                renderItem={(status) => (
-                    <PostCardWrapper status={status} />
-                )}
-                getItemKey={(status) => status.id}
-                estimateSize={300}
-                overscan={5}
-                onLoadMore={fetchNextPage}
-                isLoadingMore={isFetchingNextPage}
-                hasMore={hasNextPage}
-                loadMoreThreshold={1}
-                height="auto"
-                style={{ flex: 1, minHeight: 0 }}
-                scrollRestorationKey="home-timeline"
-                loadingIndicator={<PostCardSkeletonWrapper />}
-                endIndicator="You've reached the end of your timeline"
-                emptyState={<EmptyState title="No posts yet" description="Follow some people to see their posts here." />}
-            />
-        </Container>
-    );
-});

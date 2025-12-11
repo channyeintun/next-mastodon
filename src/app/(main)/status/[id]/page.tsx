@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
@@ -38,69 +39,48 @@ export default function StatusPage({
 
   if (isLoading) {
     return (
-      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+      <Container>
         {/* Header */}
-        <div style={{
-          position: 'sticky',
-          top: 0,
-          background: 'var(--surface-1)',
-          zIndex: 10,
-          padding: 'var(--size-4) 0',
-          marginBottom: 'var(--size-4)',
-          borderBottom: '1px solid var(--surface-3)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--size-3)',
-        }}>
+        <Header>
           <IconButton onClick={() => router.back()}>
             <ArrowLeft size={20} />
           </IconButton>
-          <h1 style={{ fontSize: 'var(--font-size-4)' }}>
-            Post
-          </h1>
-        </div>
+          <Title>Post</Title>
+        </Header>
 
         {/* Skeleton loading */}
         <div>
           {/* Main post skeleton with highlight border */}
-          <div style={{
-            border: '2px solid var(--blue-6)',
-            borderRadius: 'var(--radius-3)',
-            overflow: 'hidden',
-            marginBottom: 'var(--size-4)',
-          }}>
+          <HighlightedPost>
             <PostCardSkeleton />
-          </div>
+          </HighlightedPost>
 
           {/* Replies section skeleton */}
-          <h2 style={{
-            fontSize: 'var(--font-size-2)',
-            fontWeight: 'var(--font-weight-6)',
-            marginBottom: 'var(--size-4)',
-            color: 'var(--text-2)',
-          }}>
+          <RepliesHeader>
             <TextSkeleton width="120px" height="20px" />
-          </h2>
-          <PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />
-          <PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />
+          </RepliesHeader>
+          <SkeletonWrapper>
+            <PostCardSkeleton />
+          </SkeletonWrapper>
+          <SkeletonWrapper>
+            <PostCardSkeleton />
+          </SkeletonWrapper>
         </div>
-      </div>
+      </Container>
     );
   }
 
   if (isError || !status) {
     return (
-      <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
-        <h2 style={{ color: 'var(--red-6)', marginBottom: 'var(--size-3)' }}>
-          Error Loading Post
-        </h2>
-        <p style={{ color: 'var(--text-2)', marginBottom: 'var(--size-4)' }}>
+      <ErrorContainer>
+        <ErrorTitle>Error Loading Post</ErrorTitle>
+        <ErrorMessage>
           {statusErrorData instanceof Error
             ? statusErrorData.message
             : 'This post could not be found or loaded.'}
-        </p>
+        </ErrorMessage>
         <Button onClick={() => router.back()}>Go Back</Button>
-      </div>
+      </ErrorContainer>
     );
   }
 
@@ -108,27 +88,14 @@ export default function StatusPage({
   const descendants = context?.descendants ?? [];
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+    <Container>
       {/* Header */}
-      <div style={{
-        position: 'sticky',
-        top: 0,
-        background: 'var(--surface-1)',
-        zIndex: 10,
-        padding: 'var(--size-4) 0',
-        marginBottom: 'var(--size-4)',
-        borderBottom: '1px solid var(--surface-3)',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 'var(--size-3)',
-      }}>
+      <Header>
         <IconButton onClick={() => router.back()}>
           <ArrowLeft size={20} />
         </IconButton>
-        <h1 style={{ fontSize: 'var(--font-size-4)' }}>
-          Post
-        </h1>
-      </div>
+        <Title>Post</Title>
+      </Header>
 
       {/* Thread container */}
       <div>
@@ -139,41 +106,22 @@ export default function StatusPage({
               <div key={ancestor.id}>
                 <PostCard status={ancestor} />
                 {/* Thread line connector */}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  paddingLeft: 'var(--size-5)',
-                }}>
-                  <div style={{
-                    width: '2px',
-                    height: '32px',
-                    background: 'var(--surface-4)',
-                    marginLeft: '18px', // Center align with avatar
-                  }} />
-                </div>
+                <ThreadLineContainer>
+                  <ThreadLine />
+                </ThreadLineContainer>
               </div>
             ))}
           </div>
         )}
 
         {/* Main status (highlighted) */}
-        <div style={{
-          border: '2px solid var(--blue-6)',
-          borderRadius: 'var(--radius-3)',
-          marginBottom: 'var(--size-3)', // Reduced margin here as reply box follows
-        }}>
+        <HighlightedPost>
           <PostCard status={status} showEditHistory={true} />
-        </div>
+        </HighlightedPost>
 
         {/* Reply Composer - Comment Box Style */}
         {authStore.isAuthenticated && (
-          <div style={{
-            marginBottom: 'var(--size-4)',
-            border: '1px solid var(--surface-3)',
-            borderRadius: 'var(--radius-3)',
-            background: 'var(--surface-2)', // Slightly different bg for contrast
-            padding: 'var(--size-3)',
-          }}>
+          <ReplyComposerContainer>
             <ComposerPanel
               key={`reply-${status.id}`}
               initialVisibility={status.visibility}
@@ -181,36 +129,22 @@ export default function StatusPage({
               inReplyToId={status.id}
               isReply={true}
             />
-          </div>
+          </ReplyComposerContainer>
         )}
 
         {/* Descendants (replies) */}
         {descendants.length > 0 && (
           <div>
-            <h2 style={{
-              fontSize: 'var(--font-size-2)',
-              fontWeight: 'var(--font-weight-6)',
-              marginBottom: 'var(--size-4)',
-              color: 'var(--text-2)',
-            }}>
+            <RepliesHeader>
               Replies ({descendants.length})
-            </h2>
+            </RepliesHeader>
             {descendants.map((descendant, index) => (
               <div key={descendant.id}>
                 {/* Thread line connector */}
                 {index > 0 && (
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    paddingLeft: 'var(--size-5)',
-                  }}>
-                    <div style={{
-                      width: '2px',
-                      height: '24px',
-                      background: 'var(--surface-4)',
-                      marginLeft: '18px',
-                    }} />
-                  </div>
+                  <ThreadLineContainer>
+                    <ThreadLineShort />
+                  </ThreadLineContainer>
                 )}
                 <PostCard status={descendant} />
               </div>
@@ -220,20 +154,109 @@ export default function StatusPage({
 
         {/* Empty state for no replies */}
         {descendants.length === 0 && (
-          <div style={{
-            textAlign: 'center',
-            padding: 'var(--size-8) var(--size-4)',
-            color: 'var(--text-2)',
-            display: 'grid',
-            justifyContent: 'center',
-          }}>
+          <EmptyState>
             <p>No replies yet.</p>
-            <p style={{ fontSize: 'var(--font-size-0)', marginTop: 'var(--size-2)' }}>
-              Be the first to reply!
-            </p>
-          </div>
+            <EmptySubtext>Be the first to reply!</EmptySubtext>
+          </EmptyState>
         )}
       </div>
-    </div>
+    </Container>
   );
 }
+
+// Styled components
+const Container = styled.div`
+  max-width: 600px;
+  margin: 0 auto;
+`;
+
+const Header = styled.div`
+  position: sticky;
+  top: 0;
+  background: var(--surface-1);
+  z-index: 10;
+  padding: var(--size-4) 0;
+  margin-bottom: var(--size-4);
+  border-bottom: 1px solid var(--surface-3);
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+`;
+
+const Title = styled.h1`
+  font-size: var(--font-size-4);
+`;
+
+const HighlightedPost = styled.div`
+  border: 2px solid var(--blue-6);
+  border-radius: var(--radius-3);
+  overflow: hidden;
+  margin-bottom: var(--size-3);
+`;
+
+const RepliesHeader = styled.h2`
+  font-size: var(--font-size-2);
+  font-weight: var(--font-weight-6);
+  margin-bottom: var(--size-4);
+  color: var(--text-2);
+`;
+
+const SkeletonWrapper = styled.div`
+  margin-bottom: var(--size-3);
+`;
+
+const ThreadLineContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  padding-left: var(--size-5);
+`;
+
+const ThreadLine = styled.div`
+  width: 2px;
+  height: 32px;
+  background: var(--surface-4);
+  margin-left: 18px;
+`;
+
+const ThreadLineShort = styled.div`
+  width: 2px;
+  height: 24px;
+  background: var(--surface-4);
+  margin-left: 18px;
+`;
+
+const ReplyComposerContainer = styled.div`
+  margin-bottom: var(--size-4);
+  border: 1px solid var(--surface-3);
+  border-radius: var(--radius-3);
+  background: var(--surface-2);
+  padding: var(--size-3);
+`;
+
+const ErrorContainer = styled.div`
+  text-align: center;
+  margin-top: var(--size-8);
+`;
+
+const ErrorTitle = styled.h2`
+  color: var(--red-6);
+  margin-bottom: var(--size-3);
+`;
+
+const ErrorMessage = styled.p`
+  color: var(--text-2);
+  margin-bottom: var(--size-4);
+`;
+
+const EmptyState = styled.div`
+  text-align: center;
+  padding: var(--size-8) var(--size-4);
+  color: var(--text-2);
+  display: grid;
+  justify-content: center;
+`;
+
+const EmptySubtext = styled.p`
+  font-size: var(--font-size-0);
+  margin-top: var(--size-2);
+`;

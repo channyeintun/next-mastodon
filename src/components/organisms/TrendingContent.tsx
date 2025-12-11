@@ -13,73 +13,6 @@ import { Hash, Newspaper, FileText } from 'lucide-react';
 import { flattenAndUniqById, flattenAndUniqByKey } from '@/utils/fp';
 import type { Status, Tag, TrendingLink } from '@/types';
 
-// Styled components
-const Container = styled.div`
-    max-width: 600px;
-    margin: 0 auto;
-`;
-
-const TabContent = styled.div`
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-`;
-
-const TabContentWithPadding = styled(TabContent)`
-    padding: 0 var(--size-4);
-`;
-
-const ListContainer = styled.div`
-    flex: 1;
-    overflow: auto;
-`;
-
-const SkeletonList = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: var(--size-2);
-`;
-
-const ErrorContainer = styled.div`
-    text-align: center;
-    padding: var(--size-8);
-`;
-
-const ErrorText = styled.p`
-    color: var(--red-6);
-    margin-bottom: var(--size-3);
-`;
-
-const StyledPostCard = styled(PostCard)`
-    margin-bottom: var(--size-3);
-`;
-
-const StyledPostCardSkeleton = styled(PostCardSkeleton)`
-    margin-bottom: var(--size-3);
-`;
-
-const StyledTrendingTagCard = styled(TrendingTagCard)`
-    margin-bottom: var(--size-2);
-`;
-
-const StyledTrendingTagCardSkeleton = styled(TrendingTagCardSkeleton)`
-    margin-bottom: var(--size-2);
-`;
-
-const StyledTrendingLinkCard = styled(TrendingLinkCard)`
-    margin-bottom: var(--size-2);
-`;
-
-const StyledTrendingLinkCardSkeleton = styled(TrendingLinkCardSkeleton)`
-    margin-bottom: var(--size-2);
-`;
-
-const StyledTabs = styled(Tabs)`
-    padding: 0 var(--size-4);
-` as typeof Tabs;
-
 type TrendingTab = 'posts' | 'tags' | 'links';
 
 const trendingTabs: TabItem<TrendingTab>[] = [
@@ -258,3 +191,71 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
         </Container>
     );
 });
+
+
+// Styled components
+const Container = styled.div`
+    max-width: 600px;
+    margin: 0 auto;
+`;
+
+const TabContent = styled.div`
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+`;
+
+const TabContentWithPadding = styled(TabContent)`
+    padding: 0 var(--size-4);
+`;
+
+const ListContainer = styled.div`
+    flex: 1;
+    overflow: auto;
+`;
+
+const SkeletonList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2);
+`;
+
+const ErrorContainer = styled.div`
+    text-align: center;
+    padding: var(--size-8);
+`;
+
+const ErrorText = styled.p`
+    color: var(--red-6);
+    margin-bottom: var(--size-3);
+`;
+
+const StyledPostCard = styled(PostCard)`
+    margin-bottom: var(--size-3);
+`;
+
+const StyledPostCardSkeleton = styled(PostCardSkeleton)`
+    margin-bottom: var(--size-3);
+`;
+
+const StyledTrendingTagCard = styled(TrendingTagCard)`
+    margin-bottom: var(--size-2);
+`;
+
+const StyledTrendingTagCardSkeleton = styled(TrendingTagCardSkeleton)`
+    margin-bottom: var(--size-2);
+`;
+
+const StyledTrendingLinkCard = styled(TrendingLinkCard)`
+    margin-bottom: var(--size-2);
+`;
+
+const StyledTrendingLinkCardSkeleton = styled(TrendingLinkCardSkeleton)`
+    margin-bottom: var(--size-2);
+`;
+
+const StyledTabs = styled(Tabs)`
+    padding: 0 var(--size-4);
+` as typeof Tabs;

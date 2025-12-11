@@ -19,60 +19,6 @@ import type { CreateStatusParams, MediaAttachment } from '@/types';
 
 const MAX_CHAR_COUNT = 500;
 
-// Styled components
-const LoadingContainer = styled.div`
-  padding: var(--size-4);
-  text-align: center;
-  color: var(--text-2);
-`;
-
-const DisplayName = styled.div`
-  font-weight: var(--font-weight-7);
-  font-size: var(--font-size-2);
-`;
-
-const VisibilityButtonWrapper = styled.div`
-  margin-top: 4px;
-`;
-
-const VisibilityButton = styled.button`
-  padding: 0;
-  background: transparent;
-  color: var(--text-2);
-  font-size: var(--font-size-1);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  border: none;
-
-  &:hover {
-    color: var(--text-1);
-  }
-`;
-
-const VisibilityLabel = styled.span`
-  font-weight: 500;
-`;
-
-const InputsContainer = styled.div`
-  margin-bottom: var(--size-3);
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-2);
-`;
-
-const HiddenInput = styled.input`
-  display: none;
-`;
-
-const QuotePreview = styled.div`
-  margin-top: var(--size-4);
-  pointer-events: none;
-  user-select: none;
-  opacity: 0.8;
-`;
-
 export const visibilityOptions: Array<{ value: Visibility; label: string; icon: typeof Globe; description: string }> = [
   { value: 'public', label: 'Public', icon: Globe, description: 'Visible to everyone' },
   { value: 'unlisted', label: 'Unlisted', icon: Lock, description: 'Not shown in public timelines' },
@@ -500,3 +446,57 @@ export function ComposerPanel({
     </div>
   );
 }
+
+// Styled components
+const LoadingContainer = styled.div`
+  padding: var(--size-4);
+  text-align: center;
+  color: var(--text-2);
+`;
+
+const DisplayName = styled.div`
+  font-weight: var(--font-weight-7);
+  font-size: var(--font-size-2);
+`;
+
+const VisibilityButtonWrapper = styled.div`
+  margin-top: 4px;
+`;
+
+const VisibilityButton = styled.button`
+  padding: 0;
+  background: transparent;
+  color: var(--text-2);
+  font-size: var(--font-size-1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  border: none;
+
+  &:hover {
+    color: var(--text-1);
+  }
+`;
+
+const VisibilityLabel = styled.span`
+  font-weight: 500;
+`;
+
+const InputsContainer = styled.div`
+  margin-bottom: var(--size-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2);
+`;
+
+const HiddenInput = styled.input`
+  display: none;
+`;
+
+const QuotePreview = styled.div`
+  margin-top: var(--size-4);
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.8;
+`;
