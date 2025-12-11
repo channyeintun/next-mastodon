@@ -3,6 +3,8 @@
 import { useState, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import axios from 'axios';
+import Link from 'next/link';
+import { Home } from 'lucide-react';
 import { useAuthStore } from '@/hooks/useStores';
 import {
   normalizeInstanceURL,
@@ -81,6 +83,20 @@ export default function SignInPage() {
 
   return (
     <div style={{ maxWidth: '500px', marginTop: 'var(--size-8)' }}>
+      <Link
+        href="/"
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 'var(--size-2)',
+          color: 'var(--text-2)',
+          textDecoration: 'none',
+          marginBottom: 'var(--size-4)',
+        }}
+      >
+        <Home size={16} />
+        Home
+      </Link>
       <h1 style={{ fontSize: 'var(--font-size-6)', marginBottom: 'var(--size-4)', textAlign: 'center' }}>
         Sign in to Mastodon
       </h1>
