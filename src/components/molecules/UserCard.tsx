@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { type CSSProperties } from 'react';
 import Link from 'next/link';
 import { Avatar, Card, Button, EmojiText } from '@/components/atoms';
@@ -11,6 +12,91 @@ interface UserCardProps {
   showFollowButton?: boolean;
   style?: CSSProperties;
 }
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  display: block;
+`;
+
+const ContentContainer = styled.div`
+  display: flex;
+  gap: var(--size-3);
+`;
+
+const InfoSection = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+const HeaderRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: var(--size-2);
+  margin-bottom: var(--size-2);
+`;
+
+const NameContainer = styled.div`
+  min-width: 0;
+  flex: 1;
+`;
+
+const DisplayNameRow = styled.div`
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  font-size: var(--font-size-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const BotBadge = styled.span`
+  margin-left: var(--size-2);
+  font-size: var(--font-size-0);
+  padding: 2px var(--size-1);
+  background: var(--surface-3);
+  border-radius: var(--radius-1);
+  font-weight: var(--font-weight-5);
+`;
+
+const LockIcon = styled.span`
+  margin-left: var(--size-2);
+  font-size: var(--font-size-0);
+`;
+
+const Username = styled.div`
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const StyledButton = styled(Button)`
+  flex-shrink: 0;
+`;
+
+const Bio = styled.div`
+  font-size: var(--font-size-1);
+  color: var(--text-2);
+  line-height: 1.4;
+  margin-bottom: var(--size-2);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+`;
+
+const StatsRow = styled.div`
+  display: flex;
+  gap: var(--size-4);
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+`;
+
+const StatCount = styled.strong`
+  color: var(--text-1);
+`;
 
 function stripHtmlTags(html: string): string {
   return html.replace(/<[^>]*>/g, '');
@@ -38,130 +124,83 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
 
   return (
     <Card padding="medium" hoverable style={style}>
-      <Link
-        href={`/@${account.acct}`}
-        style={{ textDecoration: 'none', display: 'block' }}
-      >
-        <div style={{ display: 'flex', gap: 'var(--size-3)' }}>
+      <StyledLink href={`/@${account.acct}`}>
+        <ContentContainer>
           <Avatar
             src={account.avatar}
             alt={account.display_name || account.username}
             size="large"
           />
 
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <InfoSection>
             {/* Name and username */}
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'start',
-              gap: 'var(--size-2)',
-              marginBottom: 'var(--size-2)',
-            }}>
-              <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{
-                  fontWeight: 'var(--font-weight-6)',
-                  color: 'var(--text-1)',
-                  fontSize: 'var(--font-size-2)',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}>
+            <HeaderRow>
+              <NameContainer>
+                <DisplayNameRow>
                   <EmojiText
                     text={account.display_name || account.username}
                     emojis={account.emojis}
                   />
                   {account.bot && (
-                    <span style={{
-                      marginLeft: 'var(--size-2)',
-                      fontSize: 'var(--font-size-0)',
-                      padding: '2px var(--size-1)',
-                      background: 'var(--surface-3)',
-                      borderRadius: 'var(--radius-1)',
-                      fontWeight: 'var(--font-weight-5)',
-                    }}>
+                    <BotBadge>
                       BOT
-                    </span>
+                    </BotBadge>
                   )}
                   {account.locked && (
-                    <span style={{
-                      marginLeft: 'var(--size-2)',
-                      fontSize: 'var(--font-size-0)',
-                    }}>
+                    <LockIcon>
                       🔒
-                    </span>
+                    </LockIcon>
                   )}
-                </div>
-                <div style={{
-                  fontSize: 'var(--font-size-0)',
-                  color: 'var(--text-2)',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}>
+                </DisplayNameRow>
+                <Username>
                   @{account.acct}
-                </div>
-              </div>
+                </Username>
+              </NameContainer>
 
               {/* Follow button */}
               {showFollowButton && (
-                <Button
+                <StyledButton
                   variant={isFollowing ? 'secondary' : 'primary'}
                   size="small"
                   onClick={handleFollowToggle}
                   isLoading={isLoading}
-                  style={{ flexShrink: 0 }}
                 >
                   {isFollowing ? 'Following' : 'Follow'}
-                </Button>
+                </StyledButton>
               )}
-            </div>
+            </HeaderRow>
 
             {/* Bio */}
             {account.note && (
-              <div style={{
-                fontSize: 'var(--font-size-1)',
-                color: 'var(--text-2)',
-                lineHeight: '1.4',
-                marginBottom: 'var(--size-2)',
-                overflow: 'hidden',
-                display: '-webkit-box',
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical',
-              }}>
+              <Bio>
                 {stripHtmlTags(account.note)}
-              </div>
+              </Bio>
             )}
 
             {/* Stats */}
-            <div style={{
-              display: 'flex',
-              gap: 'var(--size-4)',
-              fontSize: 'var(--font-size-0)',
-              color: 'var(--text-2)',
-            }}>
+            <StatsRow>
               <div>
-                <strong style={{ color: 'var(--text-1)' }}>
+                <StatCount>
                   {account.statuses_count.toLocaleString()}
-                </strong>{' '}
+                </StatCount>{' '}
                 posts
               </div>
               <div>
-                <strong style={{ color: 'var(--text-1)' }}>
+                <StatCount>
                   {account.followers_count.toLocaleString()}
-                </strong>{' '}
+                </StatCount>{' '}
                 followers
               </div>
               <div>
-                <strong style={{ color: 'var(--text-1)' }}>
+                <StatCount>
                   {account.following_count.toLocaleString()}
-                </strong>{' '}
+                </StatCount>{' '}
                 following
               </div>
-            </div>
-          </div>
-        </div>
-      </Link>
+            </StatsRow>
+          </InfoSection>
+        </ContentContainer>
+      </StyledLink>
     </Card>
   );
 }

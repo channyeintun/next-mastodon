@@ -1,10 +1,78 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { Card } from '../atoms/Card';
 
 interface PostCardSkeletonProps {
   style?: React.CSSProperties;
 }
+
+const Container = styled.div`
+  display: flex;
+  gap: var(--size-3);
+`;
+
+const AvatarSkeleton = styled.div`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  flex-shrink: 0;
+  animation: var(--animation-blink);
+`;
+
+const ContentContainer = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+const HeaderSection = styled.div`
+  margin-bottom: var(--size-3);
+`;
+
+const DisplayNameSkeleton = styled.div`
+  width: 40%;
+  height: 20px;
+  background: var(--surface-3);
+  border-radius: var(--radius-1);
+  margin-bottom: var(--size-1);
+  animation: var(--animation-blink);
+`;
+
+const UsernameSkeleton = styled.div`
+  width: 30%;
+  height: 16px;
+  background: var(--surface-3);
+  border-radius: var(--radius-1);
+  animation: var(--animation-blink);
+`;
+
+const TextSection = styled.div`
+  margin-bottom: var(--size-3);
+`;
+
+const TextLine = styled.div<{ $width: string; $hasMargin?: boolean }>`
+  width: ${({ $width }) => $width};
+  height: 16px;
+  background: var(--surface-3);
+  border-radius: var(--radius-1);
+  animation: var(--animation-blink);
+  margin-bottom: ${({ $hasMargin }) => ($hasMargin ? 'var(--size-2)' : 0)};
+`;
+
+const ActionBar = styled.div`
+  display: flex;
+  gap: var(--size-4);
+  margin-top: var(--size-3);
+`;
+
+const ActionItem = styled.div`
+  width: 32px;
+  height: 24px;
+  background: var(--surface-3);
+  border-radius: var(--radius-1);
+  animation: var(--animation-blink);
+`;
 
 /**
  * Skeleton loading placeholder for PostCard
@@ -12,95 +80,32 @@ interface PostCardSkeletonProps {
 export function PostCardSkeleton({ style }: PostCardSkeletonProps) {
   return (
     <Card padding="medium" style={style}>
-      <div style={{ display: 'flex', gap: 'var(--size-3)' }}>
+      <Container>
         {/* Avatar skeleton */}
-        <div
-          style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: '50%',
-            background: 'var(--surface-3)',
-            flexShrink: 0,
-            animation: 'var(--animation-blink)',
-          }}
-        />
+        <AvatarSkeleton />
 
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <ContentContainer>
           {/* Header skeleton */}
-          <div style={{ marginBottom: 'var(--size-3)' }}>
-            {/* Display name */}
-            <div
-              style={{
-                width: '40%',
-                height: '20px',
-                background: 'var(--surface-3)',
-                borderRadius: 'var(--radius-1)',
-                marginBottom: 'var(--size-1)',
-                animation: 'var(--animation-blink)',
-              }}
-            />
-            {/* Username */}
-            <div
-              style={{
-                width: '30%',
-                height: '16px',
-                background: 'var(--surface-3)',
-                borderRadius: 'var(--radius-1)',
-                animation: 'var(--animation-blink)',
-              }}
-            />
-          </div>
+          <HeaderSection>
+            <DisplayNameSkeleton />
+            <UsernameSkeleton />
+          </HeaderSection>
 
           {/* Content skeleton */}
-          <div style={{ marginBottom: 'var(--size-3)' }}>
-            <div
-              style={{
-                width: '100%',
-                height: '16px',
-                background: 'var(--surface-3)',
-                borderRadius: 'var(--radius-1)',
-                marginBottom: 'var(--size-2)',
-                animation: 'var(--animation-blink)',
-              }}
-            />
-            <div
-              style={{
-                width: '90%',
-                height: '16px',
-                background: 'var(--surface-3)',
-                borderRadius: 'var(--radius-1)',
-                marginBottom: 'var(--size-2)',
-                animation: 'var(--animation-blink)',
-              }}
-            />
-            <div
-              style={{
-                width: '70%',
-                height: '16px',
-                background: 'var(--surface-3)',
-                borderRadius: 'var(--radius-1)',
-                animation: 'var(--animation-blink)',
-              }}
-            />
-          </div>
+          <TextSection>
+            <TextLine $width="100%" $hasMargin />
+            <TextLine $width="90%" $hasMargin />
+            <TextLine $width="70%" />
+          </TextSection>
 
           {/* Action bar skeleton */}
-          <div style={{ display: 'flex', gap: 'var(--size-4)', marginTop: 'var(--size-3)' }}>
+          <ActionBar>
             {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                style={{
-                  width: '32px',
-                  height: '24px',
-                  background: 'var(--surface-3)',
-                  borderRadius: 'var(--radius-1)',
-                  animation: 'var(--animation-blink)',
-                }}
-              />
+              <ActionItem key={i} />
             ))}
-          </div>
-        </div>
-      </div>
+          </ActionBar>
+        </ContentContainer>
+      </Container>
     </Card>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { use, useState } from 'react';
 import { useRouter, notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -32,6 +33,140 @@ import { Avatar, Button, IconButton, EmojiText, TextSkeleton } from '@/component
 import { flattenAndUniqById, getStatusFilters } from '@/utils/fp';
 
 type ProfileTab = 'posts' | 'posts_replies' | 'media';
+
+const PageContainer = styled.div`
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Header = styled.div`
+  position: sticky;
+  top: 0;
+  background: var(--surface-1);
+  z-index: 10;
+  padding: var(--size-4);
+  margin-bottom: var(--size-4);
+  border-bottom: 1px solid var(--surface-3);
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  flex-shrink: 0;
+`;
+
+const HeaderTitle = styled.h1`
+  font-size: var(--font-size-4);
+  margin-bottom: var(--size-1);
+`;
+
+const HeaderSubtitle = styled.p`
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+`;
+
+const ScrollableContent = styled.div`
+  flex: 1;
+  overflow: auto;
+`;
+
+const HeaderImage = styled.div<{ $url: string }>`
+  width: 100%;
+  height: 200px;
+  border-radius: var(--radius-3);
+  background-image: url(${({ $url }) => $url});
+  background-size: cover;
+  background-position: center;
+  margin-bottom: calc(-1 * var(--size-8));
+`;
+
+const ProfileSection = styled.div`
+  padding: 0;
+`;
+
+const ProfileDetails = styled.div`
+  padding: var(--size-2);
+  padding-top: var(--size-2);
+`;
+
+const AvatarSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--size-4);
+`;
+
+const NameSection = styled.div`
+  margin-bottom: var(--size-4);
+`;
+
+const DisplayName = styled.h2`
+  font-size: var(--font-size-5);
+  font-weight: var(--font-weight-7);
+  margin-bottom: var(--size-1);
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  flex-wrap: wrap;
+`;
+
+const BotBadge = styled.span`
+  font-size: var(--font-size-0);
+  background: var(--surface-3);
+  padding: 2px var(--size-2);
+  border-radius: var(--radius-1);
+`;
+
+const LockIcon = styled.span`
+  font-size: var(--font-size-1);
+`;
+
+const MetaSection = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-4);
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+  margin-bottom: var(--size-4);
+`;
+
+const MetaItem = styled.span`
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+`;
+
+const MetaLink = styled.a`
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  color: var(--blue-6);
+  text-decoration: none;
+`;
+
+const ErrorContainer = styled.div`
+  text-align: center;
+  margin-top: var(--size-8);
+`;
+
+const ErrorTitle = styled.h2`
+  color: var(--red-6);
+  margin-bottom: var(--size-3);
+`;
+
+const PostsHeader = styled.h3`
+  font-size: var(--font-size-3);
+  font-weight: var(--font-weight-6);
+  margin-bottom: var(--size-4);
+  padding-left: var(--size-4);
+`;
+
+const LoadingBorder = styled.div`
+  border-top: 1px solid var(--surface-3);
+  padding-top: var(--size-4);
+  margin-top: var(--size-4);
+`;
 
 export default function AccountPage({
   params,
@@ -100,12 +235,8 @@ export default function AccountPage({
   // Loading state
   if (accountLoading) {
     return (
-      <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0 }}>
-        <div style={{
-          position: 'sticky', top: 0, background: 'var(--surface-1)', zIndex: 10,
-          padding: 'var(--size-4)', marginBottom: 'var(--size-4)', borderBottom: '1px solid var(--surface-3)',
-          display: 'flex', alignItems: 'center', gap: 'var(--size-3)', flexShrink: 0,
-        }}>
+      <PageContainer className="full-height-container">
+        <Header>
           <IconButton onClick={() => router.back()}>
             <ArrowLeft size={20} />
           </IconButton>
@@ -113,66 +244,58 @@ export default function AccountPage({
             <TextSkeleton width="150px" height="24px" style={{ marginBottom: 'var(--size-1)' }} />
             <TextSkeleton width="100px" height="16px" />
           </div>
-        </div>
+        </Header>
         <AccountProfileSkeleton />
-        <div style={{ borderTop: '1px solid var(--surface-3)', paddingTop: 'var(--size-4)', marginTop: 'var(--size-4)' }}>
-          <h3 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', marginBottom: 'var(--size-4)', paddingLeft: 'var(--size-4)' }}>Posts</h3>
-          <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+        <LoadingBorder>
+          <PostsHeader>Posts</PostsHeader>
+          <ScrollableContent className="virtualized-list-container">
             <PostCardSkeletonList count={3} />
-          </div>
-        </div>
-      </div>
+          </ScrollableContent>
+        </LoadingBorder>
+      </PageContainer>
     );
   }
 
   // Error state
   if (accountError || !account) {
     return (
-      <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
-        <h2 style={{ color: 'var(--red-6)', marginBottom: 'var(--size-3)' }}>Profile Not Found</h2>
+      <ErrorContainer>
+        <ErrorTitle>Profile Not Found</ErrorTitle>
         <Link href="/"><Button>Back to Timeline</Button></Link>
-      </div>
+      </ErrorContainer>
     );
   }
 
   return (
-    <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0, display: 'flex', flexDirection: 'column' }}>
+    <PageContainer className="full-height-container">
       {/* Header */}
-      <div style={{
-        position: 'sticky', top: 0, background: 'var(--surface-1)', zIndex: 10,
-        padding: 'var(--size-4)', marginBottom: 'var(--size-4)', borderBottom: '1px solid var(--surface-3)',
-        display: 'flex', alignItems: 'center', gap: 'var(--size-3)', flexShrink: 0,
-      }}>
+      <Header>
         <IconButton onClick={() => router.back()}>
           <ArrowLeft size={20} />
         </IconButton>
         <div>
-          <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
+          <HeaderTitle>
             <EmojiText text={account.display_name || account.username} emojis={account.emojis} />
-          </h1>
-          <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
+          </HeaderTitle>
+          <HeaderSubtitle>
             {account.statuses_count.toLocaleString()} posts
-          </p>
+          </HeaderSubtitle>
         </div>
-      </div>
+      </Header>
 
       {/* Scrollable Content */}
-      <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+      <ScrollableContent className="virtualized-list-container">
         {/* Profile Section */}
-        <div style={{ padding: 0 }}>
+        <ProfileSection>
           {/* Header Image */}
           {account.header && !account.header.includes('missing.png') && (
-            <div style={{
-              width: '100%', height: '200px', borderRadius: 'var(--radius-3)',
-              backgroundImage: `url(${account.header})`, backgroundSize: 'cover', backgroundPosition: 'center',
-              marginBottom: 'calc(-1 * var(--size-8))',
-            }} />
+            <HeaderImage $url={account.header} />
           )}
 
           {/* Profile Details Container */}
-          <div style={{ padding: 'var(--size-2)', paddingTop: 'var(--size-2)' }}>
+          <ProfileDetails>
             {/* Avatar and Actions */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--size-4)' }}>
+            <AvatarSection>
               <Avatar
                 src={account.avatar}
                 alt={account.display_name || account.username}
@@ -192,17 +315,17 @@ export default function AccountPage({
                 onBlockToggle={handleBlockToggle}
                 onMuteToggle={handleMuteToggle}
               />
-            </div>
+            </AvatarSection>
 
             {/* Name and Handle */}
-            <div style={{ marginBottom: 'var(--size-4)' }}>
-              <h2 style={{ fontSize: 'var(--font-size-5)', fontWeight: 'var(--font-weight-7)', marginBottom: 'var(--size-1)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)', flexWrap: 'wrap' }}>
+            <NameSection>
+              <DisplayName>
                 <EmojiText text={account.display_name || account.username} emojis={account.emojis} />
-                {account.bot && <span style={{ fontSize: 'var(--font-size-0)', background: 'var(--surface-3)', padding: '2px var(--size-2)', borderRadius: 'var(--radius-1)' }}>BOT</span>}
-                {account.locked && <span style={{ fontSize: 'var(--font-size-1)' }}>🔒</span>}
-              </h2>
+                {account.bot && <BotBadge>BOT</BotBadge>}
+                {account.locked && <LockIcon>🔒</LockIcon>}
+              </DisplayName>
               <HandleExplainer username={account.username} server={new URL(account.url).hostname} />
-            </div>
+            </NameSection>
 
             {/* Bio */}
             <ProfileBio note={account.note} />
@@ -211,23 +334,23 @@ export default function AccountPage({
             <ProfileStats acct={account.acct} followingCount={account.following_count} followersCount={account.followers_count} />
 
             {/* Joined Date & External Link */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--size-4)', fontSize: 'var(--font-size-0)', color: 'var(--text-2)', marginBottom: 'var(--size-4)' }}>
+            <MetaSection>
               {account.created_at && (
-                <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
+                <MetaItem>
                   <Calendar size={14} />
                   Joined {new Date(account.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                </span>
+                </MetaItem>
               )}
-              <a href={account.url} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)', color: 'var(--blue-6)', textDecoration: 'none' }}>
+              <MetaLink href={account.url} target="_blank" rel="noopener noreferrer">
                 <ExternalLink size={14} />
                 View on instance
-              </a>
-            </div>
+              </MetaLink>
+            </MetaSection>
 
             {/* Custom Fields */}
             <ProfileFields fields={account.fields} />
-          </div>
-        </div>
+          </ProfileDetails>
+        </ProfileSection>
 
         {/* Profile Content */}
         <ProfileContent
@@ -241,7 +364,7 @@ export default function AccountPage({
           hasNextPage={hasNextPage ?? false}
           isFetchingNextPage={isFetchingNextPage}
         />
-      </div>
-    </div>
+      </ScrollableContent>
+    </PageContainer>
   );
 }

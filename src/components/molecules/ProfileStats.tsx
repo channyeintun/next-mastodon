@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import Link from 'next/link';
 
 interface ProfileStatsProps {
@@ -7,6 +8,25 @@ interface ProfileStatsProps {
     followingCount: number;
     followersCount: number;
 }
+
+const Container = styled.div`
+  display: flex;
+  gap: var(--size-4);
+  font-size: var(--font-size-1);
+  margin-bottom: var(--size-4);
+`;
+
+const StatsLink = styled(Link)`
+  text-decoration: none;
+`;
+
+const Count = styled.strong`
+  color: var(--text-1);
+`;
+
+const Label = styled.span`
+  color: var(--text-2);
+`;
 
 /**
  * Presentation component for profile follower/following stats.
@@ -17,24 +37,19 @@ export function ProfileStats({
     followersCount,
 }: ProfileStatsProps) {
     return (
-        <div style={{
-            display: 'flex',
-            gap: 'var(--size-4)',
-            fontSize: 'var(--font-size-1)',
-            marginBottom: 'var(--size-4)',
-        }}>
-            <Link href={`/@${acct}/following`} style={{ textDecoration: 'none' }}>
-                <strong style={{ color: 'var(--text-1)' }}>
+        <Container>
+            <StatsLink href={`/@${acct}/following`}>
+                <Count>
                     {followingCount.toLocaleString()}
-                </strong>{' '}
-                <span style={{ color: 'var(--text-2)' }}>Following</span>
-            </Link>
-            <Link href={`/@${acct}/followers`} style={{ textDecoration: 'none' }}>
-                <strong style={{ color: 'var(--text-1)' }}>
+                </Count>{' '}
+                <Label>Following</Label>
+            </StatsLink>
+            <StatsLink href={`/@${acct}/followers`}>
+                <Count>
                     {followersCount.toLocaleString()}
-                </strong>{' '}
-                <span style={{ color: 'var(--text-2)' }}>Followers</span>
-            </Link>
-        </div>
+                </Count>{' '}
+                <Label>Followers</Label>
+            </StatsLink>
+        </Container>
     );
 }

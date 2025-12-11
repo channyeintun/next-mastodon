@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import Link from 'next/link';
 import {
     Globe,
@@ -18,6 +19,77 @@ import { Avatar, IconButton, EmojiText } from '@/components/atoms';
 import type { Account } from '@/types';
 
 type Visibility = 'public' | 'unlisted' | 'private' | 'direct';
+
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+`;
+
+const AvatarLink = styled(Link)`
+  text-decoration: none;
+  flex-shrink: 0;
+`;
+
+const ContentSection = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+const HeaderRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+`;
+
+const NameSection = styled.div`
+  min-width: 0;
+`;
+
+const ProfileLink = styled(Link)`
+  text-decoration: none;
+`;
+
+const DisplayName = styled.div`
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const Handle = styled.div`
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const MetaSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  flex-shrink: 0;
+`;
+
+const TimeLink = styled(Link)`
+  text-decoration: none;
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+`;
+
+const VisibilityIcon = styled.div`
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+`;
+
+const MenuDivider = styled.div`
+  height: 1px;
+  background: var(--surface-3);
+  margin: 4px 0;
+`;
 
 interface PostHeaderProps {
     account: Account;
@@ -71,68 +143,38 @@ export function PostHeader({
     onMute,
 }: PostHeaderProps) {
     return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
-            <Link
-                href={`/@${account.acct}`}
-                style={{ textDecoration: 'none', flexShrink: 0 }}
-            >
+        <Container>
+            <AvatarLink href={`/@${account.acct}`}>
                 <Avatar
                     src={account.avatar}
                     alt={account.display_name || account.username}
                     size="medium"
                 />
-            </Link>
+            </AvatarLink>
 
-            <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                    <div style={{ minWidth: 0 }}>
-                        <Link
-                            href={`/@${account.acct}`}
-                            style={{ textDecoration: 'none' }}
-                        >
-                            <div style={{
-                                fontWeight: 'var(--font-weight-6)',
-                                color: 'var(--text-1)',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                            }}>
+            <ContentSection>
+                <HeaderRow>
+                    <NameSection>
+                        <ProfileLink href={`/@${account.acct}`}>
+                            <DisplayName>
                                 <EmojiText
                                     text={account.display_name || account.username}
                                     emojis={account.emojis}
                                 />
-                            </div>
-                            <div style={{
-                                fontSize: 'var(--font-size-0)',
-                                color: 'var(--text-2)',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                            }}>
+                            </DisplayName>
+                            <Handle>
                                 @{account.acct}
-                            </div>
-                        </Link>
-                    </div>
+                            </Handle>
+                        </ProfileLink>
+                    </NameSection>
 
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 'var(--size-2)',
-                        flexShrink: 0,
-                    }}>
-                        <Link
-                            href={`/status/${statusId}`}
-                            style={{
-                                textDecoration: 'none',
-                                fontSize: 'var(--font-size-0)',
-                                color: 'var(--text-2)',
-                            }}
-                        >
+                    <MetaSection>
+                        <TimeLink href={`/status/${statusId}`}>
                             {formatRelativeTime(createdAt)}
-                        </Link>
-                        <div style={{ color: 'var(--text-3)', display: 'flex', alignItems: 'center' }} title={visibility}>
+                        </TimeLink>
+                        <VisibilityIcon title={visibility}>
                             {VISIBILITY_ICONS[visibility]}
-                        </div>
+                        </VisibilityIcon>
                         {isOwnPost && (
                             <div className="options-menu-btn">
                                 <IconButton
@@ -177,7 +219,7 @@ export function PostHeader({
                                         </button>
                                     )}
 
-                                    <div style={{ height: '1px', background: 'var(--surface-3)', margin: '4px 0' }} />
+                                    <MenuDivider />
 
                                     {onEdit && (
                                         <button
@@ -209,9 +251,9 @@ export function PostHeader({
                                 </div>
                             </div>
                         )}
-                    </div>
-                </div>
-            </div>
-        </div>
+                    </MetaSection>
+                </HeaderRow>
+            </ContentSection>
+        </Container>
     );
 }

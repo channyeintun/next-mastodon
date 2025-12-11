@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { useDeleteStatus } from '@/api';
 import { Button } from '@/components/atoms';
 
@@ -7,6 +8,31 @@ interface DeletePostModalProps {
     postId: string;
     onClose: () => void;
 }
+
+const Title = styled.div`
+  font-size: var(--font-size-3);
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  margin-bottom: var(--size-3);
+`;
+
+const Message = styled.div`
+  font-size: var(--font-size-1);
+  color: var(--text-2);
+  margin-bottom: var(--size-5);
+  line-height: 1.5;
+`;
+
+const ButtonRow = styled.div`
+  display: flex;
+  gap: var(--size-3);
+  justify-content: flex-end;
+`;
+
+const DeleteButton = styled(Button)`
+  background: var(--red-6);
+  color: white;
+`;
 
 export function DeletePostModal({ postId, onClose }: DeletePostModalProps) {
     const deleteStatusMutation = useDeleteStatus();
@@ -22,27 +48,13 @@ export function DeletePostModal({ postId, onClose }: DeletePostModalProps) {
 
     return (
         <div className="dialog-content">
-            <div style={{
-                fontSize: 'var(--font-size-3)',
-                fontWeight: 'var(--font-weight-6)',
-                color: 'var(--text-1)',
-                marginBottom: 'var(--size-3)',
-            }}>
+            <Title>
                 Delete post?
-            </div>
-            <div style={{
-                fontSize: 'var(--font-size-1)',
-                color: 'var(--text-2)',
-                marginBottom: 'var(--size-5)',
-                lineHeight: '1.5',
-            }}>
+            </Title>
+            <Message>
                 This action cannot be undone. Your post will be permanently deleted from your profile and the timelines of your followers.
-            </div>
-            <div style={{
-                display: 'flex',
-                gap: 'var(--size-3)',
-                justifyContent: 'flex-end',
-            }}>
+            </Message>
+            <ButtonRow>
                 <Button
                     variant="ghost"
                     onClick={onClose}
@@ -50,19 +62,15 @@ export function DeletePostModal({ postId, onClose }: DeletePostModalProps) {
                 >
                     Cancel
                 </Button>
-                <Button
+                <DeleteButton
                     onClick={handleDelete}
                     disabled={deleteStatusMutation.isPending}
                     isLoading={deleteStatusMutation.isPending}
                     autoFocus
-                    style={{
-                        background: 'var(--red-6)',
-                        color: 'white',
-                    }}
                 >
                     Delete
-                </Button>
-            </div>
+                </DeleteButton>
+            </ButtonRow>
         </div>
     );
 }

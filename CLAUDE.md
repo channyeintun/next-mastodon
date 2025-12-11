@@ -304,8 +304,9 @@ Utility functions:
 ### `package.json`
 Dependencies and scripts:
 - **Type**: ES module (`"type": "module"`)
-- **Main dependencies**: Next.js 16, React 19, TanStack Query, MobX, Motion, Tiptap, Open Props, cropperjs/react-cropper (image cropping)
+- **Main dependencies**: Next.js 16, React 19, TanStack Query, MobX, Motion, Tiptap, Open Props, @emotion/styled, @emotion/react, cropperjs/react-cropper (image cropping)
 - **Dev dependencies**: ESLint, @eslint/css (CSS baseline linting)
+- **Styling approach**: Emotion styled components (replaces inline styles for better maintainability and performance)
 - **Scripts**:
   - `dev`: Start development server with Turbopack
   - `build`: Build for production
@@ -374,7 +375,7 @@ Global styles using Open Props:
   - Logo, instance URL, sign in/out buttons
 - Responsive breakpoints (768px tablet, 1024px desktop)
 - Layout adjustments (body margins/padding for sidebar and bottom nav)
-- **Styling convention**: Pages use inline styles and generic utility classes (not page-specific CSS classes) for consistency
+- **Styling convention**: Components use @emotion/styled for styled components (replaced inline styles). Styled components are defined at the top of each file with the $ prefix for transient props (e.g., `$variant`, `$size`). Pages and components use semantic styled components for better maintainability, type safety, and performance.
 
 ### `tsconfig.json`
 TypeScript configuration:

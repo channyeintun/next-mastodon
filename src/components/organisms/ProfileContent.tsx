@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { Activity } from 'react';
 import { Pin } from 'lucide-react';
 import { PostCard, VirtualizedList } from '@/components/organisms';
@@ -15,6 +16,68 @@ const profileTabs: TabItem<ProfileTab>[] = [
     { value: 'posts_replies', label: 'Posts & Replies' },
     { value: 'media', label: 'Media' },
 ];
+
+const TabsContainer = styled.div`
+  padding: 0;
+`;
+
+const PinnedSection = styled.div`
+  padding-top: var(--size-4);
+  padding-bottom: var(--size-4);
+  border-bottom: 1px solid var(--surface-3);
+`;
+
+const PinnedHeader = styled.h3`
+  font-size: var(--font-size-2);
+  font-weight: var(--font-weight-6);
+  margin-bottom: var(--size-3);
+  padding-left: var(--size-4);
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  color: var(--text-2);
+`;
+
+const ContentSection = styled.div`
+  padding-top: var(--size-4);
+  display: flex;
+  flex-direction: column;
+`;
+
+const TabContent = styled.div`
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
+
+const MediaTabContent = styled.div`
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+`;
+
+const LoadMoreButton = styled.button<{ disabled?: boolean }>`
+  margin: var(--size-4) auto;
+  padding: var(--size-2) var(--size-4);
+  background: var(--surface-2);
+  border: 1px solid var(--surface-3);
+  border-radius: var(--radius-2);
+  color: var(--text-1);
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--surface-3);
+  }
+`;
+
+const LoadingContainer = styled.div`
+  flex: 1;
+  overflow: auto;
+`;
 
 interface ProfileContentProps {
     /** Account handle for scroll restoration */
@@ -52,7 +115,7 @@ export function ProfileContent({
     return (
         <>
             {/* Tabs */}
-            <div style={{ padding: '0' }}>
+            <TabsContainer>
                 <Tabs
                     tabs={profileTabs}
                     activeTab={activeTab}
@@ -60,28 +123,15 @@ export function ProfileContent({
                     variant="underline"
                     fullWidth
                 />
-            </div>
+            </TabsContainer>
 
             {/* Pinned Posts Section */}
             {activeTab !== 'media' && pinnedStatuses && pinnedStatuses.length > 0 && (
-                <div style={{
-                    paddingTop: 'var(--size-4)',
-                    paddingBottom: 'var(--size-4)',
-                    borderBottom: '1px solid var(--surface-3)',
-                }}>
-                    <h3 style={{
-                        fontSize: 'var(--font-size-2)',
-                        fontWeight: 'var(--font-weight-6)',
-                        marginBottom: 'var(--size-3)',
-                        paddingLeft: 'var(--size-4)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 'var(--size-2)',
-                        color: 'var(--text-2)',
-                    }}>
+                <PinnedSection>
+                    <PinnedHeader>
                         <Pin size={16} />
                         Pinned Posts
-                    </h3>
+                    </PinnedHeader>
                     {pinnedStatuses.map(status => (
                         <PostCard
                             key={status.id}
@@ -89,18 +139,18 @@ export function ProfileContent({
                             style={{ marginBottom: 'var(--size-3)' }}
                         />
                     ))}
-                </div>
+                </PinnedSection>
             )}
 
             {/* Content Section */}
-            <div style={{ paddingTop: 'var(--size-4)', display: 'flex', flexDirection: 'column' }}>
+            <ContentSection>
                 {/* Posts Tab Content */}
                 <Activity mode={activeTab === 'posts' ? 'visible' : 'hidden'}>
-                    <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                    <TabContent>
                         {isLoading && statuses.length === 0 ? (
-                            <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+                            <LoadingContainer className="virtualized-list-container">
                                 <PostCardSkeletonList count={3} />
-                            </div>
+                            </LoadingContainer>
                         ) : (
                             <VirtualizedList<Status>
                                 style={{ padding: 0 }}
@@ -122,16 +172,16 @@ export function ProfileContent({
                                 emptyState={<EmptyState title="No posts yet" />}
                             />
                         )}
-                    </div>
+                    </TabContent>
                 </Activity>
 
                 {/* Posts & Replies Tab Content */}
                 <Activity mode={activeTab === 'posts_replies' ? 'visible' : 'hidden'}>
-                    <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                    <TabContent>
                         {isLoading && statuses.length === 0 ? (
-                            <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+                            <LoadingContainer className="virtualized-list-container">
                                 <PostCardSkeletonList count={3} />
-                            </div>
+                            </LoadingContainer>
                         ) : (
                             <VirtualizedList<Status>
                                 style={{ padding: 0 }}
@@ -153,39 +203,30 @@ export function ProfileContent({
                                 emptyState={<EmptyState title="No posts yet" />}
                             />
                         )}
-                    </div>
+                    </TabContent>
                 </Activity>
 
                 {/* Media Tab Content */}
                 <Activity mode={activeTab === 'media' ? 'visible' : 'hidden'}>
-                    <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+                    <MediaTabContent>
                         {isLoading && statuses.length === 0 ? (
                             <MediaGridSkeleton />
                         ) : (
                             <>
                                 <MediaGrid statuses={statuses} />
                                 {hasNextPage && (
-                                    <button
+                                    <LoadMoreButton
                                         onClick={() => fetchNextPage()}
                                         disabled={isFetchingNextPage}
-                                        style={{
-                                            margin: 'var(--size-4) auto',
-                                            padding: 'var(--size-2) var(--size-4)',
-                                            background: 'var(--surface-2)',
-                                            border: '1px solid var(--surface-3)',
-                                            borderRadius: 'var(--radius-2)',
-                                            color: 'var(--text-1)',
-                                            cursor: 'pointer',
-                                        }}
                                     >
                                         {isFetchingNextPage ? 'Loading...' : 'Load more'}
-                                    </button>
+                                    </LoadMoreButton>
                                 )}
                             </>
                         )}
-                    </div>
+                    </MediaTabContent>
                 </Activity>
-            </div>
+            </ContentSection>
         </>
     );
 }

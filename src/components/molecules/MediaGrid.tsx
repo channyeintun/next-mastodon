@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { X, Play } from 'lucide-react';
 import type { Status, MediaAttachment } from '@/types';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
@@ -15,6 +16,115 @@ interface MediaItem {
     originalStatusId: string;
 }
 
+// Modal styled components
+const ModalContainer = styled.div`
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-1);
+  border-radius: var(--radius-3);
+  overflow: hidden;
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: var(--size-2);
+  right: var(--size-2);
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  border-radius: var(--radius-round);
+  padding: var(--size-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const MediaContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 80vh;
+`;
+
+const MediaVideo = styled.video`
+  min-width: if(not media(width < 400px): 200px; else: 400px);
+  width: 100%;
+  aspect-ratio: var(--ratio-wide-screen);
+`;
+
+const MediaImage = styled.img`
+  max-height: 80vh;
+  min-width: min(600px, 90vw);
+  min-height: min(400px, 80vh);
+  object-fit: contain;
+`;
+
+const AltTextSection = styled.div`
+  padding: var(--size-3);
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-size: var(--font-size-1);
+  border-top: 1px solid var(--surface-3);
+`;
+
+const OriginalPostLink = styled.a`
+  padding: var(--size-2) var(--size-3);
+  background: var(--surface-2);
+  color: var(--blue-6);
+  font-size: var(--font-size-0);
+  text-decoration: none;
+  text-align: center;
+`;
+
+// Grid styled components
+const GridContainer = styled.div<{ $hasCustomStyle?: boolean }>`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--size-1);
+  padding: var(--size-2);
+  min-height: 50vh;
+`;
+
+const EmptyState = styled.div`
+  text-align: center;
+  padding: var(--size-8);
+  color: var(--text-2);
+`;
+
+const MediaButton = styled.button`
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--surface-3);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: var(--radius-2);
+`;
+
+const MediaThumbnail = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const VideoIndicator = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: var(--radius-round);
+  padding: var(--size-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 /**
  * MediaModal - Fullscreen media viewer component
  */
@@ -29,103 +139,40 @@ function MediaModal({
     const isVideo = attachment.type === 'video' || attachment.type === 'gifv';
 
     return (
-        <div
-            style={{
-                position: 'relative',
-                maxWidth: '90vw',
-                maxHeight: '90vh',
-                display: 'flex',
-                flexDirection: 'column',
-                background: 'var(--surface-1)',
-                borderRadius: 'var(--radius-3)',
-                overflow: 'hidden',
-            }}
-        >
+        <ModalContainer>
             {/* Close button */}
-            <button
-                onClick={onClose}
-                style={{
-                    position: 'absolute',
-                    top: 'var(--size-2)',
-                    right: 'var(--size-2)',
-                    zIndex: 10,
-                    background: 'rgba(0, 0, 0, 0.6)',
-                    border: 'none',
-                    borderRadius: 'var(--radius-round)',
-                    padding: 'var(--size-2)',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
+            <CloseButton onClick={onClose}>
                 <X size={20} color="white" />
-            </button>
+            </CloseButton>
 
             {/* Media content */}
-            <div
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    maxHeight: '80vh',
-                }}
-            >
+            <MediaContent>
                 {isVideo ? (
-                    <video
+                    <MediaVideo
                         src={attachment.url || undefined}
                         controls
                         autoPlay
-                        style={{
-                            minWidth: 'if(not media(width < 400px): 200px; else: 400px)',
-                            width: '100%',
-                            aspectRatio: 'var(--ratio-wide-screen)',
-                        }}
                     />
                 ) : (
-                    <img
+                    <MediaImage
                         src={attachment.url || attachment.preview_url || undefined}
                         alt={attachment.description || 'Media'}
-                        style={{
-                            maxHeight: '80vh',
-                            minWidth: 'min(600px, 90vw)',
-                            minHeight: 'min(400px, 80vh)',
-                            objectFit: 'contain',
-                        }}
                     />
                 )}
-            </div>
+            </MediaContent>
 
             {/* Alt text / description */}
             {attachment.description && (
-                <div
-                    style={{
-                        padding: 'var(--size-3)',
-                        background: 'var(--surface-2)',
-                        color: 'var(--text-2)',
-                        fontSize: 'var(--font-size-1)',
-                        borderTop: '1px solid var(--surface-3)',
-                    }}
-                >
+                <AltTextSection>
                     {attachment.description}
-                </div>
+                </AltTextSection>
             )}
 
             {/* Link to original post */}
-            <a
-                href={`/status/${status.id}`}
-                style={{
-                    padding: 'var(--size-2) var(--size-3)',
-                    background: 'var(--surface-2)',
-                    color: 'var(--blue-6)',
-                    fontSize: 'var(--font-size-0)',
-                    textDecoration: 'none',
-                    textAlign: 'center',
-                }}
-            >
+            <OriginalPostLink href={`/status/${status.id}`}>
                 View original post
-            </a>
-        </div>
+            </OriginalPostLink>
+        </ModalContainer>
     );
 }
 
@@ -151,81 +198,38 @@ export function MediaGrid({ statuses, style }: MediaGridProps) {
 
     if (mediaItems.length === 0) {
         return (
-            <div
-                style={{
-                    textAlign: 'center',
-                    padding: 'var(--size-8)',
-                    color: 'var(--text-2)',
-                }}
-            >
+            <EmptyState>
                 No media to display
-            </div>
+            </EmptyState>
         );
     }
 
     return (
-        <div
-            style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: 'var(--size-1)',
-                padding: 'var(--size-2)',
-                minHeight: '50vh',
-                ...style,
-            }}
-        >
+        <GridContainer style={style}>
             {mediaItems.map((item) => {
                 const { attachment } = item;
                 const isVideo = attachment.type === 'video' || attachment.type === 'gifv';
 
                 return (
-                    <button
+                    <MediaButton
                         key={`${item.originalStatusId}-${attachment.id}`}
                         onClick={() => handleMediaClick(item)}
-                        style={{
-                            position: 'relative',
-                            aspectRatio: '1',
-                            overflow: 'hidden',
-                            background: 'var(--surface-3)',
-                            border: 'none',
-                            padding: 0,
-                            cursor: 'pointer',
-                            borderRadius: 'var(--radius-2)',
-                        }}
                     >
-                        <img
+                        <MediaThumbnail
                             src={attachment.preview_url || attachment.url || undefined}
                             alt={attachment.description || 'Media'}
-                            style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
-                            }}
                             loading="lazy"
                         />
 
                         {/* Video indicator */}
                         {isVideo && (
-                            <div
-                                style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                    background: 'rgba(0, 0, 0, 0.6)',
-                                    borderRadius: 'var(--radius-round)',
-                                    padding: 'var(--size-2)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            >
+                            <VideoIndicator>
                                 <Play size={24} color="white" fill="white" />
-                            </div>
+                            </VideoIndicator>
                         )}
-                    </button>
+                    </MediaButton>
                 );
             })}
-        </div>
+        </GridContainer>
     );
 }

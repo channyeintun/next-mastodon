@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { type TextareaHTMLAttributes, forwardRef } from 'react';
 
 interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -6,55 +7,64 @@ interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   fullWidth?: boolean;
 }
 
+const Container = styled.div<{ $fullWidth: boolean }>`
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1);
+  width: ${({ $fullWidth }) => ($fullWidth ? '100%' : 'auto')};
+`;
+
+const Label = styled.label`
+  font-size: var(--font-size-1);
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+`;
+
+const StyledTextArea = styled.textarea<{ $error?: boolean; $fullWidth: boolean }>`
+  padding: var(--size-2) var(--size-3);
+  font-size: var(--font-size-1);
+  border: 1px solid ${({ $error }) => ($error ? 'var(--red-6)' : 'var(--surface-4)')};
+  border-radius: var(--radius-2);
+  background: var(--surface-1);
+  color: var(--text-1);
+  outline: none;
+  transition: border-color 0.2s ease;
+  width: ${({ $fullWidth }) => ($fullWidth ? '100%' : 'auto')};
+  resize: vertical;
+  font-family: inherit;
+  min-height: var(--size-12);
+
+  &:focus {
+    border-color: ${({ $error }) => ($error ? 'var(--red-6)' : 'var(--blue-6)')};
+  }
+`;
+
+const ErrorMessage = styled.span`
+  font-size: var(--font-size-0);
+  color: var(--red-7);
+`;
+
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-  ({ label, error, fullWidth = false, style, ...props }, ref) => {
+  ({ label, error, fullWidth = false, ...props }, ref) => {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-1)', width: fullWidth ? '100%' : 'auto' }}>
+      <Container $fullWidth={fullWidth}>
         {label && (
-          <label
-            htmlFor={props.id}
-            style={{
-              fontSize: 'var(--font-size-1)',
-              fontWeight: 'var(--font-weight-6)',
-              color: 'var(--text-1)',
-            }}
-          >
+          <Label htmlFor={props.id}>
             {label}
-          </label>
+          </Label>
         )}
-        <textarea
+        <StyledTextArea
           ref={ref}
           {...props}
-          style={{
-            padding: 'var(--size-2) var(--size-3)',
-            fontSize: 'var(--font-size-1)',
-            border: `1px solid ${error ? 'var(--red-6)' : 'var(--surface-4)'}`,
-            borderRadius: 'var(--radius-2)',
-            background: 'var(--surface-1)',
-            color: 'var(--text-1)',
-            outline: 'none',
-            transition: 'border-color 0.2s ease',
-            width: fullWidth ? '100%' : 'auto',
-            resize: 'vertical',
-            fontFamily: 'inherit',
-            minHeight: 'var(--size-12)',
-            ...style,
-          }}
-          onFocus={(e) => {
-            e.target.style.borderColor = error ? 'var(--red-6)' : 'var(--blue-6)';
-            props.onFocus?.(e);
-          }}
-          onBlur={(e) => {
-            e.target.style.borderColor = error ? 'var(--red-6)' : 'var(--surface-4)';
-            props.onBlur?.(e);
-          }}
+          $error={!!error}
+          $fullWidth={fullWidth}
         />
         {error && (
-          <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--red-7)' }}>
+          <ErrorMessage>
             {error}
-          </span>
+          </ErrorMessage>
         )}
-      </div>
+      </Container>
     );
   }
 );

@@ -1,29 +1,37 @@
-import { type CSSProperties } from 'react';
+import styled from '@emotion/styled';
 
 interface SpinnerProps {
   size?: 'small' | 'medium' | 'large';
   color?: string;
-  style?: CSSProperties;
 }
 
-export function Spinner({ size = 'medium', color, style }: SpinnerProps) {
-  const sizeMap = {
-    small: 'var(--size-4)',
-    medium: 'var(--size-6)',
-    large: 'var(--size-8)',
-  };
+interface StyledSpinnerProps {
+  $size: 'small' | 'medium' | 'large';
+  $color?: string;
+}
 
-  const dimension = sizeMap[size];
+const StyledSpinner = styled.div<StyledSpinnerProps>`
+  ${({ $size }) => {
+    const sizeMap = {
+      small: 'var(--size-4)',
+      medium: 'var(--size-6)',
+      large: 'var(--size-8)',
+    };
+    const dimension = sizeMap[$size];
+    return `
+      width: ${dimension};
+      height: ${dimension};
+    `;
+  }}
+  border-top-color: ${({ $color }) => $color || 'var(--blue-6)'};
+`;
 
+export function Spinner({ size = 'medium', color }: SpinnerProps) {
   return (
-    <div
+    <StyledSpinner
       className="spinner"
-      style={{
-        width: dimension,
-        height: dimension,
-        borderTopColor: color || 'var(--blue-6)',
-        ...style,
-      }}
+      $size={size}
+      $color={color}
     />
   );
 }

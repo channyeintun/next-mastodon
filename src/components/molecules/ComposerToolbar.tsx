@@ -1,8 +1,34 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { type ReactNode, Activity } from 'react';
 import { Smile, Image as ImageIcon, BarChart2, Clock } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+
+const EmojiContainer = styled.div`
+  position: relative;
+`;
+
+const EmojiButton = styled.button`
+  anchor-name: --emoji-anchor;
+`;
+
+const CWButton = styled.button<{ $isActive: boolean }>`
+  color: ${({ $isActive }) => ($isActive ? 'var(--blue-6)' : 'inherit')};
+  font-weight: ${({ $isActive }) => ($isActive ? 'bold' : 'normal')};
+`;
+
+const CWText = styled.span`
+  font-size: 14px;
+`;
+
+const ScheduleButton = styled.button<{ $isActive: boolean }>`
+  color: ${({ $isActive }) => ($isActive ? 'var(--blue-6)' : 'inherit')};
+`;
+
+const ActionRow = styled.div`
+  gap: var(--size-3);
+`;
 
 interface ComposerToolbarProps {
     // Toolbar button states
@@ -69,21 +95,20 @@ export function ComposerToolbar({
             <div className="compose-toolbar-row">
                 <div className="compose-tools">
                     {/* Emoji picker */}
-                    <div style={{ position: 'relative' }}>
-                        <button
+                    <EmojiContainer>
+                        <EmojiButton
                             className="compose-tool-btn"
-                            style={{ anchorName: '--emoji-anchor' }}
                             type="button"
                             onClick={onEmojiToggle}
                             title="Add emoji"
                             aria-label="Add emoji"
                         >
                             <Smile size={22} />
-                        </button>
+                        </EmojiButton>
                         <Activity mode={showEmojiPicker ? 'visible' : 'hidden'}>
                             {emojiPicker}
                         </Activity>
-                    </div>
+                    </EmojiContainer>
 
                     {/* Media Button */}
                     <button
@@ -110,34 +135,29 @@ export function ComposerToolbar({
                     </button>
 
                     {/* Content Warning toggle */}
-                    <button
+                    <CWButton
                         className="compose-tool-btn"
                         type="button"
                         onClick={onCWToggle}
-                        style={{
-                            color: showCWInput ? 'var(--blue-6)' : undefined,
-                            fontWeight: showCWInput ? 'bold' : 'normal',
-                        }}
+                        $isActive={showCWInput}
                         title="Add content warning"
                         aria-label="Add content warning"
                     >
-                        <span style={{ fontSize: '14px' }}>CW</span>
-                    </button>
+                        <CWText>CW</CWText>
+                    </CWButton>
 
                     {/* Schedule Button */}
-                    <button
+                    <ScheduleButton
                         className="compose-tool-btn"
                         type="button"
                         onClick={onScheduleToggle}
-                        style={{
-                            color: showScheduleInput ? 'var(--blue-6)' : undefined,
-                        }}
+                        $isActive={showScheduleInput}
                         title="Schedule post"
                         aria-label="Schedule post"
                         disabled={!canSchedule}
                     >
                         <Clock size={22} />
-                    </button>
+                    </ScheduleButton>
 
                     {/* Visibility Button (Only shown in toolbar if it's a reply) */}
                     {isReply && onVisibilityClick && (
@@ -152,7 +172,7 @@ export function ComposerToolbar({
                     )}
                 </div>
 
-                <div className="compose-action-row" style={{ gap: 'var(--size-3)' }}>
+                <ActionRow className="compose-action-row">
                     {/* Character count */}
                     <div
                         className={`compose-char-count ${isOverLimit ? 'danger' : charCount > maxCharCount - 50 ? 'warning' : ''}`}
@@ -170,7 +190,7 @@ export function ComposerToolbar({
                     >
                         {submitLabel}
                     </button>
-                </div>
+                </ActionRow>
             </div>
         </div>
     );

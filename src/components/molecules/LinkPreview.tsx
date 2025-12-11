@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { Card as CardType } from '@/types/mastodon';
 import { Card } from '../atoms/Card';
 import { ExternalLink } from 'lucide-react';
@@ -8,6 +9,67 @@ interface LinkPreviewProps {
   card: CardType;
   style?: React.CSSProperties;
 }
+
+const StyledCard = styled(Card)`
+  cursor: pointer;
+  overflow: hidden;
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ImageContainer = styled.div`
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: var(--surface-2);
+`;
+
+const Image = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const Content = styled.div`
+  padding: var(--size-4);
+`;
+
+const UrlSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  margin-bottom: var(--size-2);
+`;
+
+const Icon = styled(ExternalLink)`
+  color: var(--text-2);
+`;
+
+const Domain = styled.span`
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+`;
+
+const Title = styled.div`
+  font-size: var(--font-size-2);
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  margin-bottom: var(--size-2);
+  line-height: 1.3;
+`;
+
+const Description = styled.div`
+  font-size: var(--font-size-1);
+  color: var(--text-2);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
 
 /**
  * Displays a rich link preview card with image, title, and description
@@ -18,83 +80,45 @@ export function LinkPreview({ card, style }: LinkPreviewProps) {
   };
 
   return (
-    <Card
+    <StyledCard
       hoverable
-      style={{
-        ...style,
-        cursor: 'pointer',
-        overflow: 'hidden',
-      }}
+      style={style}
       onClick={handleClick}
     >
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <Container>
         {/* Image */}
         {card.image && (
-          <div style={{
-            width: '100%',
-            height: '200px',
-            overflow: 'hidden',
-            background: 'var(--surface-2)',
-          }}>
-            <img
+          <ImageContainer>
+            <Image
               src={card.image}
               alt={card.title}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-              }}
             />
-          </div>
+          </ImageContainer>
         )}
 
         {/* Content */}
-        <div style={{
-          padding: 'var(--size-4)',
-        }}>
+        <Content>
           {/* URL domain */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--size-2)',
-            marginBottom: 'var(--size-2)',
-          }}>
-            <ExternalLink size={14} style={{ color: 'var(--text-2)' }} />
-            <span style={{
-              fontSize: 'var(--font-size-0)',
-              color: 'var(--text-2)',
-            }}>
+          <UrlSection>
+            <Icon size={14} />
+            <Domain>
               {new URL(card.url).hostname}
-            </span>
-          </div>
+            </Domain>
+          </UrlSection>
 
           {/* Title */}
-          <div style={{
-            fontSize: 'var(--font-size-2)',
-            fontWeight: 'var(--font-weight-6)',
-            color: 'var(--text-1)',
-            marginBottom: 'var(--size-2)',
-            lineHeight: '1.3',
-          }}>
+          <Title>
             {card.title}
-          </div>
+          </Title>
 
           {/* Description */}
           {card.description && (
-            <div style={{
-              fontSize: 'var(--font-size-1)',
-              color: 'var(--text-2)',
-              lineHeight: '1.4',
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-            }}>
+            <Description>
               {card.description}
-            </div>
+            </Description>
           )}
-        </div>
-      </div>
-    </Card>
+        </Content>
+      </Container>
+    </StyledCard>
   );
 }

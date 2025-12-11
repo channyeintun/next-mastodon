@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import {
     Heart,
     Repeat2,
@@ -26,6 +27,65 @@ interface PostActionsProps {
     onShare: (e: React.MouseEvent) => void;
 }
 
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--size-1);
+  margin-top: var(--size-3);
+`;
+
+const Count = styled.span`
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+`;
+
+const BoostContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+const BoostPopover = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: var(--size-2);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  box-shadow: var(--shadow-4);
+  padding: var(--size-2);
+  min-width: 150px;
+  z-index: 50;
+  gap: var(--size-1);
+`;
+
+const PopoverButton = styled.button<{ $isActive?: boolean }>`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  padding: var(--size-2);
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-2);
+  cursor: pointer;
+  color: ${({ $isActive }) => ($isActive ? 'var(--green-6)' : 'var(--text-1)')};
+  font-size: var(--font-size-1);
+  white-space: nowrap;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: var(--surface-3);
+  }
+`;
+
+const RightActions = styled.div`
+  margin-left: auto;
+  display: flex;
+  gap: var(--size-1);
+`;
+
 /**
  * Presentation component for post action buttons
  * (reply, boost, favourite, bookmark, share).
@@ -46,12 +106,7 @@ export function PostActions({
     onShare,
 }: PostActionsProps) {
     return (
-        <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--size-1)',
-            marginTop: 'var(--size-3)',
-        }}>
+        <Container>
             {/* Reply */}
             <IconButton
                 size="small"
@@ -60,12 +115,10 @@ export function PostActions({
             >
                 <MessageCircle size={16} />
             </IconButton>
-            <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-                {repliesCount}
-            </span>
+            <Count>{repliesCount}</Count>
 
             {/* Boost with popover */}
-            <div className="boost-btn" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <BoostContainer className="boost-btn">
                 <IconButton
                     size="small"
                     onClick={onReblog}
@@ -76,80 +129,18 @@ export function PostActions({
                 >
                     <Repeat2 size={16} />
                 </IconButton>
-                <div
-                    className="boost-popover"
-                    style={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        marginTop: 'var(--size-2)',
-                        background: 'var(--surface-2)',
-                        borderRadius: 'var(--radius-2)',
-                        boxShadow: 'var(--shadow-4)',
-                        padding: 'var(--size-2)',
-                        minWidth: '150px',
-                        zIndex: 50,
-                        gap: 'var(--size-1)',
-                    }}
-                >
-                    <button
-                        onClick={onConfirmReblog}
-                        style={{
-                            width: '100%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 'var(--size-2)',
-                            padding: 'var(--size-2)',
-                            border: 'none',
-                            background: 'transparent',
-                            borderRadius: 'var(--radius-2)',
-                            cursor: 'pointer',
-                            color: reblogged ? 'var(--green-6)' : 'var(--text-1)',
-                            fontSize: 'var(--font-size-1)',
-                            whiteSpace: 'nowrap',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'var(--surface-3)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'transparent';
-                        }}
-                    >
+                <BoostPopover className="boost-popover">
+                    <PopoverButton onClick={onConfirmReblog} $isActive={reblogged}>
                         <Repeat2 size={16} />
                         <span>{reblogged ? 'Undo Boost' : 'Boost'}</span>
-                    </button>
-                    <button
-                        onClick={onQuote}
-                        style={{
-                            width: '100%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 'var(--size-2)',
-                            padding: 'var(--size-2)',
-                            border: 'none',
-                            background: 'transparent',
-                            borderRadius: 'var(--radius-2)',
-                            cursor: 'pointer',
-                            color: 'var(--text-1)',
-                            fontSize: 'var(--font-size-1)',
-                            whiteSpace: 'nowrap',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'var(--surface-3)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'transparent';
-                        }}
-                    >
+                    </PopoverButton>
+                    <PopoverButton onClick={onQuote}>
                         <MessageSquareQuote size={16} />
                         <span>Quote</span>
-                    </button>
-                </div>
-            </div>
-            <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-                {reblogsCount}
-            </span>
+                    </PopoverButton>
+                </BoostPopover>
+            </BoostContainer>
+            <Count>{reblogsCount}</Count>
 
             {/* Favourite */}
             <IconButton
@@ -162,12 +153,10 @@ export function PostActions({
             >
                 <Heart size={16} fill={favourited ? 'currentColor' : 'none'} />
             </IconButton>
-            <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-                {favouritesCount}
-            </span>
+            <Count>{favouritesCount}</Count>
 
             {/* Right side actions */}
-            <div style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--size-1)' }}>
+            <RightActions>
                 <IconButton
                     size="small"
                     onClick={onBookmark}
@@ -186,7 +175,7 @@ export function PostActions({
                 >
                     <Share size={16} />
                 </IconButton>
-            </div>
-        </div>
+            </RightActions>
+        </Container>
     );
 }

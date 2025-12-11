@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import Link from 'next/link';
 import { MoreHorizontal, Ban, VolumeX, Volume2 } from 'lucide-react';
 import { Button, IconButton } from '@/components/atoms';
@@ -18,6 +19,59 @@ interface ProfileActionButtonsProps {
     onMuteToggle: () => void;
     onBlockToggle: () => void;
 }
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+`;
+
+const MenuContainer = styled.div`
+  position: relative;
+`;
+
+const StyledIconButton = styled(IconButton)`
+  border: 1px solid var(--surface-3);
+  border-radius: var(--radius-round);
+`;
+
+const Menu = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--size-2);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  box-shadow: var(--shadow-3);
+  overflow: hidden;
+  z-index: 50;
+  min-width: 180px;
+  border: 1px solid var(--surface-3);
+`;
+
+const MenuItem = styled.button<{ $isDestructive?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  width: 100%;
+  padding: var(--size-3);
+  background: transparent;
+  border: none;
+  color: ${({ $isDestructive }) => ($isDestructive ? 'var(--red-6)' : 'var(--text-1)')};
+  cursor: pointer;
+  font-size: var(--font-size-1);
+  text-align: left;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: var(--surface-3);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
 
 /**
  * Presentation component for profile action buttons
@@ -66,7 +120,7 @@ export function ProfileActionButtons({
     }
 
     return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
+        <ButtonContainer>
             {!isBlocking && (
                 <Button
                     variant={isFollowing ? 'secondary' : 'primary'}
@@ -78,53 +132,20 @@ export function ProfileActionButtons({
             )}
 
             {/* More actions menu */}
-            <div ref={menuRef} style={{ position: 'relative' }}>
-                <IconButton
-                    onClick={() => setShowMenu(!showMenu)}
-                    style={{
-                        border: '1px solid var(--surface-3)',
-                        borderRadius: 'var(--radius-round)',
-                    }}
-                >
+            <MenuContainer ref={menuRef}>
+                <StyledIconButton onClick={() => setShowMenu(!showMenu)}>
                     <MoreHorizontal size={20} />
-                </IconButton>
+                </StyledIconButton>
 
                 {showMenu && (
-                    <div style={{
-                        position: 'absolute',
-                        top: '100%',
-                        right: 0,
-                        marginTop: 'var(--size-2)',
-                        background: 'var(--surface-2)',
-                        borderRadius: 'var(--radius-2)',
-                        boxShadow: 'var(--shadow-3)',
-                        overflow: 'hidden',
-                        zIndex: 50,
-                        minWidth: '180px',
-                        border: '1px solid var(--surface-3)',
-                    }}>
+                    <Menu>
                         {/* Mute option */}
-                        <button
+                        <MenuItem
                             onClick={() => {
                                 onMuteToggle();
                                 setShowMenu(false);
                             }}
                             disabled={isMutePending}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 'var(--size-2)',
-                                width: '100%',
-                                padding: 'var(--size-3)',
-                                background: 'transparent',
-                                border: 'none',
-                                color: 'var(--text-1)',
-                                cursor: 'pointer',
-                                fontSize: 'var(--font-size-1)',
-                                textAlign: 'left',
-                            }}
-                            onMouseEnter={(e) => e.currentTarget.style.background = 'var(--surface-3)'}
-                            onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                         >
                             {isMuting ? (
                                 <>
@@ -137,37 +158,23 @@ export function ProfileActionButtons({
                                     Mute @{acct}
                                 </>
                             )}
-                        </button>
+                        </MenuItem>
 
                         {/* Block option */}
-                        <button
+                        <MenuItem
                             onClick={() => {
                                 onBlockToggle();
                                 setShowMenu(false);
                             }}
                             disabled={isBlockPending}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 'var(--size-2)',
-                                width: '100%',
-                                padding: 'var(--size-3)',
-                                background: 'transparent',
-                                border: 'none',
-                                color: isBlocking ? 'var(--text-1)' : 'var(--red-6)',
-                                cursor: 'pointer',
-                                fontSize: 'var(--font-size-1)',
-                                textAlign: 'left',
-                            }}
-                            onMouseEnter={(e) => e.currentTarget.style.background = 'var(--surface-3)'}
-                            onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                            $isDestructive={!isBlocking}
                         >
                             <Ban size={18} />
                             {isBlocking ? `Unblock @${acct}` : `Block @${acct}`}
-                        </button>
-                    </div>
+                        </MenuItem>
+                    </Menu>
                 )}
-            </div>
-        </div>
+            </MenuContainer>
+        </ButtonContainer>
     );
 }

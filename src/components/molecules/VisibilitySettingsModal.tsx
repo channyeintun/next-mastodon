@@ -1,6 +1,70 @@
+import styled from '@emotion/styled';
 import { useState, useEffect } from 'react';
 import { X, Globe, Lock, Users, Mail, Check } from 'lucide-react';
 import Select, { components, OptionProps, SingleValueProps, StylesConfig } from 'react-select';
+
+const Container = styled.div`
+  width: 500px;
+  max-width: 90vw;
+  overflow: visible;
+`;
+
+const HeaderTitle = styled.h2`
+  font-size: var(--font-size-3);
+  font-weight: bold;
+  margin: 0;
+`;
+
+const CloseButton = styled.button`
+  background: transparent;
+  border: none;
+  color: var(--text-2);
+  cursor: pointer;
+  padding: var(--size-1);
+`;
+
+const Description = styled.p`
+  color: var(--text-2);
+  margin-bottom: var(--size-4);
+  line-height: 1.5;
+`;
+
+const FieldContainer = styled.div`
+  margin-bottom: var(--size-4);
+  position: relative;
+`;
+
+const FieldLabel = styled.label`
+  display: block;
+  font-weight: bold;
+  margin-bottom: var(--size-2);
+`;
+
+const DisabledMessage = styled.div`
+  padding: var(--size-2);
+  font-size: 0.85em;
+  color: var(--text-2);
+`;
+
+const CancelButton = styled.button`
+  padding: var(--size-2) var(--size-3);
+  border-radius: var(--radius-2);
+  border: 1px solid var(--surface-3);
+  background: transparent;
+  color: var(--text-1);
+  cursor: pointer;
+  font-weight: 600;
+`;
+
+const SaveButton = styled.button`
+  padding: var(--size-2) var(--size-3);
+  border-radius: var(--radius-2);
+  border: none;
+  background: var(--blue-6);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+`;
 
 export type Visibility = 'public' | 'unlisted' | 'private' | 'direct';
 export type QuoteVisibility = 'public' | 'followers' | 'nobody';
@@ -164,34 +228,25 @@ export function VisibilitySettingsModal({
     const isQuoteDisabled = visibility === 'private' || visibility === 'direct' || isReply;
 
     return (
-        <div style={{ width: '500px', maxWidth: '90vw', overflow: 'visible' }}>
+        <Container>
             {/* Header */}
             <div className="dialog-header">
-                <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'bold', margin: 0 }}>
+                <HeaderTitle>
                     Visibility and interaction
-                </h2>
-                <button
-                    onClick={onClose}
-                    style={{
-                        background: 'transparent',
-                        border: 'none',
-                        color: 'var(--text-2)',
-                        cursor: 'pointer',
-                        padding: 'var(--size-1)',
-                    }}
-                >
+                </HeaderTitle>
+                <CloseButton onClick={onClose}>
                     <X size={20} />
-                </button>
+                </CloseButton>
             </div>
 
             {/* Content */}
             <div className="dialog-body" style={{ overflow: 'visible' }}>
-                <p style={{ color: 'var(--text-2)', marginBottom: 'var(--size-4)', lineHeight: '1.5' }}>
+                <Description>
                     Control who can interact with this post. You can also apply settings to all future posts by navigating to Preferences &gt; Posting defaults.
-                </p>
+                </Description>
 
-                <div style={{ marginBottom: 'var(--size-4)', position: 'relative' }}>
-                    <label style={{ display: 'block', fontWeight: 'bold', marginBottom: 'var(--size-2)' }}>Visibility</label>
+                <FieldContainer>
+                    <FieldLabel>Visibility</FieldLabel>
                     <Select
                         value={visibilityOptions.find(opt => opt.value === visibility)}
                         onChange={(option) => option && setVisibility(option.value as Visibility)}
@@ -200,10 +255,10 @@ export function VisibilitySettingsModal({
                         components={{ Option: CustomOption, SingleValue: CustomSingleValue }}
                         isSearchable={false}
                     />
-                </div>
+                </FieldContainer>
 
-                <div style={{ marginBottom: 'var(--size-4)', position: 'relative' }}>
-                    <label style={{ display: 'block', fontWeight: 'bold', marginBottom: 'var(--size-2)' }}>Who can quote</label>
+                <FieldContainer>
+                    <FieldLabel>Who can quote</FieldLabel>
                     <Select
                         value={quoteOptions.find(opt => opt.value === quoteVisibility)}
                         onChange={(option) => option && setQuoteVisibility(option.value as QuoteVisibility)}
@@ -214,46 +269,26 @@ export function VisibilitySettingsModal({
                         isSearchable={false}
                     />
                     {isQuoteDisabled && (
-                        <div style={{ padding: 'var(--size-2)', fontSize: '0.85em', color: 'var(--text-2)' }}>
+                        <DisabledMessage>
                             Follower-only posts authored on Mastodon can't be quoted by others.
-                        </div>
+                        </DisabledMessage>
                     )}
-                </div>
+                </FieldContainer>
 
             </div>
 
             {/* Footer */}
             <div className="dialog-footer">
-                <button
-                    onClick={onClose}
-                    style={{
-                        padding: 'var(--size-2) var(--size-3)',
-                        borderRadius: 'var(--radius-2)',
-                        border: '1px solid var(--surface-3)',
-                        background: 'transparent',
-                        color: 'var(--text-1)',
-                        cursor: 'pointer',
-                        fontWeight: 600,
-                    }}
-                >
+                <CancelButton onClick={onClose}>
                     Cancel
-                </button>
-                <button
+                </CancelButton>
+                <SaveButton
                     onClick={() => onSave(visibility, quoteVisibility)}
                     autoFocus
-                    style={{
-                        padding: 'var(--size-2) var(--size-3)',
-                        borderRadius: 'var(--radius-2)',
-                        border: 'none',
-                        background: 'var(--blue-6)',
-                        color: 'white',
-                        cursor: 'pointer',
-                        fontWeight: 600,
-                    }}
                 >
                     Save
-                </button>
+                </SaveButton>
             </div>
-        </div>
+        </Container>
     );
 }

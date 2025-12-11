@@ -1,10 +1,43 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { useState } from 'react';
 import { Sun, Moon, Monitor } from 'lucide-react';
 import { setCookie, deleteCookie, type CookieOptions } from '../../utils/cookies';
 
 type Theme = 'light' | 'dark' | 'auto';
+
+const ThemeLabel = styled.label<{ $isSelected: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  padding: var(--size-3);
+  border-radius: var(--radius-2);
+  border: 2px solid ${({ $isSelected }) => ($isSelected ? 'var(--blue-6)' : 'var(--surface-3)')};
+  background: ${({ $isSelected }) => ($isSelected ? 'var(--blue-6)' : 'transparent')};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+`;
+
+const ThemeRadio = styled.input`
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--cyan-6);
+`;
+
+const ThemeIcon = styled.div<{ $isSelected: boolean }>`
+  color: ${({ $isSelected }) => ($isSelected ? 'white' : 'var(--text-2)')};
+  display: flex;
+  align-items: center;
+`;
+
+const ThemeTitle = styled.div<{ $isSelected: boolean }>`
+  font-weight: var(--font-weight-6);
+  font-size: var(--font-size-2);
+  color: ${({ $isSelected }) => ($isSelected ? 'white' : 'var(--text-1)')};
+`;
 
 interface ThemeOption {
     value: Theme;
@@ -74,54 +107,24 @@ export function ThemeSelector({ initialTheme = 'auto' }: ThemeSelectorProps) {
     return (
         <div className="theme-selector-container">
             {themeOptions.map((option) => (
-                <label
+                <ThemeLabel
                     key={option.value}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 'var(--size-2)',
-                        padding: 'var(--size-3)',
-                        borderRadius: 'var(--radius-2)',
-                        border: `2px solid ${currentTheme === option.value ? 'var(--blue-6)' : 'var(--surface-3)'
-                            }`,
-                        background: currentTheme === option.value ? 'var(--blue-6)' : 'transparent',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease',
-                        flex: 1,
-                    }}
+                    $isSelected={currentTheme === option.value}
                 >
-                    <input
+                    <ThemeRadio
                         type="radio"
                         name="theme"
                         value={option.value}
                         checked={currentTheme === option.value}
                         onChange={() => handleThemeChange(option.value)}
-                        style={{
-                            width: '18px',
-                            height: '18px',
-                            cursor: 'pointer',
-                            accentColor: 'var(--cyan-6)',
-                        }}
                     />
-                    <div
-                        style={{
-                            color: currentTheme === option.value ? 'white' : 'var(--text-2)',
-                            display: 'flex',
-                            alignItems: 'center',
-                        }}
-                    >
+                    <ThemeIcon $isSelected={currentTheme === option.value}>
                         {option.icon}
-                    </div>
-                    <div
-                        style={{
-                            fontWeight: 'var(--font-weight-6)',
-                            fontSize: 'var(--font-size-2)',
-                            color: currentTheme === option.value ? 'white' : 'var(--text-1)',
-                        }}
-                    >
+                    </ThemeIcon>
+                    <ThemeTitle $isSelected={currentTheme === option.value}>
                         {option.label}
-                    </div>
-                </label>
+                    </ThemeTitle>
+                </ThemeLabel>
             ))}
         </div>
     );
