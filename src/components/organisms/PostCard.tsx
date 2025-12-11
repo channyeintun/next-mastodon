@@ -86,6 +86,9 @@ export function PostCard({
         .replace(/^<p>\s*RE:\s*<a[^>]*>.*?<\/a>\s*<\/p>\s*/i, '')
         // Remove RE: with plain URL in <p>: <p>RE: https://...</p>
         .replace(/^<p>\s*RE:\s*https?:\/\/[^\s<]+\s*<\/p>\s*/i, '')
+        // Remove RE: with link not in <p>: RE: <a>...</a>
+        .replace(/^RE:\s*<a[^>]*>.*?<\/a>\s*/i, '')
+        // Remove RE: with plain URL not in <p>: RE: https://...
         .replace(/^RE:\s*https?:\/\/\S+\s*/i, '')
         // Remove leftover empty paragraphs
         .replace(/^<p>\s*<\/p>\s*/, '')
