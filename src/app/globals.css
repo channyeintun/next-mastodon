@@ -1010,7 +1010,6 @@ body {
   .virtualized-list-container {
     padding-left: var(--size-2);
     padding-right: var(--size-2);
-    margin-bottom: var(--app-bottom-nav-height);
   }
 }
 
