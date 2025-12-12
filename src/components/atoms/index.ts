@@ -13,6 +13,16 @@ export { IconButton } from './IconButton';
 export { ImageSkeleton } from './ImageSkeleton';
 export { Input } from './Input';
 export { ScrollToTopButton } from './ScrollToTopButton';
+export {
+    StickyHeaderContainer,
+    StickyHeaderContent,
+    StickyHeaderTitle,
+    StickyHeaderSubtitle,
+    StickyHeaderActions,
+    StickyHeaderButtonText,
+    StickyHeaderRow,
+    StickyHeaderPersistent,
+} from './StickyHeader';
 export { ScheduleInput } from './ScheduleInput';
 export { SensitiveContentButton } from './SensitiveContentButton';
 export { default as SkipToMain } from './SkipToMain';

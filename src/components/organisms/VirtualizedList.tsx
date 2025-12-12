@@ -248,33 +248,66 @@ const Container = styled.div<{ $height: string }>`
 
 /**
  * Sticky header wrapper with CSS scroll-state container queries.
- * When the header becomes stuck at the top, it collapses to a compact form.
- * 
- * Expected header structure:
- * - .header-title: flex container with title and subtitle
- * - .header-title h1: main title
- * - .header-subtitle: subtitle text (will be hidden when stuck)
- * - .header-actions: action buttons container
- * - .header-actions .btn-text: button text (will be hidden when stuck)
+ *
+ * This wrapper provides the scroll-state container context via CSS custom property:
+ * - --header-stuck: 0 (not stuck) or 1 (stuck at top)
+ *
+ * For flexible header implementations, use the StickyHeader* components from atoms:
+ * - StickyHeaderContainer (alternative to this wrapper)
+ * - StickyHeaderContent
+ * - StickyHeaderTitle
+ * - StickyHeaderSubtitle
+ * - StickyHeaderActions
+ * - StickyHeaderButtonText
+ *
+ * Legacy class-based approach (deprecated):
+ * Headers can still use .header-title, .header-subtitle, .header-actions classes
+ * but this pattern is not recommended for new implementations.
  */
 const StickyHeaderWrapper = styled.div`
+  /* Enable both scroll-state and style container queries */
   container-type: scroll-state;
+  container-name: sticky-header;
   position: sticky;
   top: 0;
   z-index: 10;
 
-  /* Direct child is the header content */
+  /* CSS variable for scroll state: 0 = not stuck, 1 = stuck */
+  --header-stuck: 0;
+
+  /* Configurable defaults - can be overridden by consuming headers */
+  --header-padding: var(--size-4);
+  --header-padding-stuck: var(--size-2) var(--size-4);
+  --header-gap: var(--size-3);
+  --header-gap-stuck: var(--size-2);
+  --header-bg: linear-gradient(to bottom, var(--surface-1) 60%, transparent);
+  --header-bg-stuck: var(--surface-1);
+  --header-title-opacity-stuck: 0;
+  --header-subtitle-opacity-stuck: 0;
+
+  /* Update CSS variable when stuck using scroll-state query */
+  @container scroll-state(stuck: top) {
+    --header-stuck: 1;
+  }
+
+  /* ============================================
+   * Legacy class-based styles (for backward compatibility)
+   * New implementations should use StickyHeader* components
+   * ============================================ */
+
+  /* Default styles for direct child (the header content) */
   > * {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--size-4);
-    background: linear-gradient(to bottom, var(--surface-1) 60%, transparent);
-    gap: var(--size-3);
+    padding: var(--header-padding);
+    background: var(--header-bg);
+    gap: var(--header-gap);
     flex-wrap: wrap;
-    transition: padding 0.3s ease, gap 0.3s ease;
+    transition: padding 0.3s ease, gap 0.3s ease, background 0.3s ease;
   }
 
+  /* Default header element styles */
   .header-title {
     display: flex;
     flex-direction: column;
@@ -309,22 +342,23 @@ const StickyHeaderWrapper = styled.div`
     flex-shrink: 0;
   }
 
-  /* When stuck at top, collapse the header */
+  /* Default collapse behavior when stuck (legacy class-based) */
   @container scroll-state(stuck: top) {
     > * {
-      padding: var(--size-2) var(--size-4);
-      gap: var(--size-2);
+      padding: var(--header-padding-stuck);
+      gap: var(--header-gap-stuck);
+      background: var(--header-bg-stuck);
     }
 
     .header-title {
-      opacity: 0;
+      opacity: var(--header-title-opacity-stuck);
       visibility: hidden;
       transition: opacity 0.15s ease 0.1s, visibility 0.15s ease 0.1s;
       transition-behavior: allow-discrete;
     }
 
     .header-subtitle {
-      opacity: 0;
+      opacity: var(--header-subtitle-opacity-stuck);
       visibility: hidden;
       max-height: 0;
       margin-top: 0;
