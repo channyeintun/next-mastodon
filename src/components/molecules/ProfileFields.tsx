@@ -18,7 +18,7 @@ const Container = styled.div`
 
 const FieldRow = styled.div<{ $isLast: boolean }>`
   display: grid;
-  grid-template-columns: 120px 1fr;
+  grid-template-columns: 160px 1fr;
   gap: var(--size-2);
   padding: var(--size-2) 0;
   border-bottom: ${({ $isLast }) => ($isLast ? 'none' : '1px solid var(--surface-3)')};
