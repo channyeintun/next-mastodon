@@ -20,7 +20,7 @@ export function ScheduleInput({
     return (
         <Container>
             <Header>
-                <Label htmlFor="schedule-input">Schedule Post</Label>
+                <Label htmlFor="schedule-input">Schedule post</Label>
                 <RemoveButton aria-label="Remove schedule" onClick={onRemove}>
                     <X size={16} />
                 </RemoveButton>

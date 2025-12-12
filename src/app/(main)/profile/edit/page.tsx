@@ -193,7 +193,7 @@ export default function ProfileEditPage() {
                     fontWeight: 'var(--font-weight-6)',
                     color: 'var(--text-1)',
                 }}>
-                    Edit Profile
+                    Edit profile
                 </h1>
             </div>
 

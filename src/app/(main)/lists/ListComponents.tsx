@@ -28,7 +28,7 @@ export function ListModalContent({ onClose, list, onSubmit, isPending }: ListMod
         <div style={{ maxWidth: '400px', width: '90vw' }}>
             <div className="dialog-header">
                 <h2 style={{ fontSize: 'var(--font-size-4)', margin: 0 }}>
-                    {list ? 'Edit List' : 'Create List'}
+                    {list ? 'Edit List' : 'Create list'}
                 </h2>
             </div>
             <form onSubmit={handleSubmit}>
@@ -100,7 +100,7 @@ export function DeleteConfirmModalContent({ onClose, onConfirm, listTitle, isPen
     return (
         <div style={{ maxWidth: '400px', width: '90vw' }}>
             <div className="dialog-header">
-                <h2 style={{ fontSize: 'var(--font-size-4)', margin: 0 }}>Delete List</h2>
+                <h2 style={{ fontSize: 'var(--font-size-4)', margin: 0 }}>Delete list</h2>
             </div>
             <div className="dialog-body">
                 <p style={{ color: 'var(--text-2)', margin: 0 }}>

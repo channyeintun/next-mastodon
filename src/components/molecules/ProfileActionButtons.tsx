@@ -61,7 +61,7 @@ export function ProfileActionButtons({
         return (
             <Link href="/profile/edit">
                 <Button variant="secondary">
-                    Edit Profile
+                    Edit profile
                 </Button>
             </Link>
         );

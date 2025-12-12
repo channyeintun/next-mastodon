@@ -131,7 +131,7 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
 
         <Link href="/profile/edit" className="settings-link" style={{ marginBottom: 'var(--size-2)' }}>
           <User size={20} className="settings-link-icon" />
-          Edit Profile
+          Edit profile
         </Link>
 
         <Link href="/settings/preferences" className="settings-link">
@@ -161,7 +161,7 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
           marginBottom: 'var(--size-3)',
           color: 'var(--text-2)',
         }}>
-          Quick Links
+          Quick links
         </h2>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
@@ -182,13 +182,13 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
 
           <Link href="/scheduled" className="settings-link">
             <Clock size={20} className="settings-link-icon" />
-            Scheduled Posts
+            Scheduled posts
           </Link>
 
           {currentAccount.locked && (
             <Link href="/follow-requests" className="settings-link">
               <UserPlus size={20} className="settings-link-icon" />
-              Follow Requests
+              Follow requests
             </Link>
           )}
         </div>
@@ -208,12 +208,12 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
           <Link href="/settings/blocks" className="settings-link">
             <Ban size={20} className="settings-link-icon" />
-            Blocked Accounts
+            Blocked accounts
           </Link>
 
           <Link href="/settings/mutes" className="settings-link">
             <VolumeX size={20} className="settings-link-icon" />
-            Muted Accounts
+            Muted accounts
           </Link>
         </div>
       </Card>

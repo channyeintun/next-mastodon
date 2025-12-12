@@ -25,11 +25,11 @@ export function ProfileFieldsEditor({
     <>
       {/* Profile Information */}
       <SectionCard padding="medium">
-        <SectionTitle>Profile Information</SectionTitle>
+        <SectionTitle>Profile information</SectionTitle>
 
         <FieldsWrapper>
           <FormField
-            label="Display Name"
+            label="Display name"
             htmlFor="display-name"
             error={errors.displayName?.message}
           >
@@ -59,7 +59,7 @@ export function ProfileFieldsEditor({
 
       {/* Extra Fields */}
       <SectionCard padding="medium">
-        <FieldsTitle>Extra Fields</FieldsTitle>
+        <FieldsTitle>Extra fields</FieldsTitle>
         <FieldsDescription>
           You can have up to 4 items displayed as a table on your profile
         </FieldsDescription>
@@ -95,7 +95,7 @@ export function ProfileFieldsEditor({
         <Details>
           <Summary>
             <ChevronDown size={18} className="details-chevron" />
-            Link Verification
+            Link verification
           </Summary>
 
           <DetailsContent>

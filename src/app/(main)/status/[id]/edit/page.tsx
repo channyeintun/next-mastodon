@@ -71,7 +71,7 @@ export default function EditStatusPage() {
             fontSize: 'var(--font-size-4)',
             fontWeight: 'var(--font-weight-7)',
           }}>
-            Edit Post
+            Edit post
           </h1>
         </div>
 

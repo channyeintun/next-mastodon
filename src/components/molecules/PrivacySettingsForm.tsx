@@ -16,7 +16,7 @@ export function PrivacySettingsForm({ control }: PrivacySettingsFormProps) {
           marginBottom: 'var(--size-4)',
         }}
       >
-        Privacy & Preferences
+        Privacy & preferences
       </h2>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-3)' }}>
@@ -26,7 +26,7 @@ export function PrivacySettingsForm({ control }: PrivacySettingsFormProps) {
           render={({ field }) => (
             <CheckboxField
               id="locked"
-              label="Locked Account"
+              label="Locked account"
               description="Manually approve followers"
               checked={field.value}
               onChange={field.onChange}
@@ -40,7 +40,7 @@ export function PrivacySettingsForm({ control }: PrivacySettingsFormProps) {
           render={({ field }) => (
             <CheckboxField
               id="bot"
-              label="Bot Account"
+              label="Bot account"
               description="This account mainly performs automated actions"
               checked={field.value}
               onChange={field.onChange}
@@ -54,7 +54,7 @@ export function PrivacySettingsForm({ control }: PrivacySettingsFormProps) {
           render={({ field }) => (
             <CheckboxField
               id="discoverable"
-              label="Suggest Account to Others"
+              label="Suggest account to others"
               description="Allow your account to be discovered"
               checked={field.value}
               onChange={field.onChange}

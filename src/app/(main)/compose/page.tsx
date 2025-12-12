@@ -26,7 +26,7 @@ export default function ComposePage() {
               <ArrowLeft size={24} />
             </IconButton>
             <h1 style={{ fontSize: 'var(--font-size-4)', fontWeight: 'var(--font-weight-7)' }}>
-              New Post
+              New post
             </h1>
           </div>
 

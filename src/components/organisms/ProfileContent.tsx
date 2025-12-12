@@ -13,7 +13,7 @@ type ProfileTab = 'posts' | 'posts_replies' | 'media';
 
 const profileTabs: TabItem<ProfileTab>[] = [
     { value: 'posts', label: 'Posts' },
-    { value: 'posts_replies', label: 'Posts & Replies' },
+    { value: 'posts_replies', label: 'Posts & replies' },
     { value: 'media', label: 'Media' },
 ];
 
