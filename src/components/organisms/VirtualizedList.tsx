@@ -300,7 +300,6 @@ const StickyHeaderWrapper = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--header-padding);
     background: var(--header-bg);
     gap: var(--header-gap);
     flex-wrap: wrap;

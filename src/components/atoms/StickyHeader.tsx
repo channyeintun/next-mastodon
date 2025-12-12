@@ -76,6 +76,7 @@ export const StickyHeaderContent = styled.div`
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  width: 100%;
   
   /* Use CSS variables for configurable values */
   padding: var(--header-padding);
