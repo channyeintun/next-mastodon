@@ -3,7 +3,7 @@
 import { use, useState } from 'react';
 import { useRouter, notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Calendar, ExternalLink, Lock } from 'lucide-react';
 import {
   useLookupAccount,
   useInfiniteAccountStatusesWithFilters,
@@ -196,7 +196,7 @@ export default function AccountPage({
               <DisplayName>
                 <EmojiText text={account.display_name || account.username} emojis={account.emojis} />
                 {account.bot && <BotBadge>BOT</BotBadge>}
-                {account.locked && <LockIcon>🔒</LockIcon>}
+                {account.locked && <LockIcon><Lock size={14} /></LockIcon>}
               </DisplayName>
               <HandleExplainer username={account.username} server={new URL(account.url).hostname} />
             </NameSection>

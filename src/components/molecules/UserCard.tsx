@@ -3,6 +3,7 @@
 import styled from '@emotion/styled';
 import { type CSSProperties } from 'react';
 import Link from 'next/link';
+import { Lock } from 'lucide-react';
 import { Avatar, Card, Button, EmojiText } from '@/components/atoms';
 import type { Account } from '@/types';
 import { useFollowAccount, useUnfollowAccount, useRelationships } from '@/api';
@@ -63,7 +64,7 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
                   )}
                   {account.locked && (
                     <LockIcon>
-                      🔒
+                      <Lock size={12} />
                     </LockIcon>
                   )}
                 </DisplayNameRow>
