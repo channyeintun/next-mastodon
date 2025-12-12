@@ -97,12 +97,12 @@ export function ProfileActionButtons({
                             {isMuting ? (
                                 <>
                                     <Volume2 size={18} />
-                                    Unmute @{acct}
+                                    Unmute
                                 </>
                             ) : (
                                 <>
                                     <VolumeX size={18} />
-                                    Mute @{acct}
+                                    Mute
                                 </>
                             )}
                         </MenuItem>
@@ -117,7 +117,7 @@ export function ProfileActionButtons({
                             $isDestructive={!isBlocking}
                         >
                             <Ban size={18} />
-                            {isBlocking ? `Unblock @${acct}` : `Block @${acct}`}
+                            {isBlocking ? 'Unblock' : 'Block'}
                         </MenuItem>
                     </Menu>
                 )}
