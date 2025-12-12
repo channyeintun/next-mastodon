@@ -413,7 +413,7 @@ export function ComposerPanel({
         showScheduleInput={showScheduleInput}
         canAddMedia={poll === null && media.length < 4}
         canAddPoll={media.length === 0 && poll === null}
-        canSchedule={!statusId}
+        canSchedule={!statusId && !isReply}
         isReply={isReply}
         VisibilityIcon={VisibilityIcon}
         visibilityLabel={currentVisibility?.label}
