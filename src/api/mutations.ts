@@ -42,7 +42,7 @@ import {
 } from './client'
 import { queryKeys } from './queryKeys'
 import { mapPages, findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
-import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams } from '../types/mastodon'
+import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context } from '../types/mastodon'
 
 // Helper to update a status or its nested reblog
 // This function is now a thin wrapper around updateStatusById for backwards compatibility
@@ -217,6 +217,28 @@ function updateStatusInCaches(
       return old.map((status) => updateStatusOrReblog(status, statusId, updateFn))
     }
   )
+
+  // Update status context caches (ancestors/descendants in thread views)
+  // Query key format: ['statuses', id, 'context']
+  queryClient.setQueriesData<Context>(
+    {
+      predicate: (query) => {
+        const key = query.queryKey as readonly unknown[]
+        return key[0] === 'statuses' && key[2] === 'context'
+      }
+    },
+    (old) => {
+      if (!old || !('ancestors' in old)) return old
+      return {
+        ancestors: old.ancestors.map((status) =>
+          updateStatusOrReblog(status, statusId, updateFn)
+        ),
+        descendants: old.descendants.map((status) =>
+          updateStatusOrReblog(status, statusId, updateFn)
+        ),
+      }
+    }
+  )
 }
 
 // Helper function to update poll in all statuses that contain it
@@ -314,6 +336,27 @@ function updatePollInCaches(
       )
     }
   )
+
+  // Update status context caches (ancestors/descendants in thread views)
+  queryClient.setQueriesData<Context>(
+    {
+      predicate: (query) => {
+        const key = query.queryKey as readonly unknown[]
+        return key[0] === 'statuses' && key[2] === 'context'
+      }
+    },
+    (old) => {
+      if (!old || !('ancestors' in old)) return old
+      return {
+        ancestors: old.ancestors.map((status) =>
+          status.poll?.id === pollId ? { ...status, poll: updatedPoll } : status
+        ),
+        descendants: old.descendants.map((status) =>
+          status.poll?.id === pollId ? { ...status, poll: updatedPoll } : status
+        ),
+      }
+    }
+  )
 }
 
 // Helper function to rollback status in all caches (used on error)
@@ -340,6 +383,10 @@ async function cancelStatusQueries(queryClient: QueryClient, statusId: string) {
     queryClient.cancelQueries({ queryKey: ['accounts'] }),
     queryClient.cancelQueries({ queryKey: queryKeys.trends.statuses() }),
     queryClient.cancelQueries({ queryKey: ['search'] }),
+    queryClient.cancelQueries({ queryKey: ['statuses'], predicate: (query) => {
+      const key = query.queryKey as readonly unknown[]
+      return key[2] === 'context'
+    }}),
   ])
 }
 
