@@ -14,8 +14,6 @@ export const Header = styled.div`
   background: var(--surface-1);
   z-index: 10;
   padding: var(--size-4);
-  margin-bottom: var(--size-4);
-  border-bottom: 1px solid var(--surface-3);
   display: flex;
   align-items: center;
   gap: var(--size-3);

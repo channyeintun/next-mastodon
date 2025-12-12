@@ -52,9 +52,6 @@ export function ProfileContent({
     hasNextPage,
     isFetchingNextPage,
 }: ProfileContentProps) {
-    const showPinned = (activeTab === 'posts' || activeTab === 'posts_replies') &&
-        pinnedStatuses &&
-        pinnedStatuses.length > 0;
 
     return (
         <>
@@ -67,23 +64,6 @@ export function ProfileContent({
             </TabsContainer>
 
             <ContentSection>
-                {/* Pinned Posts - Only show for Posts and Posts & Replies tabs */}
-                {showPinned && (
-                    <PinnedSection>
-                        <PinnedHeader>
-                            <Pin size={16} />
-                            Pinned Posts
-                        </PinnedHeader>
-                        {pinnedStatuses.map(status => (
-                            <PostCard
-                                key={status.id}
-                                status={status}
-                                style={{ marginBottom: 'var(--size-3)' }}
-                            />
-                        ))}
-                    </PinnedSection>
-                )}
-
                 {/* Posts Tab Content */}
                 <Activity mode={activeTab === 'posts' ? 'visible' : 'hidden'}>
                     <TabContent>
@@ -95,6 +75,19 @@ export function ProfileContent({
                             <VirtualizedList<Status>
                                 style={{ padding: 0 }}
                                 items={statuses}
+                                header={<PinnedSection>
+                                    <PinnedHeader>
+                                        <Pin size={16} />
+                                        Pinned Posts
+                                    </PinnedHeader>
+                                    {pinnedStatuses?.map(status => (
+                                        <PostCard
+                                            key={status.id}
+                                            status={status}
+                                            style={{ marginBottom: 'var(--size-3)' }}
+                                        />
+                                    ))}
+                                </PinnedSection>}
                                 renderItem={(status) => (
                                     <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
                                 )}
@@ -126,6 +119,19 @@ export function ProfileContent({
                             <VirtualizedList<Status>
                                 style={{ padding: 0 }}
                                 items={statuses}
+                                header={<PinnedSection>
+                                    <PinnedHeader>
+                                        <Pin size={16} />
+                                        Pinned Posts
+                                    </PinnedHeader>
+                                    {pinnedStatuses?.map(status => (
+                                        <PostCard
+                                            key={status.id}
+                                            status={status}
+                                            style={{ marginBottom: 'var(--size-3)' }}
+                                        />
+                                    ))}
+                                </PinnedSection>}
                                 renderItem={(status) => (
                                     <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
                                 )}
@@ -177,9 +183,8 @@ const TabsContainer = styled.div`
 `;
 
 const PinnedSection = styled.div`
-  padding-top: var(--size-4);
-  padding-bottom: var(--size-4);
   border-bottom: 1px solid var(--surface-3);
+  margin-bottom: var(--size-4);
 `;
 
 const PinnedHeader = styled.h3`
@@ -194,7 +199,6 @@ const PinnedHeader = styled.h3`
 `;
 
 const ContentSection = styled.div`
-  padding-top: var(--size-4);
   display: flex;
   flex-direction: column;
 `;
