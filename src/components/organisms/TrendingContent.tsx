@@ -22,7 +22,7 @@ const trendingTabs: TabItem<TrendingTab>[] = [
 ];
 
 interface TrendingContentProps {
-    header: ReactNode;
+    header?: ReactNode;
     scrollRestorationPrefix?: string;
 }
 
@@ -66,7 +66,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
     return (
         <Container className="full-height-container">
             {/* Header */}
-            {header}
+            {header && header}
 
             {/* Tab Navigation */}
             <StyledTabs
