@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { ArrowLeft, Search as SearchIcon } from 'lucide-react';
+import { ArrowLeft, Search as SearchIcon, X } from 'lucide-react';
 import { useSearch, useInfiniteSearch } from '@/api';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
 import { SearchHistory } from '@/components/molecules';
@@ -15,106 +15,87 @@ export default function SearchPage() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const urlQuery = searchParams.get('q') || '';
-  const urlType = searchParams.get('type') as TabType;
+  const query = searchParams.get('q') || '';
+  const activeTab = (searchParams.get('type') as TabType) || (query.startsWith('#') ? 'hashtags' : 'all');
 
-  const [query, setQuery] = useState(urlQuery);
-  const [debouncedQuery, setDebouncedQuery] = useState(urlQuery);
-  const [activeTab, setActiveTab] = useState<TabType>(
-    urlType || (urlQuery.startsWith('#') ? 'hashtags' : 'all')
-  );
-
+  const [inputValue, setInputValue] = useState(query);
   const { history, addToHistory, removeFromHistory, clearHistory } = useSearchHistory();
 
-  // Sync State -> URL
+  // Sync input value when URL query changes (e.g., back/forward navigation)
   useEffect(() => {
+    setInputValue(query);
+  }, [query]);
+
+  const updateURL = (newQuery: string, newTab?: TabType, shouldAddToHistory = false) => {
     const params = new URLSearchParams(searchParams.toString());
-    let hasChanges = false;
 
-    if (debouncedQuery) {
-      if (params.get('q') !== debouncedQuery) {
-        params.set('q', debouncedQuery);
-        hasChanges = true;
+    if (newQuery) {
+      params.set('q', newQuery);
+      // Add to history only when explicitly requested (user typing or selecting from history)
+      if (shouldAddToHistory) {
+        addToHistory(newQuery);
       }
     } else {
-      if (params.has('q')) {
-        params.delete('q');
-        hasChanges = true;
-      }
+      params.delete('q');
     }
 
-    if (activeTab && activeTab !== 'all') {
-      if (params.get('type') !== activeTab) {
-        params.set('type', activeTab);
-        hasChanges = true;
-      }
+    const tabToUse = newTab || activeTab;
+    if (tabToUse && tabToUse !== 'all') {
+      params.set('type', tabToUse);
     } else {
-      if (params.has('type')) {
-        params.delete('type');
-        hasChanges = true;
-      }
+      params.delete('type');
     }
 
-    if (hasChanges) {
-      router.replace(`${pathname}?${params.toString()}`);
-    }
-  }, [debouncedQuery, activeTab, pathname, router, searchParams]);
+    router.replace(`${pathname}?${params.toString()}`);
+  };
 
-  // Sync URL -> State (Handle Back/Forward/External)
-  useEffect(() => {
-    if (urlQuery !== debouncedQuery) {
-      setQuery(urlQuery);
-      setDebouncedQuery(urlQuery);
-      if (urlQuery) addToHistory(urlQuery);
-
-      if (!urlType && urlQuery.startsWith('#')) {
-        setActiveTab('hashtags');
-      }
+  const handleSearch = () => {
+    if (inputValue.trim()) {
+      updateURL(inputValue.trim(), undefined, true);
     }
+  };
 
-    if (urlType && urlType !== activeTab) {
-      setActiveTab(urlType);
-    } else if (!urlType && activeTab !== 'all' && !urlQuery.startsWith('#')) {
-      setActiveTab('all');
-    }
-  }, [urlQuery, urlType]);
+  const handleClear = () => {
+    setInputValue('');
+    updateURL('', undefined, false);
+  };
 
-  // Debounce search query
-  useEffect(() => {
-    if (query !== debouncedQuery) {
-      const timer = setTimeout(() => {
-        setDebouncedQuery(query);
-      }, 300);
-      return () => clearTimeout(timer);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch();
     }
-  }, [query, debouncedQuery]);
+  };
+
+  const handleTabChange = (tab: TabType) => {
+    updateURL(query, tab);
+  };
 
   // --- Data Fetching ---
   const { data: allSearchResults, isLoading: isLoadingAll, isError: isErrorAll } = useSearch({
-    q: debouncedQuery,
+    q: query,
     type: undefined,
-  }, { enabled: activeTab === 'all' });
+  }, { enabled: activeTab === 'all' && query.trim().length > 0 });
 
   const {
     data: accountsData, fetchNextPage: fetchNextAccounts, hasNextPage: hasNextAccounts,
     isFetchingNextPage: isFetchingNextAccounts, isLoading: isLoadingAccounts, isError: isErrorAccounts,
-  } = useInfiniteSearch({ q: debouncedQuery, type: 'accounts' }, { enabled: activeTab === 'accounts' });
+  } = useInfiniteSearch({ q: query, type: 'accounts' }, { enabled: activeTab === 'accounts' && query.trim().length > 0 });
 
   const {
     data: statusesData, fetchNextPage: fetchNextStatuses, hasNextPage: hasNextStatuses,
     isFetchingNextPage: isFetchingNextStatuses, isLoading: isLoadingStatuses, isError: isErrorStatuses,
-  } = useInfiniteSearch({ q: debouncedQuery, type: 'statuses' }, { enabled: activeTab === 'statuses' });
+  } = useInfiniteSearch({ q: query, type: 'statuses' }, { enabled: activeTab === 'statuses' && query.trim().length > 0 });
 
   const {
     data: hashtagsData, fetchNextPage: fetchNextHashtags, hasNextPage: hasNextHashtags,
     isFetchingNextPage: isFetchingNextHashtags, isLoading: isLoadingHashtags, isError: isErrorHashtags,
-  } = useInfiniteSearch({ q: debouncedQuery, type: 'hashtags' }, { enabled: activeTab === 'hashtags' });
+  } = useInfiniteSearch({ q: query, type: 'hashtags' }, { enabled: activeTab === 'hashtags' && query.trim().length > 0 });
 
   const flattenedAccounts = accountsData?.pages.flatMap(page => page.accounts) || [];
   const flattenedStatuses = statusesData?.pages.flatMap(page => page.statuses) || [];
   const flattenedHashtags = hashtagsData?.pages.flatMap(page => page.hashtags) || [];
 
-  const hasQuery = debouncedQuery.trim().length > 0;
+  const hasQuery = query.trim().length > 0;
   const tabs: TabType[] = ['all', 'accounts', 'statuses', 'hashtags'];
 
   return (
@@ -140,11 +121,29 @@ export default function SearchPage() {
           <SearchIcon size={18} style={{ position: 'absolute', left: 'var(--size-3)', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-3)' }} />
           <Input
             type="text"
-            placeholder="Search for people, posts, or hashtags"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            style={{ width: '100%', paddingLeft: 'var(--size-8)' }}
+            placeholder="Search for people, posts, or hashtags (press Enter to search)"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            style={{ width: '100%', paddingLeft: 'var(--size-8)', paddingRight: inputValue ? 'var(--size-8)' : 'var(--size-3)' }}
           />
+          {inputValue && (
+            <IconButton
+              onClick={handleClear}
+              style={{
+                position: 'absolute',
+                right: 'var(--size-2)',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                padding: 'var(--size-1)',
+                minWidth: 'auto',
+                width: 'auto',
+                height: 'auto'
+              }}
+            >
+              <X size={12} style={{ width: '12px', height: '12px' }} />
+            </IconButton>
+          )}
         </div>
 
         {/* Tab Navigation */}
@@ -153,7 +152,7 @@ export default function SearchPage() {
             {tabs.map((tab) => (
               <button
                 key={tab}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => handleTabChange(tab)}
                 style={{
                   padding: 'var(--size-2) var(--size-4)',
                   borderRadius: 'var(--radius-round)',
@@ -178,14 +177,17 @@ export default function SearchPage() {
         {!hasQuery ? (
           <SearchHistory
             history={history}
-            onSelect={setQuery}
+            onSelect={(selectedQuery) => {
+              setInputValue(selectedQuery);
+              updateURL(selectedQuery, undefined, true);
+            }}
             onRemove={removeFromHistory}
             onClear={clearHistory}
           />
         ) : (
           <SearchContent
             activeTab={activeTab}
-            query={debouncedQuery}
+            query={query}
             allResults={allSearchResults}
             isLoadingAll={isLoadingAll}
             isErrorAll={isErrorAll}
