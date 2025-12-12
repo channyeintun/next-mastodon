@@ -182,6 +182,30 @@ export function ComposerPanel({
     }
   };
 
+  // Handle files pasted or dropped into the editor
+  const handleFilePaste = async (files: File[]) => {
+    // Check if we can add more media
+    const remainingSlots = 4 - media.length;
+    if (remainingSlots <= 0 || poll !== null) return;
+
+    const filesToUpload = files.slice(0, remainingSlots);
+    for (const file of filesToUpload) {
+      // Try to open cropper for images, otherwise upload directly
+      if (openCropper(file)) {
+        break; // Cropper handles one image at a time
+      } else {
+        await handleMediaAdd(file);
+      }
+    }
+  };
+
+  // Handle URLs pasted into the editor (for potential link card creation)
+  const handleUrlPaste = (url: URL) => {
+    // Currently, link cards are created server-side when posting
+    // This could be extended to show a preview before posting
+    console.log('URL pasted:', url.href);
+  };
+
   // Load scheduled status data
   useEffect(() => {
     if (scheduledStatusData) {
@@ -377,6 +401,9 @@ export function ComposerPanel({
             editorRef.current = editor;
           }}
           mentionSuggestion={mentionSuggestion}
+          onFilePaste={handleFilePaste}
+          onUrlPaste={handleUrlPaste}
+          maxFiles={4 - media.length}
           ariaLabel="Compose post"
         />
       </div>

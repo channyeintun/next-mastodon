@@ -165,4 +165,14 @@ const ContentWrapper = styled.div`
   color: var(--text-1);
   line-height: 1.5;
   word-break: break-word;
+
+  p {
+    margin-bottom: 22px;
+    white-space: pre-wrap;
+    unicode-bidi: plaintext;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
 `;
