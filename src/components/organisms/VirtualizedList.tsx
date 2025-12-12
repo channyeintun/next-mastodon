@@ -93,13 +93,6 @@ interface VirtualizedListProps<T> {
    * Header should contain: .header-title, .header-subtitle, .header-actions
    */
   header?: ReactNode;
-
-  /**
-   * Whether to enable the sticky collapsible header behavior
-   * When true, the header will stick to the top and collapse when scrolling
-   * @default false
-   */
-  stickyHeader?: boolean;
 }
 
 // Global cache for scroll restoration
@@ -128,7 +121,6 @@ export function VirtualizedList<T>({
   style,
   scrollRestorationKey,
   header,
-  stickyHeader = false,
 }: VirtualizedListProps<T>) {
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -197,8 +189,8 @@ export function VirtualizedList<T>({
       $height={height}
       style={style}
     >
-      {/* Sticky header with scroll-state container query support */}
-      {header && (stickyHeader ? <StickyHeaderWrapper>{header}</StickyHeaderWrapper> : header)}
+      {/* Optional header - consumer handles sticky behavior if needed */}
+      {header}
 
       {items.length === 0 && emptyState && emptyState}
 
@@ -244,129 +236,6 @@ const Container = styled.div<{ $height: string }>`
   -webkit-overflow-scrolling: touch;
   contain: paint;
   position: relative;
-`;
-
-/**
- * Sticky header wrapper with CSS scroll-state container queries.
- *
- * This wrapper provides the scroll-state container context via CSS custom property:
- * - --header-stuck: 0 (not stuck) or 1 (stuck at top)
- *
- * For flexible header implementations, use the StickyHeader* components from atoms:
- * - StickyHeaderContainer (alternative to this wrapper)
- * - StickyHeaderContent
- * - StickyHeaderTitle
- * - StickyHeaderSubtitle
- * - StickyHeaderActions
- * - StickyHeaderButtonText
- *
- * Legacy class-based approach (deprecated):
- * Headers can still use .header-title, .header-subtitle, .header-actions classes
- * but this pattern is not recommended for new implementations.
- */
-const StickyHeaderWrapper = styled.div`
-  /* Enable both scroll-state and style container queries */
-  container-type: scroll-state;
-  container-name: sticky-header;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-
-  /* CSS variable for scroll state: 0 = not stuck, 1 = stuck */
-  --header-stuck: 0;
-
-  /* Configurable defaults - can be overridden by consuming headers */
-  --header-padding: var(--size-4);
-  --header-padding-stuck: var(--size-2) var(--size-4);
-  --header-gap: var(--size-3);
-  --header-gap-stuck: var(--size-2);
-  --header-bg: linear-gradient(to bottom, var(--surface-1) 60%, transparent);
-  --header-bg-stuck: var(--surface-1);
-  --header-title-opacity-stuck: 0;
-  --header-subtitle-opacity-stuck: 0;
-
-  /* Update CSS variable when stuck using scroll-state query */
-  @container scroll-state(stuck: top) {
-    --header-stuck: 1;
-  }
-
-  /* ============================================
-   * Legacy class-based styles (for backward compatibility)
-   * New implementations should use StickyHeader* components
-   * ============================================ */
-
-  /* Default styles for direct child (the header content) */
-  > * {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--header-bg);
-    gap: var(--header-gap);
-    flex-wrap: wrap;
-    transition: padding 0.3s ease, gap 0.3s ease, background 0.3s ease;
-  }
-
-  /* Default header element styles */
-  .header-title {
-    display: flex;
-    flex-direction: column;
-    gap: var(--size-1);
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.2s ease, visibility 0.2s ease, gap 0.3s ease;
-    transition-behavior: allow-discrete;
-
-    h1 {
-      font-size: var(--font-size-5);
-      margin: 0;
-      transition: font-size 0.3s ease;
-    }
-  }
-
-  .header-subtitle {
-    font-size: var(--font-size-0);
-    color: var(--text-2);
-    max-height: 2em;
-    overflow: hidden;
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.3s ease, visibility 0.3s ease, max-height 0.3s ease, margin-top 0.3s ease;
-    transition-behavior: allow-discrete;
-  }
-
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--size-2);
-    flex-shrink: 0;
-  }
-
-  /* Default collapse behavior when stuck (legacy class-based) */
-  @container scroll-state(stuck: top) {
-    > * {
-      padding: var(--header-padding-stuck);
-      gap: var(--header-gap-stuck);
-      background: var(--header-bg-stuck);
-    }
-
-    .header-title {
-      opacity: var(--header-title-opacity-stuck);
-      visibility: hidden;
-      transition: opacity 0.15s ease 0.1s, visibility 0.15s ease 0.1s;
-      transition-behavior: allow-discrete;
-    }
-
-    .header-subtitle {
-      opacity: var(--header-subtitle-opacity-stuck);
-      visibility: hidden;
-      max-height: 0;
-      margin-top: 0;
-    }
-
-    .header-actions .btn-text {
-      display: none;
-    }
-  }
 `;
 
 const VirtualContent = styled.div<{ $height: number }>`
