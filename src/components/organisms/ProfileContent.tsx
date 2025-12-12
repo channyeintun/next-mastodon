@@ -93,7 +93,7 @@ export function ProfileContent({
                             </LoadingContainer>
                         ) : (
                             <VirtualizedList<Status>
-                                style={{ padding: 0, marginTop: 'var(--size-4)' }}
+                                style={{ padding: 0 }}
                                 items={statuses}
                                 renderItem={(status) => (
                                     <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
@@ -124,7 +124,7 @@ export function ProfileContent({
                             </LoadingContainer>
                         ) : (
                             <VirtualizedList<Status>
-                                style={{ padding: 0, marginTop: 'var(--size-4)' }}
+                                style={{ padding: 0 }}
                                 items={statuses}
                                 renderItem={(status) => (
                                     <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
