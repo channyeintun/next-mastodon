@@ -139,7 +139,7 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
             <div className="navigation-link-icon">
               <Github size={24} />
             </div>
-            <span className="navigation-link-label">Source Code</span>
+            <span className="navigation-link-label">Source code</span>
           </a>
         </div>
       </nav>
