@@ -170,6 +170,7 @@ const ContentWrapper = styled.div`
     margin-bottom: 22px;
     white-space: pre-wrap;
     unicode-bidi: plaintext;
+    line-height: normal;
   }
 
   p:last-child {

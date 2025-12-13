@@ -661,8 +661,12 @@ body {
   /* Remove horizontal padding for pure text feel */
   font-size: var(--font-size-3);
   /* Larger, more readable */
-  line-height: var(--font-lineheight-3);
+  line-height: normal;
   outline: none;
+}
+
+.compose-editor-area .ProseMirror p {
+  margin-bottom: 0;
 }
 
 /* Compact mode for reply box */

@@ -87,19 +87,32 @@ export function TiptapEditor({
     extensions,
     content,
     editable: true,
+    // Preserve whitespace when parsing content
+    parseOptions: {
+      preserveWhitespace: 'full',
+    },
     editorProps: {
       attributes: {
         class: 'tiptap-editor-editable',
         style: 'outline: none;',
         ...(ariaLabel ? { 'aria-label': ariaLabel } : {}),
       },
-      // Preserve multiple consecutive spaces when pasting
+      // Preserve multiple consecutive spaces when pasting plain text
       // HTML normally collapses multiple spaces into one
       // We convert runs of spaces to: first space regular, rest non-breaking
       transformPastedText(text) {
         // Replace runs of 2+ spaces: keep first space, convert rest to nbsp
         return text.replace(/ {2,}/g, (match) => {
           return ' ' + '\u00A0'.repeat(match.length - 1);
+        });
+      },
+      // Preserve multiple consecutive spaces when pasting HTML content
+      // Convert regular spaces to non-breaking spaces to prevent collapse
+      transformPastedHTML(html) {
+        // Replace runs of 2+ spaces in text content with nbsp equivalents
+        // Use &#160; (HTML entity for nbsp) instead of &nbsp; for compatibility
+        return html.replace(/ {2,}/g, (match) => {
+          return ' ' + '&#160;'.repeat(match.length - 1);
         });
       },
     },
