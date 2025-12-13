@@ -2,11 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 import styled from '@emotion/styled'
-import { ArrowLeft, Search, X, Send } from 'lucide-react'
+import { ArrowLeft, Search, X, Send, Image } from 'lucide-react'
 import { useSearch } from '@/api/queries'
 import { useCreateStatus } from '@/api/mutations'
+import { queryKeys } from '@/api/queryKeys'
 import { AccountCard } from '@/components/molecules/AccountCard'
+import { ImageCropper } from '@/components/molecules/ImageCropper'
 import { IconButton } from '@/components/atoms/IconButton'
 import { Spinner } from '@/components/atoms/Spinner'
 import { Avatar } from '@/components/atoms/Avatar'
@@ -14,15 +17,31 @@ import { EmojiText } from '@/components/atoms/EmojiText'
 import {
     PageContainer, Header, HeaderInfo, HeaderTitle, HeaderSubtitle,
     PageTitle, InputContainer, MessageTextarea, SendButton, EmptyState,
+    MediaPreviewContainer, MediaPreviewItem, MediaPreviewImage,
+    UploadingIndicator, AttachButton, HiddenInput,
+    MediaPreviewControls, MediaPreviewOverlayButton,
 } from '@/components/atoms/ConversationStyles'
+import { useMediaUpload } from '@/hooks/useMediaUpload'
 import type { Account } from '@/types/mastodon'
 
 export default function NewConversationPage() {
     const router = useRouter()
+    const queryClient = useQueryClient()
     const [searchQuery, setSearchQuery] = useState('')
     const [debouncedQuery, setDebouncedQuery] = useState('')
     const [selectedAccount, setSelectedAccount] = useState<Account | null>(null)
     const [messageText, setMessageText] = useState('')
+    const {
+        media,
+        isUploading,
+        fileInputRef,
+        cropperImage,
+        handleFileChange,
+        onCropComplete,
+        handleMediaRemove,
+        clearMedia,
+        closeCropper,
+    } = useMediaUpload()
     const createStatus = useCreateStatus()
 
     useEffect(() => {
@@ -39,22 +58,36 @@ export default function NewConversationPage() {
     const handleSelect = (account: Account) => {
         setSelectedAccount(account)
         setMessageText(`@${account.acct} `)
+        clearMedia()
     }
     const handleBack = () => {
-        if (selectedAccount) { setSelectedAccount(null); setMessageText('') }
+        if (selectedAccount) {
+            setSelectedAccount(null)
+            setMessageText('')
+            clearMedia()
+        }
         else router.back()
     }
     const handleClear = () => { setSearchQuery(''); setDebouncedQuery('') }
+
     const handleSend = async () => {
-        if (!messageText.trim() || !selectedAccount) return
+        if ((!messageText.trim() && media.length === 0) || !selectedAccount) return
         try {
-            await createStatus.mutateAsync({ status: messageText, visibility: 'direct' })
+            await createStatus.mutateAsync({
+                status: messageText,
+                visibility: 'direct',
+                media_ids: media.length > 0 ? media.map(m => m.id) : undefined,
+            })
+            // Invalidate conversations query to refresh the list
+            queryClient.invalidateQueries({ queryKey: queryKeys.conversations.list() })
             router.push('/conversations')
         } catch { console.error('Failed to send') }
     }
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend() }
     }
+
+    const canSend = Boolean((messageText.trim() || media.length > 0) && !createStatus.isPending && !isUploading)
 
     return (
         <PageContainer>
@@ -74,9 +107,43 @@ export default function NewConversationPage() {
             {selectedAccount ? (
                 <MessageInterface>
                     <EmptyMessages>No messages yet</EmptyMessages>
+
+                    {/* Image Cropper Modal */}
+                    {cropperImage && (
+                        <ImageCropper
+                            image={cropperImage}
+                            onCropComplete={onCropComplete}
+                            onCancel={closeCropper}
+                            aspectRatio={16 / 9}
+                        />
+                    )}
+
+                    {/* Media Preview - Anchored above input */}
+                    {media.length > 0 && (
+                        <MediaPreviewContainer>
+                            {media.map(m => (
+                                <MediaPreviewItem key={m.id}>
+                                    <MediaPreviewImage src={m.preview_url || m.url || ''} alt="" />
+                                    <MediaPreviewControls className="media-preview-controls">
+                                        <MediaPreviewOverlayButton onClick={() => handleMediaRemove(m.id)} title="Remove">
+                                            <X size={14} />
+                                        </MediaPreviewOverlayButton>
+                                    </MediaPreviewControls>
+                                </MediaPreviewItem>
+                            ))}
+                            {isUploading && (
+                                <UploadingIndicator><Spinner /></UploadingIndicator>
+                            )}
+                        </MediaPreviewContainer>
+                    )}
+
                     <InputContainer>
+                        <AttachButton onClick={() => fileInputRef.current?.click()} aria-label="Attach media" disabled={media.length >= 4 || isUploading}>
+                            <Image size={20} />
+                        </AttachButton>
+                        <HiddenInput ref={fileInputRef} type="file" accept="image/*,video/*,audio/*" onChange={handleFileChange} multiple />
                         <MessageTextarea value={messageText} onChange={e => setMessageText(e.target.value)} onKeyDown={handleKeyDown} placeholder="Type a message..." rows={1} />
-                        <SendButton onClick={handleSend} disabled={!messageText.trim() || createStatus.isPending} aria-label="Send" $active={!!messageText.trim()}><Send size={20} /></SendButton>
+                        <SendButton onClick={handleSend} disabled={!canSend} aria-label="Send" $active={canSend}><Send size={20} /></SendButton>
                     </InputContainer>
                 </MessageInterface>
             ) : (
@@ -103,9 +170,12 @@ export default function NewConversationPage() {
                         ) : accounts.length > 0 ? (
                             <AccountsList>
                                 {accounts.map(account => (
-                                    <AccountWrapper key={account.id} onClick={e => { e.preventDefault(); e.stopPropagation(); handleSelect(account) }}>
-                                        <StyledAccountCard account={account} showFollowButton={false} />
-                                    </AccountWrapper>
+                                    <AccountCard
+                                        key={account.id}
+                                        account={account}
+                                        showFollowButton={false}
+                                        onClick={handleSelect}
+                                    />
                                 ))}
                             </AccountsList>
                         ) : (
@@ -214,16 +284,4 @@ const AccountsList = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--size-2);
-`
-
-const AccountWrapper = styled.div`
-  cursor: pointer;
-`
-
-const StyledAccountCard = styled(AccountCard)`
-  border: 1px solid var(--surface-3);
-  border-radius: var(--radius-3);
-  background: var(--surface-1);
-  transition: all 0.2s;
-  pointer-events: none;
 `

@@ -16,6 +16,8 @@ interface AccountCardProps {
     showUnmuteButton?: boolean;
     /** When true, skip fetching relationship (parent is handling batch fetching) */
     skipRelationshipFetch?: boolean;
+    /** When provided, prevents navigation and calls this handler instead */
+    onClick?: (account: Account) => void;
     style?: React.CSSProperties;
 }
 
@@ -27,6 +29,7 @@ export function AccountCard({
     showUnblockButton = false,
     showUnmuteButton = false,
     skipRelationshipFetch = false,
+    onClick,
     style,
 }: AccountCardProps) {
     const { data: currentAccount } = useCurrentAccount();
@@ -83,6 +86,13 @@ export function AccountCard({
         e.preventDefault();
         e.stopPropagation();
         unmuteMutation.mutate(account.id);
+    };
+
+    const handleCardClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        if (onClick) {
+            e.preventDefault();
+            onClick(account);
+        }
     };
 
     const renderActions = () => {
@@ -173,6 +183,7 @@ export function AccountCard({
         <Link
             href={`/@${account.acct}`}
             className="account-card"
+            onClick={handleCardClick}
             style={style}
         >
             <Avatar

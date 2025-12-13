@@ -9,7 +9,6 @@ import * as R from 'ramda'
 import { useCurrentAccount, useStatusContext } from '@/api/queries'
 import { queryKeys } from '@/api/queryKeys'
 import { useCreateStatus, useDeleteConversation } from '@/api/mutations'
-import { uploadMedia } from '@/api/client'
 import { IconButton } from '@/components/atoms/IconButton'
 import { Avatar } from '@/components/atoms/Avatar'
 import { EmojiText } from '@/components/atoms/EmojiText'
@@ -26,14 +25,14 @@ import { ConversationLoading, ConversationError } from '@/components/molecules/C
 import { ImageCropper } from '@/components/molecules/ImageCropper'
 import { useConversationStream } from '@/hooks/useStreaming'
 import { useConversationStore } from '@/hooks/useStores'
-import { useCropper } from '@/hooks/useCropper'
+import { useMediaUpload } from '@/hooks/useMediaUpload'
 import {
     getLastStatusId,
     buildMessageList,
     appendIfNotExists,
     stripMentions,
 } from '@/utils/conversationUtils'
-import type { Context, MediaAttachment } from '@/types/mastodon'
+import type { Context } from '@/types/mastodon'
 
 function ConversationChatContent() {
     useConversationStream()
@@ -52,10 +51,17 @@ function ConversationChatContent() {
     const createStatus = useCreateStatus()
     const deleteConversation = useDeleteConversation()
     const [messageText, setMessageText] = useState('')
-    const [media, setMedia] = useState<MediaAttachment[]>([])
-    const [isUploading, setIsUploading] = useState(false)
-    const fileInputRef = useRef<HTMLInputElement>(null)
-    const { cropperImage, openCropper, closeCropper, handleCropComplete } = useCropper()
+    const {
+        media,
+        isUploading,
+        fileInputRef,
+        cropperImage,
+        handleFileChange,
+        onCropComplete,
+        handleMediaRemove,
+        clearMedia,
+        closeCropper,
+    } = useMediaUpload()
 
     const storedLastStatusId = conversationStore.lastStatusId
     const [stableContextId, setStableContextId] = useState<string | null>(null)
@@ -117,76 +123,6 @@ function ConversationChatContent() {
         } catch { alert('Failed to delete conversation.') }
     }
 
-    // Queue for pending files to crop
-    const [pendingFiles, setPendingFiles] = useState<File[]>([])
-
-    const handleMediaAdd = async (file: File) => {
-        setIsUploading(true)
-        try {
-            const attachment = await uploadMedia(file)
-            setMedia(prev => [...prev, attachment])
-        } catch (err) {
-            console.error('Failed to upload media:', err)
-        } finally {
-            setIsUploading(false)
-        }
-    }
-
-    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files
-        if (!files) return
-
-        const remainingSlots = 4 - media.length
-        const filesToProcess: File[] = []
-
-        for (let i = 0; i < files.length && i < remainingSlots; i++) {
-            filesToProcess.push(files[i])
-        }
-
-        if (filesToProcess.length === 0) {
-            if (fileInputRef.current) fileInputRef.current.value = ''
-            return
-        }
-
-        // Take the first file and queue the rest
-        const [firstFile, ...restFiles] = filesToProcess
-        setPendingFiles(restFiles)
-
-        // Try to open cropper for the first image
-        if (!openCropper(firstFile)) {
-            // Non-image file, upload directly
-            await handleMediaAdd(firstFile)
-            // Process next file if any
-            if (restFiles.length > 0) {
-                const [next, ...remaining] = restFiles
-                setPendingFiles(remaining)
-                if (!openCropper(next)) {
-                    await handleMediaAdd(next)
-                }
-            }
-        }
-
-        if (fileInputRef.current) fileInputRef.current.value = ''
-    }
-
-    const onCropComplete = async (croppedBlob: Blob) => {
-        handleCropComplete(croppedBlob, async (file) => {
-            await handleMediaAdd(file)
-            // Process next file in queue after crop
-            if (pendingFiles.length > 0) {
-                const [nextFile, ...rest] = pendingFiles
-                setPendingFiles(rest)
-                if (!openCropper(nextFile)) {
-                    await handleMediaAdd(nextFile)
-                }
-            }
-        })
-    }
-
-    const handleMediaRemove = (mediaId: string) => {
-        setMedia(prev => prev.filter(m => m.id !== mediaId))
-    }
-
     const handleSend = async () => {
         if ((!messageText.trim() && media.length === 0) || !stableContextId) return
 
@@ -207,7 +143,7 @@ function ConversationChatContent() {
             )
             conversationStore.setLastStatusId(newStatus.id)
             setMessageText('')
-            setMedia([])
+            clearMedia()
         } catch { console.error('Failed to send message') }
     }
 
