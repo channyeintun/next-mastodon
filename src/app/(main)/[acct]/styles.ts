@@ -109,8 +109,13 @@ export const MetaLink = styled.a`
 `;
 
 export const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  margin-top: var(--size-8);
+  min-height: 50vh;
+  padding: var(--size-4);
 `;
 
 export const ErrorTitle = styled.h2`
