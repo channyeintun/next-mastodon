@@ -74,22 +74,23 @@ export default function SearchPage() {
   const { data: allSearchResults, isLoading: isLoadingAll, isError: isErrorAll } = useSearch({
     q: query,
     type: undefined,
+    resolve: true,
   }, { enabled: activeTab === 'all' && query.trim().length > 0 });
 
   const {
     data: accountsData, fetchNextPage: fetchNextAccounts, hasNextPage: hasNextAccounts,
     isFetchingNextPage: isFetchingNextAccounts, isLoading: isLoadingAccounts, isError: isErrorAccounts,
-  } = useInfiniteSearch({ q: query, type: 'accounts' }, { enabled: activeTab === 'accounts' && query.trim().length > 0 });
+  } = useInfiniteSearch({ q: query, type: 'accounts', resolve: true }, { enabled: activeTab === 'accounts' && query.trim().length > 0 });
 
   const {
     data: statusesData, fetchNextPage: fetchNextStatuses, hasNextPage: hasNextStatuses,
     isFetchingNextPage: isFetchingNextStatuses, isLoading: isLoadingStatuses, isError: isErrorStatuses,
-  } = useInfiniteSearch({ q: query, type: 'statuses' }, { enabled: activeTab === 'statuses' && query.trim().length > 0 });
+  } = useInfiniteSearch({ q: query, type: 'statuses', resolve: true }, { enabled: activeTab === 'statuses' && query.trim().length > 0 });
 
   const {
     data: hashtagsData, fetchNextPage: fetchNextHashtags, hasNextPage: hasNextHashtags,
     isFetchingNextPage: isFetchingNextHashtags, isLoading: isLoadingHashtags, isError: isErrorHashtags,
-  } = useInfiniteSearch({ q: query, type: 'hashtags' }, { enabled: activeTab === 'hashtags' && query.trim().length > 0 });
+  } = useInfiniteSearch({ q: query, type: 'hashtags', resolve: true }, { enabled: activeTab === 'hashtags' && query.trim().length > 0 });
 
   const flattenedAccounts = accountsData?.pages.flatMap(page => page.accounts) || [];
   const flattenedStatuses = statusesData?.pages.flatMap(page => page.statuses) || [];
