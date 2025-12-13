@@ -10,10 +10,10 @@ import type { Visibility, QuoteVisibility } from '@/components/molecules/Visibil
 import { Avatar, EmojiText, TiptapEditor, ContentWarningInput, ScheduleInput } from '@/components/atoms';
 import { EmojiPicker } from './EmojiPicker';
 import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
-import { uploadMedia, updateMedia } from '@/api/client';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
+import { useMediaUpload } from '@/hooks/useMediaUpload';
 import { Globe, Lock, Users, Mail, X } from 'lucide-react';
-import type { CreateStatusParams, MediaAttachment } from '@/types';
+import type { CreateStatusParams } from '@/types';
 import { Spinner } from '@/components/atoms/Spinner';
 import {
   LoadingContainer,
@@ -121,11 +121,20 @@ export function ComposerPanel({
   const [contentWarning, setContentWarning] = useState(initialSpoilerText);
   const [showCWInput, setShowCWInput] = useState(!!initialSpoilerText);
   const [sensitive, setSensitive] = useState(initialSensitive);
-  const [media, setMedia] = useState<MediaAttachment[]>([]);
   const [poll, setPoll] = useState<PollData | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [isUploadingMedia, setIsUploadingMedia] = useState(false);
   const mediaUploadRef = useRef<MediaUploadHandle>(null);
+
+  // Use media upload hook
+  const {
+    media,
+    setMedia,
+    isUploading: isUploadingMedia,
+    handleMediaAdd,
+    handleMediaRemove,
+    handleAltTextChange,
+    clearMedia,
+  } = useMediaUpload();
 
   const charCount = textContent.length;
   const isOverLimit = charCount > MAX_CHAR_COUNT;
@@ -152,31 +161,6 @@ export function ComposerPanel({
   };
 
   const mentionSuggestion = createMentionSuggestion();
-
-  const handleMediaAdd = async (file: File) => {
-    setIsUploadingMedia(true);
-    try {
-      const attachment = await uploadMedia(file);
-      setMedia((prev) => [...prev, attachment]);
-    } catch (error) {
-      console.error('Failed to upload media:', error);
-    } finally {
-      setIsUploadingMedia(false);
-    }
-  };
-
-  const handleMediaRemove = (id: string) => {
-    setMedia((prev) => prev.filter((m) => m.id !== id));
-  };
-
-  const handleAltTextChange = async (id: string, altText: string) => {
-    try {
-      const updated = await updateMedia(id, altText);
-      setMedia((prev) => prev.map((m) => (m.id === id ? updated : m)));
-    } catch (error) {
-      console.error('Failed to update alt text:', error);
-    }
-  };
 
   const handleEmojiSelect = (emoji: string) => {
     if (editorRef.current) {
@@ -281,7 +265,7 @@ export function ComposerPanel({
         setContentWarning('');
         setShowCWInput(false);
         setSensitive(false);
-        setMedia([]);
+        clearMedia();
         setPoll(null);
         setScheduledAt('');
         setShowScheduleInput(false);

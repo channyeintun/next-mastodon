@@ -303,7 +303,11 @@ Atomic design pattern components:
 
 ### `/src/hooks/`
 Custom React hooks:
-- **useCropper.ts**: Reusable image cropper state management (used in ComposerPanel and profile edit)
+- **useCropper.ts**: Reusable image cropper state management (used in profile edit)
+- **useMediaUpload.ts**: Media upload management with cropping support for post attachments
+  - Manages media state, upload queue, and cropping workflow
+  - Supports alt text updates via `handleAltTextChange`
+  - Used in ComposerPanel for post media attachments
 - **usePostActions.ts**: PostCard mutations and event handlers (extracted from PostCard for reusability)
 - **useStores.ts**: Access MobX stores (useAuthStore, useUserStore, useStreamingStore)
 - **useStreaming.ts**: Real-time Mastodon streaming API integration

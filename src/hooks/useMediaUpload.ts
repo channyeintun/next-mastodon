@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { uploadMedia } from '@/api/client'
+import { uploadMedia, updateMedia } from '@/api/client'
 import { useCropper } from '@/hooks/useCropper'
 import type { MediaAttachment } from '@/types/mastodon'
 
@@ -80,6 +80,15 @@ export function useMediaUpload() {
         setMedia(prev => prev.filter(m => m.id !== mediaId))
     }
 
+    const handleAltTextChange = async (mediaId: string, altText: string) => {
+        try {
+            const updated = await updateMedia(mediaId, altText)
+            setMedia(prev => prev.map(m => (m.id === mediaId ? updated : m)))
+        } catch (err) {
+            console.error('Failed to update alt text:', err)
+        }
+    }
+
     const clearMedia = () => {
         setMedia([])
         setPendingFiles([])
@@ -87,12 +96,15 @@ export function useMediaUpload() {
 
     return {
         media,
+        setMedia,
         isUploading,
         fileInputRef,
         cropperImage,
         handleFileChange,
         onCropComplete,
+        handleMediaAdd,
         handleMediaRemove,
+        handleAltTextChange,
         clearMedia,
         closeCropper,
     }
