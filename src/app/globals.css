@@ -183,6 +183,16 @@ input[type="radio"] {
   }
 }
 
+/* Tablet viewport (768px - 900px): Add horizontal padding for better content framing */
+@media (min-width: 768px) and (max-width: 900px) {
+  .full-height-container {
+    /* Fluid padding: 0 at 900px, scales up to size-4 (16px) at 768px */
+    /* Uses calc with viewport width to create smooth transition */
+    /* Using padding instead of margin to work with inline margin: 0 auto */
+    padding-inline: calc((900px - 100vw) * 0.12);
+  }
+}
+
 
 /* Loading spinner */
 .spinner {
