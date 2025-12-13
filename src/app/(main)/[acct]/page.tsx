@@ -173,10 +173,8 @@ export default function AccountPage({
           /* Limited Account - show header, avatar placeholder, actions, and warning */
           <>
             <ProfileSection>
-              {/* Header Image (blurred) */}
-              {account.header && !account.header.includes('missing.png') && (
-                <HeaderImage $url={account.header} style={{ filter: 'blur(8px)', opacity: 0.5 }} />
-              )}
+              {/* Header */}
+              <HeaderImage $url={account.header} style={{ filter: 'blur(8px)', opacity: 0.5 }} />
 
               {/* Profile Details Container */}
               <ProfileDetails>
@@ -223,10 +221,8 @@ export default function AccountPage({
           <>
             {/* Profile Section */}
             <ProfileSection>
-              {/* Header Image */}
-              {account.header && !account.header.includes('missing.png') && (
-                <HeaderImage $url={account.header} />
-              )}
+              {/* Header */}
+              <HeaderImage $url={account.header} />
 
               {/* Profile Details Container */}
               <ProfileDetails>

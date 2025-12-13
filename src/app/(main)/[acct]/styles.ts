@@ -33,11 +33,12 @@ export const ScrollableContent = styled.div`
   overflow: auto;
 `;
 
-export const HeaderImage = styled.div<{ $url: string }>`
+export const HeaderImage = styled.div<{ $url?: string }>`
   width: 100%;
   height: 200px;
   border-radius: var(--radius-3);
-  background-image: url(${({ $url }) => $url});
+  background-color: var(--surface-3);
+  ${({ $url }) => $url && `background-image: url(${$url});`}
   background-size: cover;
   background-position: center;
   margin-bottom: calc(-1 * var(--size-8));
