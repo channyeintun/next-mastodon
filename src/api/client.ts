@@ -624,6 +624,21 @@ export async function getStatusSource(id: string, signal?: AbortSignal): Promise
   return data
 }
 
+export async function getFavouritedBy(id: string, params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<Account[]> {
+  const { data } = await api.get<Account[]>(`/api/v1/statuses/${id}/favourited_by`, { params, signal })
+  return data
+}
+
+export async function getRebloggedBy(id: string, params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<Account[]> {
+  const { data } = await api.get<Account[]>(`/api/v1/statuses/${id}/reblogged_by`, { params, signal })
+  return data
+}
+
+export async function getStatusQuotes(id: string, params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<Status[]> {
+  const { data } = await api.get<Status[]>(`/api/v1/statuses/${id}/quotes`, { params, signal })
+  return data
+}
+
 // Scheduled Statuses
 export async function getScheduledStatuses(params?: { min_id?: string; max_id?: string; limit?: number }, signal?: AbortSignal): Promise<ScheduledStatus[]> {
   const { data } = await api.get<ScheduledStatus[]>('/api/v1/scheduled_statuses', { params, signal })

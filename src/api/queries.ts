@@ -37,6 +37,9 @@ import {
   getAccountLists,
   getStatusHistory,
   getStatusSource,
+  getFavouritedBy,
+  getRebloggedBy,
+  getStatusQuotes,
   getScheduledStatuses,
   getScheduledStatus,
   getMarkers,
@@ -115,6 +118,51 @@ export const statusSourceOptions = (id: string) =>
   queryOptions({
     queryKey: queryKeys.statuses.source(id),
     queryFn: ({ signal }) => getStatusSource(id, signal),
+  })
+
+export const infiniteFavouritedByOptions = (id: string) =>
+  infiniteQueryOptions({
+    queryKey: queryKeys.statuses.favouritedBy(id),
+    queryFn: ({ pageParam, signal }) => {
+      const params: { max_id?: string; limit: number } = { limit: 40 }
+      if (pageParam) params.max_id = pageParam
+      return getFavouritedBy(id, params, signal)
+    },
+    getNextPageParam: (lastPage: Account[]) => {
+      if (lastPage.length === 0 || lastPage.length < 40) return undefined
+      return lastPage[lastPage.length - 1]?.id
+    },
+    initialPageParam: undefined as string | undefined,
+  })
+
+export const infiniteRebloggedByOptions = (id: string) =>
+  infiniteQueryOptions({
+    queryKey: queryKeys.statuses.rebloggedBy(id),
+    queryFn: ({ pageParam, signal }) => {
+      const params: { max_id?: string; limit: number } = { limit: 40 }
+      if (pageParam) params.max_id = pageParam
+      return getRebloggedBy(id, params, signal)
+    },
+    getNextPageParam: (lastPage: Account[]) => {
+      if (lastPage.length === 0 || lastPage.length < 40) return undefined
+      return lastPage[lastPage.length - 1]?.id
+    },
+    initialPageParam: undefined as string | undefined,
+  })
+
+export const infiniteStatusQuotesOptions = (id: string) =>
+  infiniteQueryOptions({
+    queryKey: queryKeys.statuses.quotes(id),
+    queryFn: ({ pageParam, signal }) => {
+      const params: { max_id?: string; limit: number } = { limit: 20 }
+      if (pageParam) params.max_id = pageParam
+      return getStatusQuotes(id, params, signal)
+    },
+    getNextPageParam: (lastPage: Status[]) => {
+      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      return lastPage[lastPage.length - 1]?.id
+    },
+    initialPageParam: undefined as string | undefined,
   })
 
 // Account Options
@@ -592,6 +640,27 @@ export function useStatusHistory(id: string) {
 export function useStatusSource(id: string) {
   return useQuery({
     ...statusSourceOptions(id),
+    enabled: !!id,
+  })
+}
+
+export function useInfiniteFavouritedBy(id: string) {
+  return useInfiniteQuery({
+    ...infiniteFavouritedByOptions(id),
+    enabled: !!id,
+  })
+}
+
+export function useInfiniteRebloggedBy(id: string) {
+  return useInfiniteQuery({
+    ...infiniteRebloggedByOptions(id),
+    enabled: !!id,
+  })
+}
+
+export function useInfiniteStatusQuotes(id: string) {
+  return useInfiniteQuery({
+    ...infiniteStatusQuotesOptions(id),
     enabled: !!id,
   })
 }

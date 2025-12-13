@@ -20,6 +20,7 @@ export const queryKeys = {
     context: (id: string) => ['statuses', id, 'context'] as const,
     favouritedBy: (id: string) => ['statuses', id, 'favourited_by'] as const,
     rebloggedBy: (id: string) => ['statuses', id, 'reblogged_by'] as const,
+    quotes: (id: string) => ['statuses', id, 'quotes'] as const,
     history: (id: string) => ['statuses', id, 'history'] as const,
     source: (id: string) => ['statuses', id, 'source'] as const,
   },

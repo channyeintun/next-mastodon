@@ -37,6 +37,7 @@ export { ScheduledCardSkeletonList } from './ScheduledCardSkeleton';
 export { SearchHistory } from './SearchHistory';
 export { StatusContent } from './StatusContent';
 export { StatusEditHistory } from './StatusEditHistory';
+export { StatusStats } from './StatusStats';
 export { ThemeSelector } from './ThemeSelector';
 export { TrendingLinkCard, TrendingLinkCardSkeleton } from './TrendingLinkCard';
 export { TrendingTagCard, TrendingTagCardSkeleton } from './TrendingTagCard';

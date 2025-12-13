@@ -7,7 +7,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useStatus, useStatusContext } from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
 import { PostCard } from '@/components/organisms';
-import { PostCardSkeleton } from '@/components/molecules';
+import { PostCardSkeleton, StatusStats } from '@/components/molecules';
 import { Button, IconButton, TextSkeleton } from '@/components/atoms';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
 
@@ -117,6 +117,15 @@ export default function StatusPage({
         {/* Main status (highlighted) */}
         <HighlightedPost>
           <PostCard status={status} showEditHistory={true} />
+          {/* Clickable statistics - separate from action buttons */}
+          <StatusStatsWrapper>
+            <StatusStats
+              statusId={status.id}
+              favouritesCount={status.favourites_count}
+              reblogsCount={status.reblogs_count}
+              quotesCount={status.quotes_count}
+            />
+          </StatusStatsWrapper>
         </HighlightedPost>
 
         {/* Reply Composer - Comment Box Style */}
@@ -192,6 +201,10 @@ const HighlightedPost = styled.div`
   border-radius: var(--radius-3);
   overflow: hidden;
   margin-bottom: var(--size-3);
+`;
+
+const StatusStatsWrapper = styled.div`
+  padding: 0 var(--size-3);
 `;
 
 const RepliesHeader = styled.h2`
