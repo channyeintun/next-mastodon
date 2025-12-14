@@ -57,7 +57,7 @@ export default function NewConversationPage() {
 
     const handleSelect = (account: Account) => {
         setSelectedAccount(account)
-        setMessageText(`@${account.acct} `)
+        setMessageText('')
         clearMedia()
     }
     const handleBack = () => {
@@ -74,7 +74,7 @@ export default function NewConversationPage() {
         if ((!messageText.trim() && media.length === 0) || !selectedAccount) return
         try {
             await createStatus.mutateAsync({
-                status: messageText,
+                status: `@${selectedAccount.acct} ${messageText}`,
                 visibility: 'direct',
                 media_ids: media.length > 0 ? media.map(m => m.id) : undefined,
             })
