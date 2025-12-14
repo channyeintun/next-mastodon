@@ -2,7 +2,7 @@
 
 import styled from '@emotion/styled'
 import { useRouter } from 'next/navigation'
-import { useQueryClient, type InfiniteData } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import { Trash2 } from 'lucide-react'
 import { Avatar } from '../atoms/Avatar'
 import { EmojiText } from '../atoms/EmojiText'
@@ -49,20 +49,21 @@ export function ConversationCard({ conversation, style }: ConversationCardProps)
     // Optimistic update: immediately mark as read in cache
     if (conversation.unread) {
       // Store previous data for rollback
-      const previousData = queryClient.getQueryData<InfiniteData<Conversation[]>>(queryKeys.conversations.list())
+      const previousData = queryClient.getQueryData(queryKeys.conversations.list())
 
-      // Optimistically update cache
-      queryClient.setQueryData<InfiniteData<Conversation[]>>(
+      // Optimistically update cache - handle PaginatedResponse structure
+      queryClient.setQueryData(
         queryKeys.conversations.list(),
-        (old) => {
+        (old: { pages: { data: Conversation[], nextMaxId?: string }[], pageParams: unknown[] } | undefined) => {
           if (!old) return old
           return {
             ...old,
-            pages: old.pages.map(page =>
-              page.map(conv =>
+            pages: old.pages.map(page => ({
+              ...page,
+              data: page.data.map(conv =>
                 conv.id === conversation.id ? { ...conv, unread: false } : conv
               )
-            ),
+            })),
           }
         }
       )
