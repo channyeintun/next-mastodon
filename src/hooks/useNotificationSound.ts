@@ -22,13 +22,15 @@ class NotificationSound {
         });
     }
 
-    async play(): Promise<void> {
-        try {
-            await this.audio.play();
-        } catch (error) {
-            // Silently ignore autoplay errors (e.g., user hasn't interacted with the page yet)
-            console.debug('Audio play was prevented:', error);
-        }
+    play(): Promise<void> {
+        return new Promise((resolve) => {
+            this.audio.addEventListener('ended', () => resolve(), { once: true });
+            this.audio.play().catch((error) => {
+                // Silently ignore autoplay errors (e.g., user hasn't interacted with the page yet)
+                console.debug('Audio play was prevented:', error);
+                resolve();
+            });
+        });
     }
 
     destroy(): void {
