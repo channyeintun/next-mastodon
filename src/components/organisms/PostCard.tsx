@@ -28,6 +28,7 @@ interface PostCardProps {
   hideActions?: boolean;
   showEditHistory?: boolean;
   onDeleteSuccess?: () => void;
+  id?: string;
 }
 
 /**
@@ -40,6 +41,7 @@ export function PostCard({
   hideActions = false,
   showEditHistory = false,
   onDeleteSuccess,
+  id,
 }: PostCardProps) {
   const { openModal, closeModal } = useGlobalModal();
 
@@ -114,7 +116,7 @@ export function PostCard({
   };
 
   return (
-    <Card as="article" padding="medium" style={style} onClick={handleCardClick}>
+    <Card as="article" padding="medium" style={style} onClick={handleCardClick} id={id}>
       {/* Reblog indicator */}
       {isReblog && <ReblogIndicator account={status.account} />}
 

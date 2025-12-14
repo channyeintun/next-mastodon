@@ -1,7 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { use } from 'react';
+import { use, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { useStatus, useStatusContext } from '@/api';
@@ -41,6 +41,20 @@ export default function StatusPage({
 
   const isLoading = statusLoading || contextLoading;
   const isError = statusError || contextError;
+
+  // Scroll to main post after content loads
+  // Must be before early returns to follow Rules of Hooks
+  useEffect(() => {
+    if (status && !isLoading) {
+      const mainPost = document.getElementById('main-post');
+      if (mainPost) {
+        // Scroll with a slight delay to ensure layout is complete
+        setTimeout(() => {
+          mainPost.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  }, [status, isLoading]);
 
   if (isLoading) {
     return (
@@ -122,6 +136,7 @@ export default function StatusPage({
         {/* Main status (highlighted) */}
         <HighlightedPost>
           <PostCard
+            id="main-post"
             status={status}
             showEditHistory
             onDeleteSuccess={handlePostDeleted}
