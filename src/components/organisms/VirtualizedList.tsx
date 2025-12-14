@@ -165,7 +165,7 @@ export function VirtualizedList<T>({
 
   // Handle scroll to top
   const handleScrollToTop = () => {
-    virtualizer.scrollToIndex(0, { behavior: 'smooth' });
+    parentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
     hideScrollTop();
   };
 
