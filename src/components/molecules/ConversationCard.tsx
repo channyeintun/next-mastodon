@@ -130,7 +130,7 @@ export function ConversationCard({ conversation, style }: ConversationCardProps)
           aria-label="Delete conversation"
           disabled={deleteConversation.isPending}
           style={{
-            color: 'var(--red-9)',
+            color: 'var(--text-2)',
             background: 'var(--surface-1)',
             border: '1px solid var(--surface-3)',
           }}

@@ -110,7 +110,7 @@ export const SendButton = styled(IconButton) <{ $active: boolean }>`
 `
 
 export const DeleteButton = styled(IconButton)`
-  color: var(--red-9);
+  color: var(--text-2);
 `
 
 export const CenteredContent = styled.div`
