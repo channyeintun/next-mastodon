@@ -37,7 +37,7 @@ export default function NotificationRequestsPage() {
     }
 
     // Flatten pages into single array
-    const allRequests: NotificationRequest[] = data?.pages.flatMap(page => page) ?? [];
+    const allRequests: NotificationRequest[] = data?.pages.flatMap(page => page.data) ?? [];
 
     const handleLoadMore = () => {
         if (hasNextPage && !isFetchingNextPage) {

@@ -74,10 +74,7 @@ export const infiniteHomeTimelineOptions = () =>
       if (pageParam) params.max_id = pageParam
       return getHomeTimeline(params, signal)
     },
-    getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
   })
 
@@ -95,10 +92,7 @@ export const infiniteHashtagTimelineOptions = (hashtag: string) =>
       if (pageParam) params.max_id = pageParam
       return getHashtagTimeline(hashtag, params, signal)
     },
-    getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
   })
 
@@ -135,10 +129,7 @@ export const infiniteFavouritedByOptions = (id: string) =>
       if (pageParam) params.max_id = pageParam
       return getFavouritedBy(id, params, signal)
     },
-    getNextPageParam: (lastPage: Account[]) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
   })
 
@@ -150,10 +141,7 @@ export const infiniteRebloggedByOptions = (id: string) =>
       if (pageParam) params.max_id = pageParam
       return getRebloggedBy(id, params, signal)
     },
-    getNextPageParam: (lastPage: Account[]) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
   })
 
@@ -165,10 +153,7 @@ export const infiniteStatusQuotesOptions = (id: string) =>
       if (pageParam) params.max_id = pageParam
       return getStatusQuotes(id, params, signal)
     },
-    getNextPageParam: (lastPage: Status[]) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
   })
 
@@ -205,10 +190,7 @@ export const infiniteAccountStatusesOptions = (id: string) =>
       if (pageParam) params.max_id = pageParam
       return getAccountStatuses(id, params, signal)
     },
-    getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
   })
 
@@ -229,10 +211,7 @@ export const infiniteAccountStatusesWithFiltersOptions = (
       if (pageParam) params.max_id = pageParam
       return getAccountStatuses(id, params, signal)
     },
-    getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
   })
 
@@ -256,10 +235,7 @@ export const infiniteFollowersOptions = (id: string) =>
       if (pageParam) params.max_id = pageParam
       return getFollowers(id, params, signal)
     },
-    getNextPageParam: (lastPage: Account[]) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
   })
 
@@ -277,10 +253,7 @@ export const infiniteFollowingOptions = (id: string) =>
       if (pageParam) params.max_id = pageParam
       return getFollowing(id, params, signal)
     },
-    getNextPageParam: (lastPage: Account[]) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
   })
 
@@ -292,10 +265,7 @@ export const infiniteFollowRequestsOptions = () =>
       if (pageParam) params.max_id = pageParam
       return getFollowRequests(params, signal)
     },
-    getNextPageParam: (lastPage: Account[]) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
   })
 
@@ -320,10 +290,7 @@ export const infiniteBookmarksOptions = () =>
       if (pageParam) params.max_id = pageParam
       return getBookmarks(params, signal)
     },
-    getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
   })
 
@@ -434,10 +401,7 @@ export const infiniteNotificationsOptions = () =>
       if (pageParam) params.max_id = pageParam
       return getNotifications(params, signal)
     },
-    getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
     staleTime: 0, // Always refetch when mounting to get new notifications
   })
@@ -470,11 +434,19 @@ export const infiniteGroupedNotificationsOptions = (params?: Omit<GroupedNotific
       if (pageParam) queryParams.max_id = pageParam
       return getGroupedNotifications(queryParams, signal)
     },
-    getNextPageParam: (lastPage: GroupedNotificationsResults) => {
-      if (lastPage.notification_groups.length === 0) return undefined
-      // Use the most_recent_notification_id of the last group for pagination
-      const lastGroup = lastPage.notification_groups[lastPage.notification_groups.length - 1]
-      return lastGroup?.most_recent_notification_id
+    // When page_min_id === page_max_id on the last group, we've reached the end
+    // This means there's only one notification in that group's page range
+    getNextPageParam: (lastPage) => {
+      const groups = lastPage.data.notification_groups
+      if (groups.length === 0) return undefined
+
+      const lastGroup = groups.at(-1)
+      // If page_min_id equals page_max_id, we're at the last page boundary
+      if (lastGroup?.page_min_id && lastGroup.page_min_id === lastGroup.page_max_id) {
+        return undefined
+      }
+
+      return lastPage.nextMaxId
     },
     initialPageParam: undefined as string | undefined,
     staleTime: 0, // Always refetch when mounting to get new notifications
@@ -489,10 +461,7 @@ export const infiniteBlockedAccountsOptions = () =>
       if (pageParam) params.max_id = pageParam
       return getBlockedAccounts(params, signal)
     },
-    getNextPageParam: (lastPage: Account[]) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
   })
 
@@ -504,10 +473,7 @@ export const infiniteMutedAccountsOptions = () =>
       if (pageParam) params.max_id = pageParam
       return getMutedAccounts(params, signal)
     },
-    getNextPageParam: (lastPage: Account[]) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
   })
 
@@ -540,10 +506,7 @@ export const infiniteListAccountsOptions = (id: string) =>
       if (pageParam) params.max_id = pageParam
       return getListAccounts(id, params, signal)
     },
-    getNextPageParam: (lastPage: Account[]) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
   })
 
@@ -555,10 +518,7 @@ export const infiniteListTimelineOptions = (id: string) =>
       if (pageParam) params.max_id = pageParam
       return getListTimeline(id, params, signal)
     },
-    getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
   })
 
@@ -577,10 +537,7 @@ export const infiniteScheduledStatusesOptions = () =>
       if (pageParam) params.max_id = pageParam
       return getScheduledStatuses(params, signal)
     },
-    getNextPageParam: (lastPage: ScheduledStatus[]) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
   })
 
@@ -963,10 +920,7 @@ export const infiniteConversationsOptions = () =>
       if (pageParam) params.max_id = pageParam
       return getConversations(params, signal)
     },
-    getNextPageParam: (lastPage: Conversation[]) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
     staleTime: 0, // Always refetch to get new messages
   })
@@ -988,10 +942,7 @@ export const infiniteNotificationRequestsOptions = () =>
       if (pageParam) params.max_id = pageParam
       return getNotificationRequests(params, signal)
     },
-    getNextPageParam: (lastPage: NotificationRequest[]) => {
-      if (lastPage.length === 0) return undefined
-      return lastPage[lastPage.length - 1]?.id
-    },
+    getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
     staleTime: 0, // Always refetch to get latest requests
   })

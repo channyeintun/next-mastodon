@@ -42,10 +42,24 @@ export const uniqByKey = <T>(key: keyof T) =>
 
 /**
  * Flatten paginated data and deduplicate by ID
+ * Handles both array pages and PaginatedResponse pages (with data property)
  * Common pattern for infinite query results
  */
-export const flattenAndUniqById = <T extends { id: string }>(pages: T[][] | undefined): T[] => {
-  const flattened = pages ? flatten(pages) : []
+export const flattenAndUniqById = <T extends { id: string }>(pages: (T[] | { data: T[] })[] | undefined): T[] => {
+  if (!pages) return []
+
+  // Extract data from PaginatedResponse objects if present
+  // Use Array.isArray to reliably distinguish arrays from objects
+  const extractedPages: T[][] = pages.map(page => {
+    if (Array.isArray(page)) {
+      return page
+    }
+    // Must be PaginatedResponse with data property
+    return page.data
+  })
+
+  // Use native flat() for proper typing
+  const flattened = extractedPages.flat()
   return uniqBy((item: T) => item.id, flattened)
 }
 
@@ -60,10 +74,25 @@ export const flattenAndUniqByKey = <T>(key: keyof T) =>
 
 /**
  * Flatten paginated data without deduplication
+ * Handles both array pages and PaginatedResponse pages (with data property)
  * Use when data doesn't need deduplication (e.g., accounts, notifications)
  */
-export const flattenPages = <T>(pages: T[][] | undefined): T[] =>
-  pages ? (flatten(pages) as unknown as T[]) : []
+export const flattenPages = <T>(pages: (T[] | { data: T[] })[] | undefined): T[] => {
+  if (!pages) return []
+
+  // Extract data from PaginatedResponse objects if present
+  // Use Array.isArray to reliably distinguish arrays from objects
+  const extractedPages: T[][] = pages.map(page => {
+    if (Array.isArray(page)) {
+      return page
+    }
+    // Must be PaginatedResponse with data property
+    return page.data
+  })
+
+  // Use native flat() instead of Ramda's flatten for proper typing
+  return extractedPages.flat()
+}
 
 // ============================================================================
 // NESTED MAP HELPERS (for cache updates)

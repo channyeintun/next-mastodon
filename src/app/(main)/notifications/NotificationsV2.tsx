@@ -55,20 +55,22 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
 
         if (data?.pages) {
             for (const page of data.pages) {
-                for (const account of page.accounts) {
+                // Access data from PaginatedResponse
+                const pageData = page.data;
+                for (const account of pageData.accounts) {
                     accountsMap.set(account.id, account);
                 }
-                if (page.partial_accounts) {
-                    for (const account of page.partial_accounts) {
+                if (pageData.partial_accounts) {
+                    for (const account of pageData.partial_accounts) {
                         if (!accountsMap.has(account.id)) {
                             accountsMap.set(account.id, account);
                         }
                     }
                 }
-                for (const status of page.statuses) {
+                for (const status of pageData.statuses) {
                     statusesMap.set(status.id, status);
                 }
-                allGroups.push(...page.notification_groups);
+                allGroups.push(...pageData.notification_groups);
             }
         }
 

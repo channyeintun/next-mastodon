@@ -47,6 +47,15 @@ import type {
   UpdateListParams,
   UpdateNotificationPolicyParams,
 } from '../types/mastodon'
+import { getNextMaxId } from './parseLinkHeader'
+
+/**
+ * Response type for paginated endpoints that include Link header pagination
+ */
+export interface PaginatedResponse<T> {
+  data: T
+  nextMaxId?: string
+}
 
 
 
@@ -136,19 +145,28 @@ export async function getToken(
 }
 
 // Timelines
-export async function getHomeTimeline(params?: TimelineParams, signal?: AbortSignal): Promise<Status[]> {
-  const { data } = await api.get<Status[]>('/api/v1/timelines/home', { params, signal })
-  return data
+export async function getHomeTimeline(params?: TimelineParams, signal?: AbortSignal): Promise<PaginatedResponse<Status[]>> {
+  const response = await api.get<Status[]>('/api/v1/timelines/home', { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
-export async function getPublicTimeline(params?: TimelineParams, signal?: AbortSignal): Promise<Status[]> {
-  const { data } = await api.get<Status[]>('/api/v1/timelines/public', { params, signal })
-  return data
+export async function getPublicTimeline(params?: TimelineParams, signal?: AbortSignal): Promise<PaginatedResponse<Status[]>> {
+  const response = await api.get<Status[]>('/api/v1/timelines/public', { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
-export async function getHashtagTimeline(hashtag: string, params?: TimelineParams, signal?: AbortSignal): Promise<Status[]> {
-  const { data } = await api.get<Status[]>(`/api/v1/timelines/tag/${encodeURIComponent(hashtag)}`, { params, signal })
-  return data
+export async function getHashtagTimeline(hashtag: string, params?: TimelineParams, signal?: AbortSignal): Promise<PaginatedResponse<Status[]>> {
+  const response = await api.get<Status[]>(`/api/v1/timelines/tag/${encodeURIComponent(hashtag)}`, { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
 // Statuses
@@ -296,9 +314,12 @@ export async function getAccountStatuses(
   id: string,
   params?: TimelineParams,
   signal?: AbortSignal,
-): Promise<Status[]> {
-  const { data } = await api.get<Status[]>(`/api/v1/accounts/${id}/statuses`, { params, signal })
-  return data
+): Promise<PaginatedResponse<Status[]>> {
+  const response = await api.get<Status[]>(`/api/v1/accounts/${id}/statuses`, { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
 export async function getPinnedStatuses(id: string, signal?: AbortSignal): Promise<Status[]> {
@@ -309,14 +330,20 @@ export async function getPinnedStatuses(id: string, signal?: AbortSignal): Promi
   return data
 }
 
-export async function getFollowers(id: string, params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<Account[]> {
-  const { data } = await api.get<Account[]>(`/api/v1/accounts/${id}/followers`, { params, signal })
-  return data
+export async function getFollowers(id: string, params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<PaginatedResponse<Account[]>> {
+  const response = await api.get<Account[]>(`/api/v1/accounts/${id}/followers`, { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
-export async function getFollowing(id: string, params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<Account[]> {
-  const { data } = await api.get<Account[]>(`/api/v1/accounts/${id}/following`, { params, signal })
-  return data
+export async function getFollowing(id: string, params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<PaginatedResponse<Account[]>> {
+  const response = await api.get<Account[]>(`/api/v1/accounts/${id}/following`, { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
 export async function followAccount(id: string): Promise<Relationship> {
@@ -342,9 +369,12 @@ export async function getRelationships(ids: string[], signal?: AbortSignal): Pro
 }
 
 // Follow Requests
-export async function getFollowRequests(params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<Account[]> {
-  const { data } = await api.get<Account[]>('/api/v1/follow_requests', { params, signal })
-  return data
+export async function getFollowRequests(params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<PaginatedResponse<Account[]>> {
+  const response = await api.get<Account[]>('/api/v1/follow_requests', { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
 export async function acceptFollowRequest(id: string): Promise<Relationship> {
@@ -367,9 +397,12 @@ export async function unblockAccount(id: string): Promise<Relationship> {
   return data
 }
 
-export async function getBlockedAccounts(params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<Account[]> {
-  const { data } = await api.get<Account[]>('/api/v1/blocks', { params, signal })
-  return data
+export async function getBlockedAccounts(params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<PaginatedResponse<Account[]>> {
+  const response = await api.get<Account[]>('/api/v1/blocks', { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
 // Mute/Unmute Accounts
@@ -383,15 +416,21 @@ export async function unmuteAccount(id: string): Promise<Relationship> {
   return data
 }
 
-export async function getMutedAccounts(params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<Account[]> {
-  const { data } = await api.get<Account[]>('/api/v1/mutes', { params, signal })
-  return data
+export async function getMutedAccounts(params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<PaginatedResponse<Account[]>> {
+  const response = await api.get<Account[]>('/api/v1/mutes', { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
 // Bookmarks
-export async function getBookmarks(params?: TimelineParams, signal?: AbortSignal): Promise<Status[]> {
-  const { data } = await api.get<Status[]>('/api/v1/bookmarks', { params, signal })
-  return data
+export async function getBookmarks(params?: TimelineParams, signal?: AbortSignal): Promise<PaginatedResponse<Status[]>> {
+  const response = await api.get<Status[]>('/api/v1/bookmarks', { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
 // Search
@@ -469,9 +508,12 @@ export async function getTrendingLinks(params?: { limit?: number; offset?: numbe
 }
 
 // Notifications (v1)
-export async function getNotifications(params?: NotificationParams, signal?: AbortSignal): Promise<Notification[]> {
-  const { data } = await api.get<Notification[]>('/api/v1/notifications', { params, signal })
-  return data
+export async function getNotifications(params?: NotificationParams, signal?: AbortSignal): Promise<PaginatedResponse<Notification[]>> {
+  const response = await api.get<Notification[]>('/api/v1/notifications', { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
 export async function getNotification(id: string, signal?: AbortSignal): Promise<Notification> {
@@ -496,9 +538,12 @@ export async function getUnreadNotificationCount(signal?: AbortSignal): Promise<
 export async function getGroupedNotifications(
   params?: GroupedNotificationParams,
   signal?: AbortSignal
-): Promise<GroupedNotificationsResults> {
-  const { data } = await api.get<GroupedNotificationsResults>('/api/v2/notifications', { params, signal })
-  return data
+): Promise<PaginatedResponse<GroupedNotificationsResults>> {
+  const response = await api.get<GroupedNotificationsResults>('/api/v2/notifications', { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
 export async function dismissNotificationGroup(groupKey: string): Promise<void> {
@@ -570,9 +615,12 @@ export async function deleteList(id: string): Promise<void> {
   await api.delete(`/api/v1/lists/${id}`)
 }
 
-export async function getListAccounts(id: string, params?: { max_id?: string; since_id?: string; limit?: number }, signal?: AbortSignal): Promise<Account[]> {
-  const { data } = await api.get<Account[]>(`/api/v1/lists/${id}/accounts`, { params, signal })
-  return data
+export async function getListAccounts(id: string, params?: { max_id?: string; since_id?: string; limit?: number }, signal?: AbortSignal): Promise<PaginatedResponse<Account[]>> {
+  const response = await api.get<Account[]>(`/api/v1/lists/${id}/accounts`, { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
 export async function addAccountsToList(listId: string, accountIds: string[]): Promise<void> {
@@ -583,9 +631,12 @@ export async function removeAccountsFromList(listId: string, accountIds: string[
   await api.delete(`/api/v1/lists/${listId}/accounts`, { data: { account_ids: accountIds } })
 }
 
-export async function getListTimeline(id: string, params?: TimelineParams, signal?: AbortSignal): Promise<Status[]> {
-  const { data } = await api.get<Status[]>(`/api/v1/timelines/list/${id}`, { params, signal })
-  return data
+export async function getListTimeline(id: string, params?: TimelineParams, signal?: AbortSignal): Promise<PaginatedResponse<Status[]>> {
+  const response = await api.get<Status[]>(`/api/v1/timelines/list/${id}`, { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
 export async function getAccountLists(accountId: string, signal?: AbortSignal): Promise<List[]> {
@@ -635,25 +686,37 @@ export async function getStatusSource(id: string, signal?: AbortSignal): Promise
   return data
 }
 
-export async function getFavouritedBy(id: string, params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<Account[]> {
-  const { data } = await api.get<Account[]>(`/api/v1/statuses/${id}/favourited_by`, { params, signal })
-  return data
+export async function getFavouritedBy(id: string, params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<PaginatedResponse<Account[]>> {
+  const response = await api.get<Account[]>(`/api/v1/statuses/${id}/favourited_by`, { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
-export async function getRebloggedBy(id: string, params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<Account[]> {
-  const { data } = await api.get<Account[]>(`/api/v1/statuses/${id}/reblogged_by`, { params, signal })
-  return data
+export async function getRebloggedBy(id: string, params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<PaginatedResponse<Account[]>> {
+  const response = await api.get<Account[]>(`/api/v1/statuses/${id}/reblogged_by`, { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
-export async function getStatusQuotes(id: string, params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<Status[]> {
-  const { data } = await api.get<Status[]>(`/api/v1/statuses/${id}/quotes`, { params, signal })
-  return data
+export async function getStatusQuotes(id: string, params?: { max_id?: string; limit?: number }, signal?: AbortSignal): Promise<PaginatedResponse<Status[]>> {
+  const response = await api.get<Status[]>(`/api/v1/statuses/${id}/quotes`, { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
 // Scheduled Statuses
-export async function getScheduledStatuses(params?: { min_id?: string; max_id?: string; limit?: number }, signal?: AbortSignal): Promise<ScheduledStatus[]> {
-  const { data } = await api.get<ScheduledStatus[]>('/api/v1/scheduled_statuses', { params, signal })
-  return data
+export async function getScheduledStatuses(params?: { min_id?: string; max_id?: string; limit?: number }, signal?: AbortSignal): Promise<PaginatedResponse<ScheduledStatus[]>> {
+  const response = await api.get<ScheduledStatus[]>('/api/v1/scheduled_statuses', { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
 export async function getScheduledStatus(id: string, signal?: AbortSignal): Promise<ScheduledStatus> {
@@ -671,9 +734,12 @@ export async function deleteScheduledStatus(id: string): Promise<void> {
 }
 
 // Conversations (Direct Messages)
-export async function getConversations(params?: ConversationParams, signal?: AbortSignal): Promise<Conversation[]> {
-  const { data } = await api.get<Conversation[]>('/api/v1/conversations', { params, signal })
-  return data
+export async function getConversations(params?: ConversationParams, signal?: AbortSignal): Promise<PaginatedResponse<Conversation[]>> {
+  const response = await api.get<Conversation[]>('/api/v1/conversations', { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
 export async function deleteConversation(id: string): Promise<void> {
@@ -689,9 +755,12 @@ export async function markConversationAsRead(id: string): Promise<Conversation> 
 export async function getNotificationRequests(
   params?: NotificationRequestParams,
   signal?: AbortSignal
-): Promise<NotificationRequest[]> {
-  const { data } = await api.get<NotificationRequest[]>('/api/v1/notifications/requests', { params, signal })
-  return data
+): Promise<PaginatedResponse<NotificationRequest[]>> {
+  const response = await api.get<NotificationRequest[]>('/api/v1/notifications/requests', { params, signal })
+  return {
+    data: response.data,
+    nextMaxId: getNextMaxId(response.headers.link),
+  }
 }
 
 export async function getNotificationRequest(id: string, signal?: AbortSignal): Promise<NotificationRequest> {

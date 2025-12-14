@@ -17,7 +17,7 @@ export default function ConversationsPage() {
   // Enable real-time conversation updates
   useConversationStream()
 
-  const allConversations = data?.pages.flatMap(page => page) ?? []
+  const allConversations = data?.pages.flatMap(page => page.data) ?? []
 
   if (isLoading) {
     return (
