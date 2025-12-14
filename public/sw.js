@@ -139,12 +139,75 @@ self.addEventListener('fetch', (event) => {
     );
 });
 
+/**
+ * Build the correct URL for a notification based on its type.
+ * @param {Object} data - The notification data from push payload
+ * @returns {string} The URL to navigate to
+ */
+function buildNotificationUrl(data) {
+    const type = data.notification_type || data.type;
+
+    // Status-related notifications → go to status page
+    if (['mention', 'reply', 'favourite', 'reblog', 'poll', 'status', 'update', 'emoji_reaction'].includes(type)) {
+        const statusId = data.status_id || data.status?.id;
+        if (statusId) {
+            return `/statuses/${statusId}`;
+        }
+    }
+
+    // Account-related notifications → go to profile page
+    if (['follow', 'follow_request', 'admin.sign_up'].includes(type)) {
+        const acct = data.account_acct || data.account?.acct;
+        if (acct) {
+            return `/@${acct}`;
+        }
+    }
+
+    // Report notifications → admin page
+    if (type === 'admin.report') {
+        return '/notifications';
+    }
+
+    // Severed relationships notification
+    if (type === 'severed_relationships') {
+        return '/notifications';
+    }
+
+    // If a direct URL was provided, use it
+    if (data.url || data.notification_url) {
+        return data.url || data.notification_url;
+    }
+
+    // Default fallback
+    return '/notifications';
+}
+
+/**
+ * Find the best client to focus (focused > visible > any).
+ * @param {Array} clients - List of window clients
+ * @returns {WindowClient|undefined}
+ */
+const findBestClient = (clients) => {
+    const focusedClient = clients.find(client => client.focused);
+    const visibleClient = clients.find(client => client.visibilityState === 'visible');
+    return focusedClient || visibleClient || clients[0];
+};
+
+/**
+ * Strip HTML tags from a string.
+ * @param {string} html 
+ * @returns {string}
+ */
+const htmlToPlainText = (html) => {
+    if (!html) return '';
+    return html.replace(/<br\s*\/?>/g, '\n').replace(/<\/p><p>/g, '\n\n').replace(/<[^>]*>/g, '');
+};
+
 // Push notification event - handle incoming push messages from Mastodon
 self.addEventListener('push', (event) => {
     if (!event.data) return;
 
     event.waitUntil(
-        // Check if any app window is focused before showing notification
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
             // Skip notification if app is already focused (user will see it in-app)
             const isAppFocused = clientList.some(client => client.focused);
@@ -155,20 +218,38 @@ self.addEventListener('push', (event) => {
             try {
                 const data = event.data.json();
 
+                // Build the correct URL based on notification type
+                const targetUrl = buildNotificationUrl(data);
+
+                // Format body text (strip HTML if present)
+                let body = data.body || data.message || 'New notification';
+                if (data.status && data.status.content) {
+                    body = htmlToPlainText(data.status.content);
+                }
+
                 // Mastodon sends notifications in a specific format
                 const options = {
-                    body: data.body || data.message || 'New notification',
-                    icon: data.icon || '/icons/icon-192.png',
+                    body: body,
+                    icon: data.icon || data.account?.avatar_static || '/icons/icon-192.png',
                     badge: '/icons/icon-192.png',
                     tag: data.notification_id || data.tag || 'mastodon-notification',
                     data: {
-                        url: data.url || data.notification_url || '/',
+                        url: targetUrl,
                         notification_id: data.notification_id,
                         type: data.notification_type || data.type,
+                        // Store additional data for potential future use
+                        status_id: data.status_id || data.status?.id,
+                        account_id: data.account_id || data.account?.id,
+                        account_acct: data.account_acct || data.account?.acct,
                     },
                     vibrate: [100, 50, 100],
                     requireInteraction: false,
                 };
+
+                // Add image if available (e.g. from media attachments)
+                if (data.status && data.status.media_attachments && data.status.media_attachments.length > 0) {
+                    options.image = data.status.media_attachments[0].preview_url;
+                }
 
                 const title = data.title || 'Mastodon';
 
@@ -180,6 +261,7 @@ self.addEventListener('push', (event) => {
                     body: 'You have a new notification',
                     icon: '/icons/icon-192.png',
                     badge: '/icons/icon-192.png',
+                    data: { url: '/notifications' },
                 });
             }
         })
@@ -190,7 +272,14 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
 
-    const url = event.notification.data?.url || '/notifications';
+    const notificationData = event.notification.data || {};
+
+    // Use stored URL, or rebuild from stored data if needed
+    let url = notificationData.url;
+    if (!url || url === '/') {
+        // Try to rebuild URL from stored notification data
+        url = buildNotificationUrl(notificationData);
+    }
 
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
@@ -202,6 +291,7 @@ self.addEventListener('notificationclick', (event) => {
                     return;
                 }
             }
+
             // If no existing window, open a new one
             if (clients.openWindow) {
                 return clients.openWindow(url);
