@@ -18,11 +18,11 @@ export const Header = styled.div`
   align-items: center;
   gap: var(--size-3);
   padding: var(--size-4);
-  border-bottom: 1px solid var(--surface-3);
   background: var(--surface-1);
   position: sticky;
   top: 0;
   z-index: 10;
+  box-shadow: var(--shadow-2);
 `
 
 export const HeaderInfo = styled.div`
@@ -66,7 +66,6 @@ export const EmptyState = styled.div`
 `
 
 export const InputContainer = styled.div`
-  border-top: 1px solid var(--surface-3);
   background: var(--surface-1);
   padding: var(--size-4);
   display: flex;
@@ -75,6 +74,7 @@ export const InputContainer = styled.div`
   position: sticky;
   bottom: 0;
   z-index: 10;
+  box-shadow: var(--shadow-2);
 
   @media (max-width: 767px) {
     padding-bottom: calc(64px + var(--size-2));

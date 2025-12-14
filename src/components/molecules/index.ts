@@ -4,6 +4,7 @@ export { AuthModalBridge } from './AuthModalBridge';
 export { ComposerToolbar } from './ComposerToolbar';
 export { ContentWarningSection } from './ContentWarningSection';
 export { ConversationCard } from './ConversationCard';
+export { ConversationCardSkeleton } from './ConversationCardSkeleton';
 export { DeletePostModal } from './DeletePostModal';
 export { GroupedNotificationCard } from './GroupedNotificationCard';
 export { HandleExplainer } from './HandleExplainer';

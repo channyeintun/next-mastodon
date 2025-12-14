@@ -173,16 +173,20 @@ const MediaAudio = styled.audio`
 const Bubble = styled.div<{ $isOwn: boolean }>`
   padding: var(--size-3) var(--size-4);
   border-radius: ${props => props.$isOwn ? '20px 20px 4px 20px' : '20px 20px 20px 4px'};
-  background: ${props => props.$isOwn ? 'var(--blue-9)' : 'var(--surface-3)'};
-  color: ${props => props.$isOwn ? 'white' : 'var(--text-1)'};
+  background: ${props => props.$isOwn ? 'var(--blue-7)' : 'var(--surface-3)'};
+  color: ${props => props.$isOwn ? 'var(--stone-0)' : 'var(--text-1)'};
   word-break: break-word;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-1);
 
-  /* Override link colors for own messages */
+  /* Override all text and link colors for own messages */
   ${props => props.$isOwn && `
     a {
-      color: white;
+      color: var(--stone-0) !important;
       text-decoration: underline;
+    }
+
+    p, span, div {
+      color: var(--stone-0) !important;
     }
   `}
 `

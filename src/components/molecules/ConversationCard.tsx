@@ -148,14 +148,16 @@ const ChatListItem = styled.div<{ $unread?: boolean }>`
   align-items: center;
   gap: var(--size-3);
   padding: var(--size-3) var(--size-4);
-  background: transparent;
+  margin: var(--size-2) var(--size-3);
+  background: var(--surface-2);
   cursor: pointer;
   transition: background 0.15s ease;
   position: relative;
-  border-bottom: 1px solid var(--surface-3);
+  border-radius: 8px;
+  box-shadow: var(--shadow-1);
 
   &:hover {
-    background: var(--surface-2);
+    background: var(--surface-3);
   }
 
   &:hover .delete-button {
@@ -164,7 +166,7 @@ const ChatListItem = styled.div<{ $unread?: boolean }>`
   }
 
   &:active {
-    background: var(--surface-3);
+    background: var(--surface-4);
   }
 `
 

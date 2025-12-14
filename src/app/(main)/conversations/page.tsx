@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { Mail, Edit } from 'lucide-react'
 import { useConversations } from '@/api/queries'
 import { ConversationCard } from '@/components/molecules/ConversationCard'
-import { Spinner } from '@/components/atoms/Spinner'
+import { ConversationCardSkeleton } from '@/components/molecules/ConversationCardSkeleton'
 import { VirtualizedList } from '@/components/organisms/VirtualizedList'
 import { useConversationStream } from '@/hooks/useStreaming'
 import { IconButton } from '@/components/atoms/IconButton'
@@ -21,27 +21,26 @@ export default function ConversationsPage() {
 
   if (isLoading) {
     return (
-      <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0 }}>
+      <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0, background: 'var(--surface-1)' }}>
         {/* Header */}
         <div style={{
-          background: 'var(--surface-1)',
           zIndex: 10,
           padding: 'var(--size-4)',
-          marginBottom: 'var(--size-4)',
-          borderBottom: '1px solid var(--surface-3)',
           flexShrink: 0,
         }}>
           <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
             Direct Messages
           </h1>
           <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-            Your private conversations
+            Loading conversations...
           </p>
         </div>
 
-        {/* Loading */}
-        <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--size-8)' }}>
-          <Spinner />
+        {/* Skeleton Loaders */}
+        <div>
+          {Array.from({ length: 10 }).map((_, index) => (
+            <ConversationCardSkeleton key={index} />
+          ))}
         </div>
       </div>
     )
@@ -49,14 +48,11 @@ export default function ConversationsPage() {
 
   if (error) {
     return (
-      <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0 }}>
+      <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0, background: 'var(--surface-1)' }}>
         {/* Header */}
         <div style={{
-          background: 'var(--surface-1)',
           zIndex: 10,
           padding: 'var(--size-4)',
-          marginBottom: 'var(--size-4)',
-          borderBottom: '1px solid var(--surface-3)',
           flexShrink: 0,
         }}>
           <h1 style={{ fontSize: 'var(--font-size-4)' }}>
@@ -77,14 +73,11 @@ export default function ConversationsPage() {
   }
 
   return (
-    <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0 }}>
+    <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0, background: 'var(--surface-1)' }}>
       {/* Header */}
       <div style={{
-        background: 'var(--surface-1)',
         zIndex: 10,
         padding: 'var(--size-4)',
-        marginBottom: 'var(--size-4)',
-        borderBottom: '1px solid var(--surface-3)',
         flexShrink: 0,
         display: 'flex',
         justifyContent: 'space-between',
