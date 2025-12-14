@@ -10,7 +10,7 @@ import { useQueryClient, type InfiniteData } from '@tanstack/react-query'
 import { getStreamingStore } from '../stores/streamingStore'
 import { getConversationStore } from '../stores/conversationStore'
 import { useInstance } from '../api/queries'
-import { markConversationAsRead } from '../api/client'
+import { markConversationAsRead, type PaginatedResponse } from '../api/client'
 import { useAuthStore } from './useStores'
 import { useNotificationSound } from './useNotificationSound'
 import { queryKeys } from '../api/queryKeys'
@@ -37,24 +37,24 @@ export function useNotificationStream() {
 
         // Only update notifications cache if it already exists (user has visited the page)
         // If no cache exists, don't create one - let the page fetch fresh data with proper loading
-        const existingData = queryClient.getQueryData<InfiniteData<Notification[]>>(
+        const existingData = queryClient.getQueryData<InfiniteData<PaginatedResponse<Notification[]>>>(
             queryKeys.notifications.list()
         )
 
         if (existingData?.pages) {
             // Check if notification already exists
             const exists = existingData.pages.some(page =>
-                page.some(n => n.id === notification.id)
+                page.data.some(n => n.id === notification.id)
             )
 
             if (!exists) {
                 // Prepend to first page
-                queryClient.setQueryData<InfiniteData<Notification[]>>(
+                queryClient.setQueryData<InfiniteData<PaginatedResponse<Notification[]>>>(
                     queryKeys.notifications.list(),
                     {
                         ...existingData,
                         pages: [
-                            [notification, ...existingData.pages[0]],
+                            { ...existingData.pages[0], data: [notification, ...existingData.pages[0].data] },
                             ...existingData.pages.slice(1)
                         ],
                     }
@@ -120,37 +120,37 @@ export function useConversationStream() {
         playNotificationSound();
 
         // Only update conversations cache if it already exists
-        const existingData = queryClient.getQueryData<InfiniteData<Conversation[]>>(
+        const existingData = queryClient.getQueryData<InfiniteData<PaginatedResponse<Conversation[]>>>(
             queryKeys.conversations.list()
         )
 
         if (existingData?.pages) {
             // Check if conversation already exists
             const pageIndex = existingData.pages.findIndex(page =>
-                page.some(c => c.id === conversation.id)
+                page.data.some(c => c.id === conversation.id)
             )
 
             if (pageIndex >= 0) {
                 // Update existing conversation
-                queryClient.setQueryData<InfiniteData<Conversation[]>>(
+                queryClient.setQueryData<InfiniteData<PaginatedResponse<Conversation[]>>>(
                     queryKeys.conversations.list(),
                     {
                         ...existingData,
                         pages: existingData.pages.map((page, idx) =>
                             idx === pageIndex
-                                ? page.map(c => c.id === conversation.id ? conversation : c)
+                                ? { ...page, data: page.data.map(c => c.id === conversation.id ? conversation : c) }
                                 : page
                         ),
                     }
                 )
             } else {
                 // Prepend new conversation to first page
-                queryClient.setQueryData<InfiniteData<Conversation[]>>(
+                queryClient.setQueryData<InfiniteData<PaginatedResponse<Conversation[]>>>(
                     queryKeys.conversations.list(),
                     {
                         ...existingData,
                         pages: [
-                            [conversation, ...existingData.pages[0]],
+                            { ...existingData.pages[0], data: [conversation, ...existingData.pages[0].data] },
                             ...existingData.pages.slice(1)
                         ],
                     }
@@ -173,13 +173,14 @@ export function useConversationStream() {
 
             // Update the conversation in the list cache to show as read
             if (existingData?.pages) {
-                queryClient.setQueryData<InfiniteData<Conversation[]>>(
+                queryClient.setQueryData<InfiniteData<PaginatedResponse<Conversation[]>>>(
                     queryKeys.conversations.list(),
                     {
                         ...existingData,
-                        pages: existingData.pages.map(page =>
-                            page.map(c => c.id === conversation.id ? updatedConversation : c)
-                        ),
+                        pages: existingData.pages.map(page => ({
+                            ...page,
+                            data: page.data.map(c => c.id === conversation.id ? updatedConversation : c)
+                        })),
                     }
                 )
             }

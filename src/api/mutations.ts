@@ -50,9 +50,10 @@ import {
   createPushSubscription,
   updatePushSubscription,
   deletePushSubscription,
+  type PaginatedResponse,
 } from './client'
 import { queryKeys } from './queryKeys'
-import { mapPages, findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
+import { findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
 import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams, CreatePushSubscriptionParams, UpdatePushSubscriptionParams } from '../types/mastodon'
 
 
@@ -94,8 +95,8 @@ function findStatusInCaches(
   const foundInTrending = findStatusInPages(statusId)(trendingData?.pages)
   if (foundInTrending) return foundInTrending
 
-  // 3. Try timelines
-  const timelines = queryClient.getQueriesData<InfiniteData<Status[]>>({
+  // 3. Try timelines (now PaginatedResponse structure)
+  const timelines = queryClient.getQueriesData<InfiniteData<PaginatedResponse<Status[]>>>({
     predicate: (query) => {
       const key = query.queryKey as readonly unknown[]
       return key[0] === 'timelines'
@@ -103,17 +104,17 @@ function findStatusInCaches(
   })
 
   const foundInTimelines = findFirstNonNil(
-    timelines.map(([_, data]) => findStatusInPages(statusId)(data?.pages))
+    timelines.map(([_, data]) => findStatusInPages(statusId)(data?.pages?.map(p => p.data)))
   )
   if (foundInTimelines) return foundInTimelines
 
-  // 4. Try bookmarks
-  const bookmarks = queryClient.getQueryData<InfiniteData<Status[]>>(queryKeys.bookmarks.all())
-  const foundInBookmarks = findStatusInPages(statusId)(bookmarks?.pages)
+  // 4. Try bookmarks (now PaginatedResponse structure)
+  const bookmarks = queryClient.getQueryData<InfiniteData<PaginatedResponse<Status[]>>>(queryKeys.bookmarks.all())
+  const foundInBookmarks = findStatusInPages(statusId)(bookmarks?.pages?.map(p => p.data))
   if (foundInBookmarks) return foundInBookmarks
 
-  // 5. Try account statuses
-  const accounts = queryClient.getQueriesData<InfiniteData<Status[]>>({ queryKey: ['accounts'] })
+  // 5. Try account statuses (now PaginatedResponse structure)
+  const accounts = queryClient.getQueriesData<InfiniteData<PaginatedResponse<Status[]>>>({ queryKey: ['accounts'] })
   for (const [key, data] of accounts) {
     // Check if it's a pinned statuses query (flat array)
     if (Array.isArray(key) && key[2] === 'pinned_statuses') {
@@ -125,27 +126,30 @@ function findStatusInCaches(
       continue
     }
 
-    // Regular account timeline (InfiniteData)
-    const foundInAccount = findStatusInPages(statusId)(data?.pages)
+    // Regular account timeline (InfiniteData with PaginatedResponse)
+    const foundInAccount = findStatusInPages(statusId)(data?.pages?.map(p => p.data))
     if (foundInAccount) return foundInAccount
   }
 
   return undefined
 }
 
-// Helper to update InfiniteData cache with status pages
+// Helper to update InfiniteData cache with status pages (PaginatedResponse structure)
 function updateInfiniteStatusCache(
   queryClient: QueryClient,
   queryOptions: Parameters<QueryClient['setQueriesData']>[0],
-  updateFn: (pages: Status[][]) => Status[][]
+  updateFn: (statuses: Status[]) => Status[]
 ) {
-  queryClient.setQueriesData<InfiniteData<Status[]>>(
+  queryClient.setQueriesData<InfiniteData<PaginatedResponse<Status[]>>>(
     queryOptions,
     (old) => {
       if (!old?.pages) return old
       return {
         ...old,
-        pages: updateFn(old.pages),
+        pages: old.pages.map(page => ({
+          ...page,
+          data: updateFn(page.data),
+        })),
       }
     }
   )
@@ -157,9 +161,9 @@ function updateStatusInCaches(
   statusId: string,
   updateFn: (status: Status) => Status
 ) {
-  const updateStatusPage = mapPages((status: Status) =>
-    updateStatusOrReblog(status, statusId, updateFn)
-  )
+  // Create a simple function to update statuses in an array
+  const updateStatuses = (statuses: Status[]) =>
+    statuses.map((status) => updateStatusOrReblog(status, statusId, updateFn))
 
   // Update all timeline types (home, public, list, hashtag, etc.)
   updateInfiniteStatusCache(
@@ -170,28 +174,33 @@ function updateStatusInCaches(
         return key[0] === 'timelines'
       }
     },
-    updateStatusPage
+    updateStatuses
   )
 
   // Update bookmarks
   updateInfiniteStatusCache(
     queryClient,
     { queryKey: queryKeys.bookmarks.all() },
-    updateStatusPage
+    updateStatuses
   )
 
   // Update account statuses
   updateInfiniteStatusCache(
     queryClient,
     { queryKey: ['accounts'] },
-    updateStatusPage
+    updateStatuses
   )
 
-  // Update trending statuses
-  updateInfiniteStatusCache(
-    queryClient,
+  // Update trending statuses (still plain arrays)
+  queryClient.setQueriesData<InfiniteData<Status[]>>(
     { queryKey: queryKeys.trends.statuses() },
-    updateStatusPage
+    (old) => {
+      if (!old?.pages) return old
+      return {
+        ...old,
+        pages: old.pages.map(page => page.map(status => updateStatusOrReblog(status, statusId, updateFn))),
+      }
+    }
   )
 
   // Update search results - infinite search (Statuses, Accounts, Hashtags tabs)
@@ -267,11 +276,11 @@ function updateStatusInCaches(
   )
 }
 
-// Helper function to filter pages (remove matching statuses)
-function filterPages(pages: Status[][], statusId: string): Status[][] {
-  return pages.map(page => page.filter(status =>
+// Helper function to filter statuses (remove matching statuses)
+function filterStatuses(statuses: Status[], statusId: string): Status[] {
+  return statuses.filter(status =>
     status.id !== statusId && status.reblog?.id !== statusId
-  ))
+  )
 }
 
 // Helper function to remove status from all caches (for delete operations)
@@ -288,28 +297,33 @@ function removeStatusFromCaches(
         return key[0] === 'timelines'
       }
     },
-    (pages) => filterPages(pages, statusId)
+    (statuses) => filterStatuses(statuses, statusId)
   )
 
   // Remove from bookmarks
   updateInfiniteStatusCache(
     queryClient,
     { queryKey: queryKeys.bookmarks.all() },
-    (pages) => filterPages(pages, statusId)
+    (statuses) => filterStatuses(statuses, statusId)
   )
 
   // Remove from account statuses
   updateInfiniteStatusCache(
     queryClient,
     { queryKey: ['accounts'] },
-    (pages) => filterPages(pages, statusId)
+    (statuses) => filterStatuses(statuses, statusId)
   )
 
-  // Remove from trending statuses
-  updateInfiniteStatusCache(
-    queryClient,
+  // Remove from trending statuses (still plain arrays)
+  queryClient.setQueriesData<InfiniteData<Status[]>>(
     { queryKey: queryKeys.trends.statuses() },
-    (pages) => filterPages(pages, statusId)
+    (old) => {
+      if (!old?.pages) return old
+      return {
+        ...old,
+        pages: old.pages.map(page => filterStatuses(page, statusId)),
+      }
+    }
   )
 
   // Remove from search results - infinite search (Statuses, Accounts, Hashtags tabs)
@@ -387,11 +401,12 @@ function updatePollInCaches(
   pollId: string,
   updatedPoll: Poll
 ) {
-  const updatePollPage = mapPages((status: Status) =>
+  const updatePollInStatus = (status: Status) =>
     status.poll?.id === pollId
       ? { ...status, poll: updatedPoll }
       : status
-  )
+
+  const updateStatuses = (statuses: Status[]) => statuses.map(updatePollInStatus)
 
   // Update all timeline types (home, public, list, hashtag, etc.)
   updateInfiniteStatusCache(
@@ -402,28 +417,33 @@ function updatePollInCaches(
         return key[0] === 'timelines'
       }
     },
-    updatePollPage
+    updateStatuses
   )
 
   // Update bookmarks
   updateInfiniteStatusCache(
     queryClient,
     { queryKey: queryKeys.bookmarks.all() },
-    updatePollPage
+    updateStatuses
   )
 
   // Update account statuses
   updateInfiniteStatusCache(
     queryClient,
     { queryKey: ['accounts'] },
-    updatePollPage
+    updateStatuses
   )
 
-  // Update trending statuses
-  updateInfiniteStatusCache(
-    queryClient,
+  // Update trending statuses (still plain arrays)
+  queryClient.setQueriesData<InfiniteData<Status[]>>(
     { queryKey: queryKeys.trends.statuses() },
-    updatePollPage
+    (old) => {
+      if (!old?.pages) return old
+      return {
+        ...old,
+        pages: old.pages.map(page => page.map(updatePollInStatus)),
+      }
+    }
   )
 
   // Update search results - infinite search (Statuses, Accounts, Hashtags tabs)
@@ -1250,19 +1270,20 @@ export function useMarkConversationAsRead() {
       await queryClient.cancelQueries({ queryKey: queryKeys.conversations.list() })
 
       // Snapshot previous value
-      const previousData = queryClient.getQueryData<InfiniteData<Conversation[]>>(
+      const previousData = queryClient.getQueryData<InfiniteData<PaginatedResponse<Conversation[]>>>(
         queryKeys.conversations.list()
       )
 
       // Optimistically update
       if (previousData?.pages) {
-        queryClient.setQueryData<InfiniteData<Conversation[]>>(
+        queryClient.setQueryData<InfiniteData<PaginatedResponse<Conversation[]>>>(
           queryKeys.conversations.list(),
           {
             ...previousData,
-            pages: previousData.pages.map(page =>
-              page.map(conv => conv.id === id ? { ...conv, unread: false } : conv)
-            ),
+            pages: previousData.pages.map(page => ({
+              ...page,
+              data: page.data.map(conv => conv.id === id ? { ...conv, unread: false } : conv)
+            })),
           }
         )
       }
@@ -1291,19 +1312,20 @@ export function useDeleteConversation() {
       await queryClient.cancelQueries({ queryKey: queryKeys.conversations.list() })
 
       // Snapshot previous value
-      const previousData = queryClient.getQueryData<InfiniteData<Conversation[]>>(
+      const previousData = queryClient.getQueryData<InfiniteData<PaginatedResponse<Conversation[]>>>(
         queryKeys.conversations.list()
       )
 
       // Optimistically remove conversation
       if (previousData?.pages) {
-        queryClient.setQueryData<InfiniteData<Conversation[]>>(
+        queryClient.setQueryData<InfiniteData<PaginatedResponse<Conversation[]>>>(
           queryKeys.conversations.list(),
           {
             ...previousData,
-            pages: previousData.pages.map(page =>
-              page.filter(conv => conv.id !== id)
-            ),
+            pages: previousData.pages.map(page => ({
+              ...page,
+              data: page.data.filter(conv => conv.id !== id)
+            })),
           }
         )
       }
@@ -1334,19 +1356,20 @@ export function useAcceptNotificationRequest() {
       await queryClient.cancelQueries({ queryKey: queryKeys.notificationRequests.list() })
 
       // Snapshot previous value
-      const previousData = queryClient.getQueryData<InfiniteData<NotificationRequest[]>>(
+      const previousData = queryClient.getQueryData<InfiniteData<PaginatedResponse<NotificationRequest[]>>>(
         queryKeys.notificationRequests.list()
       )
 
       // Optimistically remove the request from the list
       if (previousData?.pages) {
-        queryClient.setQueryData<InfiniteData<NotificationRequest[]>>(
+        queryClient.setQueryData<InfiniteData<PaginatedResponse<NotificationRequest[]>>>(
           queryKeys.notificationRequests.list(),
           {
             ...previousData,
-            pages: previousData.pages.map(page =>
-              page.filter(request => request.id !== id)
-            ),
+            pages: previousData.pages.map(page => ({
+              ...page,
+              data: page.data.filter(request => request.id !== id)
+            })),
           }
         )
       }
@@ -1378,19 +1401,20 @@ export function useDismissNotificationRequest() {
       await queryClient.cancelQueries({ queryKey: queryKeys.notificationRequests.list() })
 
       // Snapshot previous value
-      const previousData = queryClient.getQueryData<InfiniteData<NotificationRequest[]>>(
+      const previousData = queryClient.getQueryData<InfiniteData<PaginatedResponse<NotificationRequest[]>>>(
         queryKeys.notificationRequests.list()
       )
 
       // Optimistically remove the request from the list
       if (previousData?.pages) {
-        queryClient.setQueryData<InfiniteData<NotificationRequest[]>>(
+        queryClient.setQueryData<InfiniteData<PaginatedResponse<NotificationRequest[]>>>(
           queryKeys.notificationRequests.list(),
           {
             ...previousData,
-            pages: previousData.pages.map(page =>
-              page.filter(request => request.id !== id)
-            ),
+            pages: previousData.pages.map(page => ({
+              ...page,
+              data: page.data.filter(request => request.id !== id)
+            })),
           }
         )
       }
@@ -1421,20 +1445,21 @@ export function useAcceptNotificationRequests() {
       await queryClient.cancelQueries({ queryKey: queryKeys.notificationRequests.list() })
 
       // Snapshot previous value
-      const previousData = queryClient.getQueryData<InfiniteData<NotificationRequest[]>>(
+      const previousData = queryClient.getQueryData<InfiniteData<PaginatedResponse<NotificationRequest[]>>>(
         queryKeys.notificationRequests.list()
       )
 
       // Optimistically remove the requests from the list
       if (previousData?.pages) {
         const idsSet = new Set(ids)
-        queryClient.setQueryData<InfiniteData<NotificationRequest[]>>(
+        queryClient.setQueryData<InfiniteData<PaginatedResponse<NotificationRequest[]>>>(
           queryKeys.notificationRequests.list(),
           {
             ...previousData,
-            pages: previousData.pages.map(page =>
-              page.filter(request => !idsSet.has(request.id))
-            ),
+            pages: previousData.pages.map(page => ({
+              ...page,
+              data: page.data.filter(request => !idsSet.has(request.id))
+            })),
           }
         )
       }
@@ -1466,20 +1491,21 @@ export function useDismissNotificationRequests() {
       await queryClient.cancelQueries({ queryKey: queryKeys.notificationRequests.list() })
 
       // Snapshot previous value
-      const previousData = queryClient.getQueryData<InfiniteData<NotificationRequest[]>>(
+      const previousData = queryClient.getQueryData<InfiniteData<PaginatedResponse<NotificationRequest[]>>>(
         queryKeys.notificationRequests.list()
       )
 
       // Optimistically remove the requests from the list
       if (previousData?.pages) {
         const idsSet = new Set(ids)
-        queryClient.setQueryData<InfiniteData<NotificationRequest[]>>(
+        queryClient.setQueryData<InfiniteData<PaginatedResponse<NotificationRequest[]>>>(
           queryKeys.notificationRequests.list(),
           {
             ...previousData,
-            pages: previousData.pages.map(page =>
-              page.filter(request => !idsSet.has(request.id))
-            ),
+            pages: previousData.pages.map(page => ({
+              ...page,
+              data: page.data.filter(request => !idsSet.has(request.id))
+            })),
           }
         )
       }
