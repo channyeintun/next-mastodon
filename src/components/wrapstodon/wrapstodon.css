@@ -87,8 +87,33 @@
     line-height: 1;
     margin-bottom: 4px;
     letter-spacing: 0;
-    color: var(--color-text-primary);
     text-align: center;
+    /* Gradient text with reflection effect */
+    background: linear-gradient(
+        90deg,
+        #ffffff 0%,
+        #ffffff 25%,
+        #00ffff 40%,
+        #ff00ff 50%,
+        #00ffff 60%,
+        #ffffff 75%,
+        #ffffff 100%
+    );
+    background-size: 300% 100%;
+    background-position: -200% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: wrapstodon-shine 2.5s ease-in-out 0.3s 1 forwards;
+}
+
+@keyframes wrapstodon-shine {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
 }
 
 .wrapstodon-account {
