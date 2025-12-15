@@ -564,7 +564,26 @@ export interface NotificationRequestParams {
   limit?: number
 }
 
-// Notification Policy
+// Notification Policy V1 (boolean-based)
+export interface NotificationPolicyV1 {
+  filter_not_following: boolean
+  filter_not_followers: boolean
+  filter_new_accounts: boolean
+  filter_private_mentions: boolean
+  summary: {
+    pending_requests_count: number
+    pending_notifications_count: number
+  }
+}
+
+export interface UpdateNotificationPolicyV1Params {
+  filter_not_following?: boolean
+  filter_not_followers?: boolean
+  filter_new_accounts?: boolean
+  filter_private_mentions?: boolean
+}
+
+// Notification Policy V2 (string-based)
 export type NotificationPolicyValue = 'accept' | 'filter' | 'drop'
 
 export interface NotificationPolicy {

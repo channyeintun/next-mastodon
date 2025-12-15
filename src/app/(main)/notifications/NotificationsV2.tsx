@@ -1,19 +1,61 @@
 'use client';
 
-import { useEffect, useRef, useMemo } from 'react';
-import Link from 'next/link';
+import { useEffect, useRef, useMemo, useState } from 'react';
 import { Bell, Trash2, Check, Filter } from 'lucide-react';
+import { BiExpandVertical, BiCollapseVertical } from 'react-icons/bi';
 import { GroupedNotificationCard, NotificationSkeletonList } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { Button } from '@/components/atoms';
-import { useInfiniteGroupedNotifications, useClearNotifications, useMarkNotificationsAsRead, useNotificationMarker, useNotificationPolicy } from '@/api';
-import type { NotificationGroup, Account, PartialAccountWithAvatar, Status } from '@/types';
+import { Button, Tabs, type TabItem } from '@/components/atoms';
+import { useInfiniteGroupedNotifications, useClearNotifications, useMarkNotificationsAsRead, useNotificationMarker, useNotificationPolicy, useUpdateNotificationPolicy } from '@/api';
+import type { NotificationGroup, Account, PartialAccountWithAvatar, Status, NotificationPolicyValue } from '@/types';
+import {
+    NotificationHeaderContainer,
+    NotificationTitleRow,
+    NotificationSettingsToggle,
+    NotificationSettingsPanelWrapper,
+    NotificationSettingsPanel,
+    NotificationSettingsSectionTitle,
+    NotificationActionsRow,
+    NotificationFilterRow,
+    NotificationFilterLabel,
+    NotificationFilterSelect,
+    NotificationPendingLink,
+} from './NotificationStyles';
+
+type NotificationTab = 'all' | 'mentions';
+
+const NOTIFICATION_TABS: TabItem<NotificationTab>[] = [
+    { value: 'all', label: 'All' },
+    { value: 'mentions', label: 'Mentions' },
+];
+
+interface PolicyCategory {
+    key: 'for_not_following' | 'for_not_followers' | 'for_new_accounts' | 'for_private_mentions' | 'for_limited_accounts';
+    label: string;
+}
+
+const policyCategories: PolicyCategory[] = [
+    { key: 'for_not_following', label: 'People you don\'t follow' },
+    { key: 'for_not_followers', label: 'People not following you' },
+    { key: 'for_new_accounts', label: 'New accounts' },
+    { key: 'for_private_mentions', label: 'Unsolicited private mentions' },
+    { key: 'for_limited_accounts', label: 'Moderated accounts' },
+];
+
+const policyOptions: { value: NotificationPolicyValue; label: string }[] = [
+    { value: 'accept', label: 'Accept' },
+    { value: 'filter', label: 'Filter' },
+    { value: 'drop', label: 'Drop' },
+];
 
 interface NotificationsV2Props {
     streamingStatus: string;
 }
 
 export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
+    const [activeTab, setActiveTab] = useState<NotificationTab>('all');
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
     const {
         data,
         fetchNextPage,
@@ -22,13 +64,14 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
         isLoading,
         isError,
         error,
-    } = useInfiniteGroupedNotifications();
+    } = useInfiniteGroupedNotifications(activeTab === 'mentions' ? ['mention'] : undefined);
 
     const clearMutation = useClearNotifications();
     const markAsReadMutation = useMarkNotificationsAsRead();
 
-    // Fetch notification policy to show pending requests banner
+    // Notification policy for filters
     const { data: policyData } = useNotificationPolicy();
+    const updatePolicyMutation = useUpdateNotificationPolicy();
     const pendingRequestsCount = policyData?.summary?.pending_requests_count ?? 0;
 
     // Fetch the notification marker to determine which notifications are "new"
@@ -105,73 +148,90 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
         }
     };
 
+    const handleFilterChange = (key: PolicyCategory['key'], value: NotificationPolicyValue) => {
+        // Save immediately on change
+        updatePolicyMutation.mutate({ [key]: value });
+    };
+
     return (
         <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
             {/* Header */}
-            <div style={{
-                background: 'var(--surface-1)',
-                zIndex: 10,
-                padding: 'var(--size-4)',
-                marginBottom: 'var(--size-4)',
-                borderBottom: '1px solid var(--surface-3)',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexShrink: 0,
-                flexWrap: 'wrap',
-                gap: 'var(--size-3)',
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
-                    <Bell size={24} />
-                    <h1 style={{ fontSize: 'var(--font-size-4)', fontWeight: 'var(--font-weight-7)', margin: 0 }}>
-                        Notifications
-                    </h1>
-                    {streamingStatus === 'connected' && (
-                        <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--green-6)', display: 'flex', alignItems: 'center', gap: 'var(--size-1)' }}>
-                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--green-6)' }} />
-                            Live
-                        </span>
-                    )}
-                </div>
-
-                {allGroups.length > 0 && (
-                    <div style={{ display: 'flex', gap: 'var(--size-2)' }}>
-                        <Button variant="ghost" size="small" onClick={handleMarkAsRead} aria-label="Mark as read">
-                            <Check size={16} />
-                            <span className="hide-on-mobile">Mark as read</span>
-                        </Button>
-                        <Button variant="ghost" size="small" onClick={handleClearAll} aria-label="Clear all">
-                            <Trash2 size={16} />
-                            <span className="hide-on-mobile">Clear all</span>
-                        </Button>
+            <NotificationHeaderContainer>
+                <NotificationTitleRow>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
+                        <Bell size={24} />
+                        <h1 style={{ fontSize: 'var(--font-size-4)', fontWeight: 'var(--font-weight-7)', margin: 0 }}>
+                            Notifications
+                        </h1>
+                        {streamingStatus === 'connected' && (
+                            <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--green-6)', display: 'flex', alignItems: 'center', gap: 'var(--size-1)' }}>
+                                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--green-6)' }} />
+                                Live
+                            </span>
+                        )}
                     </div>
-                )}
-            </div>
 
-            {/* Pending notification requests banner */}
-            {pendingRequestsCount > 0 && (
-                <Link
-                    href="/notifications/requests"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 'var(--size-2)',
-                        padding: 'var(--size-3) var(--size-4)',
-                        margin: '0 var(--size-4) var(--size-4)',
-                        background: 'var(--blue-2)',
-                        borderRadius: 'var(--radius-2)',
-                        color: 'var(--blue-9)',
-                        textDecoration: 'none',
-                        fontSize: 'var(--font-size-1)',
-                        fontWeight: 'var(--font-weight-5)',
-                    }}
-                >
-                    <Filter size={16} />
-                    <span>
-                        {pendingRequestsCount} filtered {pendingRequestsCount === 1 ? 'notification' : 'notifications'} from accounts you don&apos;t follow
-                    </span>
-                </Link>
-            )}
+                    <NotificationSettingsToggle
+                        onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+                        aria-label="Toggle settings"
+                    >
+                        {isSettingsOpen ? <BiCollapseVertical size={20} /> : <BiExpandVertical size={20} />}
+                    </NotificationSettingsToggle>
+                </NotificationTitleRow>
+            </NotificationHeaderContainer>
+
+            {/* Collapsible Settings Area - using CSS interpolate-size animation */}
+            <NotificationSettingsPanelWrapper $isOpen={isSettingsOpen}>
+                <NotificationSettingsPanel>
+                    {/* Actions */}
+                    <NotificationSettingsSectionTitle>Actions</NotificationSettingsSectionTitle>
+                    <NotificationActionsRow>
+                        <Button variant="ghost" size="small" onClick={handleMarkAsRead} disabled={allGroups.length === 0}>
+                            <Check size={16} />
+                            Mark all as read
+                        </Button>
+                        <Button variant="ghost" size="small" onClick={handleClearAll} disabled={allGroups.length === 0}>
+                            <Trash2 size={16} />
+                            Clear all
+                        </Button>
+                    </NotificationActionsRow>
+
+                    {/* Filters */}
+                    <NotificationSettingsSectionTitle style={{ marginTop: 'var(--size-3)' }}>Filters</NotificationSettingsSectionTitle>
+                    {policyCategories.map((category) => (
+                        <NotificationFilterRow key={category.key}>
+                            <NotificationFilterLabel>{category.label}</NotificationFilterLabel>
+                            <NotificationFilterSelect
+                                value={policyData?.[category.key] ?? 'accept'}
+                                onChange={(e) => handleFilterChange(category.key, e.target.value as NotificationPolicyValue)}
+                                disabled={updatePolicyMutation.isPending}
+                            >
+                                {policyOptions.map(option => (
+                                    <option key={option.value} value={option.value}>{option.label}</option>
+                                ))}
+                            </NotificationFilterSelect>
+                        </NotificationFilterRow>
+                    ))}
+
+                    {/* Pending requests link */}
+                    {pendingRequestsCount > 0 && (
+                        <NotificationPendingLink href="/notifications/requests">
+                            <Filter size={16} />
+                            <span>
+                                {pendingRequestsCount} filtered {pendingRequestsCount === 1 ? 'notification' : 'notifications'}
+                            </span>
+                        </NotificationPendingLink>
+                    )}
+                </NotificationSettingsPanel>
+            </NotificationSettingsPanelWrapper>
+
+            {/* Tabs */}
+            <Tabs
+                tabs={NOTIFICATION_TABS}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                style={{ padding: '0 var(--size-4)' }}
+            />
 
             {isLoading && (
                 <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
@@ -202,15 +262,22 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
                     onLoadMore={fetchNextPage}
                     isLoadingMore={isFetchingNextPage}
                     hasMore={hasNextPage}
-                    scrollRestorationKey="notifications-v2"
+                    scrollRestorationKey={`notifications-v2-${activeTab}`}
                     height="100%"
                     loadingIndicator={<div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--size-4)' }}><div className="spinner" /></div>}
                     endIndicator="You've reached the end of your notifications"
                     emptyState={
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--size-8)', textAlign: 'center' }}>
                             <Bell size={48} style={{ color: 'var(--text-3)', marginBottom: 'var(--size-4)' }} />
-                            <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)', marginBottom: 'var(--size-2)' }}>No notifications yet</h2>
-                            <p style={{ fontSize: 'var(--font-size-1)', color: 'var(--text-3)' }}>When someone interacts with your posts, you&apos;ll see it here.</p>
+                            <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)', marginBottom: 'var(--size-2)' }}>
+                                {activeTab === 'mentions' ? 'No mentions yet' : 'No notifications yet'}
+                            </h2>
+                            <p style={{ fontSize: 'var(--font-size-1)', color: 'var(--text-3)' }}>
+                                {activeTab === 'mentions'
+                                    ? 'When someone mentions you, you\'ll see it here.'
+                                    : 'When someone interacts with your posts, you\'ll see it here.'
+                                }
+                            </p>
                         </div>
                     }
                 />

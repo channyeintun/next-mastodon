@@ -5,7 +5,8 @@ import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, PenSquare, Search, Settings, Github, Bell, List, TrendingUp, Mail } from 'lucide-react';
 import { useInstance, useUnreadNotificationCount, useNotificationMarker } from '@/api';
-import { CircleSkeleton, TextSkeleton, BuyMeACoffeeIcon } from '@/components/atoms';
+import { CircleSkeleton, TextSkeleton } from '@/components/atoms';
+import { SiBuymeacoffee } from 'react-icons/si';
 
 interface NavigationProps {
   isAuthenticated: boolean;
@@ -126,7 +127,7 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
             className="navigation-sidebar-link"
           >
             <div className="navigation-link-icon">
-              <BuyMeACoffeeIcon size={24} />
+              <SiBuymeacoffee size={24} />
             </div>
             <span className="navigation-link-label">Buy me a coffee</span>
           </a>

@@ -26,6 +26,7 @@ import type {
   Notification,
   NotificationParams,
   NotificationPolicy,
+  NotificationPolicyV1,
   NotificationRequest,
   NotificationRequestParams,
   Poll,
@@ -47,6 +48,7 @@ import type {
   UpdateAccountParams,
   UpdateListParams,
   UpdateNotificationPolicyParams,
+  UpdateNotificationPolicyV1Params,
   UpdatePushSubscriptionParams,
   WebPushSubscription,
 } from '../types/mastodon'
@@ -787,16 +789,29 @@ export async function dismissNotificationRequests(ids: string[]): Promise<void> 
   await api.post('/api/v1/notifications/requests/dismiss', { id: ids })
 }
 
-// Notification Policy
+// Notification Policy V1 (boolean-based: filter_not_following, etc.)
+export async function getNotificationPolicyV1(signal?: AbortSignal): Promise<NotificationPolicyV1> {
+  const { data } = await api.get<NotificationPolicyV1>('/api/v1/notifications/policy', { signal })
+  return data
+}
+
+export async function updateNotificationPolicyV1(
+  params: UpdateNotificationPolicyV1Params
+): Promise<NotificationPolicyV1> {
+  const { data } = await api.put<NotificationPolicyV1>('/api/v1/notifications/policy', params)
+  return data
+}
+
+// Notification Policy V2 (string-based: for_not_following = 'accept'|'filter'|'drop', etc.)
 export async function getNotificationPolicy(signal?: AbortSignal): Promise<NotificationPolicy> {
-  const { data } = await api.get<NotificationPolicy>('/api/v1/notifications/policy', { signal })
+  const { data } = await api.get<NotificationPolicy>('/api/v2/notifications/policy', { signal })
   return data
 }
 
 export async function updateNotificationPolicy(
   params: UpdateNotificationPolicyParams
 ): Promise<NotificationPolicy> {
-  const { data } = await api.put<NotificationPolicy>('/api/v1/notifications/policy', params)
+  const { data } = await api.put<NotificationPolicy>('/api/v2/notifications/policy', params)
   return data
 }
 

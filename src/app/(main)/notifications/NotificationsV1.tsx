@@ -1,19 +1,56 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { Bell, Trash2, Check } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Bell, Trash2, Check, Filter } from 'lucide-react';
+import { BiExpandVertical, BiCollapseVertical } from 'react-icons/bi';
 import { NotificationCard, NotificationSkeletonList } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { Button } from '@/components/atoms';
-import { useInfiniteNotifications, useClearNotifications, useMarkNotificationsAsRead, useNotificationMarker } from '@/api';
+import { Button, Tabs, type TabItem } from '@/components/atoms';
+import { useInfiniteNotifications, useClearNotifications, useMarkNotificationsAsRead, useNotificationMarker, useNotificationPolicyV1, useUpdateNotificationPolicyV1 } from '@/api';
 import { flattenPages } from '@/utils/fp';
 import type { Notification } from '@/types';
+import {
+    NotificationHeaderContainer,
+    NotificationTitleRow,
+    NotificationSettingsToggle,
+    NotificationSettingsPanelWrapper,
+    NotificationSettingsPanel,
+    NotificationSettingsSectionTitle,
+    NotificationActionsRow,
+    NotificationFilterRow,
+    NotificationFilterLabel,
+    NotificationFilterToggle,
+    NotificationPendingLink,
+} from './NotificationStyles';
+
+type NotificationTab = 'all' | 'mentions';
+
+const NOTIFICATION_TABS: TabItem<NotificationTab>[] = [
+    { value: 'all', label: 'All' },
+    { value: 'mentions', label: 'Mentions' },
+];
+
+// V1 policy uses boolean filters
+interface PolicyCategoryV1 {
+    key: 'filter_not_following' | 'filter_not_followers' | 'filter_new_accounts' | 'filter_private_mentions';
+    label: string;
+}
+
+const policyCategoriesV1: PolicyCategoryV1[] = [
+    { key: 'filter_not_following', label: 'People you don\'t follow' },
+    { key: 'filter_not_followers', label: 'People not following you' },
+    { key: 'filter_new_accounts', label: 'New accounts' },
+    { key: 'filter_private_mentions', label: 'Unsolicited private mentions' },
+];
 
 interface NotificationsV1Props {
     streamingStatus: string;
 }
 
 export function NotificationsV1({ streamingStatus }: NotificationsV1Props) {
+    const [activeTab, setActiveTab] = useState<NotificationTab>('all');
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
     const {
         data,
         fetchNextPage,
@@ -22,10 +59,15 @@ export function NotificationsV1({ streamingStatus }: NotificationsV1Props) {
         isLoading,
         isError,
         error,
-    } = useInfiniteNotifications();
+    } = useInfiniteNotifications(activeTab === 'mentions' ? ['mention'] : undefined);
 
     const clearMutation = useClearNotifications();
     const markAsReadMutation = useMarkNotificationsAsRead();
+
+    // V1 Notification policy for filters (boolean-based)
+    const { data: policyData } = useNotificationPolicyV1();
+    const updatePolicyMutation = useUpdateNotificationPolicyV1();
+    const pendingRequestsCount = policyData?.summary?.pending_requests_count ?? 0;
 
     const { data: markerData } = useNotificationMarker();
 
@@ -69,48 +111,88 @@ export function NotificationsV1({ streamingStatus }: NotificationsV1Props) {
         }
     };
 
+    // V1 uses boolean toggle for filters
+    const handleFilterToggle = (key: PolicyCategoryV1['key']) => {
+        const currentValue = policyData?.[key] ?? false;
+        updatePolicyMutation.mutate({ [key]: !currentValue });
+    };
+
     return (
         <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
             {/* Header */}
-            <div style={{
-                background: 'var(--surface-1)',
-                zIndex: 10,
-                padding: 'var(--size-4)',
-                marginBottom: 'var(--size-4)',
-                borderBottom: '1px solid var(--surface-3)',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexShrink: 0,
-                flexWrap: 'wrap',
-                gap: 'var(--size-3)',
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
-                    <Bell size={24} />
-                    <h1 style={{ fontSize: 'var(--font-size-4)', fontWeight: 'var(--font-weight-7)', margin: 0 }}>
-                        Notifications
-                    </h1>
-                    {streamingStatus === 'connected' && (
-                        <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--green-6)', display: 'flex', alignItems: 'center', gap: 'var(--size-1)' }}>
-                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--green-6)' }} />
-                            Live
-                        </span>
-                    )}
-                </div>
-
-                {allNotifications.length > 0 && (
-                    <div style={{ display: 'flex', gap: 'var(--size-2)' }}>
-                        <Button variant="ghost" size="small" onClick={handleMarkAsRead} aria-label="Mark as read">
-                            <Check size={16} />
-                            <span className="hide-on-mobile">Mark as read</span>
-                        </Button>
-                        <Button variant="ghost" size="small" onClick={handleClearAll} aria-label="Clear all">
-                            <Trash2 size={16} />
-                            <span className="hide-on-mobile">Clear all</span>
-                        </Button>
+            <NotificationHeaderContainer>
+                <NotificationTitleRow>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
+                        <Bell size={24} />
+                        <h1 style={{ fontSize: 'var(--font-size-4)', fontWeight: 'var(--font-weight-7)', margin: 0 }}>
+                            Notifications
+                        </h1>
+                        {streamingStatus === 'connected' && (
+                            <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--green-6)', display: 'flex', alignItems: 'center', gap: 'var(--size-1)' }}>
+                                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--green-6)' }} />
+                                Live
+                            </span>
+                        )}
                     </div>
-                )}
-            </div>
+
+                    <NotificationSettingsToggle
+                        onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+                        aria-label="Toggle settings"
+                    >
+                        {isSettingsOpen ? <BiCollapseVertical size={20} /> : <BiExpandVertical size={20} />}
+                    </NotificationSettingsToggle>
+                </NotificationTitleRow>
+            </NotificationHeaderContainer>
+
+            {/* Collapsible Settings Area */}
+            <NotificationSettingsPanelWrapper $isOpen={isSettingsOpen}>
+                <NotificationSettingsPanel>
+                    {/* Actions */}
+                    <NotificationSettingsSectionTitle>Actions</NotificationSettingsSectionTitle>
+                    <NotificationActionsRow>
+                        <Button variant="ghost" size="small" onClick={handleMarkAsRead} disabled={allNotifications.length === 0}>
+                            <Check size={16} />
+                            Mark all as read
+                        </Button>
+                        <Button variant="ghost" size="small" onClick={handleClearAll} disabled={allNotifications.length === 0}>
+                            <Trash2 size={16} />
+                            Clear all
+                        </Button>
+                    </NotificationActionsRow>
+
+                    {/* Filters - V1 uses boolean toggles */}
+                    <NotificationSettingsSectionTitle style={{ marginTop: 'var(--size-3)' }}>Filters</NotificationSettingsSectionTitle>
+                    {policyCategoriesV1.map((category) => (
+                        <NotificationFilterRow key={category.key}>
+                            <NotificationFilterLabel>{category.label}</NotificationFilterLabel>
+                            <NotificationFilterToggle
+                                type="checkbox"
+                                checked={policyData?.[category.key] ?? false}
+                                onChange={() => handleFilterToggle(category.key)}
+                                disabled={updatePolicyMutation.isPending}
+                            />
+                        </NotificationFilterRow>
+                    ))}
+
+                    {/* Pending requests link */}
+                    {pendingRequestsCount > 0 && (
+                        <NotificationPendingLink href="/notifications/requests">
+                            <Filter size={16} />
+                            <span>
+                                {pendingRequestsCount} filtered {pendingRequestsCount === 1 ? 'notification' : 'notifications'}
+                            </span>
+                        </NotificationPendingLink>
+                    )}
+                </NotificationSettingsPanel>
+            </NotificationSettingsPanelWrapper>
+
+            {/* Tabs */}
+            <Tabs
+                tabs={NOTIFICATION_TABS}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                style={{ padding: '0 var(--size-4)' }}
+            />
 
             {isLoading && (
                 <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
@@ -139,15 +221,22 @@ export function NotificationsV1({ streamingStatus }: NotificationsV1Props) {
                     onLoadMore={fetchNextPage}
                     isLoadingMore={isFetchingNextPage}
                     hasMore={hasNextPage}
-                    scrollRestorationKey="notifications-v1"
+                    scrollRestorationKey={`notifications-v1-${activeTab}`}
                     height="100%"
                     loadingIndicator={<div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--size-4)' }}><div className="spinner" /></div>}
                     endIndicator="You've reached the end of your notifications"
                     emptyState={
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--size-8)', textAlign: 'center' }}>
                             <Bell size={48} style={{ color: 'var(--text-3)', marginBottom: 'var(--size-4)' }} />
-                            <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)', marginBottom: 'var(--size-2)' }}>No notifications yet</h2>
-                            <p style={{ fontSize: 'var(--font-size-1)', color: 'var(--text-3)' }}>When someone interacts with your posts, you&apos;ll see it here.</p>
+                            <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)', marginBottom: 'var(--size-2)' }}>
+                                {activeTab === 'mentions' ? 'No mentions yet' : 'No notifications yet'}
+                            </h2>
+                            <p style={{ fontSize: 'var(--font-size-1)', color: 'var(--text-3)' }}>
+                                {activeTab === 'mentions'
+                                    ? 'When someone mentions you, you\'ll see it here.'
+                                    : 'When someone interacts with your posts, you\'ll see it here.'
+                                }
+                            </p>
                         </div>
                     }
                 />

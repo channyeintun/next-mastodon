@@ -46,6 +46,7 @@ import {
   acceptNotificationRequests,
   dismissNotificationRequests,
   updateNotificationPolicy,
+  updateNotificationPolicyV1,
   translateStatus,
   createPushSubscription,
   updatePushSubscription,
@@ -54,7 +55,7 @@ import {
 } from './client'
 import { queryKeys } from './queryKeys'
 import { findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
-import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams, CreatePushSubscriptionParams, UpdatePushSubscriptionParams } from '../types/mastodon'
+import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams, UpdateNotificationPolicyV1Params, CreatePushSubscriptionParams, UpdatePushSubscriptionParams } from '../types/mastodon'
 
 
 // Helper function to invalidate all relationship queries that contain a given account ID
@@ -1526,6 +1527,7 @@ export function useDismissNotificationRequests() {
   })
 }
 
+// V2 Notification Policy mutation (string-based)
 export function useUpdateNotificationPolicy() {
   const queryClient = useQueryClient()
 
@@ -1534,6 +1536,19 @@ export function useUpdateNotificationPolicy() {
     onSuccess: (data) => {
       // Update the policy in cache
       queryClient.setQueryData(queryKeys.notificationPolicy.all(), data)
+    },
+  })
+}
+
+// V1 Notification Policy mutation (boolean-based)
+export function useUpdateNotificationPolicyV1() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (params: UpdateNotificationPolicyV1Params) => updateNotificationPolicyV1(params),
+    onSuccess: (data) => {
+      // Update the V1 policy in cache
+      queryClient.setQueryData(['notificationPolicy', 'v1'], data)
     },
   })
 }

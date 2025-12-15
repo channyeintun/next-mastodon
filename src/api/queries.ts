@@ -47,12 +47,13 @@ import {
   getNotificationRequests,
   getNotificationRequest,
   getNotificationPolicy,
+  getNotificationPolicyV1,
   getInstanceLanguages,
   getTranslationLanguages,
   getPushSubscription,
 } from './client'
 import { queryKeys } from './queryKeys'
-import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, Tag, TrendingLink, ConversationParams, NotificationRequestParams } from '../types/mastodon'
+import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, Tag, TrendingLink, ConversationParams, NotificationRequestParams, NotificationType } from '../types/mastodon'
 import { useAuthStore } from '../hooks/useStores'
 
 
@@ -394,12 +395,13 @@ export const notificationsOptions = (params?: NotificationParams) =>
     queryFn: ({ signal }) => getNotifications(params, signal),
   })
 
-export const infiniteNotificationsOptions = () =>
+export const infiniteNotificationsOptions = (types?: NotificationType[]) =>
   infiniteQueryOptions({
-    queryKey: queryKeys.notifications.list(),
+    queryKey: queryKeys.notifications.list({ types }),
     queryFn: ({ pageParam, signal }) => {
       const params: NotificationParams = { limit: 20 }
       if (pageParam) params.max_id = pageParam
+      if (types && types.length > 0) params.types = types
       return getNotifications(params, signal)
     },
     getNextPageParam: (lastPage) => lastPage.nextMaxId,
@@ -785,10 +787,10 @@ export function useNotifications(params?: NotificationParams) {
   })
 }
 
-export function useInfiniteNotifications() {
+export function useInfiniteNotifications(types?: NotificationType[]) {
   const authStore = useAuthStore()
   return useInfiniteQuery({
-    ...infiniteNotificationsOptions(),
+    ...infiniteNotificationsOptions(types),
     enabled: authStore.isAuthenticated,
   })
 }
@@ -810,10 +812,10 @@ export function useUnreadNotificationCount() {
 }
 
 // Grouped Notifications (v2)
-export function useInfiniteGroupedNotifications() {
+export function useInfiniteGroupedNotifications(types?: NotificationType[]) {
   const authStore = useAuthStore()
   return useInfiniteQuery({
-    ...infiniteGroupedNotificationsOptions(),
+    ...infiniteGroupedNotificationsOptions(types ? { types } : undefined),
     enabled: authStore.isAuthenticated,
   })
 }
@@ -954,11 +956,19 @@ export const notificationRequestOptions = (id: string) =>
     queryFn: ({ signal }) => getNotificationRequest(id, signal),
   })
 
-// Notification Policy Options
+// Notification Policy Options (V2 - string-based)
 export const notificationPolicyOptions = () =>
   queryOptions({
     queryKey: queryKeys.notificationPolicy.all(),
     queryFn: ({ signal }) => getNotificationPolicy(signal),
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  })
+
+// Notification Policy V1 Options (boolean-based)
+export const notificationPolicyV1Options = () =>
+  queryOptions({
+    queryKey: ['notificationPolicy', 'v1'] as const,
+    queryFn: ({ signal }) => getNotificationPolicyV1(signal),
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   })
 
@@ -979,10 +989,20 @@ export function useNotificationRequest(id: string) {
   })
 }
 
+// V2 Notification Policy Hook
 export function useNotificationPolicy() {
   const authStore = useAuthStore()
   return useQuery({
     ...notificationPolicyOptions(),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+// V1 Notification Policy Hook
+export function useNotificationPolicyV1() {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...notificationPolicyV1Options(),
     enabled: authStore.isAuthenticated,
   })
 }
