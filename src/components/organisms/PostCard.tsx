@@ -32,6 +32,8 @@ interface PostCardProps {
   hideActions?: boolean;
   /** Hide media attachments and link previews */
   hideMedia?: boolean;
+  /** Hide the options menu (three dots) in the header */
+  hideOptions?: boolean;
   showEditHistory?: boolean;
   onDeleteSuccess?: () => void;
   id?: string;
@@ -48,6 +50,7 @@ export function PostCard({
   style,
   hideActions = false,
   hideMedia = false,
+  hideOptions = false,
   showEditHistory = false,
   onDeleteSuccess,
   id,
@@ -143,19 +146,20 @@ export function PostCard({
             | 'direct'
           }
           statusId={displayStatus.id}
-          isOwnPost={isOwnPost}
+          isOwnPost={hideOptions ? false : isOwnPost}
           pinned={displayStatus.pinned}
           muted={displayStatus.muted}
-          onEdit={isOwnPost ? handleEdit : undefined}
-          onDelete={isOwnPost ? handleDelete : undefined}
+          onEdit={!hideOptions && isOwnPost ? handleEdit : undefined}
+          onDelete={!hideOptions && isOwnPost ? handleDelete : undefined}
           onPin={
-            isOwnPost &&
+            !hideOptions &&
+              isOwnPost &&
               (displayStatus.visibility === 'public' ||
                 displayStatus.visibility === 'unlisted')
               ? handlePin
               : undefined
           }
-          onMute={handleMuteConversation}
+          onMute={hideOptions ? undefined : handleMuteConversation}
         />
 
         {/* Content Warning */}

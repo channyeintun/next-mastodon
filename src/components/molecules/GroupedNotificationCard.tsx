@@ -238,6 +238,7 @@ export function GroupedNotificationCard({
                                 status={relatedStatus}
                                 hideActions
                                 hideMedia
+                                hideOptions
                                 depth={1}
                             />
                         )}

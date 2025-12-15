@@ -176,6 +176,7 @@ export function NotificationCard({ notification, onDismiss, style, isNew }: Noti
                                 status={notification.status}
                                 hideActions
                                 hideMedia
+                                hideOptions
                                 depth={1}
                             />
                         )}
