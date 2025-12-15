@@ -38,8 +38,6 @@
 
 /* Main Wrapper */
 .wrapstodon-wrapper {
-    --gradient-strength: 0.4;
-
     box-sizing: border-box;
     position: relative;
     max-width: 600px;
@@ -51,23 +49,7 @@
     flex: 0 0 auto;
     pointer-events: all;
     color: var(--color-text-primary);
-    background: var(--color-bg-primary);
-    background:
-        radial-gradient(at 10% 27%,
-            rgba(83, 12, 154, var(--gradient-strength)) 0,
-            transparent 50%),
-        radial-gradient(at 91% 10%,
-            rgba(30, 24, 223, var(--gradient-strength)) 0,
-            transparent 25%),
-        radial-gradient(at 10% 91%,
-            rgba(22, 218, 228, var(--gradient-strength)) 0,
-            transparent 40%),
-        radial-gradient(at 75% 87%,
-            rgba(37, 31, 217, var(--gradient-strength)) 0,
-            transparent 20%),
-        radial-gradient(at 84% 60%,
-            rgba(95, 30, 148, var(--gradient-strength)) 0,
-            transparent 40%) var(--color-bg-primary);
+    background: var(--gradient-29);
     border-radius: 40px;
 }
 
