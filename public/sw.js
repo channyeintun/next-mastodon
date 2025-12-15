@@ -72,8 +72,8 @@ self.addEventListener('fetch', (event) => {
         event.respondWith(
             fetch(request)
                 .then((response) => {
-                    // Cache successful responses
-                    if (response.ok) {
+                    // Cache successful responses (exclude partial responses 206)
+                    if (response.status === 200) {
                         const responseClone = response.clone();
                         caches.open(CACHE_NAME).then((cache) => {
                             cache.put(request, responseClone);
@@ -99,7 +99,8 @@ self.addEventListener('fetch', (event) => {
         event.respondWith(
             fetch(request)
                 .then((response) => {
-                    if (response.ok) {
+                    // Cache only complete responses (exclude partial 206)
+                    if (response.status === 200) {
                         const responseClone = response.clone();
                         caches.open(CACHE_NAME).then((cache) => {
                             cache.put(request, responseClone);
@@ -126,7 +127,8 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
         caches.match(request).then((cached) => {
             const fetchPromise = fetch(request).then((response) => {
-                if (response.ok) {
+                // Only cache complete responses (exclude partial 206)
+                if (response.status === 200) {
                     const responseClone = response.clone();
                     caches.open(CACHE_NAME).then((cache) => {
                         cache.put(request, responseClone);
@@ -140,47 +142,36 @@ self.addEventListener('fetch', (event) => {
 });
 
 /**
- * Build the correct URL for a notification based on its type.
- * @param {Object} data - The notification data from push payload
+ * Fetch notification details from Mastodon API.
+ * @param {string} notificationId - The notification ID
+ * @param {string} accessToken - The access token
+ * @returns {Promise<Object>} The notification object
+ */
+const fetchNotification = (notificationId, accessToken) => {
+    return fetch(`/api/v1/notifications/${notificationId}`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+    }).then(res => {
+        if (!res.ok) throw new Error(res.status);
+        return res.json();
+    });
+};
+
+/**
+ * Build the correct URL for a notification based on fetched notification data.
+ * Matches Mastodon's approach: status notifications go to /@acct/statusId, others go to /@acct
+ * @param {Object} notification - The fetched notification object
  * @returns {string} The URL to navigate to
  */
-function buildNotificationUrl(data) {
-    const type = data.notification_type || data.type;
-
-    // Status-related notifications → go to status page
-    if (['mention', 'reply', 'favourite', 'reblog', 'poll', 'status', 'update', 'emoji_reaction'].includes(type)) {
-        const statusId = data.status_id || data.status?.id;
-        if (statusId) {
-            return `/statuses/${statusId}`;
-        }
+const buildNotificationUrl = (notification) => {
+    if (notification.status) {
+        return `/status/${notification.status.id}`;
     }
-
-    // Account-related notifications → go to profile page
-    if (['follow', 'follow_request', 'admin.sign_up'].includes(type)) {
-        const acct = data.account_acct || data.account?.acct;
-        if (acct) {
-            return `/@${acct}`;
-        }
-    }
-
-    // Report notifications → admin page
-    if (type === 'admin.report') {
-        return '/notifications';
-    }
-
-    // Severed relationships notification
-    if (type === 'severed_relationships') {
-        return '/notifications';
-    }
-
-    // If a direct URL was provided, use it
-    if (data.url || data.notification_url) {
-        return data.url || data.notification_url;
-    }
-
-    // Default fallback
-    return '/notifications';
-}
+    return `/@${notification.account.acct}`;
+};
 
 /**
  * Find the best client to focus (focused > visible > any).
@@ -208,7 +199,7 @@ self.addEventListener('push', (event) => {
     if (!event.data) return;
 
     event.waitUntil(
-        clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(async (clientList) => {
             // Skip notification if app is already focused (user will see it in-app)
             const isAppFocused = clientList.some(client => client.focused);
             if (isAppFocused) {
@@ -216,87 +207,81 @@ self.addEventListener('push', (event) => {
             }
 
             try {
-                const data = event.data.json();
+                // Push payload only contains: access_token, notification_id, preferred_locale, title, body, icon
+                const { access_token, notification_id, preferred_locale, title, body, icon } = event.data.json();
 
-                // Build the correct URL based on notification type
-                const targetUrl = buildNotificationUrl(data);
+                // Fetch full notification details from API (like Mastodon does)
+                const notification = await fetchNotification(notification_id, access_token);
 
-                // Format body text (strip HTML if present)
-                let body = data.body || data.message || 'New notification';
-                if (data.status && data.status.content) {
-                    body = htmlToPlainText(data.status.content);
-                }
+                // Build URL from fetched notification
+                const targetUrl = buildNotificationUrl(notification);
 
-                // Mastodon sends notifications in a specific format
+                // Build notification options
                 const options = {
-                    body: body,
-                    icon: data.icon || data.account?.avatar_static || '/icons/icon-192.png',
+                    body: notification.status ? htmlToPlainText(notification.status.content) : body,
+                    icon: notification.account?.avatar_static || icon || '/icons/icon-192.png',
                     badge: '/icons/icon-192.png',
-                    tag: data.notification_id || data.tag || 'mastodon-notification',
+                    tag: notification.id || notification_id,
+                    timestamp: notification.created_at && new Date(notification.created_at),
                     data: {
                         url: targetUrl,
-                        notification_id: data.notification_id,
-                        type: data.notification_type || data.type,
-                        // Store additional data for potential future use
-                        status_id: data.status_id || data.status?.id,
-                        account_id: data.account_id || data.account?.id,
-                        account_acct: data.account_acct || data.account?.acct,
+                        access_token,
+                        preferred_locale,
+                        id: notification.status ? notification.status.id : notification.account.id,
                     },
                     vibrate: [100, 50, 100],
                     requireInteraction: false,
                 };
 
                 // Add image if available (e.g. from media attachments)
-                if (data.status && data.status.media_attachments && data.status.media_attachments.length > 0) {
-                    options.image = data.status.media_attachments[0].preview_url;
+                if (notification.status?.media_attachments?.length > 0) {
+                    options.image = notification.status.media_attachments[0].preview_url;
                 }
 
-                const title = data.title || 'Mastodon';
-
-                return self.registration.showNotification(title, options);
+                return self.registration.showNotification(title || 'Mastodon', options);
             } catch (error) {
-                // If JSON parsing fails, try to show a generic notification
-                console.error('[SW] Error parsing push data:', error);
-                return self.registration.showNotification('Mastodon', {
-                    body: 'You have a new notification',
-                    icon: '/icons/icon-192.png',
-                    badge: '/icons/icon-192.png',
-                    data: { url: '/notifications' },
-                });
+                // If fetching fails, show a generic notification with fallback data
+                console.error('[SW] Error fetching notification:', error);
+                try {
+                    const { title, body, icon } = event.data.json();
+                    return self.registration.showNotification(title || 'Mastodon', {
+                        body: body || 'You have a new notification',
+                        icon: icon || '/icons/icon-192.png',
+                        badge: '/icons/icon-192.png',
+                        data: { url: '/notifications' },
+                    });
+                } catch {
+                    return self.registration.showNotification('Mastodon', {
+                        body: 'You have a new notification',
+                        icon: '/icons/icon-192.png',
+                        badge: '/icons/icon-192.png',
+                        data: { url: '/notifications' },
+                    });
+                }
             }
         })
     );
 });
 
+const openUrl = url => self.clients.claim()
+    .then(() => self.clients.matchAll({ type: 'window' }))
+    .then(clientList => {
+        if (clientList.length !== 0 && 'navigate' in clientList[0]) { // Chrome 42-48 does not support navigate
+            const client = findBestClient(clientList);
+            'focus' in client && client.focus();
+            return client.navigate(url);
+        }
+
+        return self.clients.openWindow(url);
+    });
+
 // Notification click event - handle user clicks on notifications
 self.addEventListener('notificationclick', (event) => {
-    event.notification.close();
+    const reactToNotificationClick = new Promise((resolve, reject) => {
+        event.notification.close();
+        resolve(openUrl(event.notification.data?.url || '/'));
+    });
 
-    const notificationData = event.notification.data || {};
-
-    // Use stored URL, or rebuild from stored data if needed
-    let url = notificationData.url;
-    if (!url || url === '/') {
-        // Try to rebuild URL from stored notification data
-        url = buildNotificationUrl(notificationData);
-    }
-
-    event.waitUntil(
-        clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-            // Try to focus an existing window
-            for (const client of clientList) {
-                if (client.url.includes(self.location.origin) && 'focus' in client) {
-                    client.focus();
-                    client.navigate(url);
-                    return;
-                }
-            }
-
-            // If no existing window, open a new one
-            if (clients.openWindow) {
-                return clients.openWindow(url);
-            }
-        })
-    );
+    event.waitUntil(reactToNotificationClick);
 });
 
