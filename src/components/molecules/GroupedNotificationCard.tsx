@@ -14,7 +14,7 @@ import {
     X,
 } from 'lucide-react';
 import { Avatar, Card, EmojiText, IconButton } from '@/components/atoms';
-import { StatusContent } from '@/components/molecules';
+import { PostCard } from '@/components/organisms';
 import { formatRelativeTime } from '@/utils/date';
 import type { NotificationGroup, Account, PartialAccountWithAvatar, Status, NotificationType } from '@/types';
 import { useDismissNotificationGroup } from '@/api';
@@ -232,25 +232,14 @@ export function GroupedNotificationCard({
                             </DismissButton>
                         </HeaderRow>
 
-                        {/* Status preview (for mention, status, reblog, favourite, poll, update) */}
+                        {/* Status content rendered using PostCard */}
                         {relatedStatus && (
-                            <StatusPreview>
-                                {group.type === 'mention' ? (
-                                    // Full content for mentions
-                                    <MentionContent
-                                        html={relatedStatus.content}
-                                        emojis={relatedStatus.emojis}
-                                    />
-                                ) : (
-                                    // Preview for other types
-                                    <PreviewContent>
-                                        <StatusContent
-                                            html={relatedStatus.content}
-                                            emojis={relatedStatus.emojis}
-                                        />
-                                    </PreviewContent>
-                                )}
-                            </StatusPreview>
+                            <PostCard
+                                status={relatedStatus}
+                                hideActions
+                                hideMedia
+                                depth={1}
+                            />
                         )}
                     </ContentColumn>
                 </ContentWrapper>
@@ -351,27 +340,6 @@ const TimeText = styled.div`
 
 const DismissButton = styled(IconButton)`
     opacity: 0.6;
-`;
-
-const StatusPreview = styled.div`
-    padding: var(--size-2);
-    background: var(--surface-2);
-    border-radius: var(--radius-2);
-    margin-top: var(--size-2);
-`;
-
-const PreviewContent = styled.div`
-    font-size: var(--font-size-0);
-    color: var(--text-2);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-`;
-
-const MentionContent = styled(StatusContent)`
-    font-size: var(--font-size-1);
 `;
 
 const NewCard = styled(Card)`

@@ -21,14 +21,22 @@ import { usePostActions } from '@/hooks/usePostActions';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { removeQuotePrefix } from '@/utils/fp';
 import { CSSProperties } from 'react';
+import Link from 'next/link';
+
+// Max nesting level for quoted posts (matching Mastodon's behavior)
+const MAX_QUOTE_NESTING_LEVEL = 1;
 
 interface PostCardProps {
   status: Status;
   style?: CSSProperties;
   hideActions?: boolean;
+  /** Hide media attachments and link previews */
+  hideMedia?: boolean;
   showEditHistory?: boolean;
   onDeleteSuccess?: () => void;
   id?: string;
+  /** Current nesting depth for quote posts (internal use) */
+  depth?: number;
 }
 
 /**
@@ -39,9 +47,11 @@ export function PostCard({
   status,
   style,
   hideActions = false,
+  hideMedia = false,
   showEditHistory = false,
   onDeleteSuccess,
   id,
+  depth = 0,
 }: PostCardProps) {
   const { openModal, closeModal } = useGlobalModal();
 
@@ -178,7 +188,8 @@ export function PostCard({
         )}
 
         {/* Media attachments */}
-        {(!hasContentWarning || showCWContent) &&
+        {!hideMedia &&
+          (!hasContentWarning || showCWContent) &&
           displayStatus.media_attachments.length > 0 && (
             <MediaContainer>
               <MediaGrid
@@ -217,7 +228,8 @@ export function PostCard({
           )}
 
         {/* Link preview */}
-        {(!hasContentWarning || showCWContent) &&
+        {!hideMedia &&
+          (!hasContentWarning || showCWContent) &&
           displayStatus.card &&
           displayStatus.media_attachments.length === 0 && (
             <StyledLinkPreview card={displayStatus.card} />
@@ -228,11 +240,18 @@ export function PostCard({
           displayStatus.quote?.state === 'accepted' &&
           displayStatus.quote.quoted_status && (
             <QuotedPostWrapper>
-              <PostCard
-                status={displayStatus.quote.quoted_status}
-                hideActions
-                style={{ boxShadow: 'inset 0 4px 8px -4px rgba(0, 0, 0, 0.15)' }}
-              />
+              {depth < MAX_QUOTE_NESTING_LEVEL ? (
+                <PostCard
+                  status={displayStatus.quote.quoted_status}
+                  hideActions
+                  depth={depth + 1}
+                  style={{ boxShadow: 'inset 0 4px 8px -4px rgba(0, 0, 0, 0.15)' }}
+                />
+              ) : (
+                <NestedQuoteLink href={`/status/${displayStatus.quote.quoted_status.id}`}>
+                  Quoted a post by @{displayStatus.quote.quoted_status.account.acct}
+                </NestedQuoteLink>
+              )}
             </QuotedPostWrapper>
           )}
 
@@ -344,8 +363,21 @@ const StyledLinkPreview = styled(LinkPreview)`
   margin-top: var(--size-3);
 `;
 
-const QuotedPostWrapper = styled.div`
-  margin-top: var(--size-3);
+const QuotedPostWrapper = styled.div``;
+
+const NestedQuoteLink = styled(Link)`
+  display: block;
+  padding: var(--size-2) var(--size-3);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  color: var(--text-2);
+  font-size: var(--font-size-1);
+  text-decoration: none;
+  
+  &:hover {
+    background: var(--surface-3);
+    color: var(--text-1);
+  }
 `;
 
 const TranslationContainer = styled.div`
