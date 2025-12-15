@@ -735,3 +735,55 @@ export interface UpdateFilterParams {
   expires_in?: number
   keywords_attributes?: FilterKeywordParams[]
 }
+
+// Report types
+export type ReportCategory = 'other' | 'spam' | 'legal' | 'violation'
+
+export interface Report {
+  id: string
+  action_taken: boolean
+  action_taken_at: string | null
+  category: ReportCategory
+  comment: string
+  forwarded: boolean
+  created_at: string
+  status_ids: string[]
+  rule_ids: string[]
+  target_account: Account
+}
+
+export interface CreateReportParams {
+  account_id: string
+  status_ids?: string[]
+  comment?: string
+  forward?: boolean
+  category?: ReportCategory
+  rule_ids?: string[]
+}
+
+// Instance Rule (standalone)
+export interface Rule {
+  id: string
+  text: string
+  hint?: string
+}
+
+// Instance Privacy Policy
+export interface PrivacyPolicy {
+  updated_at: string
+  content: string
+}
+
+// Instance Terms of Service
+export interface TermsOfService {
+  effective_date: string
+  effective: boolean
+  content: string
+  succeeded_by: string | null
+}
+
+// Instance Extended Description
+export interface ExtendedDescription {
+  updated_at: string
+  content: string
+}

@@ -55,11 +55,12 @@ import {
   createFilter,
   updateFilter,
   deleteFilter,
+  createReport,
   type PaginatedResponse,
 } from './client'
 import { queryKeys } from './queryKeys'
 import { findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
-import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams, UpdateNotificationPolicyV1Params, CreatePushSubscriptionParams, UpdatePushSubscriptionParams, CreateFilterParams, UpdateFilterParams } from '../types/mastodon'
+import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams, UpdateNotificationPolicyV1Params, CreatePushSubscriptionParams, UpdatePushSubscriptionParams, CreateFilterParams, UpdateFilterParams, CreateReportParams } from '../types/mastodon'
 
 
 // Helper function to invalidate all relationship queries that contain a given account ID
@@ -1647,3 +1648,17 @@ export function useDeleteFilter() {
     },
   })
 }
+
+// Report mutations
+export function useCreateReport() {
+  return useMutation({
+    mutationFn: (params: CreateReportParams) => createReport(params),
+    onSuccess: () => {
+      toast.success('Report submitted. Thank you for helping keep this community safe.')
+    },
+    onError: () => {
+      toast.error('Failed to submit report. Please try again.')
+    },
+  })
+}
+

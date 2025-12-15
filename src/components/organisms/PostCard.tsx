@@ -15,6 +15,7 @@ import {
   DeletePostModal,
   MediaModal,
   TranslateButton,
+  ReportModal,
 } from '@/components/molecules';
 import type { Status, Translation } from '@/types';
 import { usePostActions } from '@/hooks/usePostActions';
@@ -74,6 +75,16 @@ export function PostCard({
       <MediaModal
         mediaAttachments={displayStatus.media_attachments}
         initialIndex={index}
+        onClose={closeModal}
+      />
+    );
+  };
+
+  const handleReportClick = () => {
+    openModal(
+      <ReportModal
+        account={displayStatus.account}
+        status={displayStatus}
         onClose={closeModal}
       />
     );
@@ -160,6 +171,7 @@ export function PostCard({
               : undefined
           }
           onMute={hideOptions ? undefined : handleMuteConversation}
+          onReport={!hideOptions && !isOwnPost ? handleReportClick : undefined}
         />
 
         {/* Content Warning */}

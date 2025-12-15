@@ -76,6 +76,10 @@ export const queryKeys = {
   // Instance
   instance: {
     default: ['instance'] as const,
+    rules: () => ['instance', 'rules'] as const,
+    privacyPolicy: () => ['instance', 'privacy-policy'] as const,
+    termsOfService: () => ['instance', 'terms-of-service'] as const,
+    extendedDescription: () => ['instance', 'extended-description'] as const,
   },
 
   // Blocks

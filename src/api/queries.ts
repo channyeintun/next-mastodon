@@ -1082,3 +1082,95 @@ export function useFilter(id: string) {
     enabled: authStore.isAuthenticated && !!id,
   })
 }
+
+// Instance Rules Options
+export const instanceRulesOptions = () =>
+  queryOptions({
+    queryKey: queryKeys.instance.rules(),
+    queryFn: ({ signal }) => import('./client').then(m => m.getInstanceRules(signal)),
+    staleTime: 1000 * 60 * 60, // Cache for 1 hour
+  })
+
+// Privacy Policy Options - Returns null if not configured on server
+export const privacyPolicyOptions = () =>
+  queryOptions({
+    queryKey: queryKeys.instance.privacyPolicy(),
+    queryFn: async ({ signal }) => {
+      try {
+        const { getPrivacyPolicy } = await import('./client')
+        return await getPrivacyPolicy(signal)
+      } catch (error) {
+        // Return null if 404 - policy not configured on this server
+        if (error && typeof error === 'object' && 'response' in error) {
+          const axiosError = error as { response?: { status?: number } }
+          if (axiosError.response?.status === 404) return null
+        }
+        throw error
+      }
+    },
+    staleTime: 1000 * 60 * 60, // Cache for 1 hour
+    retry: false, // Don't retry on 404
+  })
+
+// Terms of Service Options - Returns null if not configured on server
+export const termsOfServiceOptions = () =>
+  queryOptions({
+    queryKey: queryKeys.instance.termsOfService(),
+    queryFn: async ({ signal }) => {
+      try {
+        const { getTermsOfService } = await import('./client')
+        return await getTermsOfService(signal)
+      } catch (error) {
+        // Return null if 404 - ToS not configured on this server
+        if (error && typeof error === 'object' && 'response' in error) {
+          const axiosError = error as { response?: { status?: number } }
+          if (axiosError.response?.status === 404) return null
+        }
+        throw error
+      }
+    },
+    staleTime: 1000 * 60 * 60, // Cache for 1 hour
+    retry: false, // Don't retry on 404
+  })
+
+// Extended Description Options - Returns null if not configured on server
+export const extendedDescriptionOptions = () =>
+  queryOptions({
+    queryKey: queryKeys.instance.extendedDescription(),
+    queryFn: async ({ signal }) => {
+      try {
+        const { getExtendedDescription } = await import('./client')
+        return await getExtendedDescription(signal)
+      } catch (error) {
+        // Return null if 404 - description not configured on this server
+        if (error && typeof error === 'object' && 'response' in error) {
+          const axiosError = error as { response?: { status?: number } }
+          if (axiosError.response?.status === 404) return null
+        }
+        throw error
+      }
+    },
+    staleTime: 1000 * 60 * 60, // Cache for 1 hour
+    retry: false, // Don't retry on 404
+  })
+
+// Instance Rules Hook
+export function useInstanceRules() {
+  return useQuery(instanceRulesOptions())
+}
+
+// Privacy Policy Hook
+export function usePrivacyPolicy() {
+  return useQuery(privacyPolicyOptions())
+}
+
+// Terms of Service Hook
+export function useTermsOfService() {
+  return useQuery(termsOfServiceOptions())
+}
+
+// Extended Description Hook
+export function useExtendedDescription() {
+  return useQuery(extendedDescriptionOptions())
+}
+

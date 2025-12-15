@@ -49,3 +49,4 @@ export { TrendingTagCard, TrendingTagCardSkeleton } from './TrendingTagCard';
 export { UserCard } from './UserCard';
 export { UserCardSkeleton } from './UserCardSkeleton';
 export { VisibilitySettingsModal } from './VisibilitySettingsModal';
+export { ReportModal } from './ReportModal';

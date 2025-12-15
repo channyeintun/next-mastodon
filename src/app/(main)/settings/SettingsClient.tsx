@@ -3,7 +3,7 @@
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock, List, Settings2, TrendingUp, Search, Bell, Filter } from 'lucide-react';
+import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock, List, Settings2, TrendingUp, Search, Bell, Filter, Info } from 'lucide-react';
 import { useCurrentAccount } from '@/api';
 import { Button, IconButton, Card, Avatar, EmojiText, CircleSkeleton, TextSkeleton } from '@/components/atoms';
 import { ThemeSelector } from '@/components/molecules';
@@ -229,6 +229,25 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
           <Link href="/settings/notifications" className="settings-link">
             <Bell size={20} className="settings-link-icon" />
             Push Notifications
+          </Link>
+        </div>
+      </Card>
+
+      {/* Server Info */}
+      <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
+        <h2 style={{
+          fontSize: 'var(--font-size-2)',
+          fontWeight: 'var(--font-weight-6)',
+          marginBottom: 'var(--size-3)',
+          color: 'var(--text-2)',
+        }}>
+          Server
+        </h2>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
+          <Link href="/about" className="settings-link">
+            <Info size={20} className="settings-link-icon" />
+            About this server
           </Link>
         </div>
       </Card>

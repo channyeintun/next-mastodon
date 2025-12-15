@@ -14,6 +14,7 @@ import {
     PinOff,
     Volume2,
     VolumeX,
+    Flag,
 } from 'lucide-react';
 import { Avatar, IconButton, EmojiText } from '@/components/atoms';
 import { formatRelativeTime } from '@/utils/date';
@@ -33,6 +34,7 @@ interface PostHeaderProps {
     onDelete?: () => void;
     onPin?: () => void;
     onMute?: () => void;
+    onReport?: () => void;
 }
 
 const VISIBILITY_ICONS = {
@@ -58,6 +60,7 @@ export function PostHeader({
     onDelete,
     onPin,
     onMute,
+    onReport,
 }: PostHeaderProps) {
     return (
         <Container>
@@ -165,6 +168,35 @@ export function PostHeader({
                                             <span>Delete status</span>
                                         </button>
                                     )}
+                                </div>
+                            </div>
+                        )}
+                        {/* Report option for other users' posts */}
+                        {!isOwnPost && onReport && (
+                            <div className="options-menu-btn">
+                                <IconButton
+                                    size="small"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        e.currentTarget.focus();
+                                    }}
+                                >
+                                    <MoreHorizontal size={16} />
+                                </IconButton>
+
+                                <div className="options-menu-popover">
+                                    <button
+                                        className="options-menu-item danger"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            onReport();
+                                        }}
+                                    >
+                                        <Flag size={16} />
+                                        <span>Report</span>
+                                    </button>
                                 </div>
                             </div>
                         )}
