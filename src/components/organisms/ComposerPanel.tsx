@@ -185,13 +185,6 @@ export function ComposerPanel({
     mediaUploadRef.current?.processFiles(files);
   };
 
-  // Handle URLs pasted into the editor (for potential link card creation)
-  const handleUrlPaste = (url: URL) => {
-    // Currently, link cards are created server-side when posting
-    // This could be extended to show a preview before posting
-    console.log('URL pasted:', url.href);
-  };
-
   // Load scheduled status data
   useEffect(() => {
     if (scheduledStatusData) {
@@ -388,7 +381,6 @@ export function ComposerPanel({
           }}
           mentionSuggestion={mentionSuggestion}
           onFilePaste={handleFilePaste}
-          onUrlPaste={handleUrlPaste}
           maxFiles={4 - media.length}
           ariaLabel="Compose post"
         />
