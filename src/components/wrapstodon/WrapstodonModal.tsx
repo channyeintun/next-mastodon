@@ -8,7 +8,6 @@
 import { useMemo, useCallback, useState } from 'react'
 import { useAnnualReportState, useAnnualReport, useInstance } from '@/api/queries'
 import { useGenerateAnnualReport } from '@/api/mutations'
-import { useAuthStore } from '@/hooks/useStores'
 import { Wrapstodon } from '@/components/wrapstodon'
 import { Announcement } from '@/components/wrapstodon/Announcement'
 import { Spinner } from '@/components/atoms/Spinner'
@@ -20,7 +19,6 @@ interface WrapstodonModalProps {
 }
 
 export function WrapstodonModal({ onClose }: WrapstodonModalProps) {
-    const { isAuthenticated, openAuthModal } = useAuthStore()
     const [isDismissed, setIsDismissed] = useState(false)
 
     // Get the Wrapstodon year from instance data
@@ -33,7 +31,7 @@ export function WrapstodonModal({ onClose }: WrapstodonModalProps) {
         isLoading: isLoadingState,
         refetch: refetchState,
     } = useAnnualReportState(wrapstodonYear ?? 0, {
-        enabled: isAuthenticated && !!wrapstodonYear,
+        enabled: !!wrapstodonYear,
     })
 
     const state = stateData?.state
@@ -96,27 +94,7 @@ export function WrapstodonModal({ onClose }: WrapstodonModalProps) {
         )
     }
 
-    // Not authenticated
-    if (!isAuthenticated) {
-        return (
-            <div className="wrapstodon-modal-wrapper">
-                <div className="wrapstodon-modal-message">
-                    <GiRingedPlanet size={48} className="wrapstodon-modal-icon" />
-                    <h2>Sign in to see your Wrapstodon</h2>
-                    <p>Wrapstodon shows your year in review on Mastodon</p>
-                    <button
-                        className="wrapstodon-modal-button"
-                        onClick={() => {
-                            onClose()
-                            openAuthModal()
-                        }}
-                    >
-                        Sign In
-                    </button>
-                </div>
-            </div>
-        )
-    }
+
 
     // No wrapstodon year available from server
     if (!wrapstodonYear) {
