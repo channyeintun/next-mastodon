@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev -p 9003",
-    "build": "next build",
+    "dev": "bun --bun next dev -p 9003",
+    "build": "bun --bun next build",
     "start": "next start -p 9003",
     "lint": "eslint .",
     "lint:css": "eslint --ext .css .",
