@@ -53,10 +53,13 @@ import {
   getPushSubscription,
   getFilters,
   getFilter,
+  getAnnualReportState,
+  getAnnualReport,
 } from './client'
 import { queryKeys } from './queryKeys'
 import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, Tag, TrendingLink, ConversationParams, NotificationRequestParams, NotificationType } from '../types/mastodon'
 import { useAuthStore } from '../hooks/useStores'
+
 
 
 // ============================================================================
@@ -1174,3 +1177,40 @@ export function useExtendedDescription() {
   return useQuery(extendedDescriptionOptions())
 }
 
+// ============================================================================
+// ANNUAL REPORT (WRAPSTODON) QUERIES
+// ============================================================================
+
+// Annual Report State Options
+export const annualReportStateOptions = (year: number) =>
+  queryOptions({
+    queryKey: queryKeys.annualReports.state(year),
+    queryFn: ({ signal }) => getAnnualReportState(year, signal),
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  })
+
+// Annual Report Data Options
+export const annualReportOptions = (year: number) =>
+  queryOptions({
+    queryKey: queryKeys.annualReports.detail(year),
+    queryFn: ({ signal }) => getAnnualReport(year, signal),
+    staleTime: 1000 * 60 * 60, // Cache for 1 hour - report doesn't change once generated
+  })
+
+// Annual Report State Hook
+export function useAnnualReportState(year: number, options?: { enabled?: boolean }) {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...annualReportStateOptions(year),
+    enabled: (options?.enabled ?? true) && authStore.isAuthenticated && year > 0,
+  })
+}
+
+// Annual Report Data Hook
+export function useAnnualReport(year: number, options?: { enabled?: boolean }) {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...annualReportOptions(year),
+    enabled: (options?.enabled ?? true) && authStore.isAuthenticated && year > 0,
+  })
+}

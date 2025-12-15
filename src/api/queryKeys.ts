@@ -144,6 +144,12 @@ export const queryKeys = {
     all: () => ['filters'] as const,
     detail: (id: string) => ['filters', id] as const,
   },
+
+  // Annual Reports (Wrapstodon)
+  annualReports: {
+    state: (year: number) => ['annualReports', year, 'state'] as const,
+    detail: (year: number) => ['annualReports', year] as const,
+  },
 }
 
 

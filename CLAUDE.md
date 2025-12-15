@@ -254,6 +254,9 @@ Next.js App Router with file-based routing using route groups for different layo
 **Route Group: `(main)/`** - Main application routes with navigation
 - **Root** (`/`): Home timeline page (shows trending timeline from mastodon.social when not signed in)
 - **`/compose`**: Create new post page
+  - Supports query parameters: `text`, `mention`, `quoted_status_id`, `scheduled_status_id`, `visibility`
+  - Uses key-based remounting to handle URL parameter changes when already on the page
+  - Integrates with Wrapstodon sharing (pre-fills text from share URL)
 - **`/status/[id]`**: Status detail with thread context
 - **`/status/[id]/edit`**: Edit existing status
 - **`/bookmarks`**: Bookmarked posts
@@ -270,12 +273,14 @@ Next.js App Router with file-based routing using route groups for different layo
 - **`/search`**: Search functionality
 - **`/profile/edit`**: Edit current user's profile
 - **`/settings`**: Account settings
+  - Mobile-only Wrapstodon navigation item (when available) with highlight styling
 - **`/settings/blocks`**: Blocked accounts
 - **`/settings/mutes`**: Muted accounts
 - **`/settings/preferences`**: User preferences (posting defaults, media, accessibility)
 - **`/lists`**: Lists overview
 - **`/lists/[id]`**: Individual list timeline
 - **`/lists/[id]/members`**: List members management
+- **`/wrapstodon`**: Standalone Wrapstodon (year in review) page
 
 **Route Group: `(auth)/`** - Authentication routes without main navigation
 - **`/auth/signin`**: OAuth sign in
@@ -297,14 +302,16 @@ Mastodon API client and TanStack Query integration. Contains:
 ### `/src/components/`
 Atomic design pattern components:
 - **atoms/**: Smallest UI building blocks
-  - Avatar, Badge, Button, Card, CheckboxField, CircleSkeleton (circular skeleton loader), ContentWarningInput, Dialog (base modal), EmptyState, EmojiText, FormField, IconButton, ImageSkeleton (image loader), Input, ScheduleInput, ScrollToTopButton, SensitiveContentButton, SkipToMain, Spinner, Tabs, TextArea, TextSkeleton (text loader), TiptapEditor
+  - Avatar, Badge, Button, Card, CheckboxField, CircleSkeleton (circular skeleton loader), ContentWarningInput, Dialog (base modal), EmptyState, EmojiText, FormField, IconButton, ImageSkeleton (image loader), Input, ScheduleInput, ScrollToTopButton, SensitiveContentButton, SkipToMain, Spinner, Tabs, TextArea, TextSkeleton (text loader), TiptapEditor (calls onUpdate on mount with initial content to enable publish button)
 - **molecules/**: Simple component combinations
-  - AccountCard, AccountProfileSkeleton, AuthModalBridge, ComposerToolbar, ContentWarningSection, ConversationCard (conversation list item with unread indicator and actions), DeletePostModal, GroupedNotificationCard, HandleExplainer, ImageCropper (cropperjs-based image cropping with zoom, rotate, flip), LinkPreview, ListItemSkeleton, MediaGrid, MediaGridSkeleton, MediaModal (fullscreen media viewer with keyboard navigation), MediaUpload (media upload with cropping), MentionSuggestions, Navigation, NotificationCard, NotificationSkeleton, PageHeaderSkeleton, PollComposer, PostActions, PostCardSkeleton, PostHeader, PostPoll, PrivacySettingsForm, ProfileActionButtons, ProfileBio, ProfileEditorSkeleton, ProfileFields, ProfileFieldsEditor, ProfileImageUploader, ProfilePillSkeleton, ProfileStats, ReblogIndicator, ScheduledCardSkeleton, SearchHistory, StatusContent, StatusEditHistory, ThemeSelector, TrendingLinkCard, TrendingTagCard, UserCard, UserCardSkeleton, VisibilitySettingsModal
+  - AccountCard, AccountProfileSkeleton, AuthModalBridge, ComposerToolbar, ContentWarningSection, ConversationCard (conversation list item with unread indicator and actions), DeletePostModal, GroupedNotificationCard, HandleExplainer, ImageCropper (cropperjs-based image cropping with zoom, rotate, flip), LinkPreview (left square image/icon with max-height 150px, full height with 1:1 aspect ratio), ListItemSkeleton, MediaGrid, MediaGridSkeleton, MediaModal (fullscreen media viewer with keyboard navigation), MediaUpload (media upload with cropping), MentionSuggestions, Navigation, NotificationCard, NotificationSkeleton, PageHeaderSkeleton, PollComposer, PostActions, PostCardSkeleton, PostHeader, PostPoll, PrivacySettingsForm, ProfileActionButtons, ProfileBio, ProfileEditorSkeleton, ProfileFields, ProfileFieldsEditor, ProfileImageUploader, ProfilePillSkeleton, ProfileStats, ReblogIndicator, ScheduledCardSkeleton, SearchHistory, StatusContent, StatusEditHistory, ThemeSelector, TrendingLinkCard, TrendingTagCard, UserCard, UserCardSkeleton, VisibilitySettingsModal
 - **organisms/**: Complex components
   - AuthGuard (authentication route protection), ComposerPanel (post composition), EmojiPicker, NavigationWrapper (auth integration), PostCard (with usePostActions hook), ProfileContent (profile tabs), SearchContent (search results), TimelinePage (reusable timeline), TrendingContent, TrendingPage (trending with navigation), VirtualizedList (infinite scroll)
 - **templates/**: Page layouts (currently empty, layouts handled by route groups)
 - **providers/**: React context providers
   - QueryProvider (TanStack Query), ScrollRestorationProvider, StoreProvider (MobX), StreamingProvider (real-time updates), ThemeProvider, VideoSyncProvider (ensures only one video plays at a time)
+- **wrapstodon/**: Year in review components
+  - Wrapstodon (main component), WrapstodonModal, Archetype (personality archetype with reveal), HighlightedPost, StatsComponents, ShareButton (shares to compose page with onClose modal support), Announcement
 
 ### `/src/hooks/`
 Custom React hooks:
@@ -461,6 +468,7 @@ Global styles using Open Props:
 - Responsive breakpoints (768px tablet, 1024px desktop)
 - Layout adjustments (body margins/padding for sidebar and bottom nav)
 - **Styling convention**: Components use @emotion/styled for styled components (replaced inline styles). Styled components are defined at the top of each file with the $ prefix for transient props (e.g., `$variant`, `$size`). Pages and components use semantic styled components for better maintainability, type safety, and performance.
+- **Wrapstodon highlight styles**: Special gradient styling for Wrapstodon navigation items with `.wrapstodon-highlight` class (purple gradient background matching sidebar highlight style)
 
 ### `tsconfig.json`
 TypeScript configuration:

@@ -4,9 +4,12 @@ import styled from '@emotion/styled';
 import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, PenSquare, Search, Settings, Github, Bell, List, TrendingUp, Mail } from 'lucide-react';
-import { useInstance, useUnreadNotificationCount, useNotificationMarker } from '@/api';
+import { useInstance, useUnreadNotificationCount, useNotificationMarker, useAnnualReportState } from '@/api';
 import { CircleSkeleton, TextSkeleton } from '@/components/atoms';
 import { SiBuymeacoffee } from 'react-icons/si';
+import { GiRingedPlanet } from 'react-icons/gi';
+import { useGlobalModal } from '@/contexts/GlobalModalContext';
+import { WrapstodonModal } from '@/components/wrapstodon/WrapstodonModal';
 
 interface NavigationProps {
   isAuthenticated: boolean;
@@ -17,6 +20,22 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
   const pathname = usePathname();
   const { data: instance, isLoading: isLoadingInstance } = useInstance();
   const { data: unreadCount } = useUnreadNotificationCount();
+
+  // Get Wrapstodon year from instance - the server tells us which year is available
+  const wrapstodonYear = instance?.wrapstodon;
+
+  // Get current year to check if wrapstodon is for the current year
+  const currentYear = new Date().getFullYear();
+  const isCurrentYear = wrapstodonYear === currentYear;
+
+  // Check if Wrapstodon is available for the user (only if server has current year set)
+  const { data: annualReportState } = useAnnualReportState(wrapstodonYear ?? 0, {
+    enabled: isAuthenticated && !!wrapstodonYear && isCurrentYear,
+  });
+
+  // Show Wrapstodon link if server has current year and user is eligible, generating, or has available report
+  const showWrapstodon = isCurrentYear && annualReportState?.state && annualReportState.state !== 'ineligible';
+
 
   // Prefetch notification marker globally so it's available immediately when visiting notifications
   useNotificationMarker();
@@ -109,6 +128,15 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
                 />
               );
             })}
+
+            {/* Wrapstodon - shown dynamically based on API state */}
+            {showWrapstodon && wrapstodonYear && (
+              <WrapstodonButton
+                year={wrapstodonYear}
+                highlight={annualReportState?.state === 'available'}
+                textBadge={annualReportState?.state === 'available' ? 'New' : undefined}
+              />
+            )}
           </nav>
         )}
 
@@ -178,12 +206,14 @@ interface NavigationLinkProps {
   isActive: boolean;
   variant: 'sidebar' | 'bottom';
   badge?: number;
+  textBadge?: string;
+  highlight?: boolean;
 }
 
-function NavigationLink({ href, icon: Icon, label, isActive, variant, badge }: NavigationLinkProps) {
+function NavigationLink({ href, icon: Icon, label, isActive, variant, badge, textBadge, highlight }: NavigationLinkProps) {
 
   const className = variant === 'sidebar'
-    ? `navigation-sidebar-link ${isActive ? 'active' : ''}`
+    ? `navigation-sidebar-link ${isActive ? 'active' : ''} ${highlight ? 'highlight' : ''}`
     : `navigation-bottom-link ${isActive ? 'active' : ''}`;
 
   return (
@@ -206,6 +236,7 @@ function NavigationLink({ href, icon: Icon, label, isActive, variant, badge }: N
         )}
       </IconWrapper>
       <span className="navigation-link-label">{label}</span>
+      {textBadge && <TextBadge>{textBadge}</TextBadge>}
       <LinkStatus />
     </Link>
   );
@@ -244,3 +275,49 @@ const Badge = styled.span`
   align-items: center;
   justify-content: center;
 `;
+
+const TextBadge = styled.span`
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  padding: 2px 5px;
+  font-size: 7px;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+`;
+
+// Wrapstodon button component that opens the modal
+interface WrapstodonButtonProps {
+  year: number;
+  highlight?: boolean;
+  textBadge?: string;
+}
+
+function WrapstodonButton({ year, highlight, textBadge }: WrapstodonButtonProps) {
+  const { openModal, closeModal } = useGlobalModal();
+
+  const handleClick = () => {
+    openModal(<WrapstodonModal onClose={closeModal} />);
+  };
+
+  const className = `navigation-sidebar-link ${highlight ? 'highlight' : ''}`;
+
+  return (
+    <button
+      onClick={handleClick}
+      className={className}
+      aria-label={`Wrapstodon ${year}`}
+    >
+      <IconWrapper className="navigation-link-icon">
+        <GiRingedPlanet style={{ fontSize: 24, width: 24, height: 24, minWidth: 24, minHeight: 24, flexShrink: 0 }} />
+      </IconWrapper>
+      <span className="navigation-link-label">Wrapstodon {year}</span>
+      {textBadge && <TextBadge>{textBadge}</TextBadge>}
+    </button>
+  );
+}

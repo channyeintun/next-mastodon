@@ -2,123 +2,120 @@
 
 import styled from '@emotion/styled';
 import { Card as CardType } from '@/types/mastodon';
-import { Card } from '../atoms/Card';
 import { ExternalLink } from 'lucide-react';
+import { RiPagesLine } from 'react-icons/ri';
 
 interface LinkPreviewProps {
   card: CardType;
   style?: React.CSSProperties;
+  className?: string;
+  wrapstodon?: boolean;
 }
 
-/**
- * Displays a rich link preview card with image, title, and description
- */
-export function LinkPreview({ card, style }: LinkPreviewProps) {
-  const handleClick = () => {
-    window.open(card.url, '_blank', 'noopener,noreferrer');
-  };
-
+export function LinkPreview({ card, style, className, wrapstodon = false }: LinkPreviewProps) {
   return (
-    <StyledCard
-      hoverable
+    <Card
+      onClick={() => window.open(card.url, '_blank', 'noopener,noreferrer')}
+      className={className}
       style={style}
-      onClick={handleClick}
+      $wrapstodon={wrapstodon}
     >
-      <Container>
-        {/* Image */}
-        {card.image && (
-          <ImageContainer>
-            <Image
-              src={card.image}
-              alt={card.title}
-            />
-          </ImageContainer>
+      <ImageBox $wrapstodon={wrapstodon}>
+        {card.image ? (
+          <img src={card.image} alt={card.title} />
+        ) : (
+          <PlaceholderWrapper>
+            <RiPagesLine size={48} />
+          </PlaceholderWrapper>
         )}
-
-        {/* Content */}
-        <Content>
-          {/* URL domain */}
-          <UrlSection>
-            <Icon size={14} />
-            <Domain>
-              {new URL(card.url).hostname}
-            </Domain>
-          </UrlSection>
-
-          {/* Title */}
-          <Title>
-            {card.title}
-          </Title>
-
-          {/* Description */}
-          {card.description && (
-            <Description>
-              {card.description}
-            </Description>
-          )}
-        </Content>
-      </Container>
-    </StyledCard>
+      </ImageBox>
+      <ContentBox>
+        <Title $wrapstodon={wrapstodon}>{card.title}</Title>
+        {card.description && <Desc $wrapstodon={wrapstodon}>{card.description}</Desc>}
+        <Domain $wrapstodon={wrapstodon}>
+          <ExternalLink size={12} />
+          {new URL(card.url).hostname}
+        </Domain>
+      </ContentBox>
+    </Card>
   );
 }
 
-const StyledCard = styled(Card)`
-  cursor: pointer;
-  overflow: hidden;
-`;
-
-const Container = styled.div`
+const Card = styled.div<{ $wrapstodon?: boolean }>`
   display: flex;
-  flex-direction: column;
-`;
-
-const ImageContainer = styled.div`
-  width: 100%;
-  height: 200px;
+  justify-content: flex-start;
+  gap: var(--size-3);
+  border-radius: var(--radius-2);
   overflow: hidden;
-  background: var(--surface-2);
+  cursor: pointer;
+  background: ${p => p.$wrapstodon ? 'rgba(0,0,0,0.5)' : 'var(--surface-2)'};
+  border: 1px solid ${p => p.$wrapstodon ? 'rgba(255,255,255,0.2)' : 'var(--surface-3)'};
+  &:hover { opacity: 0.9; }
 `;
 
-const Image = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-`;
-
-const Content = styled.div`
-  padding: var(--size-4);
-`;
-
-const UrlSection = styled.div`
+const ImageBox = styled.div<{ $wrapstodon?: boolean }>`
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  align-self: stretch;
+  max-height: 150px;
+  min-width: 150px;
   display: flex;
   align-items: center;
-  gap: var(--size-2);
-  margin-bottom: var(--size-2);
+  justify-content: center;
+  background: ${p => p.$wrapstodon ? 'rgba(0,0,0,0.4)' : 'var(--surface-3)'};
+  color: ${p => p.$wrapstodon ? 'rgba(255,255,255,0.5)' : 'var(--text-3)'};
+  padding: 0;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 `;
 
-const Icon = styled(ExternalLink)`
-  color: var(--text-2);
+const PlaceholderWrapper = styled.div`
+  flex-shrink: 0;
+  height: 100%;
+  aspect-ratio: 1;
+  max-height: 150px;
+  min-width: 150px;
+  display: grid;
+  place-items: center;
 `;
 
-const Domain = styled.span`
-  font-size: var(--font-size-0);
-  color: var(--text-2);
+const ContentBox = styled.div<{ $wrapstodon?: boolean }>`
+  padding-block: var(--size-3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
-const Title = styled.div`
-  font-size: var(--font-size-2);
-  font-weight: var(--font-weight-6);
-  color: var(--text-1);
-  margin-bottom: var(--size-2);
-  line-height: 1.3;
-`;
-
-const Description = styled.div`
-  font-size: var(--font-size-1);
-  color: var(--text-2);
-  line-height: 1.4;
+const Title = styled.div<{ $wrapstodon?: boolean }>`
+  font-weight: 600;
+  color: ${p => p.$wrapstodon ? '#fff' : 'var(--text-1)'};
+  overflow: hidden;
+  text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+`;
+
+const Desc = styled.div<{ $wrapstodon?: boolean }>`
+  font-size: 13px;
+  color: ${p => p.$wrapstodon ? 'rgba(255,255,255,0.7)' : 'var(--text-2)'};
+  margin-top: 4px;
   overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+`;
+
+const Domain = styled.div<{ $wrapstodon?: boolean }>`
+  font-size: 12px;
+  color: ${p => p.$wrapstodon ? 'rgba(255,255,255,0.6)' : 'var(--text-3)'};
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 `;

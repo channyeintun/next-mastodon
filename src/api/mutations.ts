@@ -62,6 +62,22 @@ import { queryKeys } from './queryKeys'
 import { findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
 import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams, UpdateNotificationPolicyV1Params, CreatePushSubscriptionParams, UpdatePushSubscriptionParams, CreateFilterParams, UpdateFilterParams, CreateReportParams } from '../types/mastodon'
 
+// Annual Report (Wrapstodon) mutations
+export function useGenerateAnnualReport() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (year: number) => {
+      const { generateAnnualReport } = await import('./client')
+      return generateAnnualReport(year)
+    },
+    onSuccess: (_, year) => {
+      // Invalidate the state query to trigger refetch
+      // The state will change from 'eligible' to 'generating' and then 'available'
+      queryClient.invalidateQueries({ queryKey: queryKeys.annualReports.state(year) })
+    },
+  })
+}
 
 // Helper function to invalidate all relationship queries that contain a given account ID
 // This is needed because relationships can be batch-fetched with multiple IDs

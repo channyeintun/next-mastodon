@@ -135,6 +135,20 @@ export function TiptapEditor({
     }
   }, [editor, onEditorReady]);
 
+  // Call onUpdate with initial content when editor is first created
+  useEffect(() => {
+    if (editor && onUpdate) {
+      const html = editor.getHTML();
+      const text = editor.getText({ blockSeparator: '\n' }).replace(/\u00A0/g, ' ');
+      // Only call if there's actual content
+      if (text.trim().length > 0) {
+        onUpdate(html, text);
+      }
+    }
+    // Only run once when editor is first created
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editor]);
+
   // Update content when prop changes
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {

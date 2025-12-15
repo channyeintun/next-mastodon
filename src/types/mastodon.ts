@@ -386,6 +386,8 @@ export interface Instance {
     id: string
     text: string
   }>
+  // Wrapstodon year - when set, indicates annual reports are available for this year
+  wrapstodon?: number
 }
 
 // Notification types
@@ -786,4 +788,52 @@ export interface TermsOfService {
 export interface ExtendedDescription {
   updated_at: string
   content: string
+}
+
+// Annual Report (Wrapstodon) Types
+export type AnnualReportState = 'available' | 'generating' | 'eligible' | 'ineligible'
+
+export interface NameAndCount {
+  name: string
+  count: number
+}
+
+export interface TimeSeriesMonth {
+  month: number
+  statuses: number
+  following: number
+  followers: number
+}
+
+export interface TopStatuses {
+  by_reblogs: string | null
+  by_favourites: string | null
+  by_replies: string | null
+}
+
+export type Archetype = 'lurker' | 'booster' | 'pollster' | 'replier' | 'oracle'
+
+export interface AnnualReportData {
+  archetype: Archetype
+  time_series: TimeSeriesMonth[]
+  top_hashtags: NameAndCount[]
+  top_statuses: TopStatuses
+}
+
+export interface AnnualReport {
+  year: number
+  schema_version: number
+  data: AnnualReportData
+  share_url: string | null
+  account_id: string
+}
+
+export interface AnnualReportResponse {
+  annual_reports: AnnualReport[]
+  accounts: Account[]
+  statuses: Status[]
+}
+
+export interface AnnualReportStateResponse {
+  state: AnnualReportState
 }

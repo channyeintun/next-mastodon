@@ -1,0 +1,535 @@
+/**
+ * Wrapstodon (Year in Review) Styles
+ * Based on Mastodon's official implementation with cosmic gradient theme
+ */
+
+/* Silkscreen font for retro title */
+@font-face {
+    font-family: silkscreen-wrapstodon;
+    src: url('/fonts/silkscreen-regular.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+    font-style: normal;
+}
+
+/* Mobile breakpoint */
+@media (max-width: 540px) {
+    .wrapstodon-wrapper {
+        padding-inline: 12px;
+        padding-bottom: 12px;
+        border-radius: 0;
+    }
+
+    .wrapstodon-title {
+        font-size: 22px !important;
+    }
+
+    .wrapstodon-stats-grid {
+        grid-template-columns: 1fr 1fr !important;
+        grid-template-areas:
+            'followers new-posts'
+            'hashtag hashtag' !important;
+    }
+
+    .wrapstodon-stat-extra-large {
+        font-size: 24px !important;
+    }
+}
+
+/* Main Wrapper */
+.wrapstodon-wrapper {
+    --gradient-strength: 0.4;
+
+    box-sizing: border-box;
+    position: relative;
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 24px;
+    padding-top: 40px;
+    contain: layout;
+    flex: 0 0 auto;
+    pointer-events: all;
+    color: var(--color-text-primary);
+    background: var(--color-bg-primary);
+    background:
+        radial-gradient(at 10% 27%,
+            rgba(83, 12, 154, var(--gradient-strength)) 0,
+            transparent 50%),
+        radial-gradient(at 91% 10%,
+            rgba(30, 24, 223, var(--gradient-strength)) 0,
+            transparent 25%),
+        radial-gradient(at 10% 91%,
+            rgba(22, 218, 228, var(--gradient-strength)) 0,
+            transparent 40%),
+        radial-gradient(at 75% 87%,
+            rgba(37, 31, 217, var(--gradient-strength)) 0,
+            transparent 20%),
+        radial-gradient(at 84% 60%,
+            rgba(95, 30, 148, var(--gradient-strength)) 0,
+            transparent 40%) var(--color-bg-primary);
+    border-radius: 40px;
+}
+
+/* Header */
+.wrapstodon-header {
+    margin-bottom: 18px;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.wrapstodon-title {
+    font-family: silkscreen-wrapstodon, monospace;
+    font-size: 28px;
+    line-height: 1;
+    margin-bottom: 4px;
+    letter-spacing: 0;
+    color: var(--color-text-primary);
+    text-align: center;
+}
+
+.wrapstodon-account {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+}
+
+.wrapstodon-close-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 8px;
+    border-radius: 100%;
+    background: var(--color-text-primary);
+    color: var(--color-bg-primary);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.wrapstodon-close-button:hover {
+    transform: scale(1.1);
+}
+
+/* Content Stack */
+.wrapstodon-stack {
+    --grid-spacing: 12px;
+
+    display: grid;
+    gap: var(--grid-spacing);
+}
+
+/* Box - Common card styling */
+.wrapstodon-box {
+    position: relative;
+    padding: 24px;
+    border-radius: 16px;
+    background: rgb(from var(--color-bg-primary) r g b / 60%);
+    box-shadow: inset 0 0 0 1px rgb(from var(--color-text-primary) r g b / 20%);
+}
+
+.wrapstodon-box::before,
+.wrapstodon-box::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    display: block;
+    height: 1px;
+    background-image: linear-gradient(to right,
+            transparent,
+            rgba(255, 255, 255, 0.5),
+            transparent);
+}
+
+.wrapstodon-box::before {
+    top: 0;
+}
+
+.wrapstodon-box::after {
+    bottom: 0;
+}
+
+/* Content */
+.wrapstodon-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    text-align: center;
+    text-wrap: balance;
+}
+
+.wrapstodon-comfortable {
+    gap: 12px;
+}
+
+.wrapstodon-section-title {
+    text-transform: uppercase;
+    color: var(--color-accent);
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.wrapstodon-stat-large {
+    font-size: 24px;
+    font-weight: 500;
+    overflow-wrap: break-word;
+}
+
+.wrapstodon-stat-extra-large {
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1;
+    overflow-wrap: break-word;
+    color: var(--color-accent);
+}
+
+/* Most Boosted Post */
+.wrapstodon-most-boosted-post {
+    padding: 0;
+    padding-top: 24px;
+    overflow: hidden;
+}
+
+.wrapstodon-post-embed {
+    margin-top: 16px;
+    border-radius: 0 0 16px 16px;
+    overflow: hidden;
+}
+
+/* Stats Grid */
+.wrapstodon-stats-grid {
+    display: grid;
+    gap: var(--grid-spacing, 12px);
+    grid-template-columns: 1fr 2fr;
+    grid-template-areas:
+        'followers hashtag'
+        'new-posts hashtag';
+}
+
+.wrapstodon-stats-grid:empty {
+    display: none;
+}
+
+.wrapstodon-stats-grid.only-hashtag {
+    grid-template-columns: 1fr;
+    grid-template-areas: 'hashtag';
+}
+
+.wrapstodon-stats-grid.no-hashtag {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 'followers new-posts';
+}
+
+.wrapstodon-stats-grid.single-number {
+    grid-template-columns: 1fr 2fr;
+    grid-template-areas: 'number hashtag';
+}
+
+.wrapstodon-stats-grid.single-number.no-hashtag {
+    grid-template-columns: 1fr;
+    grid-template-areas: 'number';
+}
+
+.wrapstodon-followers {
+    grid-area: followers;
+}
+
+.wrapstodon-stats-grid.single-number .wrapstodon-followers {
+    grid-area: number;
+}
+
+.wrapstodon-new-posts {
+    grid-area: new-posts;
+}
+
+.wrapstodon-stats-grid.single-number .wrapstodon-new-posts {
+    grid-area: number;
+}
+
+.wrapstodon-most-used-hashtag {
+    grid-area: hashtag;
+    padding-block: 24px;
+}
+
+/* Archetype */
+.wrapstodon-archetype {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.wrapstodon-archetype p {
+    max-width: 460px;
+}
+
+.wrapstodon-archetype-artboard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    width: 180px;
+    padding-top: 40px;
+}
+
+.wrapstodon-archetype-avatar {
+    position: absolute;
+    top: 7px;
+    left: 4px;
+    border-radius: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.wrapstodon-archetype-illustration-wrapper {
+    position: relative;
+    width: 92px;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 100%;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+}
+
+.wrapstodon-archetype-illustration-wrapper::after {
+    content: '';
+    display: block;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset -10px -4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.wrapstodon-archetype-illustration {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: filter 0.3s ease;
+}
+
+.wrapstodon-archetype-illustration.blurred {
+    filter: blur(10px);
+}
+
+.wrapstodon-archetype-emoji {
+    font-size: 48px;
+}
+
+.wrapstodon-description {
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+}
+
+.wrapstodon-reveal-button {
+    margin-top: 8px;
+}
+
+/* Share Buttons */
+.wrapstodon-share-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+    align-items: center;
+}
+
+.wrapstodon-share-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.wrapstodon-secondary-share-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-text-secondary);
+}
+
+/* Announcement */
+.wrapstodon-announcement {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 60px;
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--color-text-primary);
+    background: var(--color-bg-primary);
+    background:
+        radial-gradient(at 40% 87%, rgba(36, 12, 154, 0.6) 0, transparent 50%),
+        radial-gradient(at 19% 10%, rgba(107, 12, 154, 0.6) 0, transparent 50%),
+        radial-gradient(at 90% 27%, rgba(154, 12, 130, 0.6) 0, transparent 50%),
+        radial-gradient(at 16% 95%, rgba(30, 148, 130, 0.6) 0, transparent 50%) var(--color-bg-primary);
+    border-bottom: 1px solid var(--color-border-primary);
+    position: relative;
+    border-radius: 24px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.wrapstodon-announcement h2 {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+.wrapstodon-announcement p {
+    margin-bottom: 20px;
+    color: var(--color-text-secondary);
+}
+
+.wrapstodon-dismiss-button {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-size: 13px;
+    padding: 4px 8px;
+    transition: color 0.15s ease;
+}
+
+.wrapstodon-dismiss-button:hover {
+    color: var(--color-text-primary);
+}
+
+/* Theme Dark override (for when used outside dark mode context) */
+.theme-dark {
+    --color-text-primary: #fff;
+    --color-text-secondary: rgba(255, 255, 255, 0.7);
+    --color-bg-primary: #17063b;
+    --color-border-primary: rgba(255, 255, 255, 0.1);
+    --color-accent: #a78bfa;
+}
+
+/* ====================================
+   Wrapstodon Modal Styles
+   ==================================== */
+
+/* Dialog override for wrapstodon modal */
+dialog:has(.wrapstodon-modal-wrapper) {
+    max-width: min(95vw, 640px);
+    max-height: 90vh;
+    background: transparent;
+    box-shadow: none;
+    overflow: visible;
+}
+
+dialog:has(.wrapstodon-modal-wrapper)::backdrop {
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.wrapstodon-modal-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    scrollbar-color: var(--color-text-secondary) transparent;
+}
+
+.wrapstodon-modal-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.wrapstodon-modal-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.wrapstodon-modal-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.wrapstodon-modal-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    padding: 40px;
+}
+
+.wrapstodon-modal-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 48px 32px;
+    color: #fff;
+    max-width: 400px;
+}
+
+.wrapstodon-modal-message h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 16px 0 8px;
+    color: #fff;
+}
+
+.wrapstodon-modal-message p {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.wrapstodon-modal-icon {
+    color: var(--color-accent, #a78bfa);
+}
+
+.wrapstodon-modal-icon.dimmed {
+    opacity: 0.5;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.wrapstodon-modal-button {
+    padding: 12px 32px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+    border: none;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.wrapstodon-modal-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+}
+
+.wrapstodon-modal-button:active {
+    transform: scale(0.98);
+}
+
+/* Mobile adjustments for modal */
+@media (max-width: 540px) {
+    dialog:has(.wrapstodon-modal-wrapper) {
+        max-width: 100vw;
+        max-height: 100vh;
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .wrapstodon-modal-wrapper {
+        max-height: 100vh;
+    }
+}

@@ -40,6 +40,8 @@ interface PostCardProps {
   id?: string;
   /** Current nesting depth for quote posts (internal use) */
   depth?: number;
+  /** Wrapstodon mode: transparent bg with light text colors for dark gradient */
+  wrapstodon?: boolean;
 }
 
 /**
@@ -56,6 +58,7 @@ export function PostCard({
   onDeleteSuccess,
   id,
   depth = 0,
+  wrapstodon = false,
 }: PostCardProps) {
   const { openModal, closeModal } = useGlobalModal();
 
@@ -139,8 +142,22 @@ export function PostCard({
     setTranslatedContent(null);
   };
 
+  const cardStyle: CSSProperties = wrapstodon
+    ? {
+      ...(style || {}),
+      background: 'transparent',
+      border: 'none',
+      boxShadow: 'none',
+      color: '#fff',
+      '--text-1': '#fff',
+      '--text-2': 'rgba(255, 255, 255, 0.8)',
+      '--text-3': 'rgba(255, 255, 255, 0.6)',
+      '--link': '#a78bfa',
+    } as CSSProperties
+    : (style || {});
+
   return (
-    <Card as="article" padding="medium" style={style} onClick={handleCardClick} id={id}>
+    <Card as="article" padding="medium" style={cardStyle} onClick={handleCardClick} id={id}>
       {/* Reblog indicator */}
       {isReblog && <ReblogIndicator account={status.account} />}
 
@@ -248,7 +265,7 @@ export function PostCard({
           (!hasContentWarning || showCWContent) &&
           displayStatus.card &&
           displayStatus.media_attachments.length === 0 && (
-            <StyledLinkPreview card={displayStatus.card} />
+            <StyledLinkPreview card={displayStatus.card} wrapstodon={wrapstodon} />
           )}
 
         {/* Quoted status */}

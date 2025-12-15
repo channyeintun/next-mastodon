@@ -496,6 +496,16 @@ input[type="radio"] {
   animation: var(--animation-blink);
 }
 
+.navigation-sidebar-link.highlight {
+  color: var(--pink-6);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+}
+
+.navigation-sidebar-link.highlight:hover {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+  color: var(--pink-7);
+}
+
 /* Bottom Navigation (Mobile) */
 .navigation-bottom {
   display: flex;
@@ -1145,6 +1155,21 @@ body {
 
 .settings-link-icon {
   color: var(--text-2);
+}
+
+/* Wrapstodon highlight styling in settings */
+.settings-link.wrapstodon-highlight {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+  color: var(--pink-6);
+}
+
+.settings-link.wrapstodon-highlight:hover {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+  color: var(--pink-7);
+}
+
+.settings-link.wrapstodon-highlight .settings-link-icon {
+  color: var(--pink-6);
 }
 
 /* ====================================

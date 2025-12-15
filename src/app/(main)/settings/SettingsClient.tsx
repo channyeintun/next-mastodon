@@ -4,11 +4,14 @@ import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock, List, Settings2, TrendingUp, Search, Bell, Filter, Info } from 'lucide-react';
-import { useCurrentAccount } from '@/api';
+import { useCurrentAccount, useInstance, useAnnualReportState } from '@/api';
 import { Button, IconButton, Card, Avatar, EmojiText, CircleSkeleton, TextSkeleton } from '@/components/atoms';
 import { ThemeSelector } from '@/components/molecules';
 import { useAuthStore } from '@/hooks/useStores';
 import { useQueryClient } from '@tanstack/react-query';
+import { useGlobalModal } from '@/contexts/GlobalModalContext';
+import { WrapstodonModal } from '@/components/wrapstodon/WrapstodonModal';
+import { GiRingedPlanet } from 'react-icons/gi';
 
 interface SettingsClientProps {
   initialTheme: 'light' | 'dark' | 'auto';
@@ -20,6 +23,19 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
   const authStore = useAuthStore();
   const { data: currentAccount, isLoading } = useCurrentAccount();
   const [isPending, startTransition] = useTransition();
+  const { openModal, closeModal } = useGlobalModal();
+
+  // Wrapstodon logic
+  const { data: instance } = useInstance();
+  const wrapstodonYear = instance?.wrapstodon;
+  const currentYear = new Date().getFullYear();
+  const isCurrentYear = wrapstodonYear === currentYear;
+
+  const { data: annualReportState } = useAnnualReportState(wrapstodonYear ?? 0, {
+    enabled: !!wrapstodonYear && isCurrentYear,
+  });
+
+  const showWrapstodon = isCurrentYear && annualReportState?.state && annualReportState.state !== 'ineligible';
 
   const handleSignOut = async () => {
     startTransition(async () => {
@@ -28,6 +44,10 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
       router.replace('/auth/signin');
       router.refresh();
     });
+  };
+
+  const handleWrapstodonClick = () => {
+    openModal(<WrapstodonModal onClose={closeModal} />);
   };
 
   // Show skeleton until account data is loaded
@@ -55,6 +75,12 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
               <TextSkeleton width={80} height={12} />
             </div>
           </div>
+          <TextSkeleton width="100%" height={40} />
+        </Card>
+
+        {/* Appearance Card Skeleton */}
+        <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
+          <TextSkeleton width={100} height={18} style={{ marginBottom: 'var(--size-3)' }} />
           <TextSkeleton width="100%" height={40} />
         </Card>
 
@@ -195,6 +221,33 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
               <UserPlus size={20} className="settings-link-icon" />
               Follow requests
             </Link>
+          )}
+
+          {showWrapstodon && wrapstodonYear && (
+            <button
+              onClick={handleWrapstodonClick}
+              className="settings-link mobile-only wrapstodon-highlight"
+              style={{ width: '100%', textAlign: 'left' }}
+            >
+              <GiRingedPlanet size={20} className="settings-link-icon" />
+              Wrapstodon {wrapstodonYear}
+              {annualReportState?.state === 'available' && (
+                <span style={{
+                  marginLeft: 'auto',
+                  padding: '2px 5px',
+                  fontSize: '7px',
+                  fontWeight: 700,
+                  color: 'white',
+                  background: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
+                  borderRadius: '8px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.3px',
+                  whiteSpace: 'nowrap',
+                }}>
+                  New
+                </span>
+              )}
+            </button>
           )}
         </div>
       </Card>
