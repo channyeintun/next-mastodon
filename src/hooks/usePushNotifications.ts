@@ -176,8 +176,14 @@ export function usePushNotifications(): UsePushNotificationsResult {
         });
     }, [updateMutation]);
 
-    // Determine error state
-    const error = queryError || createMutation.error || updateMutation.error || deleteMutation.error || null;
+    // Determine error state - ignore 404 from query as it just means no subscription exists
+    // The error is converted to a simple Error with message like "HTTP 404" or "Record not found"
+    const isQueryError404 = queryError && (
+        queryError.message?.includes('404') ||
+        queryError.message?.toLowerCase().includes('not found') ||
+        queryError.message?.toLowerCase().includes('record not found')
+    );
+    const error = (!isQueryError404 ? queryError : null) || createMutation.error || updateMutation.error || deleteMutation.error || null;
 
     return {
         isSupported,

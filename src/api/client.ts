@@ -836,9 +836,17 @@ export async function getTranslationLanguages(signal?: AbortSignal): Promise<Tra
 }
 
 // Push Subscriptions
-export async function getPushSubscription(signal?: AbortSignal): Promise<WebPushSubscription> {
-  const { data } = await api.get<WebPushSubscription>('/api/v1/push/subscription', { signal })
-  return data
+export async function getPushSubscription(signal?: AbortSignal): Promise<WebPushSubscription | null> {
+  try {
+    const { data } = await api.get<WebPushSubscription>('/api/v1/push/subscription', { signal })
+    return data
+  } catch (error) {
+    // 404 means no subscription exists - that's not an error, just return null
+    if (error instanceof Error && (error.message.includes('404') || error.message.toLowerCase().includes('not found'))) {
+      return null
+    }
+    throw error
+  }
 }
 
 export async function createPushSubscription(params: CreatePushSubscriptionParams): Promise<WebPushSubscription> {

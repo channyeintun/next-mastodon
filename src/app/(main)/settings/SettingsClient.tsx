@@ -223,7 +223,7 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
 
           <Link href="/settings/notifications" className="settings-link">
             <Bell size={20} className="settings-link-icon" />
-            Notification filtering
+            Push Notifications
           </Link>
         </div>
       </Card>

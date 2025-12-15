@@ -113,21 +113,18 @@ export function PushNotificationsSection() {
                     <BellRing size={20} />
                 </PushIcon>
                 <PushText>
-                    <PushTitle>Push Notifications</PushTitle>
+                    <PushTitle>Push notifications</PushTitle>
                     <PushDescription>
                         {isSubscribed ? 'Enabled - receive notifications even when the app is closed' : 'Receive notifications even when the app is closed'}
                     </PushDescription>
                 </PushText>
                 <PushToggle>
-                    <ToggleButton
-                        type="button"
+                    <Switch
+                        checked={isSubscribed}
                         onClick={handleToggle}
                         disabled={isLoading || isSubscribing || isUnsubscribing}
-                        $active={isSubscribed}
                         aria-label={isSubscribed ? 'Disable push notifications' : 'Enable push notifications'}
-                    >
-                        {isSubscribing || isUnsubscribing ? '...' : isSubscribed ? 'On' : 'Off'}
-                    </ToggleButton>
+                    />
                 </PushToggle>
             </PushHeader>
 
@@ -190,31 +187,31 @@ const PushToggle = styled.div`
     flex-shrink: 0;
 `;
 
-const ToggleButton = styled.button<{ $active: boolean }>`
-    padding: var(--size-1) var(--size-3);
-    border-radius: var(--radius-round);
-    font-size: var(--font-size-0);
-    font-weight: var(--font-weight-6);
+const Switch = styled.button<{ checked: boolean; disabled?: boolean }>`
+    position: relative;
+    width: 44px;
+    height: 24px;
+    border-radius: 12px;
+    border: none;
     cursor: pointer;
-    transition: all 0.2s ease;
-    min-width: 48px;
+    transition: background-color 0.2s ease;
+    background-color: ${props => props.checked ? 'var(--blue-6)' : 'var(--surface-4)'};
     
-    ${props => props.$active ? `
-        background: var(--blue-6);
-        color: white;
-        border: none;
-    ` : `
-        background: var(--surface-3);
-        color: var(--text-2);
-        border: 1px solid var(--surface-4);
-    `}
+    &::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: ${props => props.checked ? '22px' : '2px'};
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        transition: left 0.2s ease;
+    }
 
     &:hover:not(:disabled) {
-        ${props => props.$active ? `
-            background: var(--blue-7);
-        ` : `
-            background: var(--surface-4);
-        `}
+        background-color: ${props => props.checked ? 'var(--blue-7)' : 'var(--surface-5)'};
     }
 
     &:disabled {
