@@ -295,7 +295,6 @@
     aspect-ratio: 1;
     overflow: hidden;
     border-radius: 100%;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
 }
 
 .wrapstodon-archetype-illustration-wrapper::after {
@@ -310,9 +309,7 @@
 .wrapstodon-archetype-illustration {
     width: 100%;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    object-fit: cover;
     transition: filter 0.3s ease;
 }
 
@@ -320,8 +317,11 @@
     filter: blur(10px);
 }
 
-.wrapstodon-archetype-emoji {
-    font-size: 48px;
+.wrapstodon-archetype-planet-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    mix-blend-mode: screen;
 }
 
 .wrapstodon-description {

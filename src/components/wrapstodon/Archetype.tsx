@@ -12,15 +12,17 @@ import { Button } from '@/components/atoms/Button'
 import { ShareButton } from './ShareButton'
 import './wrapstodon.css'
 
-// Archetype illustrations - using emoji placeholders
-// In production, these would be actual illustrations
-const archetypeEmoji: Record<ArchetypeType, string> = {
-    lurker: '🌙',
-    booster: '🏹',
-    pollster: '❓',
-    replier: '🦋',
-    oracle: '🔮',
+// Archetype illustration images
+const archetypeImages: Record<ArchetypeType, string> = {
+    lurker: '/images/archetypes/lurker.png',
+    booster: '/images/archetypes/booster.png',
+    pollster: '/images/archetypes/pollster.png',
+    replier: '/images/archetypes/replier.png',
+    oracle: '/images/archetypes/oracle.png',
 }
+
+// Space elements overlay (ring decoration)
+const spaceElementsImage = '/images/archetypes/space_elements.png'
 
 const archetypeNames: Record<ArchetypeType, string> = {
     lurker: 'The Stoic',
@@ -88,15 +90,17 @@ export function Archetype({ report, account, context, onClose }: ArchetypeProps)
                     />
                 )}
                 <div className="wrapstodon-archetype-illustration-wrapper">
-                    <div
-                        className={`wrapstodon-archetype-illustration ${isRevealed ? '' : 'blurred'
-                            }`}
-                    >
-                        <span className="wrapstodon-archetype-emoji">
-                            {archetypeEmoji[archetype]}
-                        </span>
-                    </div>
+                    <img
+                        src={archetypeImages[archetype]}
+                        alt=""
+                        className={`wrapstodon-archetype-illustration ${isRevealed ? '' : 'blurred'}`}
+                    />
                 </div>
+                <img
+                    src={spaceElementsImage}
+                    alt=""
+                    className="wrapstodon-archetype-planet-ring"
+                />
             </div>
 
             {/* Content */}
