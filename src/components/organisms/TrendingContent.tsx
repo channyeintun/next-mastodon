@@ -8,7 +8,7 @@ import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendi
 import { PostCard } from '@/components/organisms';
 import { PostCardSkeletonList, PostCardSkeleton, TrendingTagCard, TrendingTagCardSkeleton, TrendingLinkCard, TrendingLinkCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { IconButton, Tabs, EmptyState, Button } from '@/components/atoms';
+import { Tabs, EmptyState, Button } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
 import { Hash, Newspaper, FileText, LogIn } from 'lucide-react';
 import { flattenAndUniqById, flattenAndUniqByKey } from '@/utils/fp';
