@@ -21,7 +21,9 @@ interface MessageBubbleProps {
 export function MessageBubble({ status, isOwn, stripMentions, showAvatar = true, isLastMessage = false, isConsecutive = false }: MessageBubbleProps) {
   const hasMedia = status.media_attachments && status.media_attachments.length > 0
   const strippedContent = stripMentions(status.content)
-  const hasText = strippedContent && strippedContent !== '<p>&nbsp;</p>'
+  // Check if there's actual text content (not just empty HTML tags or whitespace)
+  const textContent = strippedContent?.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, '').trim()
+  const hasText = Boolean(textContent)
 
   return (
     <MessageRow $isOwn={isOwn} $isConsecutive={isConsecutive}>
