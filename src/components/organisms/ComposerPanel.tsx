@@ -16,7 +16,7 @@ import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { useMediaUpload } from '@/hooks/useMediaUpload';
 import { Globe, Lock, Users, Mail, X } from 'lucide-react';
 import { toLocalISOString, parseDate } from '@/utils/date';
-import type { CreateStatusParams } from '@/types';
+import type { CreateStatusParams, MediaAttachment } from '@/types';
 import { Spinner } from '@/components/atoms/Spinner';
 import {
   LoadingContainer,
@@ -50,6 +50,8 @@ interface ComposerPanelProps {
   initialSpoilerText?: string;
   initialVisibility?: Visibility;
   initialSensitive?: boolean;
+  /** Initial media attachments (used for edit mode) */
+  initialMedia?: MediaAttachment[];
   inReplyToId?: string;
   isReply?: boolean;
   quotedStatusId?: string;
@@ -65,6 +67,7 @@ export function ComposerPanel({
   initialSpoilerText = '',
   initialVisibility = 'public',
   initialSensitive = false,
+  initialMedia = [],
   inReplyToId,
   isReply = false,
   quotedStatusId,
@@ -142,6 +145,13 @@ export function ComposerPanel({
     handleAltTextChange,
     clearMedia,
   } = useMediaUpload();
+
+  // Initialize media for edit mode
+  useEffect(() => {
+    if (editMode && initialMedia.length > 0) {
+      setMedia(initialMedia);
+    }
+  }, [editMode, initialMedia, setMedia]);
 
   // Use stringz length() for accurate Unicode/emoji character counting
   // Apply countableText to normalize URLs (23 chars) and remote mentions

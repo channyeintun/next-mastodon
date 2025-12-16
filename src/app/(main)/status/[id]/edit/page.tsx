@@ -83,6 +83,7 @@ export default function EditStatusPage() {
           initialSpoilerText={source?.spoiler_text || status.spoiler_text}
           initialVisibility={status.visibility}
           initialSensitive={status.sensitive}
+          initialMedia={status.media_attachments}
         />
       </div>
     </div>
