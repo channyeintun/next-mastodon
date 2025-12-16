@@ -54,8 +54,8 @@ export function usePostActions(status: Status, onDeleteClick?: (postId: string) 
   // Determine if poll voting is available
   const canVotePoll = displayStatus.poll
     ? authStore.isAuthenticated &&
-      !displayStatus.poll.expired &&
-      !displayStatus.poll.voted
+    !displayStatus.poll.expired &&
+    !displayStatus.poll.voted
     : false;
 
   // --- Event Handlers ---

@@ -343,6 +343,8 @@ const StyledStatusContent = styled(StatusContent)`
 const MediaContainer = styled.div`
   margin-top: var(--size-3);
   position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-2);
 `;
 
 const MediaGrid = styled.div<{ $columns: number; $blurred: boolean }>`
