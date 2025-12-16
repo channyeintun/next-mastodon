@@ -115,6 +115,8 @@ export class AuthStore {
     this.clientSecret = null
 
     if (typeof window !== 'undefined') {
+      // Clear localStorage
+      localStorage.clear()
       // Fire-and-forget cookie deletions
       deleteCookie('instanceURL')
       deleteCookie('accessToken')
