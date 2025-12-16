@@ -4,22 +4,61 @@ import styled from '@emotion/styled';
 import Link from 'next/link';
 import { useState, Activity, type ReactNode } from 'react';
 import { observer } from 'mobx-react-lite';
-import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendingLinks } from '@/api';
+import { Check, Info, X, Hash, Newspaper, FileText, LogIn, UserPlus } from 'lucide-react';
+import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendingLinks, useSuggestions, useDeleteSuggestion, useRelationships, useFollowAccount, useUnfollowAccount } from '@/api';
 import { PostCard } from '@/components/organisms';
-import { PostCardSkeletonList, PostCardSkeleton, TrendingTagCard, TrendingTagCardSkeleton, TrendingLinkCard, TrendingLinkCardSkeleton } from '@/components/molecules';
+import { PostCardSkeletonList, PostCardSkeleton, TrendingTagCard, TrendingTagCardSkeleton, TrendingLinkCard, TrendingLinkCardSkeleton, AccountCardSkeleton } from '@/components/molecules';
 import { WindowVirtualizedList } from '@/components/organisms/WindowVirtualizedList';
-import { Tabs, EmptyState, Button } from '@/components/atoms';
+import { Tabs, EmptyState, Button, Avatar, EmojiText } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
-import { Hash, Newspaper, FileText, LogIn } from 'lucide-react';
 import { flattenAndUniqById, flattenAndUniqByKey } from '@/utils/fp';
-import type { Status, Tag, TrendingLink } from '@/types';
+import type { Status, Tag, TrendingLink, Field } from '@/types';
 import { useAuthStore } from '@/hooks/useStores';
 
-type TrendingTab = 'posts' | 'tags' | 'links';
+type TrendingTab = 'posts' | 'tags' | 'links' | 'foryou';
+
+// Get localized source label based on suggestion source
+const getSourceLabel = (sources: string[]): { label: string; hint: string } | null => {
+    const source = sources[0];
+    switch (source) {
+        case 'friends_of_friends':
+        case 'similar_to_recently_followed':
+            return {
+                label: 'Personalized suggestion',
+                hint: 'Based on accounts you follow'
+            };
+        case 'featured':
+            return {
+                label: 'Staff pick',
+                hint: 'Hand-picked by the team'
+            };
+        case 'most_followed':
+        case 'most_interactions':
+            return {
+                label: 'Popular suggestion',
+                hint: 'Popular on this instance'
+            };
+        default:
+            return null;
+    }
+};
+
+// Get first verified field from account fields
+const getVerifiedField = (fields?: Field[]): Field | null => {
+    if (!fields) return null;
+    return fields.find(field => field.verified_at !== null) ?? null;
+};
+
+// Extract display URL from HTML value
+const extractLinkText = (html: string): string => {
+    const text = html.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&');
+    return text.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+};
 
 const trendingTabs: TabItem<TrendingTab>[] = [
     { value: 'posts', label: 'Posts', icon: <FileText size={18} /> },
     { value: 'tags', label: 'Tags', icon: <Hash size={18} /> },
+    { value: 'foryou', label: 'People', icon: <UserPlus size={18} /> },
     { value: 'links', label: 'News', icon: <Newspaper size={18} /> },
 ];
 
@@ -60,6 +99,19 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
         hasNextPage: hasMoreLinks,
         isFetchingNextPage: isFetchingNextLinks,
     } = useInfiniteTrendingLinks();
+
+    // Suggestions data fetching
+    const { data: suggestions, isLoading: suggestionsLoading, isError: suggestionsError } = useSuggestions({ limit: 40 });
+    const deleteSuggestion = useDeleteSuggestion();
+    const followMutation = useFollowAccount();
+    const unfollowMutation = useUnfollowAccount();
+
+    // Get relationships for all suggested accounts
+    const accountIds = suggestions?.map(s => s.account.id) ?? [];
+    const { data: relationships } = useRelationships(accountIds);
+
+    // Build a map of accountId -> relationship for quick lookup
+    const relationshipMap = new Map(relationships?.map(r => [r.id, r]));
 
     // Flatten and deduplicate using FP utilities
     const uniqueStatuses = flattenAndUniqById(statusData?.pages);
@@ -193,6 +245,99 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                 </TabContentWithPadding>
             </Activity>
 
+            <Activity mode={activeTab === 'foryou' ? 'visible' : 'hidden'}>
+                <TabContentWithPadding>
+                    {!authStore.isAuthenticated ? (
+                        <EmptyState title="Sign in to see suggestions" />
+                    ) : suggestionsLoading ? (
+                        <ListContainer className="virtualized-list-container">
+                            <SuggestionsList>
+                                {Array.from({ length: 8 }).map((_, i) => (
+                                    <AccountCardSkeleton key={i} />
+                                ))}
+                            </SuggestionsList>
+                        </ListContainer>
+                    ) : suggestionsError ? (
+                        <EmptyState title="Failed to load suggestions" />
+                    ) : !suggestions || suggestions.length === 0 ? (
+                        <EmptyState title="No suggestions available" />
+                    ) : (
+                        <SuggestionsList>
+                            {suggestions.map((suggestion) => {
+                                const relationship = relationshipMap.get(suggestion.account.id);
+                                const isFollowing = relationship?.following || relationship?.requested;
+                                const isMutating =
+                                    (followMutation.isPending && followMutation.variables === suggestion.account.id) ||
+                                    (unfollowMutation.isPending && unfollowMutation.variables === suggestion.account.id);
+                                const sourceInfo = getSourceLabel(suggestion.sources);
+
+                                return (
+                                    <SuggestionCard key={suggestion.account.id}>
+                                        <CardContent href={`/@${suggestion.account.acct}`}>
+                                            <Avatar
+                                                src={suggestion.account.avatar}
+                                                alt={suggestion.account.display_name || suggestion.account.username}
+                                                size="large"
+                                            />
+                                            <AccountInfo>
+                                                <AccountName>
+                                                    <EmojiText
+                                                        text={suggestion.account.display_name || suggestion.account.username}
+                                                        emojis={suggestion.account.emojis}
+                                                    />
+                                                </AccountName>
+                                                <AccountHandle>@{suggestion.account.acct}</AccountHandle>
+                                                {(() => {
+                                                    const verifiedField = getVerifiedField(suggestion.account.fields);
+                                                    return verifiedField ? (
+                                                        <VerifiedBadge title={`Verified ${verifiedField.name}`}>
+                                                            <Check size={12} />
+                                                            {extractLinkText(verifiedField.value)}
+                                                        </VerifiedBadge>
+                                                    ) : sourceInfo ? (
+                                                        <SourceLabel title={sourceInfo.hint}>
+                                                            <Info size={12} />
+                                                            {sourceInfo.label}
+                                                        </SourceLabel>
+                                                    ) : null;
+                                                })()}
+                                            </AccountInfo>
+                                        </CardContent>
+
+                                        <CardActions>
+                                            <DismissButton
+                                                onClick={() => deleteSuggestion.mutate(suggestion.account.id)}
+                                                title="Don't show again"
+                                                disabled={deleteSuggestion.isPending}
+                                            >
+                                                <X size={16} />
+                                            </DismissButton>
+                                            <Button
+                                                variant={isFollowing ? 'secondary' : 'primary'}
+                                                size="small"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    if (isFollowing) {
+                                                        unfollowMutation.mutate(suggestion.account.id);
+                                                    } else {
+                                                        followMutation.mutate(suggestion.account.id);
+                                                    }
+                                                }}
+                                                disabled={isMutating}
+                                                isLoading={isMutating}
+                                            >
+                                                {relationship?.requested ? 'Requested' : isFollowing ? 'Following' : 'Follow'}
+                                            </Button>
+                                        </CardActions>
+                                    </SuggestionCard>
+                                );
+                            })}
+                        </SuggestionsList>
+                    )}
+                </TabContentWithPadding>
+            </Activity>
+
             {/* Floating Login Button for guests */}
             {!authStore.isAuthenticated && (
                 <FloatingLoginButton href="/auth/signin">
@@ -277,4 +422,112 @@ const ErrorContainer = styled.div`
 const ErrorText = styled.p`
     color: var(--red-6);
     margin-bottom: var(--size-3);
+`;
+
+// Suggestion card styled components
+const SuggestionsList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-3);
+`;
+
+const SuggestionCard = styled.div`
+    display: flex;
+    align-items: center;
+    gap: var(--size-3);
+    padding: var(--size-3);
+    background: var(--surface-2);
+    border-radius: var(--radius-3);
+`;
+
+const CardContent = styled(Link)`
+    display: flex;
+    align-items: center;
+    gap: var(--size-3);
+    flex: 1;
+    text-decoration: none;
+    color: inherit;
+    min-width: 0;
+`;
+
+const AccountInfo = styled.div`
+    flex: 1;
+    min-width: 0;
+`;
+
+const AccountName = styled.div`
+    font-weight: 600;
+    font-size: var(--font-size-2);
+    color: var(--text-1);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+`;
+
+const AccountHandle = styled.div`
+    font-size: var(--font-size-1);
+    color: var(--text-3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+`;
+
+const SourceLabel = styled.div`
+    display: flex;
+    align-items: center;
+    gap: var(--size-1);
+    font-size: var(--font-size-0);
+    color: var(--blue-6);
+    margin-top: var(--size-1);
+    cursor: help;
+
+    svg {
+        flex-shrink: 0;
+    }
+`;
+
+const VerifiedBadge = styled.div`
+    display: flex;
+    align-items: center;
+    gap: var(--size-1);
+    font-size: var(--font-size-0);
+    color: var(--green-6);
+    margin-top: var(--size-1);
+    cursor: help;
+
+    svg {
+        flex-shrink: 0;
+    }
+`;
+
+const CardActions = styled.div`
+    display: flex;
+    align-items: center;
+    gap: var(--size-2);
+    flex-shrink: 0;
+`;
+
+const DismissButton = styled.button`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    padding: var(--size-1) var(--size-3);
+    border: 1px solid var(--surface-4);
+    background: var(--surface-3);
+    color: var(--text-1);
+    font-size: var(--font-size-0);
+    font-weight: var(--font-weight-6);
+    cursor: pointer;
+    border-radius: var(--radius-2);
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: var(--surface-4);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
 `;

@@ -131,16 +131,13 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
         <Container>
             <Header>
                 <Title>Who to follow</Title>
-                <HeaderActions>
-                    <ViewAllLink href="/explore/suggestions">View all</ViewAllLink>
-                    <DismissSectionButton
-                        onClick={handleDismiss}
-                        title="Dismiss suggestions"
-                        aria-label="Dismiss suggestions"
-                    >
-                        <X size={18} />
-                    </DismissSectionButton>
-                </HeaderActions>
+                <DismissSectionButton
+                    onClick={handleDismiss}
+                    title="Dismiss suggestions"
+                    aria-label="Dismiss suggestions"
+                >
+                    <X size={18} />
+                </DismissSectionButton>
             </Header>
             <BodyWrapper>
                 <ScrollContainer ref={scrollRef} id="suggestions-scroller">
