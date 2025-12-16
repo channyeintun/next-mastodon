@@ -149,18 +149,6 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
           )}
 
           <a
-            href="https://buymeacoffee.com/channyeintun"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="navigation-sidebar-link"
-          >
-            <div className="navigation-link-icon">
-              <SiBuymeacoffee size={24} />
-            </div>
-            <span className="navigation-link-label">Buy me a coffee</span>
-          </a>
-
-          <a
             href="https://github.com/channyeintun/mastodon-nextjs-frontend"
             target="_blank"
             rel="noopener noreferrer"
@@ -170,6 +158,18 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
               <Github size={24} />
             </div>
             <span className="navigation-link-label">Source code</span>
+          </a>
+
+          <a
+            href="https://buymeacoffee.com/channyeintun"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="navigation-sidebar-link"
+          >
+            <div className="navigation-link-icon">
+              <SiBuymeacoffee size={24} />
+            </div>
+            <span className="navigation-link-label">Buy me a coffee</span>
           </a>
         </div>
       </nav>
