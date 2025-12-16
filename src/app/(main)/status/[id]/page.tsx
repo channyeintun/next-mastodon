@@ -69,21 +69,9 @@ export default function StatusPage({
 
         {/* Skeleton loading */}
         <div className="virtualized-list-container">
-          {/* Main post skeleton with highlight border */}
           <HighlightedPost>
             <PostCardSkeleton />
           </HighlightedPost>
-
-          {/* Replies section skeleton */}
-          <RepliesHeader>
-            <TextSkeleton width="120px" height="20px" />
-          </RepliesHeader>
-          <SkeletonWrapper>
-            <PostCardSkeleton />
-          </SkeletonWrapper>
-          <SkeletonWrapper>
-            <PostCardSkeleton />
-          </SkeletonWrapper>
         </div>
       </Container>
     );
