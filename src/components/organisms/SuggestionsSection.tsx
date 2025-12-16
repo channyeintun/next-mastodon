@@ -153,7 +153,10 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
                         {suggestions.map((suggestion) => {
                             const relationship = relationshipMap.get(suggestion.account.id);
                             const isFollowing = relationship?.following || relationship?.requested;
-                            const isLoading = followMutation.isPending || unfollowMutation.isPending;
+                            // Only show loading for the specific card being followed/unfollowed
+                            const isLoading =
+                                (followMutation.isPending && followMutation.variables === suggestion.account.id) ||
+                                (unfollowMutation.isPending && unfollowMutation.variables === suggestion.account.id);
                             const verifiedField = getVerifiedField(suggestion.account.fields);
                             const sourceInfo = getSourceLabel(suggestion.sources);
 
