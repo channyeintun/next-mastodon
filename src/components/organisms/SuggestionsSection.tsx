@@ -257,22 +257,6 @@ const Title = styled.h3`
     margin: 0;
 `;
 
-const ViewAllLink = styled(Link)`
-    font-size: var(--font-size-1);
-    color: var(--blue-6);
-    text-decoration: none;
-
-    &:hover {
-        text-decoration: underline;
-    }
-`;
-
-const HeaderActions = styled.div`
-    display: flex;
-    align-items: center;
-    gap: var(--size-2);
-`;
-
 const DismissSectionButton = styled.button`
     display: flex;
     align-items: center;
