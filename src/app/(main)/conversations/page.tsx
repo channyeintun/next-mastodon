@@ -21,7 +21,7 @@ export default function ConversationsPage() {
 
   if (isLoading) {
     return (
-      <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0, background: 'var(--surface-1)' }}>
+      <div className="full-height-container conversations-page-container" style={{ maxWidth: '600px', margin: '0 auto', background: 'var(--surface-1)' }}>
         {/* Header */}
         <div style={{
           zIndex: 10,
@@ -48,7 +48,7 @@ export default function ConversationsPage() {
 
   if (error) {
     return (
-      <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0, background: 'var(--surface-1)' }}>
+      <div className="full-height-container conversations-page-container" style={{ maxWidth: '600px', margin: '0 auto', background: 'var(--surface-1)' }}>
         {/* Header */}
         <div style={{
           zIndex: 10,
@@ -73,7 +73,7 @@ export default function ConversationsPage() {
   }
 
   return (
-    <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0, background: 'var(--surface-1)' }}>
+    <div className="full-height-container conversations-page-container" style={{ maxWidth: '600px', margin: '0 auto', background: 'var(--surface-1)' }}>
       {/* Header */}
       <div style={{
         zIndex: 10,

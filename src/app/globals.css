@@ -584,7 +584,7 @@ body {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: var(--size-4);
+  padding: var(--size-3);
   background: var(--surface-1);
 }
 

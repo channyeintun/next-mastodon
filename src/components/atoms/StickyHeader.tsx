@@ -17,8 +17,8 @@ export const StickyHeaderContainer = styled.div<StickyHeaderContainerProps>`
   --header-stuck: 0;
 
   /* Default configurable values - can be overridden by consumers */
-  --header-padding: var(--size-4) 0;
-  --header-padding-stuck: var(--size-1) 0;
+  --header-padding: var(--size-4);
+  --header-padding-stuck: var(--size-1) var(--size-4);
   --header-bg: var(--surface-1);
   --header-bg-stuck: transparent;
   --header-title-opacity-stuck: 0;
