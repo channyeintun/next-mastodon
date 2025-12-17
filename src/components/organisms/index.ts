@@ -3,7 +3,6 @@ export { ComposerPanel } from './ComposerPanel';
 export { EmojiPicker } from './EmojiPicker';
 export { default as NavigationWrapper } from './NavigationWrapper';
 export { PostCard } from './PostCard';
-export { ProfileContent } from './ProfileContent';
 export { SearchContent } from './SearchContent';
 export { SuggestionsSection } from './SuggestionsSection';
 export { TrendingContent } from './TrendingContent';
