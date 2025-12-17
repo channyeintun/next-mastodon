@@ -158,6 +158,7 @@ export function ProfileTabContent({
                                 key={`${item.isPinned ? 'pinned-' : ''}${item.status.id}`}
                                 data-index={virtualRow.index}
                                 ref={virtualizer.measureElement}
+                                className="window-virtual-item"
                                 style={{
                                     transform: `translateY(${virtualRow.start - virtualizer.options.scrollMargin}px)`,
                                 }}

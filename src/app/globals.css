@@ -929,6 +929,7 @@ body {
 .boost-popover {
   display: none;
   flex-direction: column;
+  box-shadow: var(--shadow-4);
 }
 
 /* Show boost popover when button wrapper has focus-within */
@@ -936,7 +937,10 @@ body {
   display: flex;
 }
 
-.virtualized-list-item:has(* .boost-btn:focus-within) {
+.virtualized-list-item:has(* .boost-btn:focus-within),
+.window-virtual-item:has(* .options-menu-btn:focus-within),
+.window-virtual-item:has(* .boost-btn:focus-within),
+.virtualized-list-item:has(* .options-menu-btn:focus-within)  {
   z-index: 1;
 }
 
@@ -962,9 +966,6 @@ body {
   box-shadow: var(--shadow-4);
   border: 1px solid var(--surface-3);
   border-radius: var(--radius-3);
-  box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.12),
-    0 8px 32px rgba(0, 0, 0, 0.08);
   padding: var(--size-2);
   min-width: 200px;
   z-index: 50;
@@ -987,11 +988,6 @@ body {
 /* Show options menu when button wrapper has focus-within */
 .options-menu-btn:focus-within .options-menu-popover {
   display: flex;
-}
-
-/* Ensure z-index in virtualized lists */
-.virtualized-list-item:has(* .options-menu-btn:focus-within) {
-  z-index: 1;
 }
 
 /* Options menu item styling */
