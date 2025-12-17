@@ -239,7 +239,7 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
 
             {isLoading && (
                 <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
-                    <NotificationSkeletonList count={6} />
+                    <NotificationSkeletonList count={3} />
                 </div>
             )}
 

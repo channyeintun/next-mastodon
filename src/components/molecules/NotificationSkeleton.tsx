@@ -3,99 +3,140 @@
 import styled from '@emotion/styled';
 
 /**
- * Skeleton loading placeholder for NotificationCard
+ * Skeleton loading placeholder for GroupedNotificationCard
+ * Matches the actual card structure: icon column, content column with header row, and status content
  */
 export function NotificationSkeleton() {
-    return (
-        <Container>
-            {/* Icon placeholder */}
-            <IconPlaceholder className="skeleton" />
+  return (
+    <Container>
+      <ContentWrapper>
+        {/* Icon column */}
+        <IconColumn>
+          <IconPlaceholder className="skeleton" />
+        </IconColumn>
 
-            {/* Content */}
-            <Content>
-                {/* Avatar and name row */}
-                <AvatarRow>
-                    <AvatarPlaceholder className="skeleton" />
-                    <NamePlaceholder className="skeleton" />
-                    <TimePlaceholder className="skeleton" />
-                </AvatarRow>
+        {/* Content column */}
+        <ContentColumn>
+          {/* Header row with avatars, message, time */}
+          <HeaderRow>
+            {/* Stacked avatars */}
+            <AvatarsWrapper>
+              <AvatarPlaceholder className="skeleton" />
+              <AvatarPlaceholder className="skeleton" style={{ marginLeft: '-8px' }} />
+            </AvatarsWrapper>
 
-                {/* Content preview placeholder */}
-                <ContentPlaceholder className="skeleton" />
-            </Content>
-        </Container>
-    );
+            {/* Message and time */}
+            <InfoWrapper>
+              <MessagePlaceholder className="skeleton" />
+              <TimePlaceholder className="skeleton" />
+            </InfoWrapper>
+          </HeaderRow>
+        </ContentColumn>
+
+        {/* Status content placeholder - spans grid */}
+        <StatusContentPlaceholder className="skeleton" />
+      </ContentWrapper>
+    </Container>
+  );
 }
 
 /**
  * Multiple skeleton items for loading state
  */
-export function NotificationSkeletonList({ count = 5 }: { count?: number }) {
-    return (
-        <ListContainer>
-            {Array.from({ length: count }).map((_, i) => (
-                <NotificationSkeleton key={i} />
-            ))}
-        </ListContainer>
-    );
+export function NotificationSkeletonList({ count = 3 }: { count?: number }) {
+  return (
+    <ListContainer>
+      {Array.from({ length: count }).map((_, i) => (
+        <NotificationSkeleton key={i} />
+      ))}
+    </ListContainer>
+  );
 }
 
 const Container = styled.div`
-  padding: var(--size-3);
-  background: var(--surface-2);
-  border-radius: var(--radius-3);
-  display: flex;
-  gap: var(--size-3);
+    padding: var(--size-3);
+    background: var(--surface-2);
+    border-radius: var(--radius-3);
+`;
+
+const ContentWrapper = styled.div`
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: var(--size-3);
+`;
+
+const IconColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
 const IconPlaceholder = styled.div`
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
 `;
 
-const Content = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-2);
+const ContentColumn = styled.div`
+    flex: 1;
+    min-width: 0;
 `;
 
-const AvatarRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: var(--size-2);
+const HeaderRow = styled.div`
+    display: flex;
+    align-items: flex-start;
+    gap: var(--size-2);
+    margin-bottom: var(--size-2);
+`;
+
+const AvatarsWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    margin-right: var(--size-2);
 `;
 
 const AvatarPlaceholder = styled.div`
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 2px solid var(--surface-2);
 `;
 
-const NamePlaceholder = styled.div`
-  height: 14px;
-  width: 120px;
-  border-radius: var(--radius-1);
+const InfoWrapper = styled.div`
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-1);
+`;
+
+const MessagePlaceholder = styled.div`
+    height: 16px;
+    width: 180px;
+    border-radius: var(--radius-1);
 `;
 
 const TimePlaceholder = styled.div`
-  height: 12px;
-  width: 40px;
-  border-radius: var(--radius-1);
-  margin-left: auto;
+    height: 12px;
+    width: 50px;
+    border-radius: var(--radius-1);
 `;
 
-const ContentPlaceholder = styled.div`
-  height: 40px;
-  width: 100%;
-  border-radius: var(--radius-2);
+const StatusContentPlaceholder = styled.div`
+    grid-column: 2;
+    height: 80px;
+    border-radius: var(--radius-2);
+    margin-top: var(--size-2);
+
+    @media (max-width: 767px) {
+        grid-column: span 2;
+    }
 `;
 
 const ListContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-2);
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2);
 `;
