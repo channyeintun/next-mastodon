@@ -2,12 +2,13 @@
 
 import styled from '@emotion/styled';
 import { Activity } from 'react';
-import { useMemo } from 'react';
+import { useMemo, useRef, useState, useEffect, useLayoutEffect } from 'react';
 import { Pin } from 'lucide-react';
+import { useWindowVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 import { PostCard } from '@/components/organisms';
-import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { PostCardSkeleton, PostCardSkeletonList, MediaGrid, MediaGridSkeleton } from '@/components/molecules';
 import { Tabs, EmptyState } from '@/components/atoms';
+import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
 import type { TabItem } from '@/components/atoms/Tabs';
 import type { Status } from '@/types';
 
@@ -24,6 +25,13 @@ interface StatusItem {
     status: Status;
     isPinned: boolean;
 }
+
+// Scroll restoration cache
+interface ScrollState {
+    offset: number;
+    measurementsCache: VirtualItem[];
+}
+const scrollStateCache = new Map<string, ScrollState>();
 
 interface ProfileContentProps {
     /** Account handle for scroll restoration */
@@ -60,6 +68,23 @@ export function ProfileContent({
     hasNextPage,
     isFetchingNextPage,
 }: ProfileContentProps) {
+    const listRef = useRef<HTMLDivElement>(null);
+    const [scrollMargin, setScrollMargin] = useState(0);
+    const [showScrollTop, setShowScrollTop] = useState(false);
+
+    // Generate cache key based on acct only (both tabs share same data)
+    const scrollCacheKey = `profile-${acct}`;
+
+    // Get cached state on initial render
+    const [cachedState] = useState(() => scrollStateCache.get(scrollCacheKey));
+
+    // Measure scroll margin from list element's position
+    useLayoutEffect(() => {
+        if (listRef.current) {
+            setScrollMargin(listRef.current.offsetTop);
+        }
+    }, []);
+
     // Combine pinned and regular statuses for virtualization
     const combinedItems = useMemo<StatusItem[]>(() => {
         const pinned: StatusItem[] = (pinnedStatuses || []).map(status => ({
@@ -72,6 +97,123 @@ export function ProfileContent({
         }));
         return [...pinned, ...regular];
     }, [pinnedStatuses, statuses]);
+
+    const virtualizer = useWindowVirtualizer({
+        count: combinedItems.length,
+        estimateSize: () => 300,
+        overscan: 5,
+        scrollMargin,
+        initialOffset: cachedState?.offset,
+        initialMeasurementsCache: cachedState?.measurementsCache,
+    });
+
+    const virtualItems = virtualizer.getVirtualItems();
+
+    // Load more when reaching the end
+    useEffect(() => {
+        if (!virtualItems.length) return;
+
+        const lastItem = virtualItems[virtualItems.length - 1];
+        if (!lastItem) return;
+
+        if (
+            lastItem.index >= combinedItems.length - 5 &&
+            hasNextPage &&
+            !isFetchingNextPage
+        ) {
+            fetchNextPage();
+        }
+    }, [virtualItems, combinedItems.length, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+    // Cache scroll state on unmount
+    useEffect(() => {
+        return () => {
+            scrollStateCache.set(scrollCacheKey, {
+                offset: virtualizer.scrollOffset ?? 0,
+                measurementsCache: virtualizer.measurementsCache,
+            });
+        };
+    }, [virtualizer, scrollCacheKey]);
+
+    // Track scroll position for scroll-to-top button
+    useEffect(() => {
+        const handleScroll = () => {
+            setShowScrollTop(window.scrollY > 500);
+        };
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const handleScrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // Render loading state
+    const renderLoading = () => (
+        <LoadingContainer>
+            <PostCardSkeletonList count={5} />
+        </LoadingContainer>
+    );
+
+    // Render empty state
+    const renderEmpty = () => <EmptyState title="No posts yet" />;
+
+    // Render virtualized list content
+    const renderVirtualizedList = () => (
+        <div ref={listRef}>
+            <VirtualContent style={{ height: `${virtualizer.getTotalSize()}px` }}>
+                {virtualItems.map((virtualRow) => {
+                    const item = combinedItems[virtualRow.index];
+                    if (!item) return null;
+
+                    const isFirstPinned = item.isPinned && (virtualRow.index === 0 || !combinedItems[virtualRow.index - 1]?.isPinned);
+                    const isLastPinned = item.isPinned && (virtualRow.index === combinedItems.length - 1 || !combinedItems[virtualRow.index + 1]?.isPinned);
+
+                    return (
+                        <VirtualItemWrapper
+                            key={`${item.isPinned ? 'pinned-' : ''}${item.status.id}`}
+                            data-index={virtualRow.index}
+                            ref={virtualizer.measureElement}
+                            style={{
+                                transform: `translateY(${virtualRow.start - virtualizer.options.scrollMargin}px)`,
+                            }}
+                        >
+                            <PinnedItemWrapper $isLastPinned={isLastPinned}>
+                                {isFirstPinned && (
+                                    <PinnedBadge>
+                                        <Pin size={14} />
+                                        Pinned
+                                    </PinnedBadge>
+                                )}
+                                <PostCard status={item.status} style={{ marginBottom: 'var(--size-3)' }} />
+                            </PinnedItemWrapper>
+                        </VirtualItemWrapper>
+                    );
+                })}
+            </VirtualContent>
+
+            {/* Loading indicator */}
+            {isFetchingNextPage && (
+                <PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />
+            )}
+
+            {/* End of list indicator */}
+            {!hasNextPage && combinedItems.length > 0 && (
+                <EndIndicator>No more posts</EndIndicator>
+            )}
+        </div>
+    );
+
+    // Determine what to render for posts tabs
+    const renderPostsContent = () => {
+        if (isLoading && statuses.length === 0) {
+            return renderLoading();
+        }
+        if (combinedItems.length === 0) {
+            return renderEmpty();
+        }
+        return renderVirtualizedList();
+    };
 
     return (
         <>
@@ -86,90 +228,14 @@ export function ProfileContent({
                 {/* Posts Tab Content */}
                 <Activity mode={activeTab === 'posts' ? 'visible' : 'hidden'}>
                     <TabContent>
-                        {isLoading && statuses.length === 0 ? (
-                            <LoadingContainer>
-                                <PostCardSkeletonList count={5} />
-                            </LoadingContainer>
-                        ) : (
-                            <VirtualizedList<StatusItem>
-                                items={combinedItems}
-                                renderItem={(item, index) => {
-                                    const isFirstPinned = item.isPinned && (index === 0 || !combinedItems[index - 1]?.isPinned);
-                                    const isLastPinned = item.isPinned && (index === combinedItems.length - 1 || !combinedItems[index + 1]?.isPinned);
-
-                                    return (
-                                        <PinnedItemWrapper $isLastPinned={isLastPinned}>
-                                            {isFirstPinned && (
-                                                <PinnedBadge>
-                                                    <Pin size={14} />
-                                                    Pinned
-                                                </PinnedBadge>
-                                            )}
-                                            <PostCard status={item.status} style={{ marginBottom: 'var(--size-3)' }} />
-                                        </PinnedItemWrapper>
-                                    );
-                                }}
-                                getItemKey={(item) => `${item.isPinned ? 'pinned-' : ''}${item.status.id}`}
-                                estimateSize={300}
-                                overscan={5}
-                                onLoadMore={fetchNextPage}
-                                isLoadingMore={isFetchingNextPage}
-                                hasMore={hasNextPage}
-                                loadMoreThreshold={1}
-                                height="auto"
-                                style={{ flex: 1, minHeight: 0 }}
-                                scrollRestorationKey={`account-${acct}-posts`}
-                                loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
-                                endIndicator="No more posts"
-                                emptyState={<EmptyState title="No posts yet" />}
-                            />
-
-                        )}
+                        {renderPostsContent()}
                     </TabContent>
                 </Activity>
 
                 {/* Posts & Replies Tab Content */}
                 <Activity mode={activeTab === 'posts_replies' ? 'visible' : 'hidden'}>
                     <TabContent>
-                        {isLoading && statuses.length === 0 ? (
-                            <LoadingContainer>
-                                <PostCardSkeletonList count={5} />
-                            </LoadingContainer>
-                        ) : (
-                            <VirtualizedList<StatusItem>
-                                items={combinedItems}
-                                renderItem={(item, index) => {
-                                    const isFirstPinned = item.isPinned && (index === 0 || !combinedItems[index - 1]?.isPinned);
-                                    const isLastPinned = item.isPinned && (index === combinedItems.length - 1 || !combinedItems[index + 1]?.isPinned);
-
-                                    return (
-                                        <PinnedItemWrapper $isLastPinned={isLastPinned}>
-                                            {isFirstPinned && (
-                                                <PinnedBadge>
-                                                    <Pin size={14} />
-                                                    Pinned
-                                                </PinnedBadge>
-                                            )}
-                                            <PostCard status={item.status} style={{ marginBottom: 'var(--size-3)' }} />
-                                        </PinnedItemWrapper>
-                                    );
-                                }}
-                                getItemKey={(item) => `${item.isPinned ? 'pinned-' : ''}${item.status.id}`}
-                                estimateSize={300}
-                                overscan={5}
-                                onLoadMore={fetchNextPage}
-                                isLoadingMore={isFetchingNextPage}
-                                hasMore={hasNextPage}
-                                loadMoreThreshold={1}
-                                height="auto"
-                                style={{ flex: 1, minHeight: 0 }}
-                                scrollRestorationKey={`account-${acct}-posts_replies`}
-                                loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
-                                endIndicator="No more posts"
-                                emptyState={<EmptyState title="No posts yet" />}
-                            />
-
-                        )}
+                        {renderPostsContent()}
                     </TabContent>
                 </Activity>
 
@@ -194,6 +260,9 @@ export function ProfileContent({
                     </MediaTabContent>
                 </Activity>
             </ContentSection>
+
+            {/* Scroll to top button */}
+            <ScrollToTopButton visible={showScrollTop} onClick={handleScrollToTop} />
         </>
     );
 }
@@ -263,4 +332,22 @@ const LoadMoreButton = styled.button<{ disabled?: boolean }>`
 const LoadingContainer = styled.div`
   flex: 1;
   overflow: auto;
+`;
+
+const VirtualContent = styled.div`
+  width: 100%;
+  position: relative;
+`;
+
+const VirtualItemWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+`;
+
+const EndIndicator = styled.div`
+  text-align: center;
+  padding: var(--size-4);
+  color: var(--text-2);
 `;
