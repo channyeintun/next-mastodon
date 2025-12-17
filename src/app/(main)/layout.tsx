@@ -1,6 +1,5 @@
 'use client';
 
-import { ViewTransition } from 'react';
 import NavigationWrapper from '@/components/organisms/NavigationWrapper';
 import { ScrollRestorationProvider } from '@/components/providers/ScrollRestorationProvider';
 import { StreamingProvider } from '@/components/providers/StreamingProvider';
@@ -17,11 +16,9 @@ export default function MainLayout({
             <GlobalModalProvider>
                 <ScrollRestorationProvider />
                 <NavigationWrapper />
-                <ViewTransition name="page-content">
-                    <main id="main-content">
-                        {children}
-                    </main>
-                </ViewTransition>
+                <main id="main-content">
+                    {children}
+                </main>
                 <AuthModalBridge />
             </GlobalModalProvider>
         </StreamingProvider>
