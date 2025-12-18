@@ -21,7 +21,7 @@ export const TrendingPage = () => {
                     <div>
                         <h1 style={{ fontSize: 'var(--font-size-5)', marginBottom: 'var(--size-1)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                             <TrendingUp size={24} />
-                            Explore
+                            Trending
                         </h1>
                         <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
                             Trending on mastodon.social

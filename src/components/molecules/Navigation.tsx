@@ -43,7 +43,7 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
   // Desktop sidebar includes all links
   const sidebarNavLinks = [
     { href: '/', label: 'Home', icon: Home },
-    { href: '/explore', label: 'Explore', icon: TrendingUp },
+    { href: '/explore', label: 'Trending', icon: TrendingUp },
     { href: '/search', label: 'Search', icon: Search },
     { href: '/compose', label: 'Create', icon: PenSquare },
     { href: '/conversations', label: 'Messages', icon: Mail },

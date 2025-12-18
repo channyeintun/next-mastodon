@@ -198,7 +198,7 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
 
           <Link href="/explore" className="settings-link mobile-only">
             <TrendingUp size={20} className="settings-link-icon" />
-            Explore
+            Trending
           </Link>
 
           <Link href="/bookmarks" className="settings-link">

@@ -191,7 +191,7 @@ export const TimelinePage = observer(() => {
                         Follow some people to see their posts here.
                     </EmptyMessage>
                     <Link href="/explore">
-                        <Button>Explore</Button>
+                        <Button>Trending</Button>
                     </Link>
                 </EmptyContainer>
             </Container>
