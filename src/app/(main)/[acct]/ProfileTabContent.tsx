@@ -52,11 +52,11 @@ export function ProfileTabContent({
     const [scrollMargin, setScrollMargin] = useState(0);
     const [showScrollTop, setShowScrollTop] = useState(false);
 
-    // Per-tab scroll cache key
+    // Per-tab scroll cache key - includes acct for isolation
     const scrollCacheKey = `profile-${acct}-${tabKey}`;
 
-    // Get cached state on initial render
-    const [cachedState] = useState(() => scrollStateCache.get(scrollCacheKey));
+    // Get cached state - use useMemo to re-evaluate when acct/tabKey changes
+    const cachedState = useMemo(() => scrollStateCache.get(scrollCacheKey), [scrollCacheKey]);
 
     // Measure scroll margin from list element's position
     useLayoutEffect(() => {
