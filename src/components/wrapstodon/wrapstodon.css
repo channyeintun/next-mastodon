@@ -537,6 +537,7 @@ dialog:has(.wrapstodon-modal-wrapper)::backdrop {
 /* Mobile adjustments for modal */
 @media (max-width: 540px) {
     dialog:has(.wrapstodon-modal-wrapper) {
+        width: 100vw;
         max-width: 100vw;
         max-height: 100vh;
         margin: 0;
@@ -545,5 +546,9 @@ dialog:has(.wrapstodon-modal-wrapper)::backdrop {
 
     .wrapstodon-modal-wrapper {
         max-height: 100vh;
+    }
+
+    .wrapstodon-modal-loading {
+        width: 100%;
     }
 }
