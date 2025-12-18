@@ -71,7 +71,7 @@ export function PostHeader({
 
     return (
         <Container>
-            <AvatarLink href={`/@${account.acct}`} onClick={handleProfileClick}>
+            <AvatarLink scroll={false} href={`/@${account.acct}`} onClick={handleProfileClick}>
                 <Avatar
                     src={account.avatar}
                     alt={account.display_name || account.username}
