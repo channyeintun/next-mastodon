@@ -82,7 +82,7 @@ export function PostHeader({
             <ContentSection>
                 <HeaderRow>
                     <NameSection>
-                        <ProfileLink href={`/@${account.acct}`} onClick={handleProfileClick}>
+                        <ProfileLink scroll={false} href={`/@${account.acct}`} onClick={handleProfileClick}>
                             <DisplayName>
                                 <EmojiText
                                     text={account.display_name || account.username}
