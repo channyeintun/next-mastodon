@@ -149,7 +149,7 @@ export const TimelinePage = observer(() => {
                         <ProfilePillSkeleton />
                     </HeaderActions>
                 </Header>
-                <ListContainer className="virtualized-list-container">
+                <ListContainer>
                     <PostCardSkeletonList count={3} />
                 </ListContainer>
             </Container>
@@ -289,7 +289,7 @@ const Container = styled.div`
 
 const Header = styled.div`
     background: var(--surface-1);
-    padding: var(--size-4) var(--size-2);
+    padding: var(--size-4);
     display: flex;
     justify-content: space-between;
     align-items: center;
