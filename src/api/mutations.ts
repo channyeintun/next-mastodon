@@ -56,6 +56,8 @@ import {
   updateFilter,
   deleteFilter,
   createReport,
+  generateAnnualReport,
+  deleteSuggestion,
   type PaginatedResponse,
 } from './client'
 import { queryKeys } from './queryKeys'
@@ -67,10 +69,7 @@ export function useGenerateAnnualReport() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (year: number) => {
-      const { generateAnnualReport } = await import('./client')
-      return generateAnnualReport(year)
-    },
+    mutationFn: (year: number) => generateAnnualReport(year),
     onSuccess: (_, year) => {
       // Invalidate the state query to trigger refetch
       // The state will change from 'eligible' to 'generating' and then 'available'
@@ -1683,10 +1682,7 @@ export function useDeleteSuggestion() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (accountId: string) => {
-      const { deleteSuggestion } = await import('./client')
-      return deleteSuggestion(accountId)
-    },
+    mutationFn: (accountId: string) => deleteSuggestion(accountId),
     onMutate: async (accountId) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: queryKeys.suggestions.all() })

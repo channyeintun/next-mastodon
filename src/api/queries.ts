@@ -56,12 +56,18 @@ import {
   getAnnualReportState,
   getAnnualReport,
   getSuggestions,
+  getInstance,
+  getInstanceRules,
+  getPrivacyPolicy,
+  getTermsOfService,
+  getExtendedDescription,
 } from './client'
 import { queryKeys } from './queryKeys'
 import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, Tag, TrendingLink, ConversationParams, NotificationRequestParams, NotificationType } from '../types/mastodon'
 import { useAuthStore, useAccountStore } from '../hooks/useStores'
 import { useEffect } from 'react'
 import { idbQueryPersister } from '../lib/idbPersister'
+import { setCookie } from '../utils/cookies'
 
 
 
@@ -396,7 +402,7 @@ export const infiniteTrendingLinksOptions = () =>
 export const instanceOptions = () =>
   queryOptions({
     queryKey: queryKeys.instance.default,
-    queryFn: ({ signal }) => import('./client').then(m => m.getInstance(signal)),
+    queryFn: ({ signal }) => getInstance(signal),
     staleTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
   })
 
@@ -1154,7 +1160,7 @@ export function useFilter(id: string) {
 export const instanceRulesOptions = () =>
   queryOptions({
     queryKey: queryKeys.instance.rules(),
-    queryFn: ({ signal }) => import('./client').then(m => m.getInstanceRules(signal)),
+    queryFn: ({ signal }) => getInstanceRules(signal),
     staleTime: 1000 * 60 * 60, // Cache for 1 hour
   })
 
@@ -1164,7 +1170,6 @@ export const privacyPolicyOptions = () =>
     queryKey: queryKeys.instance.privacyPolicy(),
     queryFn: async ({ signal }) => {
       try {
-        const { getPrivacyPolicy } = await import('./client')
         return await getPrivacyPolicy(signal)
       } catch (error) {
         // Return null if 404 - policy not configured on this server
@@ -1185,7 +1190,6 @@ export const termsOfServiceOptions = () =>
     queryKey: queryKeys.instance.termsOfService(),
     queryFn: async ({ signal }) => {
       try {
-        const { getTermsOfService } = await import('./client')
         return await getTermsOfService(signal)
       } catch (error) {
         // Return null if 404 - ToS not configured on this server
@@ -1206,7 +1210,6 @@ export const extendedDescriptionOptions = () =>
     queryKey: queryKeys.instance.extendedDescription(),
     queryFn: async ({ signal }) => {
       try {
-        const { getExtendedDescription } = await import('./client')
         return await getExtendedDescription(signal)
       } catch (error) {
         // Return null if 404 - description not configured on this server
@@ -1272,16 +1275,14 @@ export function useAnnualReportState(year: number, options?: { enabled?: boolean
   // Sync state and year to cookies for SSR
   useEffect(() => {
     if (query.data?.state && year > 0) {
-      import('../utils/cookies').then(({ setCookie }) => {
-        setCookie('annualReportState', query.data.state, {
-          expires: 7, // 7 days
-          sameSite: 'lax',
-        })
-        // Also store the year so Navigation can render during SSR
-        setCookie('wrapstodonYear', String(year), {
-          expires: 7, // 7 days
-          sameSite: 'lax',
-        })
+      setCookie('annualReportState', query.data.state, {
+        expires: 7, // 7 days
+        sameSite: 'lax',
+      })
+      // Also store the year so Navigation can render during SSR
+      setCookie('wrapstodonYear', String(year), {
+        expires: 7, // 7 days
+        sameSite: 'lax',
       })
     }
   }, [query.data?.state, year])
