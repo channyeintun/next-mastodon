@@ -7,7 +7,7 @@ import { X, Info, Check } from 'lucide-react';
 import { observer } from 'mobx-react-lite';
 import { useSuggestions, useDeleteSuggestion, useRelationships, useFollowAccount, useUnfollowAccount } from '@/api';
 import { Avatar, Button, EmojiText } from '@/components/atoms';
-import { useAuthStore } from '@/hooks/useStores';
+import { useAuthStore, useAccountStore } from '@/hooks/useStores';
 import type { Field } from '@/types';
 
 const SUGGESTIONS_DISMISSED_KEY = 'mastodon_suggestions_dismissed';
@@ -59,6 +59,7 @@ const extractLinkText = (html: string): string => {
 
 export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionProps) => {
     const authStore = useAuthStore();
+    const accountStore = useAccountStore();
     const { data: suggestions, isLoading, isError } = useSuggestions({ limit });
     const deleteSuggestion = useDeleteSuggestion();
     const followMutation = useFollowAccount();
@@ -171,7 +172,10 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
                                         <X size={14} />
                                     </DismissButton>
 
-                                    <CardLink href={`/@${suggestion.account.acct}`}>
+                                    <CardLink
+                                        href={`/@${suggestion.account.acct}`}
+                                        onClick={() => accountStore.cacheAccount(suggestion.account)}
+                                    >
                                         <Avatar
                                             src={suggestion.account.avatar}
                                             alt={suggestion.account.display_name || suggestion.account.username}
@@ -179,7 +183,10 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
                                         />
                                     </CardLink>
 
-                                    <CardLink href={`/@${suggestion.account.acct}`}>
+                                    <CardLink
+                                        href={`/@${suggestion.account.acct}`}
+                                        onClick={() => accountStore.cacheAccount(suggestion.account)}
+                                    >
                                         <CardName>
                                             <EmojiText
                                                 text={suggestion.account.display_name || suggestion.account.username}
@@ -188,7 +195,10 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
                                         </CardName>
                                     </CardLink>
 
-                                    <CardLink href={`/@${suggestion.account.acct}`}>
+                                    <CardLink
+                                        href={`/@${suggestion.account.acct}`}
+                                        onClick={() => accountStore.cacheAccount(suggestion.account)}
+                                    >
                                         <CardHandle>@{suggestion.account.acct}</CardHandle>
                                     </CardLink>
 

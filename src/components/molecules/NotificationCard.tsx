@@ -18,6 +18,7 @@ import { PostCard } from '@/components/organisms';
 import { formatRelativeTime } from '@/utils/date';
 import type { Notification, NotificationType } from '@/types';
 import { useDismissNotification } from '@/api';
+import { useAccountStore } from '@/hooks/useStores';
 
 interface NotificationCardProps {
     notification: Notification;
@@ -97,6 +98,7 @@ const NOTIFICATION_CONFIG: Record<NotificationType, {
 export function NotificationCard({ notification, onDismiss, style, isNew }: NotificationCardProps) {
     const router = useRouter();
     const dismissMutation = useDismissNotification();
+    const accountStore = useAccountStore();
 
     const config = NOTIFICATION_CONFIG[notification.type];
     const account = notification.account;
@@ -141,7 +143,10 @@ export function NotificationCard({ notification, onDismiss, style, isNew }: Noti
                     <ContentColumn>
                         {/* Header with avatar, message, and time */}
                         <HeaderRow>
-                            <AvatarLink href={`/@${account.acct}`}>
+                            <AvatarLink
+                                href={`/@${account.acct}`}
+                                onClick={() => accountStore.cacheAccount(account)}
+                            >
                                 <Avatar
                                     src={account.avatar}
                                     alt={displayName}
@@ -151,7 +156,10 @@ export function NotificationCard({ notification, onDismiss, style, isNew }: Noti
 
                             <InfoWrapper>
                                 <MessageText>
-                                    <AccountLink href={`/@${account.acct}`}>
+                                    <AccountLink
+                                        href={`/@${account.acct}`}
+                                        onClick={() => accountStore.cacheAccount(account)}
+                                    >
                                         <EmojiText text={displayName} emojis={account.emojis} />
                                     </AccountLink>
                                     {' '}

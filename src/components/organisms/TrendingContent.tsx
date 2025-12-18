@@ -13,7 +13,7 @@ import { Tabs, EmptyState, Button, Avatar, EmojiText } from '@/components/atoms'
 import type { TabItem } from '@/components/atoms/Tabs';
 import { flattenAndUniqById, flattenAndUniqByKey } from '@/utils/fp';
 import type { Status, Tag, TrendingLink, Field } from '@/types';
-import { useAuthStore } from '@/hooks/useStores';
+import { useAuthStore, useAccountStore } from '@/hooks/useStores';
 
 type TrendingTab = 'posts' | 'tags' | 'links' | 'foryou';
 
@@ -70,6 +70,7 @@ interface TrendingContentProps {
 export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'trending' }: TrendingContentProps) => {
     const [activeTab, setActiveTab] = useState<TrendingTab>('posts');
     const authStore = useAuthStore();
+    const accountStore = useAccountStore();
 
     // Fetch data for all tabs
     const {
@@ -280,7 +281,10 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
 
                                 return (
                                     <SuggestionCard key={suggestion.account.id}>
-                                        <CardContent href={`/@${suggestion.account.acct}`}>
+                                        <CardContent
+                                            href={`/@${suggestion.account.acct}`}
+                                            onClick={() => accountStore.cacheAccount(suggestion.account)}
+                                        >
                                             <Avatar
                                                 src={suggestion.account.avatar}
                                                 alt={suggestion.account.display_name || suggestion.account.username}

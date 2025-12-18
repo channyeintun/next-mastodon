@@ -7,6 +7,7 @@ import { Lock } from 'lucide-react';
 import { Avatar, Card, Button, EmojiText } from '@/components/atoms';
 import type { Account } from '@/types';
 import { useFollowAccount, useUnfollowAccount, useRelationships } from '@/api';
+import { useAccountStore } from '@/hooks/useStores';
 
 interface UserCardProps {
   account: Account;
@@ -23,6 +24,7 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
   const unfollowMutation = useUnfollowAccount();
   const { data: relationships } = useRelationships([account.id]);
   const relationship = relationships?.[0];
+  const accountStore = useAccountStore();
 
   const handleFollowToggle = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -40,7 +42,7 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
 
   return (
     <Card padding="medium" hoverable style={style}>
-      <StyledLink href={`/@${account.acct}`}>
+      <StyledLink href={`/@${account.acct}`} onClick={() => accountStore.cacheAccount(account)}>
         <ContentContainer>
           <Avatar
             src={account.avatar}

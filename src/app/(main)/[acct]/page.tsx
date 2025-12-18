@@ -5,7 +5,7 @@ import { useRouter, useSearchParams, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import {
-  useLookupAccount,
+  useAccountWithCache,
   useInfiniteAccountStatusesWithFilters,
   useRelationships,
   useCurrentAccount,
@@ -17,6 +17,7 @@ import {
   useMuteAccount,
   useUnmuteAccount,
 } from '@/api';
+
 import { AccountProfileSkeleton } from '@/components/molecules';
 import { Button, IconButton, Tabs } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
@@ -47,7 +48,7 @@ export default function AccountPage({ params }: { params: Promise<{ acct: string
   if (!decodedAcct.startsWith('@')) notFound();
   const acct = decodedAcct.slice(1);
 
-  const { data: account, isLoading: accountLoading, isError: accountError } = useLookupAccount(acct);
+  const { data: account, isLoading: accountLoading, isError: accountError } = useAccountWithCache(acct);
   const accountId = account?.id;
 
   const [showLimitedProfile, setShowLimitedProfile] = useState(false);

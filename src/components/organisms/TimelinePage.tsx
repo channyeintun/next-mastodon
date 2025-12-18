@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRef, useEffect, useLayoutEffect, useState } from 'react';
 import { useWindowVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 import { useInfiniteHomeTimeline, useCurrentAccount } from '@/api';
+import { useAccountStore } from '@/hooks/useStores';
 import { PostCard } from './PostCard';
 import { SuggestionsSection } from './SuggestionsSection';
 import { PostCardSkeletonList, PostCardSkeleton, ProfilePillSkeleton } from '@/components/molecules';
@@ -44,6 +45,7 @@ type ListItem =
 export const TimelinePage = observer(() => {
     const { data: statusPages, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteHomeTimeline();
     const { data: user, isLoading: isLoadingUser } = useCurrentAccount();
+    const accountStore = useAccountStore();
 
     const listRef = useRef<HTMLDivElement>(null);
     const [scrollMargin, setScrollMargin] = useState(0);
@@ -210,7 +212,12 @@ export const TimelinePage = observer(() => {
                             <Search size={20} />
                         </SearchLink>
                         {!isLoadingUser && user ? (
-                            <Link scroll={false} href={`/@${user.acct}`} className="profile-pill profile-pill-static">
+                            <Link
+                                scroll={false}
+                                href={`/@${user.acct}`}
+                                className="profile-pill profile-pill-static"
+                                onClick={() => accountStore.cacheAccount(user)}
+                            >
                                 <img
                                     src={user.avatar}
                                     alt={user.display_name}

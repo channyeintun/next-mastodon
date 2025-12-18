@@ -18,6 +18,7 @@ import { PostCard } from '@/components/organisms';
 import { formatRelativeTime } from '@/utils/date';
 import type { NotificationGroup, Account, PartialAccountWithAvatar, Status, NotificationType } from '@/types';
 import { useDismissNotificationGroup } from '@/api';
+import { useAccountStore } from '@/hooks/useStores';
 
 interface GroupedNotificationCardProps {
     group: NotificationGroup;
@@ -119,6 +120,7 @@ export function GroupedNotificationCard({
 }: GroupedNotificationCardProps) {
     const router = useRouter();
     const dismissMutation = useDismissNotificationGroup();
+    const accountStore = useAccountStore();
 
     const config = NOTIFICATION_CONFIG[group.type];
 
@@ -170,7 +172,10 @@ export function GroupedNotificationCard({
                         $index={index}
                         $total={visibleAccounts.length}
                     >
-                        <StackedAvatarLink href={`/@${account.acct}`}>
+                        <StackedAvatarLink
+                            href={`/@${account.acct}`}
+                            onClick={() => isFullAccount(account) && accountStore.cacheAccount(account)}
+                        >
                             <AvatarWithBorder
                                 src={account.avatar}
                                 alt={isFullAccount(account) ? account.display_name || account.acct : account.acct}
@@ -209,7 +214,10 @@ export function GroupedNotificationCard({
                                 <MessageText>
                                     {primaryAccount && isFullAccount(primaryAccount) ? (
                                         <>
-                                            <AccountLink href={`/@${primaryAccount.acct}`}>
+                                            <AccountLink
+                                                href={`/@${primaryAccount.acct}`}
+                                                onClick={() => accountStore.cacheAccount(primaryAccount)}
+                                            >
                                                 <EmojiText text={primaryDisplayName} emojis={primaryAccount.emojis} />
                                             </AccountLink>
                                             {' '}

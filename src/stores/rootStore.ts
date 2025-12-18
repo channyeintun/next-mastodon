@@ -5,6 +5,7 @@
 
 import { AuthStore, type AuthState } from './authStore'
 import { UserStore } from './userStore'
+import { AccountStore } from './accountStore'
 
 export interface RootStoreInitialState {
   auth?: Partial<AuthState>
@@ -13,18 +14,22 @@ export interface RootStoreInitialState {
 export class RootStore {
   authStore: AuthStore
   userStore: UserStore
+  accountStore: AccountStore
 
   constructor(initialState?: RootStoreInitialState) {
     this.authStore = new AuthStore(initialState?.auth)
     this.userStore = new UserStore()
+    this.accountStore = new AccountStore()
   }
 
   // Helper method to reset all stores (e.g., on logout)
   reset() {
     this.authStore.signOut()
     this.userStore.clearUser()
+    this.accountStore.clear()
   }
 }
+
 
 // Singleton instance - only for client
 let rootStore: RootStore | null = null

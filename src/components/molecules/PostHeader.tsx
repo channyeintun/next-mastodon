@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { Avatar, IconButton, EmojiText } from '@/components/atoms';
 import { formatRelativeTime } from '@/utils/date';
+import { useAccountStore } from '@/hooks/useStores';
 import type { Account } from '@/types';
 
 type Visibility = 'public' | 'unlisted' | 'private' | 'direct';
@@ -62,9 +63,15 @@ export function PostHeader({
     onMute,
     onReport,
 }: PostHeaderProps) {
+    const accountStore = useAccountStore();
+
+    const handleProfileClick = () => {
+        accountStore.cacheAccount(account);
+    };
+
     return (
         <Container>
-            <AvatarLink href={`/@${account.acct}`}>
+            <AvatarLink href={`/@${account.acct}`} onClick={handleProfileClick}>
                 <Avatar
                     src={account.avatar}
                     alt={account.display_name || account.username}
@@ -75,7 +82,7 @@ export function PostHeader({
             <ContentSection>
                 <HeaderRow>
                     <NameSection>
-                        <ProfileLink href={`/@${account.acct}`}>
+                        <ProfileLink href={`/@${account.acct}`} onClick={handleProfileClick}>
                             <DisplayName>
                                 <EmojiText
                                     text={account.display_name || account.username}

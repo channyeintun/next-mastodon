@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Check, X, Ban, VolumeX } from 'lucide-react';
 import { Avatar, Button, EmojiText } from '@/components/atoms';
 import { useFollowAccount, useUnfollowAccount, useAcceptFollowRequest, useRejectFollowRequest, useUnblockAccount, useUnmuteAccount, useRelationships, useCurrentAccount } from '@/api';
+import { useAccountStore } from '@/hooks/useStores';
 import type { Account, Relationship } from '@/types';
 
 interface AccountCardProps {
@@ -39,6 +40,7 @@ export function AccountCard({
         shouldFetch ? [account.id] : []
     );
     const relationship = relationshipProp ?? relationships?.[0];
+    const accountStore = useAccountStore();
 
     const followMutation = useFollowAccount();
     const unfollowMutation = useUnfollowAccount();
@@ -89,6 +91,8 @@ export function AccountCard({
     };
 
     const handleCardClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        // Cache account data for faster loading on profile page
+        accountStore.cacheAccount(account);
         if (onClick) {
             e.preventDefault();
             onClick(account);

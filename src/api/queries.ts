@@ -59,7 +59,9 @@ import {
 } from './client'
 import { queryKeys } from './queryKeys'
 import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, Tag, TrendingLink, ConversationParams, NotificationRequestParams, NotificationType } from '../types/mastodon'
-import { useAuthStore } from '../hooks/useStores'
+import { useAuthStore, useAccountStore } from '../hooks/useStores'
+import { useEffect } from 'react'
+
 
 
 
@@ -653,6 +655,63 @@ export function useLookupAccount(acct: string) {
     enabled: !!acct,
   })
 }
+
+/**
+ * Optimized account fetching hook with priority:
+ * 1. Cached account data → return immediately, NO fetch
+ * 2. Cached ID → fetch using /accounts/:id (faster)  
+ * 3. No ID → fetch using /accounts/lookup (slower)
+ */
+export function useAccountWithCache(acct: string) {
+  const accountStore = useAccountStore()
+
+  // Priority 1: Check for cached account data (in-memory)
+  const cachedAccount = acct ? accountStore.getAccountByAcct(acct) : undefined
+
+  // Priority 2: Check for cached ID (persisted in localStorage)
+  const cachedId = acct ? accountStore.getAccountIdByAcct(acct) : undefined
+
+  // Determine fetch strategy
+  const hasCachedData = !!cachedAccount
+  const hasCachedId = !!cachedId && !hasCachedData
+  const needsLookup = !!acct && !hasCachedData && !cachedId
+
+  // Query using ID (only if we have ID but no cached data)
+  const idQuery = useQuery({
+    ...accountOptions(cachedId || ''),
+    enabled: hasCachedId,
+  })
+
+  // Query using lookup (only if no ID and no cached data)
+  const lookupQuery = useQuery({
+    ...lookupAccountOptions(acct),
+    enabled: needsLookup,
+  })
+
+  // Cache results from API calls
+  useEffect(() => {
+    const fetchedData = idQuery.data || lookupQuery.data
+    if (fetchedData && !hasCachedData) {
+      accountStore.cacheAccount(fetchedData)
+    }
+  }, [idQuery.data, lookupQuery.data, accountStore, hasCachedData])
+
+  // Return the appropriate result
+  if (hasCachedData) {
+    // Return cached data as a query-like object
+    return {
+      data: cachedAccount,
+      isLoading: false,
+      isError: false,
+      error: null,
+    }
+  }
+
+  return hasCachedId ? idQuery : lookupQuery
+}
+
+
+
 
 export function useCurrentAccount() {
   const authStore = useAuthStore()

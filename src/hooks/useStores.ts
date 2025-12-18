@@ -26,6 +26,11 @@ export function useUserStore() {
   return userStore
 }
 
+export function useAccountStore() {
+  const { accountStore } = useStores()
+  return accountStore
+}
+
 export function useConversationStore() {
   return getConversationStore()
 }
