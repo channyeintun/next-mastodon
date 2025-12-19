@@ -53,8 +53,8 @@ const idbStorage = {
  */
 const persister = experimental_createQueryPersister({
     storage: idbStorage,
-    // Max age of 7 days for persisted data
-    maxAge: 1000 * 60 * 60 * 24 * 7,
+    // Max age of 24 hours for persisted data (ETag validation ensures freshness)
+    maxAge: 1000 * 60 * 60 * 24,
 })
 
 // Export the persisterFn which is what useQuery expects

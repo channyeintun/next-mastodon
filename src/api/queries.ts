@@ -24,6 +24,7 @@ import {
   getBookmarks,
   search,
   getCustomEmojis,
+  NotModifiedError,
   createCustomClient,
   getNotifications,
   getNotification,
@@ -340,13 +341,22 @@ export const infiniteSearchOptions = (params: SearchParams) =>
 
 // Custom Emojis Options
 // Persisted to IndexedDB for offline access and faster initial load
+// Uses ETag-based conditional requests to avoid re-fetching unchanged data
+// On 304 Not Modified, the persister provides cached data
 export const customEmojisOptions = () =>
   queryOptions({
     queryKey: ['customEmojis'] as const,
     queryFn: ({ signal }) => getCustomEmojis(signal),
     staleTime: 1000 * 60 * 60, // Consider fresh for 1 hour
-    gcTime: 1000 * 60 * 60 * 24 * 7, // Keep in memory for 7 days (must be >= persister maxAge)
+    gcTime: 1000 * 60 * 60 * 24, // Keep in memory for 24 hours (matches persister maxAge)
     persister: idbQueryPersister,
+    // Don't retry on 304 - it means data is unchanged, use cached
+    retry: (failureCount, error) => {
+      if (error instanceof NotModifiedError) return false
+      return failureCount < 3
+    },
+    // Don't show error state for 304 - it's expected behavior
+    throwOnError: (error) => !(error instanceof NotModifiedError),
   })
 
 // Trends Options
