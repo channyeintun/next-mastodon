@@ -64,6 +64,7 @@ import {
 import { queryKeys } from './queryKeys'
 import { findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
 import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams, UpdateNotificationPolicyV1Params, CreatePushSubscriptionParams, UpdatePushSubscriptionParams, CreateFilterParams, UpdateFilterParams, CreateReportParams } from '../types/mastodon'
+import { useRouter } from 'next/navigation'
 
 // Annual Report (Wrapstodon) mutations
 export function useGenerateAnnualReport() {
@@ -577,6 +578,7 @@ async function cancelStatusQueries(queryClient: QueryClient, statusId: string) {
 // Status mutations
 export function useCreateStatus() {
   const queryClient = useQueryClient()
+  const router = useRouter();
 
   return useMutation({
     mutationFn: (params: CreateStatusParams) => createStatus(params),
@@ -620,7 +622,9 @@ export function useCreateStatus() {
           action: {
             label: 'OPEN',
             onClick: () => {
-              window.location.href = `/status/${data.id}`
+              // Pre-populate status cache before navigation to avoid refetch
+              queryClient.setQueryData(queryKeys.statuses.detail(data.id), data);
+              router.push(`/status/${data.id}`);
             },
           },
         })
