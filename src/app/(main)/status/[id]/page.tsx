@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { use, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
-import { useStatus, useStatusContext } from '@/api';
+import { useStatusWithContext } from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
 import { PostCard } from '@/components/organisms';
 import { PostCardSkeleton, StatusStats } from '@/components/molecules';
@@ -18,18 +18,14 @@ export default function StatusPage({
 }) {
   const { id } = use(params);
 
+  // Combined hook fetches status and context in parallel
   const {
-    data: status,
-    isLoading: statusLoading,
-    isError: statusError,
+    status,
+    context,
+    isLoading,
+    isError,
     error: statusErrorData,
-  } = useStatus(id);
-
-  const {
-    data: context,
-    isLoading: contextLoading,
-    isError: contextError,
-  } = useStatusContext(id);
+  } = useStatusWithContext(id);
 
   const authStore = useAuthStore();
   const router = useRouter();
@@ -38,9 +34,6 @@ export default function StatusPage({
   const handlePostDeleted = () => {
     router.push('/');
   };
-
-  const isLoading = statusLoading || contextLoading;
-  const isError = statusError || contextError;
 
   // Scroll to main post after content loads
   // Must be before early returns to follow Rules of Hooks

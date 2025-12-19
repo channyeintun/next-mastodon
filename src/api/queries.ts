@@ -3,7 +3,7 @@
  * Uses queryOptions pattern for reusability and type safety
  */
 
-import { useQuery, useInfiniteQuery, queryOptions, infiniteQueryOptions, keepPreviousData } from '@tanstack/react-query'
+import { useQuery, useQueries, useInfiniteQuery, queryOptions, infiniteQueryOptions, keepPreviousData } from '@tanstack/react-query'
 import {
   getHomeTimeline,
   getPublicTimeline,
@@ -623,6 +623,28 @@ export function useStatusContext(id: string) {
     ...statusContextOptions(id),
     enabled: !!id,
     placeholderData: keepPreviousData, // Prevent layout shift during refetch
+  })
+}
+
+/**
+ * Combined hook for fetching status and its context in parallel.
+ * Uses useQueries with combine for cleaner API and single loading/error state.
+ */
+export function useStatusWithContext(id: string) {
+  return useQueries({
+    queries: [
+      { ...statusOptions(id), enabled: !!id },
+      { ...statusContextOptions(id), enabled: !!id },
+    ],
+    combine: (results) => ({
+      status: results[0].data,
+      context: results[1].data,
+      isLoading: results.some(r => r.isLoading),
+      isError: results.some(r => r.isError),
+      error: results.find(r => r.error)?.error ?? null,
+      statusQuery: results[0],
+      contextQuery: results[1],
+    }),
   })
 }
 
