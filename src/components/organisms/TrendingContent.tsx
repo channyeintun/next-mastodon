@@ -2,6 +2,7 @@
 
 import styled from '@emotion/styled';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useState, Activity, type ReactNode } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Check, Info, X, Hash, Newspaper, FileText, LogIn, UserPlus } from 'lucide-react';
@@ -68,7 +69,17 @@ interface TrendingContentProps {
 }
 
 export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'trending' }: TrendingContentProps) => {
-    const [activeTab, setActiveTab] = useState<TrendingTab>('posts');
+    const searchParams = useSearchParams();
+
+    // Map URL tab param to internal tab value
+    const getInitialTab = (): TrendingTab => {
+        const tabParam = searchParams.get('tab');
+        if (tabParam === 'people') return 'foryou';
+        if (tabParam === 'posts' || tabParam === 'tags' || tabParam === 'links') return tabParam;
+        return 'posts';
+    };
+
+    const [activeTab, setActiveTab] = useState<TrendingTab>(getInitialTab);
     const authStore = useAuthStore();
     const accountStore = useAccountStore();
 
