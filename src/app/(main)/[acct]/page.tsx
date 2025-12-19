@@ -27,6 +27,7 @@ import { PageContainer, FixedBackButton, ErrorContainer, ErrorTitle } from './st
 import { ProfileTabContent, MediaTabContent, ContentSection } from './ProfileTabContent';
 import { ProfileHeader, LimitedProfileHeader } from './ProfileHeader';
 import { useQueryState, parseAsStringLiteral } from '@/hooks/useQueryState';
+import { useLockBodyScroll } from '@/hooks/useLockBodyScroll';
 
 type ProfileTab = 'posts' | 'posts_replies' | 'media';
 const VALID_TABS = ['posts', 'posts_replies', 'media'] as const;
@@ -85,6 +86,10 @@ export default function AccountPage({ params }: { params: Promise<{ acct: string
   const postsStatuses = flattenAndUniqById(postsQuery.data?.pages);
   const postsRepliesStatuses = flattenAndUniqById(postsRepliesQuery.data?.pages);
   const mediaStatuses = flattenAndUniqById(mediaQuery.data?.pages);
+
+  // Lock scrolling until all tab queries are done loading to prevent virtualized list measurement issues
+  const isLoading = postsQuery.isLoading || postsRepliesQuery.isLoading || mediaQuery.isLoading;
+  useLockBodyScroll(isLoading);
 
   const handleFollowToggle = () => {
     if (!accountId) return;
