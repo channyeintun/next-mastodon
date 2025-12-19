@@ -193,5 +193,7 @@ const ScheduleButton = styled.button<{ $isActive: boolean }>`
 `;
 
 const ActionRow = styled.div`
+  display: flex;
+  align-items: center;
   gap: var(--size-3);
 `;

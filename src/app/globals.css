@@ -760,12 +760,10 @@ body {
 
 .compose-toolbar-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   flex-wrap: wrap;
-  /* Allow wrapping */
   gap: var(--size-3);
-  /* Add gap for when it wraps */
 }
 
 @media (max-width: 480px) {
