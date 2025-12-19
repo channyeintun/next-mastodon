@@ -624,6 +624,8 @@ export function useCreateStatus() {
             onClick: () => {
               // Pre-populate status cache before navigation to avoid refetch
               queryClient.setQueryData(queryKeys.statuses.detail(data.id), data);
+              const emptyContext: Context = { ancestors: [], descendants: [] };
+              queryClient.setQueryData(queryKeys.statuses.context(data.id), emptyContext);
               router.push(`/status/${data.id}`);
             },
           },
