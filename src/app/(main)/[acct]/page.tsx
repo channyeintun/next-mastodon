@@ -1,6 +1,6 @@
 'use client';
 
-import { Activity, use, useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useRouter, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
@@ -173,7 +173,7 @@ export default function AccountPage({ params }: { params: Promise<{ acct: string
             <ProfileHeader {...commonHeaderProps} />
             <Tabs tabs={profileTabs} activeTab={activeTab} onTabChange={setActiveTab} sticky />
             <ContentSection>
-              <Activity mode={activeTab === 'posts' ? 'visible' : 'hidden'}>
+              {activeTab === 'posts' && (
                 <ProfileTabContent
                   acct={acct}
                   tabKey="posts"
@@ -184,8 +184,8 @@ export default function AccountPage({ params }: { params: Promise<{ acct: string
                   hasNextPage={postsQuery.hasNextPage ?? false}
                   isFetchingNextPage={postsQuery.isFetchingNextPage}
                 />
-              </Activity>
-              <Activity mode={activeTab === 'posts_replies' ? 'visible' : 'hidden'}>
+              )}
+              {activeTab === 'posts_replies' && (
                 <ProfileTabContent
                   acct={acct}
                   tabKey="posts_replies"
@@ -195,8 +195,8 @@ export default function AccountPage({ params }: { params: Promise<{ acct: string
                   hasNextPage={postsRepliesQuery.hasNextPage ?? false}
                   isFetchingNextPage={postsRepliesQuery.isFetchingNextPage}
                 />
-              </Activity>
-              <Activity mode={activeTab === 'media' ? 'visible' : 'hidden'}>
+              )}
+              {activeTab === 'media' && (
                 <MediaTabContent
                   statuses={mediaStatuses}
                   isLoading={mediaQuery.isLoading}
@@ -204,7 +204,7 @@ export default function AccountPage({ params }: { params: Promise<{ acct: string
                   hasNextPage={mediaQuery.hasNextPage ?? false}
                   isFetchingNextPage={mediaQuery.isFetchingNextPage}
                 />
-              </Activity>
+              )}
             </ContentSection>
           </>
         )}
