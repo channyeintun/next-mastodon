@@ -128,8 +128,10 @@ export function ProfileTabContent({
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Loading state
-    if (isLoading && statuses.length === 0) {
+    // Loading state - only show skeleton if we have no data at all
+    // Check both statuses AND pinnedStatuses to avoid skeleton flash
+    // when account data loads but status query is still initializing
+    if (isLoading && statuses.length === 0 && (!pinnedStatuses || pinnedStatuses.length === 0)) {
         return (
             <LoadingContainer>
                 <PostCardSkeletonList count={5} />
