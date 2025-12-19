@@ -78,12 +78,6 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
           <TextSkeleton width="100%" height={40} />
         </Card>
 
-        {/* Appearance Card Skeleton */}
-        <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
-          <TextSkeleton width={100} height={18} style={{ marginBottom: 'var(--size-3)' }} />
-          <TextSkeleton width="100%" height={40} />
-        </Card>
-
         {/* Quick Links Card Skeleton */}
         <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
           <TextSkeleton width={100} height={18} style={{ marginBottom: 'var(--size-3)' }} />
@@ -91,6 +85,12 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
             <TextSkeleton width="100%" height={40} />
             <TextSkeleton width="100%" height={40} />
           </div>
+        </Card>
+
+        {/* Appearance Card Skeleton */}
+        <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
+          <TextSkeleton width={100} height={18} style={{ marginBottom: 'var(--size-3)' }} />
+          <TextSkeleton width="100%" height={40} />
         </Card>
 
         {/* Moderation Card Skeleton */}
@@ -166,19 +166,6 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
         </Link>
       </Card>
 
-      {/* Appearance */}
-      <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
-        <h2 style={{
-          fontSize: 'var(--font-size-2)',
-          fontWeight: 'var(--font-weight-6)',
-          marginBottom: 'var(--size-3)',
-          color: 'var(--text-2)',
-        }}>
-          Appearance
-        </h2>
-        <ThemeSelector initialTheme={initialTheme} />
-      </Card>
-
       {/* Quick Links */}
       <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
         <h2 style={{
@@ -250,6 +237,19 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
             </button>
           )}
         </div>
+      </Card>
+
+      {/* Appearance */}
+      <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
+        <h2 style={{
+          fontSize: 'var(--font-size-2)',
+          fontWeight: 'var(--font-weight-6)',
+          marginBottom: 'var(--size-3)',
+          color: 'var(--text-2)',
+        }}>
+          Appearance
+        </h2>
+        <ThemeSelector initialTheme={initialTheme} />
       </Card>
 
       {/* Moderation */}
