@@ -4,7 +4,7 @@
  * This allows specific queries (like custom emojis) to be persisted across sessions
  */
 
-import { get, set, del, createStore } from 'idb-keyval'
+import { get, set, del, clear, createStore } from 'idb-keyval'
 import { experimental_createQueryPersister } from '@tanstack/query-persist-client-core'
 
 // Create a dedicated IndexedDB store for query cache
@@ -59,3 +59,15 @@ const persister = experimental_createQueryPersister({
 
 // Export the persisterFn which is what useQuery expects
 export const idbQueryPersister = persister.persisterFn
+
+/**
+ * Clear all data from the IndexedDB query store
+ */
+export async function clearIdb(): Promise<void> {
+    if (typeof window === 'undefined') return
+    try {
+        await clear(queryStore)
+    } catch (error) {
+        console.error('Error clearing IndexedDB:', error)
+    }
+}

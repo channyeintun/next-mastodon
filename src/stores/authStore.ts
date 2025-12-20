@@ -5,7 +5,8 @@
  */
 
 import { makeAutoObservable } from 'mobx'
-import { getCookie, setCookie, deleteCookie, type CookieOptions } from '../utils/cookies'
+import { getCookie, setCookie, clearAllCookies, type CookieOptions } from '../utils/cookies'
+import { clearIdb } from '../lib/idbPersister'
 
 export interface AuthState {
   instanceURL: string | null
@@ -115,13 +116,12 @@ export class AuthStore {
     this.clientSecret = null
 
     if (typeof window !== 'undefined') {
-      // Clear localStorage
+      // Clear all browser storage
       localStorage.clear()
-      // Fire-and-forget cookie deletions
-      deleteCookie('instanceURL')
-      deleteCookie('accessToken')
-      deleteCookie('clientId')
-      deleteCookie('clientSecret')
+      sessionStorage.clear()
+      clearIdb()
+      // Fire-and-forget: clear all cookies
+      clearAllCookies()
     }
   }
 

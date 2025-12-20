@@ -86,3 +86,23 @@ export async function deleteCookie(name: string): Promise<void> {
         console.error(`Error deleting cookie "${name}":`, error);
     }
 }
+
+/**
+ * Clear all cookies
+ */
+export async function clearAllCookies(): Promise<void> {
+    if (typeof window === 'undefined' || !('cookieStore' in window)) {
+        return;
+    }
+
+    try {
+        const cookies = await window.cookieStore.getAll();
+        await Promise.all(
+            cookies
+                .filter((c): c is typeof c & { name: string } => !!c.name)
+                .map(c => window.cookieStore.delete(c.name))
+        );
+    } catch (error) {
+        console.error('Error clearing cookies:', error);
+    }
+}
