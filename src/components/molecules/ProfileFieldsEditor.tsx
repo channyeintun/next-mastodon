@@ -1,15 +1,40 @@
-import styled from '@emotion/styled';
-import { UseFormRegister, Control, FieldErrors, UseFormWatch } from 'react-hook-form';
-import { Check, Copy, ChevronDown } from 'lucide-react';
-import { Card, Input, FormField } from '@/components/atoms';
+import { useState } from 'react';
+import { UseFormRegister, Control, FieldErrors, UseFormWatch, UseFormSetValue } from 'react-hook-form';
+import { Copy, ChevronDown, GripVertical } from 'lucide-react';
+import { Input, FormField } from '@/components/atoms';
 import { formatVerificationDate } from '@/utils/date';
-import type { ProfileFormData } from '@/schemas/profileFormSchema';
+import type { ProfileFormData, ProfileField } from '@/schemas/profileFormSchema';
+import {
+  SectionCard,
+  SectionTitle,
+  FieldsTitle,
+  FieldsDescription,
+  FieldsWrapper,
+  Textarea,
+  FieldsContainer,
+  FieldRow,
+  DragHandle,
+  DropIndicator,
+  FieldInput,
+  VerificationIcon,
+  GreenCheck,
+  Details,
+  Summary,
+  DetailsContent,
+  VerificationText,
+  CodeSnippet,
+  CodeBlock,
+  CodeContent,
+  CopyButton,
+  TipText,
+} from './ProfileFieldsEditorStyled';
 
 interface ProfileFieldsEditorProps {
   register: UseFormRegister<ProfileFormData>;
   control: Control<ProfileFormData>;
   errors: FieldErrors<ProfileFormData>;
   watch: UseFormWatch<ProfileFormData>;
+  setValue: UseFormSetValue<ProfileFormData>;
   profileUrl: string;
 }
 
@@ -17,10 +42,73 @@ export function ProfileFieldsEditor({
   register,
   errors,
   watch,
+  setValue,
   profileUrl,
 }: ProfileFieldsEditorProps) {
   const bio = watch('bio');
   const fields = watch('fields');
+
+  // Drag and drop state
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dropIndicatorIndex, setDropIndicatorIndex] = useState<number | null>(null);
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+    // Set drag image opacity
+    if (e.currentTarget instanceof HTMLElement) {
+      e.dataTransfer.setDragImage(e.currentTarget, 0, 0);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === null) return;
+
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    const dropPosition = e.clientY < midY ? index : index + 1;
+
+    // Don't show indicator at the same position as dragged item
+    if (dropPosition !== draggedIndex && dropPosition !== draggedIndex + 1) {
+      setDropIndicatorIndex(dropPosition);
+    } else {
+      setDropIndicatorIndex(null);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    // Only hide indicator if leaving the container entirely
+    const relatedTarget = e.relatedTarget as HTMLElement;
+    if (!e.currentTarget.contains(relatedTarget)) {
+      setDropIndicatorIndex(null);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    if (draggedIndex === null || dropIndicatorIndex === null) {
+      setDraggedIndex(null);
+      setDropIndicatorIndex(null);
+      return;
+    }
+
+    // Reorder fields
+    const newFields = [...fields];
+    const [draggedField] = newFields.splice(draggedIndex, 1);
+    const insertIndex = dropIndicatorIndex > draggedIndex ? dropIndicatorIndex - 1 : dropIndicatorIndex;
+    newFields.splice(insertIndex, 0, draggedField);
+
+    setValue('fields', newFields as [ProfileField, ProfileField, ProfileField, ProfileField]);
+
+    setDraggedIndex(null);
+    setDropIndicatorIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDropIndicatorIndex(null);
+  };
 
   return (
     <>
@@ -65,32 +153,55 @@ export function ProfileFieldsEditor({
           You can have up to 4 items displayed as a table on your profile
         </FieldsDescription>
 
-        <div className="profile-edit-fields-container">
+        <FieldsContainer
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onDragOver={(e) => e.preventDefault()}
+        >
           {fields.map((field, index) => (
-            <div key={index} className="profile-edit-field-row">
-              <FieldInput
-                type="text"
-                placeholder={`Label ${index + 1}`}
-                {...register(`fields.${index}.name`)}
-              />
-              <FieldInput
-                type="text"
-                placeholder="Content"
-                {...register(`fields.${index}.value`)}
-                $verified={!!field.verified_at}
-              />
-              <VerificationIcon>
-                {field.verified_at && (
-                  <span
-                    title={`Verified on ${formatVerificationDate(field.verified_at)}`}
-                  >
-                    <GreenCheck size={18} />
-                  </span>
-                )}
-              </VerificationIcon>
+            <div key={index}>
+              {/* Drop indicator before this row */}
+              {dropIndicatorIndex === index && (
+                <DropIndicator />
+              )}
+              <FieldRow
+                draggable
+                onDragStart={(e) => handleDragStart(e, index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragEnd={handleDragEnd}
+                $isDragging={draggedIndex === index}
+              >
+                <DragHandle>
+                  <GripVertical size={18} />
+                </DragHandle>
+                <FieldInput
+                  type="text"
+                  placeholder={`Label ${index + 1}`}
+                  {...register(`fields.${index}.name`)}
+                />
+                <FieldInput
+                  type="text"
+                  placeholder="Content"
+                  {...register(`fields.${index}.value`)}
+                  $verified={!!field.verified_at}
+                />
+                <VerificationIcon>
+                  {field.verified_at && (
+                    <span
+                      title={`Verified on ${formatVerificationDate(field.verified_at)}`}
+                    >
+                      <GreenCheck size={18} />
+                    </span>
+                  )}
+                </VerificationIcon>
+              </FieldRow>
             </div>
           ))}
-        </div>
+          {/* Drop indicator at the end */}
+          {dropIndicatorIndex === fields.length && (
+            <DropIndicator />
+          )}
+        </FieldsContainer>
 
         {/* Verification Info */}
         <Details>
@@ -137,137 +248,3 @@ export function ProfileFieldsEditor({
     </>
   );
 }
-
-// Styled components
-const SectionCard = styled(Card)`
-  margin-bottom: var(--size-4);
-`;
-
-const SectionTitle = styled.h2`
-  font-size: var(--font-size-3);
-  font-weight: var(--font-weight-6);
-  margin-bottom: var(--size-4);
-`;
-
-const FieldsTitle = styled.h2`
-  font-size: var(--font-size-3);
-  font-weight: var(--font-weight-6);
-  margin-bottom: var(--size-2);
-`;
-
-const FieldsDescription = styled.p`
-  font-size: var(--font-size-0);
-  color: var(--text-2);
-  margin-bottom: var(--size-4);
-`;
-
-const FieldsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-4);
-`;
-
-const Textarea = styled.textarea`
-  width: 100%;
-  padding: var(--size-2);
-  border: 1px solid var(--surface-4);
-  border-radius: var(--radius-2);
-  background: var(--surface-1);
-  color: var(--text-1);
-  font-size: var(--font-size-1);
-  resize: vertical;
-  font-family: inherit;
-`;
-
-const FieldInput = styled.input<{ $verified?: boolean }>`
-  padding: var(--size-2);
-  border: 1px solid ${props => props.$verified ? 'var(--green-6)' : 'var(--surface-4)'};
-  border-radius: var(--radius-2);
-  background: ${props => props.$verified ? 'color-mix(in srgb, var(--green-6) 10%, var(--surface-1))' : 'var(--surface-1)'};
-  color: var(--text-1);
-  font-size: var(--font-size-1);
-`;
-
-const VerificationIcon = styled.div`
-  width: 24px;
-  display: flex;
-  justify-content: center;
-`;
-
-const GreenCheck = styled(Check)`
-  color: var(--green-6);
-`;
-
-const Details = styled.details`
-  margin-top: var(--size-4);
-  border-top: 1px solid var(--surface-3);
-  padding-top: var(--size-4);
-`;
-
-const Summary = styled.summary`
-  display: flex;
-  align-items: center;
-  gap: var(--size-2);
-  color: var(--text-1);
-  font-size: var(--font-size-1);
-  font-weight: var(--font-weight-6);
-  cursor: pointer;
-  list-style: none;
-`;
-
-const DetailsContent = styled.div`
-  margin-top: var(--size-3);
-`;
-
-const VerificationText = styled.p`
-  font-size: var(--font-size-0);
-  color: var(--text-2);
-  margin-bottom: var(--size-3);
-  line-height: 1.5;
-`;
-
-const CodeSnippet = styled.code`
-  background: var(--surface-3);
-  padding: 2px 4px;
-  border-radius: 4px;
-`;
-
-const CodeBlock = styled.div`
-  background: var(--surface-2);
-  border-radius: var(--radius-2);
-  padding-block: var(--size-3);
-  display: flex;
-  place-items: center;
-`;
-
-const CodeContent = styled.code`
-  font-size: var(--font-size-0);
-  font-family: monospace;
-  white-space: nowrap;
-  display: block;
-  padding-right: var(--size-8);
-  overflow: auto;
-`;
-
-const CopyButton = styled.button`
-  background: var(--surface-3);
-  border: none;
-  border-radius: var(--radius-1);
-  padding: var(--size-1);
-  cursor: pointer;
-  color: var(--text-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    background: var(--surface-4);
-  }
-`;
-
-const TipText = styled.p`
-  font-size: var(--font-size-0);
-  color: var(--text-2);
-  margin-top: var(--size-3);
-  line-height: 1.5;
-`;

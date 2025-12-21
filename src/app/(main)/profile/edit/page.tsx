@@ -214,6 +214,7 @@ export default function ProfileEditPage() {
                     control={control}
                     errors={errors}
                     watch={watch}
+                    setValue={setValue}
                     profileUrl={currentAccount.url || ''}
                 />
 
