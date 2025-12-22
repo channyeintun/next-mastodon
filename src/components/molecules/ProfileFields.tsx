@@ -35,9 +35,8 @@ const FieldName = styled.div`
 `;
 
 const FieldValue = styled.div`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
 `;
 
 /**
