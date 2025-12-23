@@ -8,6 +8,8 @@ A minimal, performant social media frontend for Mastodon built with Next.js 16 a
 
 Other browsers may not fully support some of the cutting-edge CSS features used in this project.
 
+**⚠️ cookieStore API:** This project uses the [cookieStore API](https://developer.mozilla.org/en-US/docs/Web/API/CookieStore) for cookie management, which is a newly available baseline feature (2025). Older browsers may not support this API.
+
 ## Performance Highlights
 
 - **Virtualized Lists**: Optimized list rendering using [TanStack Virtual](https://tanstack.com/virtual) for smooth scrolling performance with large datasets
