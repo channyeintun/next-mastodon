@@ -85,7 +85,7 @@ export default function SearchPage() {
   const tabs: TabType[] = ['all', 'accounts', 'statuses', 'hashtags'];
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ maxWidth: '600px', margin: '0 auto', height: '100dvh', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <div style={{
         flexShrink: 0,

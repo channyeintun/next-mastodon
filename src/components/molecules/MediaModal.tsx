@@ -119,7 +119,7 @@ const ModalContainer = styled.div`
   position: relative;
   width: 90vw;
   max-width: 1200px;
-  max-height: 90vh;
+  max-height: 90dvh;
   display: flex;
   flex-direction: column;
   background: var(--surface-1);
@@ -174,19 +174,19 @@ const MediaContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  max-height: 80vh;
+  max-height: 80dvh;
   background: black;
 `;
 
 const MediaImage = styled.img`
   max-width: 90vw;
-  max-height: 80vh;
+  max-height: 80dvh;
   object-fit: contain;
 `;
 
 const MediaVideo = styled.video`
   max-width: 90vw;
-  max-height: 80vh;
+  max-height: 80dvh;
   object-fit: contain;
 `;
 
@@ -209,6 +209,6 @@ const AltText = styled.div`
   color: var(--text-2);
   font-size: var(--font-size-1);
   border-top: 1px solid var(--surface-3);
-  max-height: 20vh;
+  max-height: 20dvh;
   overflow-y: auto;
 `;

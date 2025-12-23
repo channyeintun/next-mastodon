@@ -69,7 +69,7 @@ const Content = styled.div<{ $maxWidth: string }>`
   border-radius: var(--radius-3);
   max-width: ${props => props.$maxWidth};
   width: 100%;
-  max-height: 90vh;
+  max-height: 90dvh;
   overflow: auto;
 `;
 

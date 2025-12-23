@@ -129,7 +129,7 @@ export function MediaGrid({ statuses, style }: MediaGridProps) {
 const ModalContainer = styled.div`
   position: relative;
   max-width: 90vw;
-  max-height: 90vh;
+  max-height: 90dvh;
   display: flex;
   flex-direction: column;
   background: var(--surface-1);
@@ -156,7 +156,7 @@ const MediaContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  max-height: 80vh;
+  max-height: 80dvh;
 `;
 
 const MediaVideo = styled.video`
@@ -166,9 +166,9 @@ const MediaVideo = styled.video`
 `;
 
 const MediaImage = styled.img`
-  max-height: 80vh;
+  max-height: 80dvh;
   min-width: min(600px, 90vw);
-  min-height: min(400px, 80vh);
+  min-height: min(400px, 80dvh);
   object-fit: contain;
 `;
 
@@ -195,7 +195,7 @@ const GridContainer = styled.div<{ $hasCustomStyle?: boolean }>`
   grid-template-columns: repeat(3, 1fr);
   gap: var(--size-1);
   padding: var(--size-2);
-  min-height: 50vh;
+  min-height: 50dvh;
 `;
 
 const EmptyState = styled.div`

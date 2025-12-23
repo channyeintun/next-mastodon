@@ -72,7 +72,7 @@ interface VirtualizedListProps<T> {
 
   /**
    * Container height
-   * @default 'calc(100vh - 140px)'
+   * @default 'calc(100dvh - 140px)'
    */
   height?: string;
 
@@ -122,7 +122,7 @@ export function VirtualizedList<T>({
   loadingIndicator,
   endIndicator,
   emptyState,
-  height = 'calc(100vh - 140px)',
+  height = 'calc(100dvh - 140px)',
   style,
   scrollRestorationKey,
   header,

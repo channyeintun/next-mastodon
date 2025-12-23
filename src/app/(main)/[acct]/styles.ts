@@ -118,7 +118,7 @@ export const ErrorContainer = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
-  min-height: 50vh;
+  min-height: 50dvh;
   padding: var(--size-4);
 `;
 

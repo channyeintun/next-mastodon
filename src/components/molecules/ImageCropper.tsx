@@ -103,7 +103,7 @@ export function ImageCropper({
           style={{
             height: '100%',
             width: '100%',
-            maxHeight: 'calc(100vh - 300px)',
+            maxHeight: 'calc(100dvh - 300px)',
           }}
           aspectRatio={aspectRatio}
           guides

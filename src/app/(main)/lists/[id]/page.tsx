@@ -151,7 +151,7 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
                     onLoadMore={() => fetchNextPage()}
                     isLoadingMore={isFetchingNextPage}
                     hasMore={!!hasNextPage}
-                    height="calc(100vh - 120px)"
+                    height="calc(100dvh - 120px)"
                     loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
                     emptyState={null}
                 />

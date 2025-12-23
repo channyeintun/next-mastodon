@@ -117,7 +117,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
                     onLoadMore={() => fetchNextPage()}
                     isLoadingMore={isFetchingNextPage}
                     hasMore={!!hasNextPage}
-                    height="calc(100vh - 200px)"
+                    height="calc(100dvh - 200px)"
                     loadingIndicator={<div style={{ display: 'grid', placeItems: 'center', padding: 'var(--size-4)' }}><Spinner /></div>}
                     emptyState={null}
                 />

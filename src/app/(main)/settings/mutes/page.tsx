@@ -78,7 +78,7 @@ export default function MutedAccountsPage() {
                 onLoadMore={() => fetchNextPage()}
                 isLoadingMore={isFetchingNextPage}
                 hasMore={!!hasNextPage}
-                height="calc(100vh - 120px)"
+                height="calc(100dvh - 120px)"
                 loadingIndicator={
                     <div style={{ display: 'grid', placeItems: 'center', padding: 'var(--size-4)' }}>
                         <Spinner />

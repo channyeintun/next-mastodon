@@ -1365,7 +1365,7 @@ dialog {
   background: var(--surface-2);
   box-shadow: var(--shadow-6);
   max-width: min(90vw, 500px);
-  max-height: 90vh;
+  max-height: 90dvh;
   overflow: visible;
 }
 
