@@ -13,6 +13,8 @@ const BioContainer = styled.div`
   margin-bottom: var(--size-3);
   line-height: 1.5;
   color: var(--text-1);
+  word-break: break-word;
+  overflow-wrap: break-word;
 `;
 
 /**
