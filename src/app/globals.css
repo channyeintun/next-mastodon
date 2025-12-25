@@ -294,7 +294,7 @@ input[type="radio"] {
 .tiptap-editor-editable p.is-editor-empty:first-child::before,
 .tiptap .tiptap-editor-editable p.is-editor-empty:first-child::before,
 .ProseMirror p.is-editor-empty:first-child::before {
-  color: var(--text-3);
+  color: var(--gray-5);
   content: attr(data-placeholder);
   float: left;
   height: 0;
@@ -744,7 +744,7 @@ body {
 }
 
 .compose-editor-area .ProseMirror p.is-editor-empty:first-child::before {
-  color: var(--text-3);
+  color: var(--gray-5);
   font-size: var(--font-size-3);
 }
 
