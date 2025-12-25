@@ -8,6 +8,7 @@ import { PostCardSkeleton, PostCardSkeletonList, MediaGrid, MediaGridSkeleton } 
 import { EmptyState } from '@/components/atoms';
 import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
 import type { Status } from '@/types';
+import { useWindowScrollDirection } from '@/hooks/useScrollDirection';
 
 
 // Scroll restoration cache - per tab
@@ -42,7 +43,9 @@ export function ProfileTabContent({
 }: ProfileTabContentProps) {
     const listRef = useRef<HTMLDivElement>(null);
     const [scrollMargin, setScrollMargin] = useState(0);
-    const [showScrollTop, setShowScrollTop] = useState(false);
+
+    // Scroll direction detection for scroll-to-top button
+    const { showScrollTop, hideScrollTop } = useWindowScrollDirection();
 
     // Per-tab scroll cache key - includes acct for isolation
     const scrollCacheKey = `profile-${acct}-${tabKey}`;
@@ -104,17 +107,9 @@ export function ProfileTabContent({
         };
     }, [virtualizer, scrollCacheKey]);
 
-    // Track scroll position for scroll-to-top button
-    useEffect(() => {
-        const handleScroll = () => {
-            setShowScrollTop(window.scrollY > 500);
-        };
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
     const handleScrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        hideScrollTop();
     };
 
     // Loading state - only show skeleton if we have no data at all

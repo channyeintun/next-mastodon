@@ -91,3 +91,58 @@ export function useScrollDirection(
         hideScrollTop,
     };
 }
+
+/**
+ * Hook to detect window scroll direction and manage scroll-to-top button visibility
+ * Use this variant when using useWindowVirtualizer or window-based scrolling
+ */
+export function useWindowScrollDirection(
+    options: UseScrollDirectionOptions = {}
+): UseScrollDirectionResult {
+    const { threshold = 200, hideNearTopDistance = 100 } = options;
+
+    const lastScrollOffset = useRef(0);
+    const [scrollDirection, setScrollDirection] = useState<ScrollDirection>(null);
+    const [showScrollTop, setShowScrollTop] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentOffset = window.scrollY;
+            const isScrollingUp = currentOffset < lastScrollOffset.current;
+            const isScrollingDown = currentOffset > lastScrollOffset.current;
+            const hasScrolledEnough = currentOffset > threshold;
+
+            // Update scroll direction
+            if (isScrollingUp) {
+                setScrollDirection('up');
+            } else if (isScrollingDown) {
+                setScrollDirection('down');
+            }
+
+            // Show when scrolling up and scrolled enough, hide when scrolling down
+            if (isScrollingUp && hasScrolledEnough) {
+                setShowScrollTop(true);
+            } else if (isScrollingDown) {
+                setShowScrollTop(false);
+            }
+
+            // Hide when near top
+            if (currentOffset < hideNearTopDistance) {
+                setShowScrollTop(false);
+            }
+
+            lastScrollOffset.current = currentOffset;
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [threshold, hideNearTopDistance]);
+
+    const hideScrollTop = () => setShowScrollTop(false);
+
+    return {
+        scrollDirection,
+        showScrollTop,
+        hideScrollTop,
+    };
+}
