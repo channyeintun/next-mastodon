@@ -14,32 +14,33 @@ interface PostCardSkeletonProps {
 export function PostCardSkeleton({ style, className }: PostCardSkeletonProps) {
   return (
     <Card padding="medium" style={style} className={className}>
-      <Container>
-        {/* Avatar skeleton */}
-        <AvatarSkeleton />
-
-        <ContentContainer>
-          {/* Header skeleton */}
-          <HeaderSection>
+      <PostContent>
+        {/* Header skeleton - matches PostHeader layout */}
+        <HeaderRow>
+          <AvatarSkeleton />
+          <HeaderTextSection>
             <DisplayNameSkeleton />
             <UsernameSkeleton />
-          </HeaderSection>
+          </HeaderTextSection>
+        </HeaderRow>
 
-          {/* Content skeleton */}
-          <TextSection>
-            <TextLine $width="100%" $hasMargin />
-            <TextLine $width="90%" $hasMargin />
-            <TextLine $width="70%" />
-          </TextSection>
+        {/* Content skeleton */}
+        <TextSection>
+          <TextLine $width="100%" $hasMargin />
+          <TextLine $width="90%" $hasMargin />
+          <TextLine $width="70%" />
+        </TextSection>
 
-          {/* Action bar skeleton */}
-          <ActionBar>
-            {[1, 2, 3, 4].map((i) => (
+        {/* Action bar skeleton */}
+        <ActionBar>
+          <ActionStartGroup>
+            {[1, 2, 3].map((i) => (
               <ActionItem key={i} />
             ))}
-          </ActionBar>
-        </ContentContainer>
-      </Container>
+          </ActionStartGroup>
+          <ActionItem />
+        </ActionBar>
+      </PostContent>
     </Card>
   );
 }
@@ -61,9 +62,14 @@ export function PostCardSkeletonList({ count = 5 }: { count?: number }) {
   );
 }
 
-const Container = styled.div`
+const PostContent = styled.div`
+  margin-bottom: var(--size-3);
+`;
+
+const HeaderRow = styled.div`
   display: flex;
-  gap: var(--size-3);
+  align-items: center;
+  gap: var(--size-2);
 `;
 
 const AvatarSkeleton = styled.div`
@@ -75,13 +81,9 @@ const AvatarSkeleton = styled.div`
   animation: var(--animation-blink);
 `;
 
-const ContentContainer = styled.div`
+const HeaderTextSection = styled.div`
   flex: 1;
   min-width: 0;
-`;
-
-const HeaderSection = styled.div`
-  margin-bottom: var(--size-3);
 `;
 
 const DisplayNameSkeleton = styled.div`
@@ -102,7 +104,7 @@ const UsernameSkeleton = styled.div`
 `;
 
 const TextSection = styled.div`
-  margin-bottom: var(--size-3);
+  margin-top: var(--size-3);
 `;
 
 const TextLine = styled.div<{ $width: string; $hasMargin?: boolean }>`
@@ -116,8 +118,14 @@ const TextLine = styled.div<{ $width: string; $hasMargin?: boolean }>`
 
 const ActionBar = styled.div`
   display: flex;
-  gap: var(--size-4);
+  justify-content: space-between;
+  align-items: center;
   margin-top: var(--size-3);
+`;
+
+const ActionStartGroup = styled.div`
+  display: flex;
+  gap: var(--size-4);
 `;
 
 const ActionItem = styled.div`
