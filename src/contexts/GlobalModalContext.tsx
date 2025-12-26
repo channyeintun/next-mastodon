@@ -4,7 +4,7 @@ import React, { createContext, use, useState, ReactNode, useCallback, useRef } f
 
 interface GlobalModalContextType {
     isOpen: boolean;
-    openModal: (content: ReactNode) => void;
+    openModal: (content: ReactNode, onClose?: () => void) => void;
     closeModal: () => void;
     modalContent: ReactNode | null;
     dialogRef: React.RefObject<HTMLDialogElement | null>;
@@ -16,8 +16,10 @@ export function GlobalModalProvider({ children }: { children: ReactNode }) {
     const [isOpen, setIsOpen] = useState(false);
     const [modalContent, setModalContent] = useState<ReactNode | null>(null);
     const dialogRef = useRef<HTMLDialogElement | null>(null);
+    const onCloseCallbackRef = useRef<(() => void) | undefined>(undefined);
 
-    const openModal = useCallback((content: ReactNode) => {
+    const openModal = useCallback((content: ReactNode, onClose?: () => void) => {
+        onCloseCallbackRef.current = onClose;
         setModalContent(content);
         setIsOpen(true);
         // Use requestAnimationFrame to ensure content is rendered before showing
@@ -34,6 +36,9 @@ export function GlobalModalProvider({ children }: { children: ReactNode }) {
     const handleDialogClose = useCallback(() => {
         setIsOpen(false);
         setModalContent(null);
+        // Call the onClose callback if provided
+        onCloseCallbackRef.current?.();
+        onCloseCallbackRef.current = undefined;
     }, []);
 
     return (

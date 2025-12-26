@@ -73,7 +73,11 @@ function AuthModalBridgeComponent() {
                             Sign in
                         </Button>
                     </div>
-                </div>
+                </div>,
+                // Reset authStore when modal is closed via overlay or ESC key
+                () => {
+                    authStore.closeAuthModal();
+                }
             );
         }
     }, [showAuthModal, openModal, closeModal, router, authStore]);
