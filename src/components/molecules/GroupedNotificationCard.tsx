@@ -240,17 +240,19 @@ export function GroupedNotificationCard({
                                         {config.getMessage(group.notifications_count, primaryDisplayName).replace(primaryDisplayName, '').trim()}
                                     </ActionText>
                                 </MessageText>
+                            </InfoWrapper>
+
+                            {/* Dismiss button and time */}
+                            <TopRightActions>
+                                <DismissButton size="small" onClick={handleDismiss}>
+                                    <X size={14} />
+                                </DismissButton>
                                 {group.latest_page_notification_at && (
                                     <TimeText>
                                         {formatRelativeTime(group.latest_page_notification_at)}
                                     </TimeText>
                                 )}
-                            </InfoWrapper>
-
-                            {/* Dismiss button */}
-                            <DismissButton size="small" onClick={handleDismiss}>
-                                <X size={14} />
-                            </DismissButton>
+                            </TopRightActions>
                         </HeaderRow>
                     </ContentColumn>
 
@@ -311,31 +313,35 @@ const StatusContent = styled.div`
 `;
 
 const HeaderRow = styled.div`
-    display: flex;
-    align-items: flex-start;
-    gap: var(--size-2);
+    position: relative;
     margin-bottom: var(--size-2);
+    padding-right: var(--size-6);
 `;
 
-const AvatarsWrapper = styled.div`
-    display: flex;
+const AvatarsWrapper = styled.span`
+    display: inline-flex;
     align-items: center;
-    margin-right: var(--size-2);
+    vertical-align: middle;
+    margin-right: var(--size-1);
 `;
 
-const StackedAvatarWrapper = styled.div<{ $index: number; $total: number }>`
-    margin-left: ${props => props.$index > 0 ? '-8px' : '0'};
+const StackedAvatarWrapper = styled.span<{ $index: number; $total: number }>`
+    display: inline-block;
+    margin-left: ${props => props.$index > 0 ? '-12px' : '0'};
     position: relative;
     z-index: ${props => props.$total - props.$index};
 `;
 
 const StackedAvatarLink = styled(Link)`
-    display: block;
+    display: inline-block;
+    line-height: 0;
 `;
 
 const AvatarWithBorder = styled(Avatar)`
     border: 2px solid var(--surface-1);
     box-sizing: content-box;
+    width: 1.4em;
+    height: 1.4em;
 `;
 
 const RemainingCount = styled.span`
@@ -344,12 +350,11 @@ const RemainingCount = styled.span`
     color: var(--text-3);
 `;
 
-const InfoWrapper = styled.div`
-    flex: 1;
-    min-width: 0;
+const InfoWrapper = styled.span`
+    display: contents;
 `;
 
-const MessageText = styled.div`
+const MessageText = styled.span`
     font-size: var(--font-size-1);
     color: var(--text-1);
     line-height: 1.4;
@@ -365,10 +370,19 @@ const ActionText = styled.span`
     color: var(--text-2);
 `;
 
+const TopRightActions = styled.div`
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--size-1);
+`;
+
 const TimeText = styled.div`
     font-size: var(--font-size-0);
     color: var(--text-3);
-    margin-top: var(--size-1);
 `;
 
 const DismissButton = styled(IconButton)`
