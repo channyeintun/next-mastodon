@@ -167,7 +167,7 @@ export default function AccountPage({ params }: { params: Promise<{ acct: string
         ) : (
           <>
             <ProfileHeader {...commonHeaderProps} />
-            <Tabs tabs={profileTabs} activeTab={activeTab} onTabChange={setActiveTab} sticky />
+            <Tabs tabs={profileTabs} activeTab={activeTab} onTabChange={setActiveTab} />
             <ContentSection>
               {(activeTab === 'posts' || activeTab === 'posts_replies') && pinnedStatuses && pinnedStatuses.length > 0 && (
                 <PinnedPostsSection pinnedStatuses={pinnedStatuses} />
