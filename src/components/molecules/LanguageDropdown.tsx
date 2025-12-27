@@ -23,9 +23,14 @@ export function LanguageDropdown({ value, onChange, disabled }: LanguageDropdown
 
   const { data: languages = [] } = useInstanceLanguages();
 
+  // Fallback language names for when the API hasn't loaded yet
+  const fallbackLanguages: Record<string, string> = {
+    en: 'English',
+  };
+
   // Get the current language name
   const currentLanguage = languages.find((l) => l.code === value);
-  const displayName = currentLanguage?.name || value || 'Language';
+  const displayName = currentLanguage?.name || fallbackLanguages[value];
 
   // Filter languages based on search query
   const filteredLanguages = languages.filter((lang) => {

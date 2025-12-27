@@ -97,7 +97,7 @@ export function ComposerPanel({
   const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
   const [quoteVisibility, setQuoteVisibility] = useState<QuoteVisibility>('public');
   const [hasInitializedQuotePolicy, setHasInitializedQuotePolicy] = useState(false);
-  const [language, setLanguage] = useState<string>('');
+  const [language, setLanguage] = useState<string>('en');
 
   const { data: quotedStatus } = useStatus(quotedStatusId || '');
 
