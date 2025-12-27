@@ -1,7 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useRef, useEffect, type CSSProperties, type ReactNode } from 'react';
+import { useRef, useEffect, useCallback, type CSSProperties, type ReactNode } from 'react';
 import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
@@ -138,6 +138,21 @@ export function VirtualizedList<T>({
     ? scrollStateCache.get(scrollRestorationKey)
     : undefined;
 
+  // Use a ref to access items in getItemKey without creating a new function reference
+  const itemsRef = useRef(items);
+  itemsRef.current = items;
+
+  // Use a ref to access getItemKey prop without creating a new function reference
+  const getItemKeyRef = useRef(getItemKey);
+  getItemKeyRef.current = getItemKey;
+
+  // Memoize the getItemKey function with stable reference (no dependencies that change)
+  // TanStack Virtual expects getItemKey(index) => Key, but our component API uses getItemKey(item, index) => Key
+  const memoizedGetItemKey = useCallback(
+    (index: number) => getItemKeyRef.current(itemsRef.current[index], index),
+    []
+  );
+
   // Setup virtualizer with scroll restoration
   const virtualizer = useVirtualizer({
     count: items.length,
@@ -145,8 +160,8 @@ export function VirtualizedList<T>({
     estimateSize: () => estimateSize,
     overscan,
     lanes: 1,
-    // Provide getItemKey to generate stable keys
-    getItemKey: (index) => getItemKey(items[index], index),
+    // Provide memoized getItemKey to generate stable keys
+    getItemKey: memoizedGetItemKey,
     // Scroll restoration: restore initial offset and measurements
     initialOffset: savedState?.offset,
     initialMeasurementsCache: savedState?.measurements,

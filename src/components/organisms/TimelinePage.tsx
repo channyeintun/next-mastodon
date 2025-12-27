@@ -3,7 +3,7 @@
 import styled from '@emotion/styled';
 import { observer } from 'mobx-react-lite';
 import Link from 'next/link';
-import { useRef, useEffect, useLayoutEffect, useState } from 'react';
+import { useRef, useEffect, useLayoutEffect, useState, useMemo } from 'react';
 import { useWindowVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 import { useQueryClient } from '@tanstack/react-query';
 import { useInfiniteHomeTimeline, useCurrentAccount, prefillAccountCache } from '@/api';
@@ -67,27 +67,31 @@ export const TimelinePage = observer(() => {
         }
     }, []);
 
-    // Build mixed items array with suggestions inserted
-    const mixedItems: ListItem[] = [];
-    const insertIndex = Math.min(SUGGESTIONS_INSERT_INDEX, uniqueStatuses.length);
+    // Build mixed items array with suggestions inserted - memoized to prevent recreation
+    const mixedItems = useMemo(() => {
+        const items: ListItem[] = [];
+        const insertIndex = Math.min(SUGGESTIONS_INSERT_INDEX, uniqueStatuses.length);
 
-    for (let i = 0; i < uniqueStatuses.length; i++) {
-        // Insert suggestions after N statuses
-        if (i === insertIndex && uniqueStatuses.length > insertIndex) {
-            mixedItems.push({ type: 'suggestions' });
+        for (let i = 0; i < uniqueStatuses.length; i++) {
+            // Insert suggestions after N statuses
+            if (i === insertIndex && uniqueStatuses.length > insertIndex) {
+                items.push({ type: 'suggestions' });
+            }
+            items.push({ type: 'status', data: uniqueStatuses[i] });
         }
-        mixedItems.push({ type: 'status', data: uniqueStatuses[i] });
-    }
-    // If we have fewer statuses than the insert index, add suggestions at the end
-    if (uniqueStatuses.length > 0 && uniqueStatuses.length <= insertIndex) {
-        mixedItems.push({ type: 'suggestions' });
-    }
+        // If we have fewer statuses than the insert index, add suggestions at the end
+        if (uniqueStatuses.length > 0 && uniqueStatuses.length <= insertIndex) {
+            items.push({ type: 'suggestions' });
+        }
 
-    // Include an extra item for the "end indicator" when we've reached the end
-    const showEndIndicator = !hasNextPage && uniqueStatuses.length > 0 && !isFetchingNextPage;
-    if (showEndIndicator) {
-        mixedItems.push({ type: 'endIndicator' });
-    }
+        // Include an extra item for the "end indicator" when we've reached the end
+        const showEndIndicator = !hasNextPage && uniqueStatuses.length > 0 && !isFetchingNextPage;
+        if (showEndIndicator) {
+            items.push({ type: 'endIndicator' });
+        }
+
+        return items;
+    }, [uniqueStatuses, hasNextPage, isFetchingNextPage]);
 
     const virtualizer = useWindowVirtualizer({
         count: mixedItems.length,
