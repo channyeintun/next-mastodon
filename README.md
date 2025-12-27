@@ -15,32 +15,9 @@ Other browsers may not fully support some of the cutting-edge CSS features used 
 - **Virtualized Lists**: Optimized list rendering using [TanStack Virtual](https://tanstack.com/virtual) for smooth scrolling performance with large datasets
 - **Data Fetching & Caching**: Efficient data management with [TanStack Query](https://tanstack.com/query) for smart caching, background refetching, and optimistic updates
 
-## TanStack Virtual Fork (Temporary)
+## TanStack Virtual Patch (Temporary)
 
-> **Note:** This project uses a local fork of `@tanstack/react-virtual` to fix a React 19 compatibility issue ([#1094](https://github.com/TanStack/virtual/issues/1094)). Once [PR #1098](https://github.com/TanStack/virtual/pull/1098) is merged and released, this section can be removed.
-
-### Setup Steps
-
-```bash
-# 1. Clone the fork inside the project root
-git clone https://github.com/channyeintun/virtual.git
-cd virtual
-git checkout fix/react-19-flushsync-warning
-
-# 2. Install dependencies and build
-pnpm install
-pnpm build:all
-
-# 3. Link the package
-cd packages/react-virtual
-bun link
-
-# 4. Return to project root and install
-cd ../../..
-bun install
-```
-
-The `virtual/` directory is gitignored and not committed to this repository.
+> **Note:** This project includes a patch for `@tanstack/react-virtual` to fix a React 19 compatibility issue ([#1094](https://github.com/TanStack/virtual/issues/1094)). The patch is automatically applied via `patch-package` during install. Once [PR #1098](https://github.com/TanStack/virtual/pull/1098) is merged and released, the patch can be removed.
 
 ## Project Information
 

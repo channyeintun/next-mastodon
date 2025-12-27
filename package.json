@@ -9,7 +9,8 @@
     "start": "next start -p 9003",
     "lint": "eslint .",
     "lint:css": "eslint --ext .css .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",
@@ -20,7 +21,7 @@
     "@tanstack/react-form": "^1.27.6",
     "@tanstack/react-query": "^5.90.12",
     "@tanstack/react-query-devtools": "^5.91.1",
-    "@tanstack/react-virtual": "link:@tanstack/react-virtual",
+    "@tanstack/react-virtual": "^3.13.13",
     "@tiptap/extension-mention": "^3.12.1",
     "@tiptap/extension-placeholder": "^3.12.1",
     "@tiptap/react": "^3.14.0",
@@ -64,6 +65,7 @@
     "cssnano": "^7.1.2",
     "eslint": "^9.39.1",
     "eslint-plugin-unused-imports": "^4.3.0",
+    "patch-package": "^8.0.1",
     "typescript": "^5"
   }
 }

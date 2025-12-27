@@ -3,7 +3,6 @@
 # dependencies
 /node_modules
 /example
-/virtual
 /.pnp
 .pnp.*
 .yarn/*

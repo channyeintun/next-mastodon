@@ -1,0 +1,26 @@
+diff --git a/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs b/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs
+index 57323df..977b305 100644
+--- a/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs
++++ b/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs
+@@ -28,7 +28,7 @@ function useVirtualizerBase(options) {
+     onChange: (instance2, sync) => {
+       var _a;
+       if (sync) {
+-        reactDom.flushSync(rerender);
++        queueMicrotask(() => reactDom.flushSync(rerender));
+       } else {
+         rerender();
+       }
+diff --git a/node_modules/@tanstack/react-virtual/dist/esm/index.js b/node_modules/@tanstack/react-virtual/dist/esm/index.js
+index ee77b7a..d9e18f2 100644
+--- a/node_modules/@tanstack/react-virtual/dist/esm/index.js
++++ b/node_modules/@tanstack/react-virtual/dist/esm/index.js
+@@ -10,7 +10,7 @@ function useVirtualizerBase(options) {
+     onChange: (instance2, sync) => {
+       var _a;
+       if (sync) {
+-        flushSync(rerender);
++        queueMicrotask(() => flushSync(rerender));
+       } else {
+         rerender();
+       }
