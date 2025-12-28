@@ -67,6 +67,8 @@ const RemoveButton = styled.button`
 
 const DateTimeInput = styled.input`
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     padding: var(--size-2) var(--size-3);
     border: 1px solid var(--surface-3);
     border-radius: var(--radius-2);
