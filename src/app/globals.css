@@ -562,6 +562,10 @@ input[type="radio"] {
   align-items: center;
   padding: var(--size-2) var(--size-3);
   box-shadow: var(--shadow-2);
+  /* CSS containment and isolation to prevent virtualized content transforms from affecting positioning */
+  isolation: isolate;
+  /* Create a new compositing layer for better performance and positioning isolation */
+  transform: translateZ(0);
 }
 
 .navigation-bottom-link {

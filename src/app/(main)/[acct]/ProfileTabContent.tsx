@@ -243,6 +243,10 @@ const VirtualItemWrapper = styled.div`
   top: 0;
   left: 0;
   width: 100%;
+  /* Prevent layout from affecting other elements (like bottom nav) */
+  contain: layout style;
+  /* Optimize transform rendering and create proper stacking context */
+  will-change: transform;
 `;
 
 
