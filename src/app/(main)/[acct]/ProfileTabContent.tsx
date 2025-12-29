@@ -108,6 +108,8 @@ export function ProfileTabContent({
     }, [virtualizer, scrollCacheKey]);
 
     const handleScrollToTop = () => {
+        // Clear scroll cache so virtualizer doesn't restore to old position
+        scrollStateCache.delete(scrollCacheKey);
         window.scrollTo({ top: 0, behavior: 'smooth' });
         hideScrollTop();
     };
