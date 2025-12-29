@@ -165,7 +165,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                                 <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
                             )}
                             getItemKey={(status) => status.id}
-                            estimateSize={300}
+                            estimateSize={350}
                             overscan={5}
                             onLoadMore={fetchNextPage}
                             isLoadingMore={isFetchingNextPage}

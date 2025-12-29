@@ -204,7 +204,7 @@ export function SearchContent({
                                 <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
                             )}
                             getItemKey={(status) => status.id}
-                            estimateSize={200}
+                            estimateSize={250}
                             style={{ height: '100%' }}
                             scrollRestorationKey={`search-statuses-${query}`}
                             onLoadMore={fetchNextStatuses}

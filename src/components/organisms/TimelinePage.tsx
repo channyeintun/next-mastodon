@@ -100,9 +100,9 @@ export const TimelinePage = observer(() => {
             // End indicator is smaller, suggestions are taller
             if (item?.type === 'endIndicator') return 60;
             if (item?.type === 'suggestions') return 300;
-            return 200;
+            return 250;
         },
-        overscan: 5,
+        overscan: 8,
         scrollMargin,
         initialOffset: cachedState?.offset,
         initialMeasurementsCache: cachedState?.measurementsCache,

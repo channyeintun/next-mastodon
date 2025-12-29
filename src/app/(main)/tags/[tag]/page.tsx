@@ -134,7 +134,7 @@ export default function HashtagPage({
           />
         )}
         getItemKey={(status) => status.id}
-        estimateSize={300}
+        estimateSize={350}
         overscan={5}
         onLoadMore={fetchNextPage}
         isLoadingMore={isFetchingNextPage}

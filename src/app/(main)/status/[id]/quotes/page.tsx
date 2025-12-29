@@ -96,7 +96,7 @@ export default function QuotesPage({
                     />
                 )}
                 getItemKey={(quoteStatus) => quoteStatus.id}
-                estimateSize={200}
+                estimateSize={250}
                 overscan={3}
                 onLoadMore={fetchNextPage}
                 isLoadingMore={isFetchingNextPage}

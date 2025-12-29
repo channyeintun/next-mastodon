@@ -71,9 +71,9 @@ export function ProfileTabContent({
             if (showEndIndicator && index === statuses.length) {
                 return 60;
             }
-            return 300;
+            return 350;
         },
-        overscan: 5,
+        overscan: 8,
         scrollMargin,
         initialOffset: cachedState?.offset,
         initialMeasurementsCache: cachedState?.measurementsCache,

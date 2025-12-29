@@ -163,7 +163,7 @@ export default function ScheduledStatusesPage() {
                     items={allScheduledStatuses}
                     renderItem={renderItem}
                     getItemKey={(status) => status.id}
-                    estimateSize={200}
+                    estimateSize={250}
                     onLoadMore={fetchNextPage}
                     isLoadingMore={isFetchingNextPage}
                     hasMore={hasNextPage}
