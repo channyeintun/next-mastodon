@@ -43,7 +43,7 @@ export default function HashtagPage({
           top: 0,
           background: 'var(--surface-1)',
           zIndex: 10,
-          padding: 'var(--size-4) 0',
+          padding: 'var(--size-4)',
           marginBottom: 'var(--size-4)',
           borderBottom: '1px solid var(--surface-3)',
         }}>
@@ -73,7 +73,9 @@ export default function HashtagPage({
         </div>
 
         {/* Skeleton loading */}
-        <PostCardSkeletonList count={5} />
+        <div className="virtualized-list-container">
+          <PostCardSkeletonList count={5} />
+        </div>
       </div>
     );
   }
@@ -92,7 +94,7 @@ export default function HashtagPage({
       <div style={{
         background: 'var(--surface-1)',
         zIndex: 10,
-        padding: 'var(--size-4) 0',
+        padding: 'var(--size-4)',
         marginBottom: 'var(--size-4)',
         borderBottom: '1px solid var(--surface-3)',
         flexShrink: 0,
