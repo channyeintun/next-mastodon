@@ -195,7 +195,7 @@ export function FiltersClient() {
                     <ArrowLeft size={20} />
                 </IconButton>
                 <FiltersTitle>Filters</FiltersTitle>
-                <Link href="/settings/filters/new">
+                <Link href="/settings/filters/new" style={{ marginLeft: 'auto' }}>
                     <Button size="small">
                         <Plus size={16} />
                         Add filter

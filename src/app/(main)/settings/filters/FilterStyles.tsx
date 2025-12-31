@@ -265,7 +265,6 @@ export const RadioDescription = styled.div`
 export const KeywordsSection = styled.div`
   background: var(--surface-2);
   border-radius: var(--radius-2);
-  padding: var(--size-3);
 `;
 
 export const KeywordRow = styled.div`
