@@ -1,7 +1,7 @@
 'use client'
 
 import styled from '@emotion/styled'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/router'
 import { useQueryClient } from '@tanstack/react-query'
 import { Trash2 } from 'lucide-react'
 import { Avatar } from '../atoms/Avatar'

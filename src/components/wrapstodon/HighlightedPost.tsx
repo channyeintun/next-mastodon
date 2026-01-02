@@ -7,7 +7,7 @@
 
 import type { TopStatuses, Status } from '@/types/mastodon'
 import { PostCard } from '@/components/organisms/PostCard'
-import './wrapstodon.css'
+// wrapstodon.css is imported in _app.tsx for Pages Router
 
 interface HighlightedPostProps {
     data: TopStatuses

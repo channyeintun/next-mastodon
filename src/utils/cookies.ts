@@ -1,5 +1,28 @@
 /**
- * Cookie Utilities using the native CookieStore API
+ * Cookie Utilities
+ * 
+ * Server-side: parseCookies for reading cookies from request headers
+ * Client-side: CookieStore API for async cookie operations
+ */
+
+/**
+ * Parse cookies from a cookie header string (server-side)
+ * Used by _app.tsx and _document.tsx for SSR hydration
+ */
+export function parseCookies(cookieString: string): Record<string, string> {
+    const cookies: Record<string, string> = {};
+    if (!cookieString) return cookies;
+    cookieString.split(';').forEach((cookie) => {
+        const [name, ...rest] = cookie.split('=');
+        if (name) {
+            cookies[name.trim()] = decodeURIComponent(rest.join('=').trim());
+        }
+    });
+    return cookies;
+}
+
+/**
+ * Client-side Cookie Utilities using the native CookieStore API
  * https://developer.mozilla.org/en-US/docs/Web/API/CookieStore
  * 
  * CookieStore became baseline in June 2025 and provides an async API

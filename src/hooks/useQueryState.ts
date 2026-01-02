@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useMemo } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 /**
  * Parser interface for type-safe URL parameter parsing
@@ -128,8 +128,8 @@ export function useQueryState<T = string>(
     options: UseQueryStateOptions<T>
 ): [T, SetQueryState<T>] {
     const router = useRouter();
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
+    const pathname = router.pathname;
+    const query = router.query;
 
     const { defaultValue, parser } = options;
 
@@ -148,9 +148,10 @@ export function useQueryState<T = string>(
 
     // Parse current value from URL
     const value = useMemo(() => {
-        const rawValue = searchParams.get(key);
-        return effectiveParser.parse(rawValue);
-    }, [searchParams, key, effectiveParser]);
+        const rawValue = query[key];
+        const stringValue = typeof rawValue === 'string' ? rawValue : null;
+        return effectiveParser.parse(stringValue);
+    }, [query, key, effectiveParser]);
 
     // Setter function
     const setValue: SetQueryState<T> = useCallback(
@@ -159,19 +160,18 @@ export function useQueryState<T = string>(
                 ? (valueOrFn as (prev: T) => T)(value)
                 : valueOrFn;
 
-            const params = new URLSearchParams(searchParams.toString());
             const serialized = effectiveParser.serialize(newValue);
+            const newQuery = { ...query };
 
             if (serialized === null) {
-                params.delete(key);
+                delete newQuery[key];
             } else {
-                params.set(key, serialized);
+                newQuery[key] = serialized;
             }
 
-            const queryString = params.toString();
-            router.replace(queryString ? `${pathname}?${queryString}` : pathname);
+            router.replace({ pathname, query: newQuery }, undefined, { shallow: true });
         },
-        [router, pathname, searchParams, key, effectiveParser, value]
+        [router, pathname, query, key, effectiveParser, value]
     );
 
     return [value, setValue];

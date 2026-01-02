@@ -6,7 +6,7 @@
 'use client'
 
 import type { NameAndCount } from '@/types/mastodon'
-import './wrapstodon.css'
+// wrapstodon.css is imported in _app.tsx for Pages Router
 
 interface FollowersProps {
     count: number

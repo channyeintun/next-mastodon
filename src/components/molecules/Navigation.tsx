@@ -2,7 +2,7 @@
 
 import styled from '@emotion/styled';
 import Link, { useLinkStatus } from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { Home, PenSquare, Search, Settings, Github, Bell, List, TrendingUp, Mail } from 'lucide-react';
 import { useInstance, useUnreadNotificationCount, useNotificationMarker, useAnnualReportState } from '@/api';
 import { CircleSkeleton, TextSkeleton } from '@/components/atoms';
@@ -18,7 +18,8 @@ interface NavigationProps {
 }
 
 export default function Navigation({ isAuthenticated, instanceURL }: NavigationProps) {
-  const pathname = usePathname();
+  const router = useRouter();
+  const pathname = router.pathname;
   const { data: instance, isLoading: isLoadingInstance } = useInstance();
   const { data: unreadCount } = useUnreadNotificationCount();
   const { initialAnnualReportState, initialWrapstodonYear } = useStores();

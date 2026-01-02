@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useLayoutEffect, useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/router'
 import { observer } from 'mobx-react-lite'
 import { useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, Send, Trash2, Image, X } from 'lucide-react'

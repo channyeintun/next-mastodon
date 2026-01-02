@@ -10,7 +10,7 @@ import type { AnnualReport, Account, Archetype as ArchetypeType } from '@/types/
 import { Avatar } from '@/components/atoms/Avatar'
 import { Button } from '@/components/atoms/Button'
 import { ShareButton } from './ShareButton'
-import './wrapstodon.css'
+// wrapstodon.css is imported in _app.tsx for Pages Router
 
 // Archetype illustration images
 const archetypeImages: Record<ArchetypeType, string> = {

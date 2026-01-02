@@ -14,7 +14,7 @@ import { NewPosts } from './StatsComponents'
 import { MostUsedHashtag } from './StatsComponents'
 import { ShareButton } from './ShareButton'
 import { X } from 'lucide-react'
-import './wrapstodon.css'
+// Note: wrapstodon.css is imported in _app.tsx for Pages Router compatibility
 
 interface WrapstodonProps {
     report: AnnualReport

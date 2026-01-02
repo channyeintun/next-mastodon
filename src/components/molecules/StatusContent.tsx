@@ -2,7 +2,7 @@
 
 import styled from '@emotion/styled';
 import { useEffect, useRef, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import type { Emoji } from '@/types/mastodon';
 
 interface StatusContentProps {

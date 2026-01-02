@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { useCurrentAccount, useCustomEmojis, useStatus, usePreferences, useScheduledStatus, useCreateStatus, useUpdateStatus, useDeleteScheduledStatus } from '@/api';
 import { PostCard } from '@/components/organisms';
 import { MediaUpload, PollComposer, VisibilitySettingsModal, ComposerToolbar, LanguageDropdown, type MediaUploadHandle } from '@/components/molecules';

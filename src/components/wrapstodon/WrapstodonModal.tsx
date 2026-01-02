@@ -12,7 +12,7 @@ import { Wrapstodon } from '@/components/wrapstodon'
 import { Announcement } from '@/components/wrapstodon/Announcement'
 import { Spinner } from '@/components/atoms/Spinner'
 import { GiRingedPlanet } from 'react-icons/gi'
-import './wrapstodon.css'
+// wrapstodon.css is imported in _app.tsx for Pages Router
 
 interface WrapstodonModalProps {
     onClose: () => void

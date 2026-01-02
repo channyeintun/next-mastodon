@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { useAuthStore } from '@/hooks/useStores';
 import { Button } from '../atoms/Button';

@@ -64,7 +64,7 @@ import {
 import { queryKeys } from './queryKeys'
 import { findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
 import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams, UpdateNotificationPolicyV1Params, CreatePushSubscriptionParams, UpdatePushSubscriptionParams, CreateFilterParams, UpdateFilterParams, CreateReportParams } from '../types/mastodon'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/router'
 
 // Annual Report (Wrapstodon) mutations
 export function useGenerateAnnualReport() {

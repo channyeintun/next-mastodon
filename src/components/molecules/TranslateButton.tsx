@@ -28,7 +28,7 @@ export function TranslateButton({ status, onTranslated, onShowOriginal }: Transl
 
     // Check if translation is available for this post
     // Based on Mastodon's logic: check if user's locale is in target languages for post's source language
-    const userLocale = typeof navigator !== 'undefined' ? navigator.language.split('-')[0] : 'en';
+    const userLocale = typeof navigator !== 'undefined' ? navigator.language?.split('-')[0] ?? 'en' : 'en';
     const sourceLanguage = status.language || 'und'; // 'und' = undetermined
     const targetLanguages = translationLanguages?.[sourceLanguage] ?? [];
     const canTranslateToUserLocale = targetLanguages.includes(userLocale);
@@ -97,7 +97,7 @@ export function useTranslation(status: Status) {
     const { data: translationLanguages } = useTranslationLanguages();
     const authStore = useAuthStore();
 
-    const userLocale = typeof navigator !== 'undefined' ? navigator.language.split('-')[0] : 'en';
+    const userLocale = typeof navigator !== 'undefined' ? navigator.language?.split('-')[0] ?? 'en' : 'en';
     const sourceLanguage = status.language || 'und';
     const targetLanguages = translationLanguages?.[sourceLanguage] ?? [];
     const canTranslateToUserLocale = targetLanguages.includes(userLocale);

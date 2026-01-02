@@ -2,7 +2,7 @@
  * Conversation state components - Loading, Error, and Empty states
  */
 
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/router'
 import { ArrowLeft } from 'lucide-react'
 import { Spinner } from '@/components/atoms/Spinner'
 import { IconButton } from '@/components/atoms/IconButton'

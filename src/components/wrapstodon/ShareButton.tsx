@@ -6,12 +6,12 @@
 'use client'
 
 import { useCallback } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/router'
 import { toast } from 'sonner'
 import type { AnnualReport, Archetype } from '@/types/mastodon'
 import { Button } from '@/components/atoms/Button'
 import { Share2, Send } from 'lucide-react'
-import './wrapstodon.css'
+// wrapstodon.css is imported in _app.tsx for Pages Router
 
 const archetypeNames: Record<Archetype, string> = {
     lurker: 'The Stoic',

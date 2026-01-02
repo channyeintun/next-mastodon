@@ -1,0 +1,1951 @@
+/**
+ * Open Props - CSS design tokens and utilities
+ * Documentation: https://open-props.style/
+ * DeepWiki Reference: https://deepwiki.com/argyleink/open-props
+ */
+@import "open-props/open-props.min.css";
+@import "open-props/normalize.min.css";
+@import "open-props/buttons.min.css";
+@import "open-props/animations.min.css";
+
+/* Theme switching support - allows data-theme="light" and data-theme="dark" */
+@import "open-props/theme.light.switch.min.css";
+@import "open-props/theme.dark.switch.min.css";
+
+/* Override open-props smooth scrolling for TanStack Virtual scroll restoration */
+html {
+  scroll-behavior: auto !important;
+}
+
+:root {
+  --app-max-width: 1200px;
+  --app-sidebar-width: 280px;
+  --app-bottom-nav-height: 64px;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  line-height: var(--font-lineheight-3);
+  background: var(--surface-1);
+  color: var(--text-1);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: var(--font-lineheight-1);
+  font-weight: var(--font-weight-9);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--font-size-fluid-3);
+}
+
+h2 {
+  font-size: var(--font-size-fluid-2);
+}
+
+h3 {
+  font-size: var(--font-size-fluid-1);
+}
+
+h4 {
+  font-size: var(--font-size-5);
+}
+
+h5 {
+  font-size: var(--font-size-4);
+}
+
+h6 {
+  font-size: var(--font-size-3);
+}
+
+p {
+  font-size: var(--font-size-2);
+  line-height: var(--font-lineheight-3);
+  max-width: var(--size-content-3);
+}
+
+small {
+  font-size: var(--font-size-0);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input[type="radio"] {
+  accent-color: var(--cyan-6);
+}
+
+/* ====================================
+   Utility Classes
+   ==================================== */
+
+/* Text utilities */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Flex utilities */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-gap-1 {
+  gap: var(--size-1);
+}
+
+.flex-gap-2 {
+  gap: var(--size-2);
+}
+
+.flex-gap-3 {
+  gap: var(--size-3);
+}
+
+.flex-gap-4 {
+  gap: var(--size-4);
+}
+
+/* Shape utilities */
+.rounded-pill {
+  border-radius: 999px;
+}
+
+/* Transition utilities */
+.transition-all {
+  transition: all 0.2s ease;
+}
+
+.transition-bg {
+  transition: background 0.2s ease;
+}
+
+/* Surface hover pattern */
+.hover-surface {
+  background: var(--surface-2);
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: var(--surface-3);
+  }
+}
+
+/* Skip to main content link - keyboard accessibility */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  z-index: 100;
+  padding: var(--size-2) var(--size-4);
+  background: var(--blue-6);
+  color: white;
+  text-decoration: none;
+  font-weight: var(--font-weight-6);
+  border-radius: 0 0 var(--radius-2) 0;
+  transition: top 0.2s ease;
+}
+
+.skip-to-main:focus {
+  top: 0;
+}
+
+/* Auth Layout - Clean, centered authentication pages */
+.auth-layout {
+  min-height: 100dvh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--size-8) var(--size-4);
+  background: var(--surface-1);
+}
+
+@media (min-width: 768px) {
+  .auth-layout {
+    /* Counteract the body margin-left from nav sidebar */
+    margin-left: calc(-1 * var(--app-sidebar-width));
+    width: calc(100% + var(--app-sidebar-width));
+  }
+}
+
+/* Container utilities */
+
+.full-height-container {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  padding: 0;
+}
+
+@media (max-width: 767px) {
+  .full-height-container:is(:not(.guest)) {
+    height: calc(100dvh - var(--app-bottom-nav-height));
+  }
+
+  /* Adjust VirtualizedList height for guest users (no bottom nav, but has tabs) */
+  .virtualized-list-container.guest-list {
+    height: calc(100dvh - 48px) !important;
+  }
+
+  /* Remove border radius from header images on mobile */
+  .profile-header-image {
+    border-radius: 0 !important;
+  }
+}
+
+/* Tablet viewport (768px - 900px): Add horizontal padding for better content framing */
+@media (min-width: 768px) and (max-width: 900px) {
+  .full-height-container {
+    /* Fluid padding: 0 at 900px, scales up to size-4 (16px) at 768px */
+    /* Uses calc with viewport width to create smooth transition */
+    /* Using padding instead of margin to work with inline margin: 0 auto */
+    padding-inline: calc((900px - 100vw) * 0.12);
+  }
+}
+
+
+/* Loading spinner */
+.spinner {
+  border: 2px solid var(--surface-3);
+  border-top-color: var(--blue-6);
+  border-radius: 50%;
+  width: var(--size-5);
+  height: var(--size-5);
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Skeleton Loading */
+.skeleton {
+  background: var(--surface-3);
+  border-radius: var(--radius-2);
+  animation: var(--animation-blink);
+}
+
+/* Tiptap Editor Styles */
+.tiptap-editor-editable,
+.tiptap-editor-readonly {
+  font-size: var(--font-size-2);
+  line-height: 1.6;
+  color: var(--text-1);
+}
+
+.tiptap-editor-editable {
+  min-height: 120px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: var(--size-3);
+}
+
+.tiptap-editor-compact .tiptap-editor-editable {
+  min-height: 60px;
+  padding: var(--size-2) 0;
+}
+
+.tiptap-editor-readonly {
+  padding: 0;
+}
+
+/* Tiptap placeholder
+   The editor may render a `.ProseMirror` (default) or use a class on the
+   contentEditable node. Cover the common cases so the placeholder pseudo
+   element appears regardless of the wrapper class ordering. */
+.tiptap-editor-editable p.is-editor-empty:first-child::before,
+.tiptap .tiptap-editor-editable p.is-editor-empty:first-child::before,
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: var(--gray-5);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Tiptap content styles */
+.tiptap-editor-editable p,
+.tiptap-editor-readonly p {
+  margin: 0 0 var(--size-2) 0;
+}
+
+.tiptap-editor-editable p:last-child,
+.tiptap-editor-readonly p:last-child {
+  margin-bottom: 0;
+}
+
+/* Mention styles */
+.tiptap .mention {
+  color: var(--blue-6);
+  font-weight: var(--font-weight-6);
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0 2px;
+  border-radius: var(--radius-1);
+}
+
+.tiptap-editor-readonly .mention:hover {
+  background: var(--blue-2);
+}
+
+/* Hashtag styles */
+.tiptap .hashtag {
+  color: var(--indigo-6);
+  font-weight: var(--font-weight-6);
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0 2px;
+  border-radius: var(--radius-1);
+}
+
+.tiptap-editor-readonly .hashtag:hover {
+  background: var(--indigo-2);
+}
+
+/* External link styles */
+.tiptap .external-link {
+  color: var(--link);
+  text-decoration: underline;
+}
+
+.tiptap .external-link:hover {
+  color: var(--link-visited);
+}
+
+/* Custom emoji styles */
+.tiptap .custom-emoji {
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: middle;
+  object-fit: contain;
+  display: inline-block;
+}
+
+/* ====================================
+   Navigation Styles
+   ==================================== */
+
+/* Sidebar Navigation (Desktop) */
+.navigation-sidebar {
+  display: none;
+  /* Hidden on mobile by default */
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--app-sidebar-width);
+  background: var(--surface-1);
+  border-right: 1px solid var(--surface-2);
+  z-index: 30;
+  overflow-y: auto;
+  flex-direction: column;
+}
+
+/* Sidebar Header (Logo) */
+.navigation-sidebar-header {
+  padding: var(--size-6) var(--size-5);
+  border-bottom: 1px solid transparent;
+}
+
+.navigation-sidebar-logo {
+  font-size: var(--font-size-fluid-1);
+  font-weight: var(--font-weight-7);
+  text-decoration: none;
+  color: var(--text-1);
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--blue-6);
+  }
+}
+
+/* Sidebar Navigation Links */
+.navigation-sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1);
+  padding: var(--size-3) var(--size-4);
+}
+
+/* Sidebar Footer (User Info / Auth) */
+.navigation-sidebar-footer {
+  padding: var(--size-5);
+  border-top: 1px solid var(--surface-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-3);
+}
+
+.navigation-sidebar-instance {
+  font-size: var(--font-size-1);
+  color: var(--text-2);
+  padding: var(--size-2);
+  border-radius: var(--radius-3);
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  transition: all 0.2s ease;
+  min-height: 48px;
+  text-decoration: none;
+
+  &:hover {
+    background: var(--surface-3);
+    color: var(--text-1);
+  }
+}
+
+.navigation-instance-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-2);
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.navigation-instance-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-2);
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  span {
+    font-size: var(--font-size-3);
+    font-weight: var(--font-weight-7);
+  }
+}
+
+.navigation-sidebar-instance-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
+  /* Important for text-overflow ellipsis in flex children */
+  justify-content: center;
+}
+
+.navigation-sidebar-instance-title {
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+}
+
+.navigation-sidebar-instance-domain {
+  font-size: var(--font-size-0);
+  color: var(--text-3);
+}
+
+.navigation-sidebar-signin {
+  display: block;
+  width: 100%;
+  padding: var(--size-3) var(--size-4);
+  font-size: var(--font-size-1);
+  font-weight: var(--font-weight-6);
+  border: none;
+  border-radius: var(--radius-2);
+  background: var(--blue-6);
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: var(--blue-7);
+  }
+}
+
+.navigation-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  padding: var(--size-3) var(--size-4);
+  text-decoration: none;
+  color: var(--text-2);
+  font-size: var(--font-size-2);
+  font-weight: var(--font-weight-6);
+  border-radius: var(--radius-3);
+  transition: all 0.2s ease;
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--text-1);
+    background: var(--surface-2);
+  }
+
+  &.active {
+    color: var(--blue-6);
+    background: var(--blue-0);
+    font-weight: var(--font-weight-7);
+  }
+
+  &.pending {
+    animation: var(--animation-blink);
+  }
+
+  &.highlight {
+    color: var(--pink-6);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+
+    &:hover {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+      color: var(--pink-7);
+    }
+  }
+
+  &:has(.pending) {
+    animation: var(--animation-blink);
+  }
+
+  .navigation-link-label {
+    font-size: var(--font-size-2);
+  }
+}
+
+/* Bottom Navigation (Mobile) */
+.navigation-bottom {
+  display: flex;
+  /* Visible on mobile */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--app-bottom-nav-height);
+  background: var(--surface-1);
+  border-top: 1px solid var(--gray-3);
+  z-index: 40;
+  justify-content: space-around;
+  align-items: center;
+  padding: var(--size-2) var(--size-3);
+  box-shadow: var(--shadow-2);
+  /* CSS containment and isolation to prevent virtualized content transforms from affecting positioning */
+  isolation: isolate;
+  /* Create a new compositing layer for better performance and positioning isolation */
+  transform: translateZ(0);
+}
+
+.navigation-bottom-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-1);
+  padding: var(--size-2);
+  text-decoration: none;
+  color: var(--text-2);
+  font-size: var(--font-size-0);
+  font-weight: var(--font-weight-5);
+  border-radius: var(--radius-2);
+  transition: all 0.2s ease;
+  position: relative;
+  cursor: pointer;
+  min-width: 64px;
+  flex: 1;
+
+  &:hover {
+    color: var(--text-1);
+  }
+
+  &.active {
+    color: var(--blue-6);
+
+    .navigation-link-icon {
+      color: var(--blue-6);
+    }
+  }
+
+  &.pending {
+    opacity: 0.6;
+  }
+}
+
+/* Navigation link icon container */
+.navigation-link-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navigation-link-label {
+  font-size: var(--font-size-0);
+  white-space: nowrap;
+}
+
+
+/* ====================================
+   Responsive Breakpoints
+   ==================================== */
+
+/* Mobile layout adjustments */
+body {
+  padding-bottom: var(--app-bottom-nav-height);
+  /* Prevent content from being hidden behind bottom nav */
+}
+
+/* Tablet and Desktop (768px+) */
+@media (min-width: 768px) {
+  body {
+    padding-bottom: 0;
+    /* Remove bottom padding on desktop */
+    margin-left: var(--app-sidebar-width);
+    /* Add left margin for sidebar */
+  }
+
+  .navigation-sidebar {
+    display: flex;
+    /* Show sidebar navigation (flex for column layout) */
+  }
+
+  .navigation-bottom {
+    display: none;
+    /* Hide bottom navigation */
+  }
+}
+
+/* ====================================
+   Compose Page Styles (Premium Redesign)
+   ==================================== */
+
+.compose-page-container {
+  min-height: 100dvh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--size-3);
+  background: var(--surface-1);
+}
+
+@media (min-width: 768px) {
+  .compose-page-container {
+    padding-top: var(--size-8);
+  }
+}
+
+.compose-card {
+  width: 100%;
+  max-width: 600px;
+  background: var(--surface-1);
+  /* No border or shadow for a cleaner, "sheet of paper" feel on mobile, 
+     but maybe subtle on desktop? Let's keep it flat and clean for now. */
+  border-radius: var(--radius-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4);
+}
+
+@media (min-width: 768px) {
+  .compose-card {
+    background: var(--surface-2);
+    /* Slight contrast on desktop */
+    padding: var(--size-6);
+    box-shadow: var(--shadow-3);
+  }
+}
+
+.compose-header {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  margin-bottom: var(--size-2);
+}
+
+.compose-user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  flex: 1;
+}
+
+.compose-user-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2);
+}
+
+.compose-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  flex-wrap: wrap;
+  margin-top: var(--size-1);
+}
+
+/* Editor Area - Minimalist */
+.compose-editor-area {
+  position: relative;
+  background: transparent;
+  border-radius: var(--radius-2);
+  /* Removed border for cleaner look */
+}
+
+/* Customizing Tiptap to look more native/clean */
+.compose-editor-area .ProseMirror {
+  min-height: 200px;
+  /* Increased from 150px for better writing experience */
+  padding: var(--size-2) 0;
+  /* Remove horizontal padding for pure text feel */
+  font-size: var(--font-size-fluid-1);
+  /* Larger, more readable */
+  line-height: normal;
+  outline: none;
+}
+
+.compose-editor-area .ProseMirror p {
+  margin-bottom: 0;
+}
+
+/* Compact mode for reply box */
+.compose-editor-area .tiptap-editor-compact .ProseMirror,
+.compose-editor-area .tiptap-editor-compact .tiptap-editor-editable {
+  min-height: 60px !important;
+  /* Force override of the 200px rule above */
+  padding: var(--size-2) 0;
+}
+
+.compose-editor-area .ProseMirror p.is-editor-empty:first-child::before {
+  color: var(--gray-5);
+  font-size: var(--font-size-fluid-1);
+}
+
+/* Toolbar & Actions */
+.compose-toolbar-area {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4);
+  margin-top: var(--size-2);
+  padding-top: var(--size-3);
+  border-top: 1px solid var(--surface-2);
+}
+
+.compose-toolbar-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--size-3);
+}
+
+@media (max-width: 480px) {
+  .compose-tools {
+    flex-wrap: wrap;
+    /* Allow tools themselves to wrap if needed */
+    gap: var(--size-3);
+    /* Increase gap for touch targets if wrapping */
+  }
+}
+
+.compose-tools {
+  display: flex;
+  gap: var(--size-2);
+}
+
+.compose-tool-btn {
+  color: var(--text-2);
+  transition: all 0.2s ease;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  /* Prevent layout shift on hover if we add border */
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.compose-tool-btn svg {
+  stroke: currentColor;
+  /* Ensure Lucide icons use the text color */
+  width: 24px;
+  /* Force consistent size */
+  height: 24px;
+  min-width: 24px;
+  /* Prevent crushing */
+  min-height: 24px;
+  flex-shrink: 0;
+}
+
+.compose-tool-btn:hover {
+  background: var(--surface-3);
+  color: var(--text-1);
+  opacity: 1;
+}
+
+.compose-tool-btn:disabled {
+  opacity: 0.2;
+  /* Distinct disabled state */
+  cursor: not-allowed;
+}
+
+.compose-action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Character Counter - Circular or minimal */
+.compose-char-count {
+  font-size: var(--font-size-0);
+  font-weight: var(--font-weight-6);
+  color: var(--text-3);
+}
+
+.compose-char-count.warning {
+  color: var(--orange-5);
+}
+
+.compose-char-count.danger {
+  color: var(--red-5);
+}
+
+/* Post Button - Premium Pill */
+.compose-submit-btn {
+  background: var(--blue-6);
+  color: white;
+  border: none;
+  padding: var(--size-2) var(--size-5);
+  border-radius: 999px;
+  /* Pill shape */
+  font-weight: var(--font-weight-6);
+  font-size: var(--font-size-1);
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+}
+
+.compose-submit-btn:hover:not(:disabled) {
+  background: var(--blue-7);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-2);
+}
+
+.compose-submit-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.compose-submit-btn:disabled {
+  background: var(--surface-3);
+  color: var(--text-3);
+  cursor: not-allowed;
+}
+
+
+
+.emoji-picker {
+  position: absolute;
+  position-anchor: --emoji-anchor;
+  position-try: flip-block;
+  position-area: top center;
+  transform: translateX(-80px);
+
+  em-emoji-picker {
+    width: 300px;
+    height: 350px;
+    max-height: 60dvh;
+    border-radius: var(--radius-3);
+    box-shadow: var(--shadow-4);
+  }
+}
+
+/* ====================================
+   Profile Edit Page
+   ==================================== */
+.profile-edit-fields-container {
+  container-type: inline-size;
+
+  .profile-edit-field-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-2);
+    margin-bottom: var(--size-3);
+    align-items: center;
+
+    @container (min-width: 400px) {
+      grid-template-columns: 1fr 1fr auto;
+    }
+  }
+}
+
+/* ====================================
+   Profile Pill (Compact Top-Right)
+   ==================================== */
+.profile-pill {
+  position: fixed;
+  top: var(--size-3);
+  right: var(--size-4);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  padding: var(--size-1) var(--size-3) var(--size-1) var(--size-1);
+  background: var(--surface-2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--surface-3);
+  border-radius: 999px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-2);
+}
+
+.profile-pill-static {
+  position: static !important;
+  margin: 0 !important;
+}
+
+.profile-pill:hover {
+  background: var(--surface-3);
+  transform: translateY(1px);
+  box-shadow: var(--shadow-3);
+}
+
+.profile-pill-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.profile-pill-name {
+  font-size: var(--font-size-1);
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  max-width: 150px;
+}
+
+@media (max-width: 768px) {
+  .profile-pill {
+    top: var(--size-2);
+    right: var(--size-2);
+  }
+
+  .profile-pill-name {
+    display: none;
+    /* Only avatar on mobile */
+  }
+
+  .profile-pill {
+    padding: var(--size-1);
+  }
+}
+
+/* ====================================
+   Boost Menu Focus Technique
+   ==================================== */
+
+/* Boost popover - hidden by default */
+.boost-popover {
+  display: none;
+  flex-direction: column;
+  box-shadow: var(--shadow-4);
+}
+
+/* Show boost popover when button wrapper has focus-within */
+.boost-btn:focus-within .boost-popover {
+  display: flex;
+}
+
+.virtualized-list-item:has(* .boost-btn:focus-within),
+.window-virtual-item:has(* .options-menu-btn:focus-within),
+.window-virtual-item:has(* .boost-btn:focus-within),
+.virtualized-list-item:has(* .options-menu-btn:focus-within) {
+  z-index: 1;
+}
+
+/* ====================================
+   Options Menu (3-dot) Focus Technique
+   ==================================== */
+
+/* Options menu container */
+.options-menu-btn {
+  position: relative;
+}
+
+/* Options menu popover - hidden by default */
+.options-menu-popover {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--size-2);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  box-shadow: var(--shadow-4);
+  border: 1px solid var(--surface-3);
+  border-radius: var(--radius-3);
+  padding: var(--size-2);
+  min-width: 200px;
+  z-index: 50;
+  transform-origin: bottom right;
+  animation: optionsMenuIn 0.2s ease-out;
+}
+
+@keyframes optionsMenuIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Show options menu when button wrapper has focus-within */
+.options-menu-btn:focus-within .options-menu-popover {
+  display: flex;
+}
+
+/* Options menu item styling */
+.options-menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--size-3);
+  padding: var(--size-3);
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-2);
+  cursor: pointer;
+  color: var(--text-1);
+  font-size: var(--font-size-1);
+  font-weight: var(--font-weight-5);
+  letter-spacing: -0.01em;
+  text-align: left;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--text-2);
+    transition: color 0.15s ease;
+  }
+
+  &:hover {
+    background: var(--surface-3);
+
+    svg {
+      color: var(--text-1);
+    }
+  }
+
+  &:active {
+    background: var(--surface-4);
+  }
+
+  &.danger {
+    color: var(--red-6);
+
+    svg {
+      color: var(--red-6);
+    }
+
+    &:hover {
+      background: var(--red-2);
+
+      svg {
+        color: var(--red-7);
+      }
+    }
+  }
+}
+
+/* ====================================
+   Virtualized List Mobile Padding
+   ==================================== */
+@media (max-width: 767px) {
+  .virtualized-list-container {
+    padding-left: var(--size-2);
+    padding-right: var(--size-2);
+  }
+}
+
+/* ====================================
+   Utility Classes
+   ==================================== */
+.hide-on-mobile {
+  display: inline;
+}
+
+@media (max-width: 480px) {
+  .hide-on-mobile {
+    display: none;
+  }
+}
+
+/* Show only on mobile (768px breakpoint matches navigation) */
+.mobile-only {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .mobile-only {
+    display: flex !important;
+  }
+}
+
+/* ====================================
+   Suggestion Card Component
+   ==================================== */
+.suggestion-card-name {
+  font-weight: 600;
+  font-size: var(--font-size-2);
+  color: var(--text-1);
+  text-align: center;
+  max-width: 100%;
+}
+
+.suggestion-card-handle {
+  font-size: var(--font-size-1);
+  color: var(--text-3);
+  max-width: 100%;
+}
+
+/* ====================================
+   Trending Account Card Component
+   ==================================== */
+.trending-account-name {
+  font-weight: 600;
+  font-size: var(--font-size-2);
+  color: var(--text-1);
+}
+
+.trending-account-handle {
+  font-size: var(--font-size-1);
+  color: var(--text-3);
+}
+
+/* ====================================
+   Mention Suggestions Component
+   ==================================== */
+.mention-display-name {
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  font-size: var(--font-size-1);
+}
+
+.mention-handle {
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+}
+
+/* ====================================
+   User Card Component
+   ==================================== */
+.usercard-display-name {
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  font-size: var(--font-size-2);
+}
+
+.usercard-username {
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+}
+
+/* ====================================
+   Notification Request Card Component
+   ==================================== */
+.notification-request-name {
+  text-decoration: none;
+  color: var(--text-1);
+  font-weight: var(--font-weight-6);
+  display: block;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.notification-request-username {
+  font-size: var(--font-size-0);
+  color: var(--text-3);
+}
+
+/* ====================================
+   Post Header Component
+   ==================================== */
+.post-header-display-name {
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+}
+
+.post-header-handle {
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+}
+
+/* ====================================
+   Conversation Card Component
+   ==================================== */
+.conversation-card-name {
+  font-weight: 500;
+  font-size: var(--font-size-2);
+  color: var(--text-1);
+  flex: 1;
+  min-width: 0;
+
+  &.unread {
+    font-weight: 700;
+  }
+}
+
+.conversation-card-preview {
+  font-size: var(--font-size-1);
+  color: var(--text-2);
+  font-weight: 400;
+  line-height: 1.4;
+
+  &.unread {
+    color: var(--text-1);
+    font-weight: 500;
+  }
+}
+
+/* ====================================
+   Account Card Component
+   ==================================== */
+.account-card {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  padding: var(--size-3) var(--size-4);
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--surface-3);
+  text-decoration: none;
+  transition: background 0.15s ease;
+  cursor: pointer;
+}
+
+.account-card:hover {
+  background: var(--surface-2);
+}
+
+.account-card-info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.account-card-name {
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  font-size: var(--font-size-1);
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+}
+
+.account-card-badge {
+  font-size: var(--font-size-0);
+  padding: 1px var(--size-1);
+  background: var(--surface-3);
+  border-radius: var(--radius-1);
+  font-weight: var(--font-weight-5);
+  color: var(--text-2);
+}
+
+.account-card-handle {
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+}
+
+.account-card-actions {
+  display: flex;
+  gap: var(--size-2);
+  flex-shrink: 0;
+}
+
+/* Settings page links */
+.settings-link {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  padding: var(--size-3) var(--size-4);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  text-decoration: none;
+  color: var(--text-1);
+  font-weight: var(--font-weight-5);
+  transition: background 0.15s ease;
+}
+
+.settings-link:hover {
+  background: var(--surface-3);
+}
+
+.settings-link-icon {
+  color: var(--text-2);
+}
+
+/* Wrapstodon highlight styling in settings */
+.settings-link.wrapstodon-highlight {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+  color: var(--pink-6);
+}
+
+.settings-link.wrapstodon-highlight:hover {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+  color: var(--pink-7);
+}
+
+.settings-link.wrapstodon-highlight .settings-link-icon {
+  color: var(--pink-6);
+}
+
+/* ====================================
+   Native Dialog Element Styles
+   ==================================== */
+
+/* Base dialog styles */
+dialog {
+  border: none;
+  border-radius: var(--radius-3);
+  padding: 0;
+  background: var(--surface-2);
+  box-shadow: var(--shadow-6);
+  max-width: min(90vw, 500px);
+  max-height: 90dvh;
+  overflow: visible;
+}
+
+/* Media modal dialog override */
+dialog:has(.media-modal) {
+  max-width: 95vw;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Modal-specific styles (opened with showModal()) */
+dialog:modal {
+  /* Animation properties */
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.2s ease-out,
+    overlay 0.2s ease-out allow-discrete,
+    display 0.2s ease-out allow-discrete;
+}
+
+/* Starting state for open animation */
+@starting-style {
+  dialog:modal {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* Closed state for close animation */
+dialog:not([open]) {
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none;
+}
+
+/* Modal backdrop styling */
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 1;
+  transition:
+    opacity 0.2s ease-out,
+    overlay 0.2s ease-out allow-discrete,
+    display 0.2s ease-out allow-discrete;
+}
+
+@starting-style {
+  dialog::backdrop {
+    opacity: 0;
+  }
+}
+
+/* Dialog content wrapper for internal padding */
+.dialog-content {
+  padding: var(--size-5);
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--size-3) var(--size-4);
+  border-bottom: 1px solid var(--surface-3);
+}
+
+.dialog-body {
+  padding: var(--size-4);
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--size-2);
+  padding: var(--size-3) var(--size-4);
+  border-top: 1px solid var(--surface-3);
+}
+
+/* Legacy modal-overlay class for backward compatibility */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: var(--size-4);
+}
+
+.modal-content {
+  animation: var(--animation-fade-in);
+}
+
+/* ====================================
+   Reusable Tabs Component
+   ==================================== */
+.tabs {
+  display: flex;
+  gap: 0;
+  padding: 0;
+}
+
+.tabs--full-width .tab {
+  flex: 1;
+}
+
+.tabs--sticky {
+  position: sticky;
+  top: 0;
+  background: var(--surface-1);
+  z-index: 10;
+}
+
+/* Underline variant */
+.tabs--underline {
+  position: relative;
+  border-bottom: 1px solid var(--surface-3);
+  margin-bottom: var(--size-3);
+}
+
+/* Ensure sticky overrides underline's relative position */
+.tabs--sticky.tabs--underline {
+  position: sticky;
+}
+
+.tab--underline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-2);
+  padding: var(--size-3) var(--size-4);
+  font-size: var(--font-size-1);
+  font-weight: var(--font-weight-5);
+  color: var(--text-2);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.tab--underline:hover {
+  color: var(--text-1);
+}
+
+.tab--underline.tab--active {
+  color: var(--blue-6);
+  font-weight: var(--font-weight-6);
+}
+
+/* Sliding indicator using anchor positioning */
+.tab-indicator {
+  position: absolute;
+  bottom: -1px;
+  height: 3px;
+  background: var(--blue-6);
+  border-radius: 3px 3px 0 0;
+  position-anchor: --active-tab;
+  left: anchor(left);
+  right: anchor(right);
+  transition: left 0.25s ease, right 0.25s ease;
+}
+
+/* Pill variant */
+.tabs--pill {
+  gap: var(--size-2);
+  overflow-x: auto;
+}
+
+.tab--pill {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  padding: var(--size-2) var(--size-3);
+  border: none;
+  border-radius: var(--radius-2);
+  background: var(--surface-3);
+  color: var(--text-1);
+  font-size: var(--font-size-1);
+  font-weight: var(--font-weight-6);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.tab--pill:hover {
+  background: var(--surface-4);
+}
+
+.tab--pill.tab--active {
+  background: var(--blue-6);
+  color: white;
+}
+
+/* Tab icon */
+.tab-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Mobile: hide tab icons in full-width tabs to save space */
+  .tabs--full-width & {
+    @media (max-width: 480px) {
+      display: none;
+    }
+  }
+}
+
+/* ====================================
+   Trending Tag Card
+   ==================================== */
+.trending-tag-card {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  padding: var(--size-3);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  text-decoration: none;
+  color: var(--text-1);
+  transition: all 0.2s ease;
+}
+
+.trending-tag-card:hover {
+  background: var(--surface-3);
+  transform: translateX(2px);
+}
+
+.trending-tag-card.skeleton {
+  pointer-events: none;
+}
+
+.trending-tag-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-3);
+  border-radius: var(--radius-2);
+  color: var(--text-2);
+  flex-shrink: 0;
+}
+
+.trending-tag-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.trending-tag-name {
+  font-size: var(--font-size-2);
+  font-weight: var(--font-weight-6);
+  color: var(--blue-6);
+}
+
+.trending-tag-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-2);
+  margin-top: var(--size-1);
+}
+
+.trending-tag-stat {
+  display: flex;
+  align-items: center;
+  gap: var(--size-1);
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+}
+
+/* ====================================
+   Trending Link Card
+   ==================================== */
+.trending-link-card {
+  display: flex;
+  gap: var(--size-3);
+  padding: var(--size-3);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  text-decoration: none;
+  color: var(--text-1);
+  transition: all 0.2s ease;
+}
+
+.trending-link-card:hover {
+  background: var(--surface-3);
+  transform: translateX(2px);
+}
+
+.trending-link-card.skeleton {
+  pointer-events: none;
+}
+
+.trending-link-image {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-2);
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--surface-3);
+}
+
+.trending-link-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.trending-link-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+}
+
+.trending-link-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1);
+}
+
+.trending-link-provider {
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.trending-link-title {
+  font-size: var(--font-size-1);
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  line-height: var(--font-lineheight-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.trending-link-description {
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+  line-height: var(--font-lineheight-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.trending-link-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.trending-link-stat {
+  font-size: var(--font-size-0);
+  color: var(--text-3);
+}
+
+/* Skeleton loading animation */
+.skeleton-loading {
+  background: linear-gradient(90deg, var(--surface-3) 25%, var(--surface-4) 50%, var(--surface-3) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ====================================
+   Status Edit History
+   ==================================== */
+
+.edit-history {
+  margin-top: var(--size-3);
+  border-top: 1px solid var(--surface-3);
+  padding-top: var(--size-3);
+}
+
+.edit-history-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-1);
+  font-size: var(--font-size-0);
+  color: var(--text-3);
+  margin-top: var(--size-2);
+}
+
+.edit-history-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-2);
+  padding: var(--size-2) var(--size-3);
+  background: var(--surface-2);
+  border: 1px solid var(--surface-3);
+  border-radius: var(--radius-2);
+  color: var(--text-2);
+  font-size: var(--font-size-0);
+  font-weight: var(--font-weight-5);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-history-toggle:hover:not(:disabled) {
+  background: var(--surface-3);
+  color: var(--text-1);
+  border-color: var(--surface-4);
+}
+
+.edit-history-toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.edit-history-list {
+  margin-top: var(--size-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-3);
+}
+
+.edit-history-item {
+  padding: var(--size-3);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  border-left: 3px solid var(--blue-5);
+}
+
+.edit-history-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--size-2);
+  gap: var(--size-2);
+}
+
+.edit-history-version {
+  font-size: var(--font-size-0);
+  font-weight: var(--font-weight-6);
+  color: var(--blue-6);
+}
+
+.edit-history-date {
+  font-size: var(--font-size-0);
+  color: var(--text-3);
+}
+
+.edit-history-content {
+  font-size: var(--font-size-1);
+  color: var(--text-1);
+}
+
+.edit-history-spoiler {
+  margin-top: var(--size-2);
+  padding: var(--size-2);
+  background: var(--orange-2);
+  border-radius: var(--radius-1);
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+}
+
+.edit-history-error {
+  padding: var(--size-3);
+  background: var(--red-2);
+  border-radius: var(--radius-2);
+  color: var(--red-7);
+  font-size: var(--font-size-0);
+}
+
+.edit-history-skeleton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-2);
+  margin-top: var(--size-3);
+  padding-top: var(--size-3);
+  border-top: 1px solid var(--surface-3);
+}
+
+/* Theme Selector Responsive Layout */
+.theme-selector-container {
+  display: flex;
+  gap: var(--size-3);
+  flex-direction: column;
+}
+
+@media (min-width: 640px) {
+  .theme-selector-container {
+    flex-direction: row;
+  }
+}
+
+/* Details Element Styling */
+details summary {
+  list-style: none;
+}
+
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+details[open] .details-chevron {
+  transform: rotate(180deg);
+}
+
+.details-chevron {
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+/* ====================================
+   Sonner Toast Styles (Mastodon-like)
+   ==================================== */
+[data-sonner-toaster] {
+  font-family: var(--font-sans) !important;
+}
+
+[data-sonner-toast] {
+  background: var(--gray-9) !important;
+  color: var(--gray-0) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.2),
+    0 4px 6px -4px rgba(0, 0, 0, 0.2) !important;
+  backdrop-filter: blur(8px) !important;
+  padding: 15px !important;
+  font-size: 15px !important;
+  line-height: 21px !important;
+  gap: 10px !important;
+}
+
+/* Light theme adjustments */
+[data-theme="light"] [data-sonner-toast] {
+  background: var(--gray-8) !important;
+  color: var(--gray-0) !important;
+}
+
+[data-sonner-toast] [data-title] {
+  font-weight: 700 !important;
+  margin-inline-end: 5px !important;
+}
+
+[data-sonner-toast] [data-button] {
+  background: none !important;
+  color: var(--blue-4) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+}
+
+[data-sonner-toast] [data-button]:hover,
+[data-sonner-toast] [data-button]:focus {
+  text-decoration: underline !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Hide the default sonner icons since we use a minimal style */
+[data-sonner-toast] [data-icon] {
+  display: none !important;
+}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { observer } from 'mobx-react-lite';
 import { useAuthStore } from '@/hooks/useStores';
 

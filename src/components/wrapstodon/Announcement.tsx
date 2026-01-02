@@ -7,7 +7,7 @@
 
 import { Button } from '@/components/atoms/Button'
 import type { AnnualReportState } from '@/types/mastodon'
-import './wrapstodon.css'
+// Note: wrapstodon.css is imported in _app.tsx for Pages Router compatibility
 
 interface AnnouncementProps {
     year: number
