@@ -128,7 +128,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
     const uniqueLinks = flattenAndUniqByKey<TrendingLink>('url')(linksData?.pages);
 
     return (
-        <Container className="full-height-container">
+        <Container className={`full-height-container${authStore.isAuthenticated ? '' : ' guest'}`}>
             {/* Header */}
             {header && header}
 
