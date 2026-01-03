@@ -52,12 +52,12 @@ function CallbackContent() {
         authStore.setAccessToken(token.access_token);
 
         // Get redirect path from cookie (set by middleware when accessing protected route)
-        const redirectPath = await getCookie('authRedirect') || '/';
+        const rawRedirectPath = await getCookie('authRedirect') || '/';
         // Clear the redirect cookie
         await deleteCookie('authRedirect');
 
         // Redirect to the intended page or home
-        router.push(redirectPath);
+        router.push(decodeURIComponent(rawRedirectPath));
       } catch (err) {
         console.error('OAuth callback error:', err);
         setError(err instanceof Error ? err.message : 'Authentication failed');
