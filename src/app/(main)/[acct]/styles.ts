@@ -68,7 +68,7 @@ export const NameSection = styled.div`
   margin-bottom: var(--size-4);
 `;
 
-export const DisplayName = styled.h2`
+export const DisplayName = styled.h1`
   font-size: var(--font-size-5);
   font-weight: var(--font-weight-7);
   margin-bottom: var(--size-1);

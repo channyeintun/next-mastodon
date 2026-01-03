@@ -1,212 +1,108 @@
-'use client';
+import type { Metadata } from 'next';
+import { headers } from 'next/headers';
+import { notFound } from 'next/navigation';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { getQueryClient } from '@/lib/getQueryClient';
+import { lookupAccountServer } from '@/lib/serverApi';
+import { queryKeys } from '@/api/queryKeys';
+import { AccountPageClient } from './AccountPageClient';
 
-import { use, useEffect, useState } from 'react';
-import { useRouter, notFound } from 'next/navigation';
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
-import {
-  useAccountWithCache,
-  useInfiniteAccountStatusesWithFilters,
-  useRelationships,
-  useCurrentAccount,
-  usePinnedStatuses,
-  useFollowAccount,
-  useUnfollowAccount,
-  useBlockAccount,
-  useUnblockAccount,
-  useMuteAccount,
-  useUnmuteAccount,
-  useUpdateAccountNotifications,
-} from '@/api';
+interface AccountPageProps {
+    params: Promise<{ acct: string }>;
+}
 
-import { AccountProfileSkeleton } from '@/components/molecules';
-import { Button, IconButton, Tabs } from '@/components/atoms';
-import type { TabItem } from '@/components/atoms/Tabs';
-import { flattenAndUniqById } from '@/utils/fp';
-import { PageContainer, FixedBackButton, ErrorContainer, ErrorTitle } from './styles';
-import { ProfileTabContent, MediaTabContent, ContentSection } from './ProfileTabContent';
-import { ProfileHeader, LimitedProfileHeader } from './ProfileHeader';
-import { PinnedPostsSection } from './PinnedPostsSection';
-import { useQueryState, parseAsStringLiteral } from '@/hooks/useQueryState';
+/**
+ * Generate metadata for SEO and Open Graph cards.
+ * This runs on the server for both direct visits and crawlers.
+ */
+export async function generateMetadata({ params }: AccountPageProps): Promise<Metadata> {
+    const { acct: acctParam } = await params;
+    const decodedAcct = decodeURIComponent(acctParam);
 
-type ProfileTab = 'posts' | 'posts_replies' | 'media';
-const VALID_TABS = ['posts', 'posts_replies', 'media'] as const;
+    if (!decodedAcct.startsWith('@')) {
+        return { title: 'Profile Not Found' };
+    }
 
-const profileTabs: TabItem<ProfileTab>[] = [
-  { value: 'posts', label: 'Posts' },
-  { value: 'posts_replies', label: 'Posts & replies' },
-  { value: 'media', label: 'Media' },
-];
+    const acct = decodedAcct.slice(1);
+    const account = await lookupAccountServer(acct);
 
-const POSTS_FILTERS = { exclude_replies: true } as const;
-const POSTS_REPLIES_FILTERS = { exclude_replies: false, exclude_reblogs: true } as const;
-const MEDIA_FILTERS = { only_media: true } as const;
+    if (!account) {
+        return { title: 'Profile Not Found' };
+    }
 
-export default function AccountPage({ params }: { params: Promise<{ acct: string }> }) {
-  const router = useRouter();
-  const { acct: acctParam } = use(params);
+    const displayName = account.display_name || account.username;
+    const plainTextBio = account.note?.replace(/<[^>]*>/g, '').slice(0, 160) || '';
 
-  const decodedAcct = decodeURIComponent(acctParam);
-  if (!decodedAcct.startsWith('@')) notFound();
-  const acct = decodedAcct.slice(1);
+    return {
+        title: `${displayName} (@${account.acct}) - Mastodon`,
+        description: plainTextBio || `Profile of @${account.acct} on Mastodon`,
+        openGraph: {
+            title: `${displayName} (@${account.acct})`,
+            description: plainTextBio || `Profile of @${account.acct} on Mastodon`,
+            type: 'profile',
+            images: account.avatar ? [{ url: account.avatar, alt: displayName }] : [],
+            siteName: 'Mastodon',
+        },
+        twitter: {
+            card: 'summary',
+            title: `${displayName} (@${account.acct})`,
+            description: plainTextBio || `Profile of @${account.acct}`,
+            images: account.avatar ? [account.avatar] : [],
+        },
+    };
+}
 
-  const { data: account, isLoading: accountLoading, isError: accountError } = useAccountWithCache(acct);
-  const accountId = account?.id;
+/**
+ * Server Component wrapper for the Account/Profile page.
+ * 
+ * Hybrid SSR/CSR approach:
+ * - Direct visit: Prefetches account data on server, dehydrates to client
+ * - Client navigation: Skips prefetch, client uses TanStack Query cache
+ * 
+ * Detection: Client navigation sends 'rsc' header
+ */
+export default async function AccountPage({ params }: AccountPageProps) {
+    const { acct: acctParam } = await params;
 
-  const [showLimitedProfile, setShowLimitedProfile] = useState(false);
-  useEffect(() => {
-    if (account) setShowLimitedProfile(account.limited);
-  }, [account]);
+    // Decode and validate the acct parameter
+    const decodedAcct = decodeURIComponent(acctParam);
 
-  // Tab state synced with URL using useQueryState
-  const [activeTab, setActiveTab] = useQueryState('tab', {
-    defaultValue: 'posts' as ProfileTab,
-    parser: parseAsStringLiteral(VALID_TABS, 'posts'),
-  });
+    // The route expects @username format
+    if (!decodedAcct.startsWith('@')) {
+        notFound();
+    }
 
-  const { data: pinnedStatuses } = usePinnedStatuses(accountId || '');
-  const { data: currentAccount } = useCurrentAccount();
-  const isOwnProfile = currentAccount?.id === accountId;
+    const acct = decodedAcct.slice(1); // Remove @ prefix
 
-  // Parallel queries for each tab
-  const postsQuery = useInfiniteAccountStatusesWithFilters(accountId || '', POSTS_FILTERS);
-  const postsRepliesQuery = useInfiniteAccountStatusesWithFilters(accountId || '', POSTS_REPLIES_FILTERS);
-  const mediaQuery = useInfiniteAccountStatusesWithFilters(accountId || '', MEDIA_FILTERS);
+    // Detect client-side navigation via RSC header
+    // When navigating via Link/router, Next.js sends RSC request with this header
+    const headersList = await headers();
+    const isClientNavigation = !!headersList.get('rsc');
 
-  const { data: relationships } = useRelationships(accountId ? [accountId] : []);
-  const relationship = relationships?.[0];
+    if (isClientNavigation) {
+        // Client navigation: Skip prefetch, let client use TanStack Query cache
+        // The cache was prepopulated via setQueryData before navigation
+        return <AccountPageClient acct={acct} />;
+    }
 
-  const followMutation = useFollowAccount();
-  const unfollowMutation = useUnfollowAccount();
-  const blockMutation = useBlockAccount();
-  const unblockMutation = useUnblockAccount();
-  const muteMutation = useMuteAccount();
-  const unmuteMutation = useUnmuteAccount();
+    // Direct visit: Prefetch on server for SSR
+    const queryClient = getQueryClient();
 
-  const postsStatuses = flattenAndUniqById(postsQuery.data?.pages);
-  const postsRepliesStatuses = flattenAndUniqById(postsRepliesQuery.data?.pages);
-  const mediaStatuses = flattenAndUniqById(mediaQuery.data?.pages);
+    // Fetch account data on server
+    const account = await lookupAccountServer(acct);
 
-  const handleFollowToggle = () => {
-    if (!accountId) return;
-    relationship?.following || relationship?.requested ? unfollowMutation.mutate(accountId) : followMutation.mutate({ id: accountId });
-  };
+    if (!account) {
+        notFound();
+    }
 
-  const handleBlockToggle = () => {
-    if (!accountId) return;
-    relationship?.blocking ? unblockMutation.mutate(accountId) : blockMutation.mutate(accountId);
-  };
+    // Manually set the query data (since we can't use the client API on server)
+    queryClient.setQueryData(queryKeys.accounts.lookup(acct), account);
+    queryClient.setQueryData(queryKeys.accounts.detail(account.id), account);
 
-  const handleMuteToggle = () => {
-    if (!accountId) return;
-    relationship?.muting ? unmuteMutation.mutate(accountId) : muteMutation.mutate({ id: accountId });
-  };
-
-  const notifyMutation = useUpdateAccountNotifications();
-
-  const handleNotifyToggle = () => {
-    if (!accountId) return;
-    notifyMutation.mutate({ id: accountId, notify: !relationship?.notifying });
-  };
-
-  const isFollowing = relationship?.following || false;
-  const isFollowLoading = followMutation.isPending || unfollowMutation.isPending;
-
-  const getAccountDomain = () => {
-    if (!account?.url) return 'this server';
-    try { return new URL(account.url).hostname; } catch { return 'this server'; }
-  };
-
-  if (accountLoading) {
+    // Dehydrate and pass to client
     return (
-      <PageContainer>
-        <FixedBackButton>
-          <IconButton onClick={() => router.back()}><ArrowLeft size={20} /></IconButton>
-        </FixedBackButton>
-        <AccountProfileSkeleton />
-      </PageContainer>
+        <HydrationBoundary state={dehydrate(queryClient)}>
+            <AccountPageClient acct={acct} />
+        </HydrationBoundary>
     );
-  }
-
-  if (accountError || !account) {
-    return (
-      <ErrorContainer>
-        <ErrorTitle>Profile Not Found</ErrorTitle>
-        <Link href="/"><Button>Back to Timeline</Button></Link>
-      </ErrorContainer>
-    );
-  }
-
-  const commonHeaderProps = {
-    account,
-    relationship,
-    isOwnProfile,
-    isFollowing,
-    isFollowLoading,
-    isMutePending: muteMutation.isPending || unmuteMutation.isPending,
-    isBlockPending: blockMutation.isPending || unblockMutation.isPending,
-    isNotifyPending: notifyMutation.isPending,
-    onFollowToggle: handleFollowToggle,
-    onBlockToggle: handleBlockToggle,
-    onMuteToggle: handleMuteToggle,
-    onNotifyToggle: handleNotifyToggle,
-  };
-
-  return (
-    <PageContainer>
-      <FixedBackButton>
-        <IconButton onClick={() => router.back()}><ArrowLeft size={20} /></IconButton>
-      </FixedBackButton>
-      <div>
-        {showLimitedProfile ? (
-          <LimitedProfileHeader
-            {...commonHeaderProps}
-            onShowProfile={() => setShowLimitedProfile(false)}
-            domain={getAccountDomain()}
-          />
-        ) : (
-          <>
-            <ProfileHeader {...commonHeaderProps} />
-            <Tabs tabs={profileTabs} activeTab={activeTab} onTabChange={setActiveTab} />
-            <ContentSection>
-              {(activeTab === 'posts' || activeTab === 'posts_replies') && pinnedStatuses && pinnedStatuses.length > 0 && (
-                <PinnedPostsSection pinnedStatuses={pinnedStatuses} />
-              )}
-              {activeTab === 'posts' && (
-                <ProfileTabContent
-                  acct={acct}
-                  tabKey="posts"
-                  statuses={postsStatuses}
-                  isLoading={postsQuery.isLoading}
-                  fetchNextPage={postsQuery.fetchNextPage}
-                  hasNextPage={postsQuery.hasNextPage ?? false}
-                  isFetchingNextPage={postsQuery.isFetchingNextPage}
-                />
-              )}
-              {activeTab === 'posts_replies' && (
-                <ProfileTabContent
-                  acct={acct}
-                  tabKey="posts_replies"
-                  statuses={postsRepliesStatuses}
-                  isLoading={postsRepliesQuery.isLoading}
-                  fetchNextPage={postsRepliesQuery.fetchNextPage}
-                  hasNextPage={postsRepliesQuery.hasNextPage ?? false}
-                  isFetchingNextPage={postsRepliesQuery.isFetchingNextPage}
-                />
-              )}
-              {activeTab === 'media' && (
-                <MediaTabContent
-                  statuses={mediaStatuses}
-                  isLoading={mediaQuery.isLoading}
-                  fetchNextPage={mediaQuery.fetchNextPage}
-                  hasNextPage={mediaQuery.hasNextPage ?? false}
-                  isFetchingNextPage={mediaQuery.isFetchingNextPage}
-                />
-              )}
-            </ContentSection>
-          </>
-        )}
-      </div>
-    </PageContainer>
-  );
 }

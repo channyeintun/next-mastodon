@@ -1,273 +1,96 @@
-'use client';
+import type { Metadata } from 'next';
+import { headers } from 'next/headers';
+import { notFound } from 'next/navigation';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { getQueryClient } from '@/lib/getQueryClient';
+import { getStatusServer } from '@/lib/serverApi';
+import { queryKeys } from '@/api/queryKeys';
+import { StatusPageClient } from './StatusPageClient';
 
-import styled from '@emotion/styled';
-import { use, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
-import { useStatusWithContext } from '@/api';
-import { useAuthStore } from '@/hooks/useStores';
-import { PostCard } from '@/components/organisms';
-import { PostCardSkeleton, StatusStats } from '@/components/molecules';
-import { Button, IconButton } from '@/components/atoms';
-import { ComposerPanel } from '@/components/organisms/ComposerPanel';
-
-export default function StatusPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-
-  // Combined hook fetches status and context in parallel
-  const {
-    status,
-    context,
-    isLoading,
-    isError,
-    error: statusErrorData,
-  } = useStatusWithContext(id);
-
-  const authStore = useAuthStore();
-  const router = useRouter();
-
-  // Handle deletion of the current post - redirect to home
-  const handlePostDeleted = () => {
-    router.push('/');
-  };
-
-  // Scroll to main post after content loads
-  // Must be before early returns to follow Rules of Hooks
-  useEffect(() => {
-    if (status && !isLoading) {
-      const mainPost = document.getElementById('main-post');
-      if (mainPost) {
-        // Scroll with a slight delay to ensure layout is complete
-        setTimeout(() => {
-          mainPost.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-      }
-    }
-  }, [status, isLoading]);
-
-  if (isLoading) {
-    return (
-      <Container>
-        {/* Header */}
-        <Header>
-          <IconButton onClick={() => router.back()}>
-            <ArrowLeft size={20} />
-          </IconButton>
-          <Title>Post</Title>
-        </Header>
-
-        {/* Skeleton loading */}
-        <div className="virtualized-list-container">
-          <HighlightedPost>
-            <PostCardSkeleton />
-          </HighlightedPost>
-        </div>
-      </Container>
-    );
-  }
-
-  if (isError || !status) {
-    return (
-      <ErrorContainer>
-        <ErrorTitle>Error Loading Post</ErrorTitle>
-        <ErrorMessage>
-          {statusErrorData instanceof Error
-            ? statusErrorData.message
-            : 'This post could not be found or loaded.'}
-        </ErrorMessage>
-        <Button onClick={() => router.back()}>Go Back</Button>
-      </ErrorContainer>
-    );
-  }
-
-  const ancestors = context?.ancestors ?? [];
-  const descendants = context?.descendants ?? [];
-
-  return (
-    <Container>
-      {/* Header */}
-      <Header>
-        <IconButton onClick={() => router.back()}>
-          <ArrowLeft size={20} />
-        </IconButton>
-        <Title>Post</Title>
-      </Header>
-
-      {/* Thread container */}
-      <div className="virtualized-list-container">
-        {/* Ancestors (parent posts) */}
-        {ancestors.length > 0 && (
-          <div>
-            {ancestors.map((ancestor) => (
-              <div key={ancestor.id}>
-                <PostCard status={ancestor} />
-                {/* Thread line connector */}
-                <ThreadLineContainer>
-                  <ThreadLine />
-                </ThreadLineContainer>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Main status (highlighted) */}
-        <HighlightedPost>
-          <PostCard
-            id="main-post"
-            status={status}
-            showEditHistory
-            onDeleteSuccess={handlePostDeleted}
-          />
-          {/* Clickable statistics - separate from action buttons */}
-          <StatusStatsWrapper>
-            <StatusStats
-              statusId={status.id}
-              favouritesCount={status.favourites_count}
-              reblogsCount={status.reblogs_count}
-              quotesCount={status.quotes_count}
-            />
-          </StatusStatsWrapper>
-        </HighlightedPost>
-
-        {/* Reply Composer - Comment Box Style */}
-        {authStore.isAuthenticated && (
-          <ReplyComposerContainer>
-            <ComposerPanel
-              key={`reply-${status.id}`}
-              initialVisibility={status.visibility}
-              mentionPrefix={status.account.acct}
-              inReplyToId={status.id}
-              isReply
-            />
-          </ReplyComposerContainer>
-        )}
-
-        {/* Descendants (replies) */}
-        {descendants.length > 0 && (
-          <div>
-            <RepliesHeader>
-              Replies ({descendants.length})
-            </RepliesHeader>
-            {descendants.map((descendant, index) => (
-              <div key={descendant.id}>
-                {/* Thread line connector */}
-                {index > 0 && (
-                  <ThreadLineContainer>
-                    <ThreadLineShort />
-                  </ThreadLineContainer>
-                )}
-                <PostCard status={descendant} />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Empty state for no replies */}
-        {descendants.length === 0 && (
-          <EmptyState>
-            <p>No replies yet.</p>
-            <EmptySubtext>Be the first to reply!</EmptySubtext>
-          </EmptyState>
-        )}
-      </div>
-    </Container>
-  );
+interface StatusPageProps {
+    params: Promise<{ id: string }>;
 }
 
-// Styled components
-const Container = styled.div`
-  max-width: 680px;
-  margin: 0 auto;
-`;
+/**
+ * Generate metadata for SEO and Open Graph cards.
+ * This runs on the server for both direct visits and crawlers.
+ */
+export async function generateMetadata({ params }: StatusPageProps): Promise<Metadata> {
+    const { id } = await params;
+    const status = await getStatusServer(id);
 
-const Header = styled.div`
-  position: sticky;
-  top: 0;
-  background: var(--surface-1);
-  z-index: 10;
-  padding: var(--size-4);
-  margin-bottom: var(--size-4);
-  border-bottom: 1px solid var(--surface-3);
-  display: flex;
-  align-items: center;
-  gap: var(--size-3);
-`;
+    if (!status) {
+        return { title: 'Post Not Found' };
+    }
 
-const Title = styled.h1`
-  font-size: var(--font-size-4);
-`;
+    const displayName = status.account.display_name || status.account.username;
+    const plainTextContent = status.content?.replace(/<[^>]*>/g, '').slice(0, 160) || '';
+    const title = `${displayName}: "${plainTextContent.slice(0, 50)}${plainTextContent.length > 50 ? '...' : ''}"`;
 
-const HighlightedPost = styled.div`
-  margin-bottom: var(--size-3);
-`;
+    // Get the first media attachment for og:image
+    const ogImage = status.media_attachments?.[0]?.preview_url || status.account.avatar;
 
-const StatusStatsWrapper = styled.div`
-  padding: 0 var(--size-3);
-`;
+    return {
+        title: `${title} - Mastodon`,
+        description: plainTextContent,
+        openGraph: {
+            title: `${displayName} on Mastodon`,
+            description: plainTextContent,
+            type: 'article',
+            images: ogImage ? [{ url: ogImage }] : [],
+            siteName: 'Mastodon',
+            publishedTime: status.created_at,
+            authors: [`@${status.account.acct}`],
+        },
+        twitter: {
+            card: status.media_attachments?.length ? 'summary_large_image' : 'summary',
+            title: `${displayName} on Mastodon`,
+            description: plainTextContent,
+            images: ogImage ? [ogImage] : [],
+        },
+    };
+}
 
-const RepliesHeader = styled.h2`
-  font-size: var(--font-size-2);
-  font-weight: var(--font-weight-6);
-  margin-bottom: var(--size-4);
-  color: var(--text-2);
-`;
+/**
+ * Server Component wrapper for the Status/Post detail page.
+ * 
+ * Hybrid SSR/CSR approach:
+ * - Direct visit: Prefetches status data on server, dehydrates to client
+ * - Client navigation: Skips prefetch, client uses TanStack Query cache
+ * 
+ * Detection: Client navigation sends 'rsc' header
+ */
+export default async function StatusPage({ params }: StatusPageProps) {
+    const { id } = await params;
 
-const ThreadLineContainer = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  padding-left: var(--size-5);
-`;
+    // Detect client-side navigation via RSC header
+    // When navigating via Link/router, Next.js sends RSC request with this header
+    const headersList = await headers();
+    const isClientNavigation = !!headersList.get('rsc');
 
-const ThreadLine = styled.div`
-  width: 2px;
-  height: 32px;
-  background: var(--surface-4);
-  margin-left: 18px;
-`;
+    if (isClientNavigation) {
+        // Client navigation: Skip prefetch, let client use TanStack Query cache
+        // The cache was prepopulated via setQueryData before navigation
+        return <StatusPageClient statusId={id} />;
+    }
 
-const ThreadLineShort = styled.div`
-  width: 2px;
-  height: 24px;
-  background: var(--surface-4);
-  margin-left: 18px;
-`;
+    // Direct visit: Prefetch on server for SSR
+    const queryClient = getQueryClient();
 
-const ReplyComposerContainer = styled.div`
-  margin-bottom: var(--size-4);
-  border: 1px solid var(--surface-3);
-  border-radius: var(--radius-3);
-  background: var(--surface-2);
-  padding: var(--size-3);
-`;
+    // Fetch status data on server
+    const status = await getStatusServer(id);
 
-const ErrorContainer = styled.div`
-  text-align: center;
-  margin-top: var(--size-8);
-`;
+    if (!status) {
+        notFound();
+    }
 
-const ErrorTitle = styled.h2`
-  color: var(--red-6);
-  margin-bottom: var(--size-3);
-`;
+    // Manually set the query data (since we can't use the client API on server)
+    queryClient.setQueryData(queryKeys.statuses.detail(id), status);
 
-const ErrorMessage = styled.p`
-  color: var(--text-2);
-  margin-bottom: var(--size-4);
-`;
-
-const EmptyState = styled.div`
-  text-align: center;
-  padding: var(--size-8) var(--size-4);
-  color: var(--text-2);
-  display: grid;
-  justify-content: center;
-`;
-
-const EmptySubtext = styled.p`
-  font-size: var(--font-size-0);
-  margin-top: var(--size-2);
-`;
+    // Dehydrate and pass to client
+    return (
+        <HydrationBoundary state={dehydrate(queryClient)}>
+            <StatusPageClient statusId={id} />
+        </HydrationBoundary>
+    );
+}

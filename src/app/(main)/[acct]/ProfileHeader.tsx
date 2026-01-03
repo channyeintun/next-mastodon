@@ -51,7 +51,7 @@ export function ProfileHeader({
     onNotifyToggle,
 }: ProfileHeaderProps) {
     return (
-        <ProfileSection>
+        <ProfileSection itemScope itemType="https://schema.org/Person">
             <HeaderImage $url={account.header} />
             <ProfileDetails>
                 <AvatarSection>
@@ -61,6 +61,7 @@ export function ProfileHeader({
                         size="xlarge"
                         style={{ border: '4px solid var(--surface-1)' }}
                     />
+                    <meta itemProp="image" content={account.avatar} />
                     <ProfileActionButtons
                         isOwnProfile={isOwnProfile}
                         isFollowing={isFollowing}
@@ -80,13 +81,14 @@ export function ProfileHeader({
                     />
                 </AvatarSection>
                 <NameSection>
-                    <DisplayName>
+                    <DisplayName itemProp="name">
                         <EmojiText text={account.display_name || account.username} emojis={account.emojis} />
                         {account.bot && <BotBadge>BOT</BotBadge>}
                         {account.locked && <LockIcon><Lock size={14} /></LockIcon>}
                     </DisplayName>
                     <HandleExplainer username={account.username} server={new URL(account.url).hostname} />
                     <FamiliarFollowers accountId={account.id} isOwnProfile={isOwnProfile} />
+                    <link itemProp="url" href={account.url} />
                 </NameSection>
                 <ProfileBio note={account.note} emojis={account.emojis} />
                 <ProfileStats acct={account.acct} postsCount={account.statuses_count} followingCount={account.following_count} followersCount={account.followers_count} />
