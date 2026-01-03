@@ -281,11 +281,11 @@ export function ComposerPanel({
         setScheduledAt('');
         setShowScheduleInput(false);
 
-        // Navigate after publishing
+        // Close modal / navigate after publishing
         if (scheduledStatusId) {
           router.push('/scheduled');
-        } else if (quotedStatusId) {
-          router.push('/');
+        } else {
+          router.back();
         }
       }
     } catch (error) {
