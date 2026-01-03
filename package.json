@@ -9,19 +9,18 @@
     "start": "next start -p 9003",
     "lint": "eslint .",
     "lint:css": "eslint --ext .css .",
-    "lint:fix": "eslint --fix .",
-    "postinstall": "patch-package"
+    "lint:fix": "eslint --fix ."
   },
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@hookform/resolvers": "^5.2.2",
-    "@tanstack/query-persist-client-core": "^5.91.11",
-    "@tanstack/react-form": "^1.27.6",
-    "@tanstack/react-query": "^5.90.12",
-    "@tanstack/react-query-devtools": "^5.91.1",
-    "@tanstack/react-virtual": "^3.13.13",
+    "@tanstack/query-persist-client-core": "^5.91.15",
+    "@tanstack/react-form": "^1.27.7",
+    "@tanstack/react-query": "^5.90.16",
+    "@tanstack/react-query-devtools": "^5.91.2",
+    "@tanstack/react-virtual": "^3.13.14",
     "@tiptap/extension-mention": "^3.12.1",
     "@tiptap/extension-placeholder": "^3.12.1",
     "@tiptap/react": "^3.14.0",
@@ -51,7 +50,7 @@
     "stringz": "^2.1.0",
     "tippy.js": "^6.3.7",
     "twitter-text": "^3.1.0",
-    "zod": "^4.1.13"
+    "zod": "^4.3.4"
   },
   "devDependencies": {
     "@eslint/css": "^0.14.1",
@@ -65,7 +64,6 @@
     "cssnano": "^7.1.2",
     "eslint": "^9.39.1",
     "eslint-plugin-unused-imports": "^4.3.0",
-    "patch-package": "^8.0.1",
     "typescript": "^5"
   }
 }
