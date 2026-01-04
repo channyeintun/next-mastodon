@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useCallback } from 'react';
 
 interface ComposeModalProps {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
 
 /**
@@ -17,41 +17,41 @@ interface ComposeModalProps {
  * - Pressing Escape key
  */
 export function ComposeModal({ children }: ComposeModalProps) {
-    const router = useRouter();
+  const router = useRouter();
 
-    const handleClose = useCallback(() => {
-        router.back();
-    }, [router]);
+  const handleClose = useCallback(() => {
+    router.back();
+  }, [router]);
 
-    // Handle Escape key
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
-                handleClose();
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [handleClose]);
-
-    // Handle click outside modal
-    const handleBackdropClick = (e: React.MouseEvent) => {
-        if (e.target === e.currentTarget) {
-            handleClose();
-        }
+  // Handle Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleClose();
+      }
     };
 
-    return (
-        <ModalOverlay onClick={handleBackdropClick}>
-            <ModalContainer>
-                <CloseButton onClick={handleClose} aria-label="Close">
-                    <X size={24} />
-                </CloseButton>
-                <ModalContent>{children}</ModalContent>
-            </ModalContainer>
-        </ModalOverlay>
-    );
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleClose]);
+
+  // Handle click outside modal
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      handleClose();
+    }
+  };
+
+  return (
+    <ModalOverlay onClick={handleBackdropClick}>
+      <ModalContainer>
+        <CloseButton onClick={handleClose} aria-label="Close">
+          <X size={24} />
+        </CloseButton>
+        <ModalContent>{children}</ModalContent>
+      </ModalContainer>
+    </ModalOverlay>
+  );
 }
 
 const ModalOverlay = styled.div`
@@ -81,7 +81,6 @@ const ModalContainer = styled.div`
   box-shadow: var(--shadow-6);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   animation: slideUp 0.2s ease-out;
 
   @keyframes slideUp {
@@ -125,7 +124,6 @@ const CloseButton = styled.button`
 
 const ModalContent = styled.div`
   flex: 1;
-  overflow-y: auto;
   padding: var(--size-4);
   padding-top: var(--size-6);
 `;
