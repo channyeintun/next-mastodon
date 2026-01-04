@@ -84,7 +84,7 @@ export function TiptapEditor({
   ], [placeholder, mentionSuggestion, emojis, onFilePaste, onUrlPaste, maxFiles]);
 
   const editor = useEditor({
-    immediatelyRender: false,
+    immediatelyRender: true,
     extensions,
     content,
     editable: true,

@@ -7,7 +7,13 @@ import { PostCard } from '@/components/organisms';
 import { MediaUpload, PollComposer, VisibilitySettingsModal, ComposerToolbar, LanguageDropdown, type MediaUploadHandle } from '@/components/molecules';
 import type { PollData } from '@/components/molecules/PollComposer';
 import type { Visibility, QuoteVisibility } from '@/components/molecules/VisibilitySettingsModal';
-import { Avatar, EmojiText, TiptapEditor, ContentWarningInput, ScheduleInput } from '@/components/atoms';
+import { Avatar, EmojiText, ContentWarningInput, ScheduleInput, CircleSkeleton, TextSkeleton } from '@/components/atoms';
+import dynamic from 'next/dynamic';
+
+const TiptapEditor = dynamic(
+  () => import('@/components/atoms/TiptapEditor').then(mod => mod.TiptapEditor),
+  { ssr: false }
+);
 import { EmojiPicker } from './EmojiPicker';
 import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { length as unicodeLength } from 'stringz';
@@ -19,7 +25,6 @@ import { toLocalISOString, parseDate } from '@/utils/date';
 import type { CreateStatusParams, MediaAttachment } from '@/types';
 import { Spinner } from '@/components/atoms/Spinner';
 import {
-  LoadingContainer,
   DisplayName,
   VisibilityButtonWrapper,
   VisibilityButton,
@@ -300,27 +305,31 @@ export function ComposerPanel({
       ? (scheduledStatusId ? 'Reschedule' : 'Schedule')
       : (isReply ? 'Reply' : 'Publish'));
 
-  if (!currentAccount) {
-    return <LoadingContainer>Loading...</LoadingContainer>;
-  }
-
   return (
     <div>
       {/* Header with avatar and visibility - Only show if not a reply */}
       {!isReply && (
         <div className="compose-header">
-          <Avatar
-            src={currentAccount.avatar}
-            alt={currentAccount.display_name || currentAccount.username}
-            size="medium"
-          />
+          {currentAccount ? (
+            <Avatar
+              src={currentAccount.avatar}
+              alt={currentAccount.display_name || currentAccount.username}
+              size="medium"
+            />
+          ) : (
+            <CircleSkeleton size="40px" />
+          )}
           <div className="compose-user-info">
             <div className="compose-user-details">
               <DisplayName>
-                <EmojiText
-                  text={currentAccount.display_name || currentAccount.username}
-                  emojis={currentAccount.emojis}
-                />
+                {currentAccount ? (
+                  <EmojiText
+                    text={currentAccount.display_name || currentAccount.username}
+                    emojis={currentAccount.emojis}
+                  />
+                ) : (
+                  <TextSkeleton width="120px" height="16px" />
+                )}
               </DisplayName>
 
               {/* Controls row - visibility and language */}
