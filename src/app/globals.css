@@ -521,7 +521,6 @@ input[type="radio"] {
 
   &.active {
     color: var(--blue-6);
-    background: var(--blue-0);
     font-weight: var(--font-weight-7);
   }
 
