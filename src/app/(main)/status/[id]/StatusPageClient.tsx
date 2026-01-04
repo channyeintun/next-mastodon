@@ -33,7 +33,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
     error: statusErrorData,
   } = useStatus(statusId);
 
-  const { data: context } = useStatusContext(statusId);
+  const { data: context, isLoading: contextLoading } = useStatusContext(statusId);
 
   const authStore = useAuthStore();
   const router = useRouter();
@@ -163,8 +163,8 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
           </div>
         )}
 
-        {/* Empty state for no replies */}
-        {descendants.length === 0 && (
+        {/* Empty state for no replies - only show when context is loaded */}
+        {!contextLoading && descendants.length === 0 && (
           <EmptyState>
             <p>No replies yet.</p>
             <EmptySubtext>Be the first to reply!</EmptySubtext>
