@@ -623,10 +623,15 @@ input[type="radio"] {
    Responsive Breakpoints
    ==================================== */
 
-/* Mobile layout adjustments - only apply padding when bottom nav is present */
-body:has(.navigation-bottom) {
-  padding-bottom: var(--app-bottom-nav-height);
-  /* Prevent content from being hidden behind bottom nav */
+/* Mobile layout adjustments - apply padding for bottom nav on mobile */
+/* Note: We can't use :has(.navigation-bottom) because the element is always in DOM */
+/* but hidden via display:none on desktop. On mobile, nav is always visible, so we */
+/* apply padding unconditionally. The desktop media query below removes it. */
+@media (max-width: 767.98px) {
+  body {
+    padding-bottom: var(--app-bottom-nav-height);
+    /* Prevent content from being hidden behind bottom nav */
+  }
 }
 
 /* Tablet and Desktop (768px+) */
