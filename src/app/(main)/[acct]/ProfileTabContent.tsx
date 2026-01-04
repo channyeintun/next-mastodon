@@ -77,6 +77,7 @@ export function ProfileTabContent({
         scrollMargin,
         initialOffset: cachedState?.offset,
         initialMeasurementsCache: cachedState?.measurementsCache,
+        useFlushSync: false,
     });
 
     const virtualItems = virtualizer.getVirtualItems();
