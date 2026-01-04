@@ -138,6 +138,9 @@ export function VirtualizedList<T>({
     ? scrollStateCache.get(scrollRestorationKey)
     : undefined;
 
+  // Memoize properties passed to component to avoid virtualizer re-initialization
+  const estimateSizeCallback = useCallback(() => estimateSize, [estimateSize]);
+
   // Use a ref to access items in getItemKey without creating a new function reference
   const itemsRef = useRef(items);
   itemsRef.current = items;
@@ -147,9 +150,12 @@ export function VirtualizedList<T>({
   getItemKeyRef.current = getItemKey;
 
   // Memoize the getItemKey function with stable reference (no dependencies that change)
-  // TanStack Virtual expects getItemKey(index) => Key, but our component API uses getItemKey(item, index) => Key
   const memoizedGetItemKey = useCallback(
-    (index: number) => getItemKeyRef.current(itemsRef.current[index], index),
+    (index: number) => {
+      const item = itemsRef.current[index];
+      if (!item) return index; // Fallback for safely handling out-of-bounds
+      return getItemKeyRef.current(item, index);
+    },
     []
   );
 
@@ -157,7 +163,7 @@ export function VirtualizedList<T>({
   const virtualizer = useVirtualizer({
     count: items.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => estimateSize,
+    estimateSize: estimateSizeCallback,
     overscan,
     lanes: 1,
     // Provide memoized getItemKey to generate stable keys

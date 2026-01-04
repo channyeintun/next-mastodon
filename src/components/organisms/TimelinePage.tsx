@@ -3,7 +3,7 @@
 import styled from '@emotion/styled';
 import { observer } from 'mobx-react-lite';
 import Link from 'next/link';
-import { useRef, useEffect, useLayoutEffect, useState, useMemo } from 'react';
+import { useRef, useEffect, useLayoutEffect, useState, useMemo, useCallback } from 'react';
 import { useWindowVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 import { useQueryClient } from '@tanstack/react-query';
 import { useInfiniteHomeTimeline, useCurrentAccount, prefillAccountCache } from '@/api';
@@ -55,7 +55,7 @@ export const TimelinePage = observer(() => {
     // Scroll direction detection for scroll-to-top button
     const { showScrollTop, hideScrollTop } = useWindowScrollDirection();
 
-    const uniqueStatuses = flattenAndUniqById(statusPages?.pages);
+    const uniqueStatuses = useMemo(() => flattenAndUniqById(statusPages?.pages), [statusPages?.pages]);
 
     // Get cached state on initial render
     const [cachedState] = useState(() => scrollStateCache.get(SCROLL_CACHE_KEY));
@@ -93,15 +93,25 @@ export const TimelinePage = observer(() => {
         return items;
     }, [uniqueStatuses, hasNextPage, isFetchingNextPage]);
 
+    const estimateSize = useCallback((index: number) => {
+        const item = mixedItems[index];
+        if (item?.type === 'endIndicator') return 60;
+        if (item?.type === 'suggestions') return 300;
+        return 250;
+    }, [mixedItems]);
+
+    const getItemKey = useCallback((index: number) => {
+        const item = mixedItems[index];
+        if (item?.type === 'status') return item.data.id;
+        if (item?.type === 'suggestions') return 'suggestions-section';
+        if (item?.type === 'endIndicator') return 'end-indicator';
+        return index;
+    }, [mixedItems]);
+
     const virtualizer = useWindowVirtualizer({
         count: mixedItems.length,
-        estimateSize: (index) => {
-            const item = mixedItems[index];
-            // End indicator is smaller, suggestions are taller
-            if (item?.type === 'endIndicator') return 60;
-            if (item?.type === 'suggestions') return 300;
-            return 250;
-        },
+        estimateSize,
+        getItemKey,
         overscan: 8,
         scrollMargin,
         initialOffset: cachedState?.offset,

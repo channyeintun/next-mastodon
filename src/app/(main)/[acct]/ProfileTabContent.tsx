@@ -1,7 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useEffect, useState, useMemo, useRef, useLayoutEffect } from 'react';
+import { useEffect, useState, useMemo, useRef, useLayoutEffect, useCallback } from 'react';
 import { useWindowVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 import { PostCard } from '@/components/organisms';
 import { PostCardSkeleton, PostCardSkeletonList, MediaGrid, MediaGridSkeleton } from '@/components/molecules';
@@ -62,17 +62,43 @@ export function ProfileTabContent({
 
     // Include an extra item for the "end indicator" when we've reached the end
     const showEndIndicator = !hasNextPage && statuses.length > 0 && !isFetchingNextPage;
-    const totalItemCount = statuses.length + (showEndIndicator ? 1 : 0);
+
+    // Item types for mixed rendering
+    type ProfileListItem =
+        | { type: 'status'; data: Status }
+        | { type: 'endIndicator' };
+
+    // Build mixed items array - memoized to prevent recreation
+    const mixedItems = useMemo(() => {
+        const items: ProfileListItem[] = statuses.map((status) => ({
+            type: 'status',
+            data: status,
+        }));
+
+        if (showEndIndicator) {
+            items.push({ type: 'endIndicator' });
+        }
+
+        return items;
+    }, [statuses, showEndIndicator]);
+
+    const estimateSize = useCallback((index: number) => {
+        const item = mixedItems[index];
+        if (item?.type === 'endIndicator') return 60;
+        return 350;
+    }, [mixedItems]);
+
+    const getItemKey = useCallback((index: number) => {
+        const item = mixedItems[index];
+        if (item?.type === 'status') return item.data.id;
+        if (item?.type === 'endIndicator') return 'end-indicator';
+        return index;
+    }, [mixedItems]);
 
     const virtualizer = useWindowVirtualizer({
-        count: totalItemCount,
-        estimateSize: (index) => {
-            // End indicator is smaller than posts
-            if (showEndIndicator && index === statuses.length) {
-                return 60;
-            }
-            return 350;
-        },
+        count: mixedItems.length,
+        estimateSize,
+        getItemKey,
         overscan: 8,
         scrollMargin,
         initialOffset: cachedState?.offset,
@@ -89,13 +115,13 @@ export function ProfileTabContent({
         if (!lastItem) return;
 
         if (
-            lastItem.index >= statuses.length - 5 &&
+            lastItem.index >= mixedItems.length - 5 &&
             hasNextPage &&
             !isFetchingNextPage
         ) {
             fetchNextPage();
         }
-    }, [virtualItems, statuses.length, hasNextPage, isFetchingNextPage, fetchNextPage]);
+    }, [virtualItems, mixedItems.length, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     // Cache scroll state on unmount
     useEffect(() => {
@@ -133,12 +159,13 @@ export function ProfileTabContent({
             <div ref={listRef}>
                 <VirtualContent style={{ height: `${virtualizer.getTotalSize()}px` }}>
                     {virtualItems.map((virtualRow) => {
-                        const isEndIndicator = showEndIndicator && virtualRow.index === statuses.length;
+                        const item = mixedItems[virtualRow.index];
+                        if (!item) return null;
 
-                        if (isEndIndicator) {
+                        if (item.type === 'endIndicator') {
                             return (
                                 <VirtualItemWrapper
-                                    key="end-indicator"
+                                    key={virtualRow.key}
                                     data-index={virtualRow.index}
                                     ref={virtualizer.measureElement}
                                     className="window-virtual-item"
@@ -151,12 +178,9 @@ export function ProfileTabContent({
                             );
                         }
 
-                        const status = statuses[virtualRow.index];
-                        if (!status) return null;
-
                         return (
                             <VirtualItemWrapper
-                                key={status.id}
+                                key={virtualRow.key}
                                 data-index={virtualRow.index}
                                 ref={virtualizer.measureElement}
                                 className="window-virtual-item"
@@ -164,7 +188,7 @@ export function ProfileTabContent({
                                     transform: `translateY(${virtualRow.start - virtualizer.options.scrollMargin}px)`,
                                 }}
                             >
-                                <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
+                                <PostCard status={item.data} style={{ marginBottom: 'var(--size-3)' }} />
                             </VirtualItemWrapper>
                         );
                     })}

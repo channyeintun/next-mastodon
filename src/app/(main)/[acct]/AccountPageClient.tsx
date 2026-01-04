@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
@@ -90,9 +90,9 @@ export function AccountPageClient({ acct }: AccountPageClientProps) {
   const muteMutation = useMuteAccount();
   const unmuteMutation = useUnmuteAccount();
 
-  const postsStatuses = flattenAndUniqById(postsQuery.data?.pages);
-  const postsRepliesStatuses = flattenAndUniqById(postsRepliesQuery.data?.pages);
-  const mediaStatuses = flattenAndUniqById(mediaQuery.data?.pages);
+  const postsStatuses = useMemo(() => flattenAndUniqById(postsQuery.data?.pages), [postsQuery.data?.pages]);
+  const postsRepliesStatuses = useMemo(() => flattenAndUniqById(postsRepliesQuery.data?.pages), [postsRepliesQuery.data?.pages]);
+  const mediaStatuses = useMemo(() => flattenAndUniqById(mediaQuery.data?.pages), [mediaQuery.data?.pages]);
 
   const handleFollowToggle = () => {
     if (!accountId) return;
