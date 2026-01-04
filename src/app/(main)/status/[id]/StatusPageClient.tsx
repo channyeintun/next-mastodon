@@ -1,5 +1,7 @@
 'use client';
 
+import { useRef } from 'react';
+
 import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
@@ -37,11 +39,16 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
   const ancestors = context?.ancestors ?? [];
   const descendants = context?.descendants ?? [];
 
+  // Ancestors ref for Safari scroll anchoring polyfill
+  const ancestorsRef = useRef<HTMLDivElement>(null);
+
   // Scroll to main post on load; CSS overflow-anchor keeps it stable when ancestors load
   // NOTE: Native scroll anchoring via overflow-anchor is not supported in Safari.
   const mainPostRef = useScrollAnchor({
     isReady: !!status && !statusLoading,
     key: statusId,
+    ancestorsRef,
+    deps: [ancestors.length],
   });
 
   // Dynamic spacer ensures scroll anchoring works by providing scrollable space below
@@ -101,18 +108,20 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
       {/* Thread container */}
       <div className="virtualized-list-container">
         {/* Ancestors (parent posts) - excluded from scroll anchoring */}
-        {ancestors.length > 0 && (
-          <AncestorsContainer>
-            {ancestors.map((ancestor) => (
-              <div key={ancestor.id}>
-                <PostCard status={ancestor} />
-                <ThreadLineContainer>
-                  <ThreadLine />
-                </ThreadLineContainer>
-              </div>
-            ))}
-          </AncestorsContainer>
-        )}
+        <AncestorsContainer ref={ancestorsRef}>
+          {ancestors.length > 0 && (
+            <>
+              {ancestors.map((ancestor) => (
+                <div key={ancestor.id}>
+                  <PostCard status={ancestor} />
+                  <ThreadLineContainer>
+                    <ThreadLine />
+                  </ThreadLineContainer>
+                </div>
+              ))}
+            </>
+          )}
+        </AncestorsContainer>
 
         {/* Main status (highlighted) - renders immediately from SSR/cache */}
         <HighlightedPost ref={mainPostRef}>
@@ -200,10 +209,9 @@ const Title = styled.h1`
 
 const HighlightedPost = styled.div`
   margin-bottom: var(--size-3);
-  /* Account for sticky header height + margin when using scrollIntoView */
-  scroll-margin-top: calc(var(--size-4) * 3 + var(--font-size-4) + 1px);
+  /* Account for sticky header height (approx 72px) + its margin-bottom (16px) when using scrollIntoView */
+  scroll-margin-top: 88px;
   /* Make this the preferred anchor for native scroll anchoring */
-  /* NOTE: Native scroll anchoring via overflow-anchor is not supported in Safari. */
   overflow-anchor: auto;
 `;
 
