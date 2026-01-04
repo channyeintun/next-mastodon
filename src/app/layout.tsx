@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
+import { preconnect } from "react-dom";
 import "./globals.css";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { StoreProvider } from "@/components/providers/StoreProvider";
@@ -21,6 +22,12 @@ export default async function RootLayout({
   // Read auth and UI cookies on server for hydration
   const cookieStore = await cookies();
   const instanceURL = cookieStore.get('instanceURL')?.value ?? null;
+
+  // Preconnect to user's Mastodon instance for faster API requests
+  if (instanceURL) {
+    preconnect(instanceURL);
+  }
+
   const accessToken = cookieStore.get('accessToken')?.value ?? null;
   const clientId = cookieStore.get('clientId')?.value ?? null;
   const clientSecret = cookieStore.get('clientSecret')?.value ?? null;
