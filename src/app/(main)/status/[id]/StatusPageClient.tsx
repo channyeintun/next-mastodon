@@ -38,6 +38,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
   const descendants = context?.descendants ?? [];
 
   // Scroll to main post on load; CSS overflow-anchor keeps it stable when ancestors load
+  // NOTE: Native scroll anchoring via overflow-anchor is not supported in Safari.
   const mainPostRef = useScrollAnchor({
     isReady: !!status && !statusLoading,
     key: statusId,
@@ -202,6 +203,7 @@ const HighlightedPost = styled.div`
   /* Account for sticky header height + margin when using scrollIntoView */
   scroll-margin-top: calc(var(--size-4) * 3 + var(--font-size-4) + 1px);
   /* Make this the preferred anchor for native scroll anchoring */
+  /* NOTE: Native scroll anchoring via overflow-anchor is not supported in Safari. */
   overflow-anchor: auto;
 `;
 

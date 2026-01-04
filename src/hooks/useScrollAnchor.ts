@@ -13,7 +13,11 @@ interface UseScrollAnchorOptions {
  * Hook to scroll to an anchor element on initial load and on route changes.
  * 
  * Native CSS scroll anchoring (via overflow-anchor) handles keeping the anchor
- * in place when content above it changes. This hook only handles:
+ * in place when content above it changes. 
+ * 
+ * NOTE: Native scroll anchoring is NOT supported in Safari.
+ * 
+ * This hook handles:
  * 1. Initial scroll to the anchor when ready
  * 2. Reset scroll state when key changes (e.g., navigating to a different status)
  * 

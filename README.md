@@ -10,6 +10,8 @@ Other browsers may not fully support some of the cutting-edge CSS features used 
 
 **⚠️ cookieStore API:** This project uses the [cookieStore API](https://developer.mozilla.org/en-US/docs/Web/API/CookieStore) for cookie management, which is a newly available baseline feature (2025). Older browsers may not support this API.
 
+**⚠️ Scroll Anchoring:** Native CSS scroll anchoring (`overflow-anchor`), used for visual stability on chronological feeds and status pages, is [not yet supported in Safari](https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor#browser_compatibility). Users on Safari may experience "jumps" when content loads above the current scroll position.
+
 ## Performance Highlights
 
 - **Virtualized Lists**: Optimized list rendering using [TanStack Virtual](https://tanstack.com/virtual) for smooth scrolling performance with large datasets

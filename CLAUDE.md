@@ -685,6 +685,7 @@ Vercel deployment configuration:
 
 ### Modern Web APIs
 - **Scroll-State Container Queries**: Advanced CSS feature used in StickyHeader and SuggestionsSection for responsive UI based on scroll position
+- **Scroll Anchoring**: Native CSS scroll anchoring (`overflow-anchor`) for visual stability (Note: [Not supported in Safari](https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor#browser_compatibility))
 - **Service Workers**: PWA support with push notifications via `/public/sw.js`
 - **Push API**: Real-time push notifications with VAPID key authentication
 - **IndexedDB**: TanStack Query cache persistence for custom emojis (offline support)
