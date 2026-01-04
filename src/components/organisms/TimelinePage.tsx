@@ -106,7 +106,6 @@ export const TimelinePage = observer(() => {
         scrollMargin,
         initialOffset: cachedState?.offset,
         initialMeasurementsCache: cachedState?.measurementsCache,
-        useFlushSync: false
     });
 
     const virtualItems = virtualizer.getVirtualItems();
