@@ -239,7 +239,7 @@ export function PostCard({
                       <MediaImage
                         src={media.preview_url}
                         alt={media.description || ''}
-                        loading="lazy"
+                        loading="eager"
                       />
                     )}
                     {media.type === 'video' && media.url && (
