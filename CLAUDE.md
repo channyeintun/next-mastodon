@@ -701,7 +701,9 @@ Vercel deployment configuration:
 ### Performance Optimizations
 - **React Compiler**: Automatic memoization enabled in next.config.ts
 - **Turbopack**: Fast development builds
-- **Virtual Scrolling**: VirtualizedList for infinite timelines
+- **Virtual Scrolling**: VirtualizedList for infinite timelines. 
+  > [!TIP]
+  > Set `useFlushSync: false` in `useVirtualizer` options to suppress the React 19 warning: *"flushSync was called from inside a lifecycle method"*.
 - **Code Splitting**: Route-based automatic code splitting via Next.js App Router
 - **Image Optimization**: Next.js automatic image optimization
 - **Lazy Loading**: Dynamic imports for heavy components (EmojiPicker, MediaModal)
