@@ -11,7 +11,7 @@ import { ServiceWorkerRegister } from "@/components/atoms/ServiceWorkerRegister"
 
 export const metadata: Metadata = {
   title: "Mastodon",
-  description: "A minimal, performant social media frontend for Mastodon",
+  description: "Decentralized social media",
 };
 
 export default async function RootLayout({
