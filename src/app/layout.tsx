@@ -10,8 +10,28 @@ import SkipToMain from "@/components/atoms/SkipToMain";
 import { ServiceWorkerRegister } from "@/components/atoms/ServiceWorkerRegister";
 
 export const metadata: Metadata = {
-  title: "Mastodon",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"),
+  title: "Next Mastodon",
   description: "Decentralized social media",
+  openGraph: {
+    title: "Next Mastodon",
+    description: "Decentralized social media",
+    type: "website",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Next Mastodon - Decentralized social media",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Next Mastodon",
+    description: "Decentralized social media",
+    images: ["/twitter-image.png"],
+  },
 };
 
 export default async function RootLayout({
