@@ -37,11 +37,13 @@ export default function QuotesPage({
 
     if (isLoading) {
         return (
-            <div style={{ maxWidth: '680px', margin: '0 auto' }}>
+            <div className="full-height-container" style={{ maxWidth: '680px', margin: '0 auto' }}>
                 <PageHeaderSkeleton />
-                {Array.from({ length: 3 }).map((_, i) => (
-                    <PostCardSkeleton key={i} />
-                ))}
+                <div style={{ padding: 'var(--size-2)' }}>
+                    {Array.from({ length: 3 }).map((_, i) => (
+                        <PostCardSkeleton key={i} style={{ marginBottom: 'var(--size-2)' }} />
+                    ))}
+                </div>
             </div>
         );
     }
@@ -103,7 +105,7 @@ export default function QuotesPage({
                 hasMore={hasNextPage}
                 loadMoreThreshold={3}
                 height="auto"
-                style={{ flex: 1, minHeight: 0 }}
+                style={{ flex: 1, minHeight: 0, paddingTop: 'var(--size-2)' }}
                 scrollRestorationKey={`quotes-${id}`}
                 loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
                 endIndicator="No more quotes"

@@ -13,7 +13,7 @@ interface PostCardSkeletonProps {
  */
 export function PostCardSkeleton({ style, className }: PostCardSkeletonProps) {
   return (
-    <Card padding="medium" style={style} className={className}>
+    <Card padding="medium" style={style} className={`post-card ${className || ''}`}>
       <PostContent>
         {/* Header skeleton - matches PostHeader layout */}
         <HeaderRow>
