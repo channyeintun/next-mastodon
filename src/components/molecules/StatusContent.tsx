@@ -1,15 +1,30 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Emoji } from '@/types/mastodon';
+import type { Emoji, Mention } from '@/types/mastodon';
 
 interface StatusContentProps {
   html: string;
   emojis?: Emoji[];
+  mentions?: Mention[];
   style?: React.CSSProperties;
   className?: string;
+}
+
+/**
+ * Compare two URLs for equality (ignoring protocol differences and trailing slashes)
+ * Similar to official Mastodon's compareUrls function
+ */
+function compareUrls(href1: string, href2: string): boolean {
+  try {
+    const url1 = new URL(href1);
+    const url2 = new URL(href2);
+    return url1.origin === url2.origin && url1.pathname === url2.pathname && url1.search === url2.search;
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -18,7 +33,7 @@ interface StatusContentProps {
  * - Custom emoji rendering
  * - Internal navigation for mentions and hashtags (no external redirects)
  */
-export function StatusContent({ html, emojis = [], style, className }: StatusContentProps) {
+export function StatusContent({ html, emojis = [], mentions = [], style, className }: StatusContentProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -27,9 +42,6 @@ export function StatusContent({ html, emojis = [], style, className }: StatusCon
     if (!emojis || emojis.length === 0) {
       return html;
     }
-
-    // Create a map of shortcode to emoji URL
-    // const emojiMap = new Map(emojis.map(e => [e.shortcode, e.url]));
 
     // Replace :shortcode: with <img> tags
     let processed = html;
@@ -42,14 +54,87 @@ export function StatusContent({ html, emojis = [], style, className }: StatusCon
     return processed;
   }, [html, emojis]);
 
+  // Create click handler with mentions in scope
+  const handleClick = useCallback((e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const link = target.closest('a');
+
+    if (!link) return;
+
+    // Check if it's a hashtag FIRST (before mentions)
+    // Hashtags might also have u-url class, so check them first
+    if (link.classList.contains('hashtag')) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Extract hashtag from the link
+      const hashtagText = link.textContent?.trim() || '';
+      const hashtag = hashtagText.startsWith('#')
+        ? hashtagText.slice(1)
+        : hashtagText;
+
+      if (hashtag) {
+        router.push(`/tags/${encodeURIComponent(hashtag)}`);
+      }
+      return;
+    }
+
+    // Check if it's a mention
+    if (link.classList.contains('mention') || link.classList.contains('u-url')) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Find matching mention by comparing URLs
+      // This gives us the full acct (username@domain for remote users)
+      const mention = mentions.find(m => compareUrls(link.href, m.url));
+
+      if (mention) {
+        // Use the full acct from the mentions array
+        router.push(`/@${mention.acct}`);
+      } else {
+        // Fallback: try to extract from href pathname
+        try {
+          const url = new URL(link.href);
+          const pathname = url.pathname;
+          // Handle different URL formats: /@username, /users/username, /@username@domain
+          if (pathname.startsWith('/@')) {
+            router.push(pathname);
+          } else {
+            // Extract last path segment as username
+            const username = pathname.split('/').filter(Boolean).pop();
+            if (username) {
+              router.push(`/@${username}`);
+            }
+          }
+        } catch {
+          // If URL parsing fails, fall back to textContent
+          const mentionText = link.textContent?.trim() || '';
+          const username = mentionText.startsWith('@')
+            ? mentionText.slice(1)
+            : mentionText;
+          if (username) {
+            router.push(`/@${username}`);
+          }
+        }
+      }
+      return;
+    }
+
+    // For other links, allow default behavior (open in new tab)
+    if (link.href && !link.href.startsWith(window.location.origin)) {
+      e.preventDefault();
+      window.open(link.href, '_blank', 'noopener,noreferrer');
+    }
+  }, [mentions, router]);
+
   useEffect(() => {
     if (!contentRef.current) return;
 
     const container = contentRef.current;
 
     // Add styling to mentions, hashtags, and regular links
-    const mentions = container.querySelectorAll('a.mention, a.u-url.mention');
-    mentions.forEach((link) => {
+    const mentionLinks = container.querySelectorAll('a.mention, a.u-url.mention');
+    mentionLinks.forEach((link) => {
       const anchor = link as HTMLAnchorElement;
       anchor.style.color = 'var(--blue-6)';
       anchor.style.fontWeight = 'var(--font-weight-6)';
@@ -91,64 +176,12 @@ export function StatusContent({ html, emojis = [], style, className }: StatusCon
       anchor.style.textDecoration = 'underline';
     });
 
-    // Handle clicks on all links
-    const handleClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a');
-
-      if (!link) return;
-
-      // Check if it's a hashtag FIRST (before mentions)
-      // Hashtags might also have u-url class, so check them first
-      if (link.classList.contains('hashtag')) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        // Extract hashtag from the link
-        const hashtagText = link.textContent?.trim() || '';
-        const hashtag = hashtagText.startsWith('#')
-          ? hashtagText.slice(1)
-          : hashtagText;
-
-        if (hashtag) {
-          router.push(`/tags/${encodeURIComponent(hashtag)}`);
-        }
-        return;
-      }
-
-      // Check if it's a mention
-      if (link.classList.contains('mention') || link.classList.contains('u-url')) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        // Extract username from the link
-        // Mastodon mentions have format: <span>@<span>username</span></span>
-        const mentionText = link.textContent?.trim() || '';
-
-        // Remove @ if present at start
-        const username = mentionText.startsWith('@')
-          ? mentionText.slice(1)
-          : mentionText;
-
-        if (username) {
-          router.push(`/@${username}`);
-        }
-        return;
-      }
-
-      // For other links, allow default behavior (open in new tab)
-      if (link.href && !link.href.startsWith(window.location.origin)) {
-        e.preventDefault();
-        window.open(link.href, '_blank', 'noopener,noreferrer');
-      }
-    };
-
     container.addEventListener('click', handleClick);
 
     return () => {
       container.removeEventListener('click', handleClick);
     };
-  }, [processedHtml, router]);
+  }, [processedHtml, handleClick]);
 
   return (
     <ContentWrapper
@@ -159,6 +192,7 @@ export function StatusContent({ html, emojis = [], style, className }: StatusCon
     />
   );
 }
+
 
 // Styled components
 const ContentWrapper = styled.div`

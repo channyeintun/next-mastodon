@@ -3,6 +3,13 @@
  * Based on https://docs.joinmastodon.org/api/
  */
 
+export interface Mention {
+  id: string
+  username: string
+  url: string
+  acct: string // username for local, username@domain for remote
+}
+
 export interface Status {
   // Identity
   id: string
@@ -17,6 +24,7 @@ export interface Status {
   spoiler_text: string
   language: string | null
   emojis: Emoji[]
+  mentions: Mention[]
 
   // Visibility
   visibility: 'public' | 'unlisted' | 'private' | 'direct'

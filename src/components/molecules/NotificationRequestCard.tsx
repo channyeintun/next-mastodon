@@ -74,6 +74,7 @@ export function NotificationRequestCard({ request, style }: NotificationRequestC
                                     <StatusContent
                                         html={request.last_status.content}
                                         emojis={request.last_status.emojis}
+                                        mentions={request.last_status.mentions}
                                     />
                                 </PreviewContent>
                             </StatusPreview>

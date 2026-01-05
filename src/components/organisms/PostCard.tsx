@@ -206,6 +206,7 @@ export function PostCard({
             <StyledStatusContent
               html={displayContent}
               emojis={displayStatus.emojis}
+              mentions={displayStatus.mentions}
             />
           )}
 
