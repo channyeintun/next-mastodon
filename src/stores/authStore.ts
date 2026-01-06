@@ -99,6 +99,20 @@ export class AuthStore {
     }
   }
 
+  /**
+   * Set only the client ID (use with PKCE flow - client_secret not needed)
+   */
+  setClientId(clientId: string) {
+    this.clientId = clientId
+
+    if (typeof window !== 'undefined') {
+      setCookie('clientId', clientId, COOKIE_OPTIONS)
+    }
+  }
+
+  /**
+   * @deprecated Use setClientId() with PKCE instead
+   */
   setClientCredentials(clientId: string, clientSecret: string) {
     this.clientId = clientId
     this.clientSecret = clientSecret

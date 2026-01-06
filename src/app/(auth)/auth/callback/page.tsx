@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { getCookie, deleteCookie } from '@/utils/cookies';
 import { useAuthStore } from '@/hooks/useStores';
-import { getRedirectURI } from '@/utils/oauth';
+import { getRedirectURI, retrievePKCEData } from '@/utils/oauth';
 
 function CallbackContent() {
   const router = useRouter();
@@ -16,10 +16,23 @@ function CallbackContent() {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Get authorization code from URL
+        // Get authorization code and state from URL
         const code = searchParams.get('code');
+        const returnedState = searchParams.get('state');
+
         if (!code) {
           throw new Error('No authorization code received');
+        }
+
+        // Retrieve and validate PKCE data
+        const pkceData = retrievePKCEData();
+        if (!pkceData) {
+          throw new Error('Missing PKCE data. Please try signing in again.');
+        }
+
+        // Validate state parameter to prevent CSRF
+        if (!returnedState || returnedState !== pkceData.state) {
+          throw new Error('Invalid state parameter - possible CSRF attack. Please try signing in again.');
         }
 
         // Get stored auth data
@@ -33,13 +46,14 @@ function CallbackContent() {
           baseURL: instanceURL.replace(/\/$/, ''),
         });
 
-        // Exchange code for access token
+        // Exchange code for access token using PKCE + client_secret (Mastodon requires both)
         const formData = new URLSearchParams({
           grant_type: 'authorization_code',
           code,
           client_id: clientId,
           client_secret: clientSecret,
           redirect_uri: getRedirectURI(),
+          code_verifier: pkceData.verifier,
         });
 
         const { data: token } = await instanceClient.post('/oauth/token', formData.toString(), {

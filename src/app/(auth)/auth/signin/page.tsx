@@ -12,6 +12,10 @@ import {
   getRedirectURI,
   getScopes,
   getAppName,
+  generateCodeVerifier,
+  generateCodeChallenge,
+  generateState,
+  storePKCEData,
 } from '@/utils/oauth';
 
 function SubmitButton({ disabled }: { disabled: boolean }) {
@@ -65,12 +69,20 @@ export default function SignInPage() {
         website: typeof window !== 'undefined' ? window.location.origin : undefined,
       });
 
-      // Store instance URL and client credentials only after success
+      // Store instance URL and client credentials
       authStore.setInstance(normalizedURL);
       authStore.setClientCredentials(app.client_id, app.client_secret);
 
-      // Generate authorization URL and redirect
-      const authURL = generateAuthorizationURL(normalizedURL, app.client_id);
+      // Generate PKCE and state parameters
+      const codeVerifier = generateCodeVerifier();
+      const codeChallenge = await generateCodeChallenge(codeVerifier);
+      const state = generateState();
+
+      // Store PKCE data for callback
+      storePKCEData(codeVerifier, state);
+
+      // Generate authorization URL with PKCE and redirect
+      const authURL = generateAuthorizationURL(normalizedURL, app.client_id, codeChallenge, state);
       window.location.href = authURL;
 
       return null;
