@@ -10,6 +10,7 @@ import {
     MediaPlayButton,
     MediaMuteButton,
     MediaFullscreenButton,
+    MediaPosterImage,
 } from 'media-chrome/react';
 import styled from '@emotion/styled';
 
@@ -20,6 +21,7 @@ interface FeedVideoPlayerProps {
     muted?: boolean;
     loop?: boolean;
     showControls?: boolean;
+    poster?: string;
 }
 
 const StyledController = styled(MediaController)`
@@ -56,6 +58,7 @@ export function FeedVideoPlayer({
     muted = false,
     loop = false,
     showControls = true,
+    poster,
 }: FeedVideoPlayerProps) {
     // If no controls, we act as a fill-parent player (GIFV mode)
     if (!showControls) {
@@ -63,6 +66,7 @@ export function FeedVideoPlayer({
             <MediaController
                 style={{ width: '100%', height: '100%', display: 'block' }}
             >
+                {poster && <MediaPosterImage slot="poster" src={poster} />}
                 <video
                     slot="media"
                     src={src}
@@ -71,6 +75,7 @@ export function FeedVideoPlayer({
                     preload="auto"
                     muted={muted}
                     loop={loop}
+                    poster={poster}
                     crossOrigin=""
                     suppressHydrationWarning={true}
                     style={{ width: '100%', height: '100%', maxHeight: '550px', objectFit: 'contain', display: 'block', background: '#000' }}
@@ -84,6 +89,7 @@ export function FeedVideoPlayer({
             hotkeys="noarrowleft noarrowright"
             defaultSubtitles
         >
+            {poster && <MediaPosterImage slot="poster" src={poster} />}
             <StyledVideo
                 slot="media"
                 src={src}
@@ -92,6 +98,7 @@ export function FeedVideoPlayer({
                 preload="auto"
                 muted={muted}
                 loop={loop}
+                poster={poster}
                 crossOrigin=""
                 suppressHydrationWarning={true}
                 style={aspectRatio ? { aspectRatio: `${aspectRatio}` } : undefined}

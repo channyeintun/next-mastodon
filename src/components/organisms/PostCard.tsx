@@ -256,6 +256,7 @@ export function PostCard({
                         <div onClick={handleMediaClick(index)}>
                           <FeedVideoPlayer
                             src={media.url || ''}
+                            poster={media.preview_url ?? undefined}
                             aspectRatio={aspectRatio}
                             autoPlay={false}
                           />
@@ -282,6 +283,7 @@ export function PostCard({
                             {isGifv && media.url && (
                               <FeedVideoPlayer
                                 src={media.url}
+                                poster={media.preview_url ?? undefined}
                                 autoPlay={true}
                                 loop={true}
                                 muted={true}
