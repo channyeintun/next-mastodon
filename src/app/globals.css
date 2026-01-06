@@ -21,6 +21,7 @@ html {
   --app-max-width: 1200px;
   --app-sidebar-width: 280px;
   --app-bottom-nav-height: 64px;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
 }
 
 body {
