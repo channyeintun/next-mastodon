@@ -248,6 +248,7 @@ export function PostCard({
                       key={media.id}
                       $singleMedia={isSingleMedia}
                       $isVideo={isVideo}
+                      $aspectRatio={aspectRatio}
                     >
                       {isVideo ? (
                         <div onClick={handleMediaClick(index)}>
@@ -267,6 +268,7 @@ export function PostCard({
                           <MediaItemInner $singleMedia={isSingleMedia}>
                             {media.type === 'image' && media.preview_url && (
                               <MediaImage
+                                $singleMedia={isSingleMedia}
                                 src={media.preview_url}
                                 alt={media.description || ''}
                                 loading="eager"
@@ -383,23 +385,28 @@ const MediaContainer = styled.div`
   position: relative;
   overflow: hidden;
   background: #252527;
+  max-height: 550px;
+  display: flex;
+  justify-content: center;
 `;
 
 const MediaGrid = styled.div<{ $columns: number; $blurred: boolean }>`
   display: grid;
   grid-template-columns: ${props => props.$columns === 1 ? '1fr' : 'repeat(2, 1fr)'};
   ${props => props.$columns === 1 && 'justify-items: center;'}
-  gap: var(--size-2);
-  overflow: hidden;
+  gap: 2px;
+  width: 100%;
   filter: ${props => props.$blurred ? 'blur(32px)' : 'none'};
   transition: filter 0.2s ease;
 `;
 
 // Single media wrapper - controls the responsive width like Facebook
-const MediaItemWrapper = styled.div<{ $singleMedia?: boolean; $isVideo?: boolean }>`
+const MediaItemWrapper = styled.div<{ $singleMedia?: boolean; $isVideo?: boolean; $aspectRatio?: number }>`
   max-width: 100%;
   min-width: ${props => props.$singleMedia ? 'min(440px, 100%)' : 'auto'};
-  width: ${props => props.$singleMedia ? (props.$isVideo ? '100%' : 'calc(-260px + 80vh)') : 'auto'};
+  width: ${props => props.$singleMedia ?
+    (props.$isVideo ? '100%' : (props.$aspectRatio ? `min(100%, calc(${props.$aspectRatio} * 550px))` : '100%')) :
+    'auto'};
 `;
 
 const MediaItem = styled.div<{ $clickable?: boolean; $singleMedia?: boolean }>`
@@ -409,6 +416,7 @@ const MediaItem = styled.div<{ $clickable?: boolean; $singleMedia?: boolean }>`
   background: #252527;
   cursor: ${props => props.$clickable ? 'pointer' : 'default'};
   transition: opacity 0.2s;
+  max-height: 550px;
 
   &:hover {
     opacity: ${props => props.$clickable ? '0.9' : '1'};
@@ -425,10 +433,10 @@ const MediaItemInner = styled.div<{ $singleMedia?: boolean }>`
   ` : ''}
 `;
 
-const MediaImage = styled.img`
+const MediaImage = styled.img<{ $singleMedia?: boolean }>`
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: ${props => props.$singleMedia ? 'contain' : 'cover'};
 `;
 
 const SensitiveOverlay = styled.div`

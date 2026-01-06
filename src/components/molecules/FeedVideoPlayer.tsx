@@ -26,6 +26,7 @@ const StyledController = styled(MediaController)`
   --media-primary-color: white;
   width: 100% !important;
   max-width: 100% !important;
+  max-height: 550px !important;
   display: flex !important;
   flex-direction: column !important;
   background: transparent !important;
@@ -33,7 +34,8 @@ const StyledController = styled(MediaController)`
 
 const StyledVideo = styled.video`
   width: 100% !important;
-  max-width: calc(-260px + 80vh) !important;
+  max-width: 100% !important;
+  max-height: 550px !important;
   margin: 0 auto !important;
   display: block !important;
   object-fit: contain !important;
@@ -71,7 +73,7 @@ export function FeedVideoPlayer({
                     loop={loop}
                     crossOrigin=""
                     suppressHydrationWarning={true}
-                    style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', background: '#000' }}
+                    style={{ width: '100%', height: '100%', maxHeight: '550px', objectFit: 'contain', display: 'block', background: '#000' }}
                 />
             </MediaController>
         );
