@@ -268,7 +268,7 @@ const AltButton = styled.button<{ $active?: boolean }>`
 
 const AltPopover = styled.div`
   position: absolute;
-  top: calc(100% + var(--size-2));
+  bottom: calc(100% + var(--size-2));
   right: 0;
   background: rgba(0, 0, 0, 0.9);
   color: white;
