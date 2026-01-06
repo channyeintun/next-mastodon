@@ -138,8 +138,8 @@ export function MediaModal({
 const ModalContainer = styled.div`
   position: relative;
   max-width: 100%;
-  height: 100vh;
-  max-height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
   display: flex;
   flex-direction: column;
   background: #252527;
@@ -195,21 +195,21 @@ const MediaContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  max-height: 100vh;
+  max-height: 100dvh;
   background: #252527;
   flex: 1;
 `;
 
 const MediaImage = styled.img`
   max-width: 100%;
-  max-height: 100vh;
+  max-height: 100dvh;
   object-fit: contain;
 `;
 
 const VideoPlayerWrapper = styled.div`
   width: 100%;
   height: 100%;
-  max-height: calc(100vh - 80px);
+  max-height: calc(100dvh - 80px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -223,7 +223,7 @@ const VideoPlayerWrapper = styled.div`
   /* Style the video inside ReactPlayer */
   video {
     object-fit: contain;
-    max-height: calc(100vh - 80px);
+    max-height: calc(100dvh - 80px);
   }
 `;
 
