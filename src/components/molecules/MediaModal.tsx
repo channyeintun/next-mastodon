@@ -1,7 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import type { MediaAttachment } from '@/types';
 
@@ -20,15 +20,18 @@ export function MediaModal({
   onClose,
 }: MediaModalProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [showAlt, setShowAlt] = useState(false);
   const currentMedia = mediaAttachments[currentIndex];
   const hasMultiple = mediaAttachments.length > 1;
 
   const goToPrevious = () => {
     setCurrentIndex((prev) => (prev === 0 ? mediaAttachments.length - 1 : prev - 1));
+    setShowAlt(false); // Hide alt when changing image
   };
 
   const goToNext = () => {
     setCurrentIndex((prev) => (prev === mediaAttachments.length - 1 ? 0 : prev + 1));
+    setShowAlt(false); // Hide alt when changing image
   };
 
   // Keyboard navigation
@@ -97,6 +100,25 @@ export function MediaModal({
             playsInline
           />
         )}
+
+        {/* Alt text toggle button and popover - inside MediaContent */}
+        {currentMedia.description && (
+          <AltContainer>
+            <AltButton
+              onClick={() => setShowAlt(!showAlt)}
+              aria-label="Toggle alt text"
+              $active={showAlt}
+            >
+              <Info size={16} />
+              ALT
+            </AltButton>
+            {showAlt && (
+              <AltPopover>
+                {currentMedia.description}
+              </AltPopover>
+            )}
+          </AltContainer>
+        )}
       </MediaContent>
 
       {/* Media counter */}
@@ -105,11 +127,6 @@ export function MediaModal({
           {currentIndex + 1} / {mediaAttachments.length}
         </MediaCounter>
       )}
-
-      {/* Alt text */}
-      {currentMedia.description && (
-        <AltText>{currentMedia.description}</AltText>
-      )}
     </ModalContainer>
   );
 }
@@ -117,13 +134,13 @@ export function MediaModal({
 // Styled components
 const ModalContainer = styled.div`
   position: relative;
-  width: 90vw;
-  max-width: 1200px;
-  max-height: 90dvh;
+  max-width: 100%;
+  height: 100vh;
+  max-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--surface-1);
-  border-radius: var(--radius-3);
+  background: #252527;
+  border-radius: 0;
   overflow: hidden;
 `;
 
@@ -171,22 +188,24 @@ const NavButton = styled.button<{ $position: 'left' | 'right' }>`
 `;
 
 const MediaContent = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  max-height: 80dvh;
-  background: black;
+  max-height: 100vh;
+  background: #252527;
+  flex: 1;
 `;
 
 const MediaImage = styled.img`
-  max-width: 90vw;
-  max-height: 80dvh;
+  max-width: 100%;
+  max-height: 100vh;
   object-fit: contain;
 `;
 
 const MediaVideo = styled.video`
-  max-width: 90vw;
-  max-height: 80dvh;
+  max-width: 100%;
+  max-height: 100vh;
   object-fit: contain;
 `;
 
@@ -203,12 +222,44 @@ const MediaCounter = styled.div`
   z-index: 10;
 `;
 
-const AltText = styled.div`
+const AltContainer = styled.div`
+  position: absolute;
+  bottom: var(--size-3);
+  right: var(--size-3);
+  z-index: 10;
+`;
+
+const AltButton = styled.button<{ $active?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: var(--size-1);
+  background: ${props => props.$active ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.7)'};
+  color: ${props => props.$active ? '#000' : 'white'};
+  border: none;
+  border-radius: var(--radius-2);
+  padding: var(--size-1) var(--size-2);
+  cursor: pointer;
+  font-size: var(--font-size-0);
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    background: ${props => props.$active ? 'rgba(255, 255, 255, 1)' : 'rgba(0, 0, 0, 0.85)'};
+  }
+`;
+
+const AltPopover = styled.div`
+  position: absolute;
+  top: calc(100% + var(--size-2));
+  right: 0;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
   padding: var(--size-3);
-  background: var(--surface-2);
-  color: var(--text-2);
+  border-radius: var(--radius-2);
   font-size: var(--font-size-1);
-  border-top: 1px solid var(--surface-3);
-  max-height: 20dvh;
+  max-width: min(600px, 90vw);
+  max-height: 40vh;
   overflow-y: auto;
+  white-space: pre-wrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 `;

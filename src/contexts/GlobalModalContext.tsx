@@ -54,9 +54,16 @@ export function GlobalModalProvider({ children }: { children: ReactNode }) {
                         closeModal();
                     }
                 }}
+                style={{
+                    padding: 0,
+                    border: 'none',
+                    maxWidth: '100vw',
+                    maxHeight: '100vh',
+                    background: 'transparent',
+                }}
             >
                 {/* Wrapper div to prevent backdrop click from closing when clicking content */}
-                <div onClick={(e) => e.stopPropagation()} style={{ overflow: 'visible' }}>
+                <div onClick={(e) => e.stopPropagation()}>
                     {modalContent}
                 </div>
             </dialog>
