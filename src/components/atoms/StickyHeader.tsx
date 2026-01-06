@@ -61,7 +61,7 @@ export const StickyHeaderContent = styled.div`
 
 /**
  * StickyHeaderTitle - Container for title and subtitle.
- * Fades out when stuck by default (can be overridden via CSS variables).
+ * Fades out and collapses when stuck by default (can be overridden via CSS variables).
  */
 export const StickyHeaderTitle = styled.div`
   display: flex;
@@ -69,10 +69,14 @@ export const StickyHeaderTitle = styled.div`
   gap: var(--size-1);
   opacity: 1;
   visibility: visible;
+  /* Enable height collapse when stuck */
+  max-height: 100px;
+  overflow: hidden;
   transition: 
     opacity 0.2s ease, 
     visibility 0.2s ease, 
-    gap 0.3s ease;
+    gap 0.3s ease,
+    max-height 0.3s ease;
   transition-behavior: allow-discrete;
 
   @media (prefers-reduced-motion: reduce) {
@@ -85,19 +89,12 @@ export const StickyHeaderTitle = styled.div`
     transition: font-size 0.3s ease;
   }
 
-  /* Respond to stuck state - fade out by default */
+  /* Respond to stuck state - fade out and collapse by default */
   @container style(--header-stuck: 1) {
     opacity: var(--header-title-opacity-stuck);
-    visibility: if(
-      style(--header-title-opacity-stuck: 0),
-      hidden,
-      visible
-    );
-    
-    /* Fallback for browsers without if() support */
-    @supports not (visibility: if(style(--header-title-opacity-stuck: 0), hidden, visible)) {
-      visibility: hidden;
-    }
+    max-height: 0;
+    gap: 0;
+    visibility: hidden;
   }
 `;
 
