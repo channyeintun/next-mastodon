@@ -147,9 +147,7 @@ export const TimelinePage = observer(() => {
     }, [virtualizer]);
 
     const handleScrollToTop = () => {
-        // Clear scroll cache so virtualizer doesn't restore to old position
-        scrollStateCache.delete(SCROLL_CACHE_KEY);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo(0, 0);
         hideScrollTop();
     };
 
