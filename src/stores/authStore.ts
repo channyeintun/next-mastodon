@@ -65,29 +65,24 @@ export class AuthStore {
     return !!this.accessToken && !!this.instanceURL
   }
 
-  setInstance(url: string) {
-    this.instanceURL = url.replace(/\/$/, '') // Remove trailing slash
-    if (typeof window !== 'undefined') {
-      // Fire-and-forget cookie operation
-      setCookie('instanceURL', this.instanceURL, COOKIE_OPTIONS)
-    }
+  /**
+   * Set instance URL in memory only (cookies handled by server action)
+   */
+  setInstanceInMemory(url: string) {
+    this.instanceURL = url.replace(/\/$/, '')
+  }
+
+  /**
+   * Set client ID in memory only (cookies handled by server action)
+   */
+  setClientIdInMemory(clientId: string) {
+    this.clientId = clientId
   }
 
   setAccessToken(token: string) {
     this.accessToken = token
     if (typeof window !== 'undefined') {
       setCookie('accessToken', token, COOKIE_OPTIONS)
-    }
-  }
-
-  /**
-   * Set only the client ID (client_secret is stored as httpOnly via server action)
-   */
-  setClientId(clientId: string) {
-    this.clientId = clientId
-
-    if (typeof window !== 'undefined') {
-      setCookie('clientId', clientId, COOKIE_OPTIONS)
     }
   }
 

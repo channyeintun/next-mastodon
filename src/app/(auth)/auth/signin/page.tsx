@@ -77,9 +77,9 @@ export default function SignInPage() {
         storeClientSecret(app.client_secret),
       ]);
 
-      // Also store instance URL and clientId in client-side store for immediate use
-      authStore.setInstance(normalizedURL);
-      authStore.setClientId(app.client_id);
+      // Also update in-memory state for immediate use (cookies are set by server actions)
+      authStore.setInstanceInMemory(normalizedURL);
+      authStore.setClientIdInMemory(app.client_id);
 
       // Generate PKCE and state parameters
       const codeVerifier = generateCodeVerifier();
