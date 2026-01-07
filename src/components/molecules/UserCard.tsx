@@ -177,7 +177,7 @@ const StyledButton = styled(Button)`
 `;
 
 const Bio = styled.div`
-  font-size: var(--font-size-1);
+  font-size: inherit;
   color: var(--text-2);
   line-height: 1.4;
   margin-bottom: var(--size-2);
