@@ -21,7 +21,7 @@ export {
     type SurfaceFnDef,
 } from './surfaceEquations';
 
-export const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
 export const imageDataToDataUrl = (imageData: ImageData): string => {
     const canvas = document.createElement('canvas');
     canvas.width = imageData.width;
