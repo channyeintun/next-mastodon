@@ -12,6 +12,7 @@ interface StatusContentProps {
   mentions?: Mention[];
   style?: React.CSSProperties;
   className?: string;
+  collapsible?: boolean;
 }
 
 /**
@@ -72,7 +73,7 @@ function shortenUrl(href: string): string {
  * - Internal navigation for mentions and hashtags (no external redirects)
  * - CSS-only "See more/See less" toggle using checkbox hack
  */
-export function StatusContent({ html, emojis = [], mentions = [], style, className }: StatusContentProps) {
+export function StatusContent({ html, emojis = [], mentions = [], style, className, collapsible = true }: StatusContentProps) {
   const router = useRouter();
 
   // Process HTML to replace emoji shortcodes with img tags
@@ -240,9 +241,10 @@ export function StatusContent({ html, emojis = [], mentions = [], style, classNa
       <ContentWrapper
         ref={ref}
         $expanded={isExpanded}
+        $collapsible={collapsible}
         dangerouslySetInnerHTML={{ __html: processedHtml }}
       />
-      {isTruncated && !isExpanded && (
+      {collapsible && isTruncated && !isExpanded && (
         <SeeMoreLabel onClick={handleSeeMore}>... See more</SeeMoreLabel>
       )}
     </ContentContainer>
@@ -258,11 +260,11 @@ const ContentContainer = styled.div`
   word-break: break-word;
 `;
 
-const ContentWrapper = styled.div<{ $expanded?: boolean }>`
+const ContentWrapper = styled.div<{ $expanded?: boolean; $collapsible?: boolean }>`
   display: -webkit-box;
-  -webkit-line-clamp: ${props => props.$expanded ? 'unset' : '6'};
+  -webkit-line-clamp: ${props => (!props.$collapsible || props.$expanded) ? 'unset' : '6'};
   -webkit-box-orient: vertical;
-  overflow: ${props => props.$expanded ? 'visible' : 'hidden'};
+  overflow: ${props => (!props.$collapsible || props.$expanded) ? 'visible' : 'hidden'};
 
   p {
     font-size: inherit;

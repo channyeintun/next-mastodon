@@ -51,6 +51,7 @@ export function MessageBubble({ status, isOwn, stripMentions, showAvatar = true,
               html={strippedContent}
               emojis={status.emojis}
               mentions={status.mentions}
+              collapsible={false}
               style={{ fontSize: 'var(--font-size-2)', lineHeight: '1.5' }}
             />
           </Bubble>
