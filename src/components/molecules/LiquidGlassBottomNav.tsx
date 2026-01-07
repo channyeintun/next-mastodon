@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { LiquidGlassFilter } from '@/components/atoms';
-import { lerp } from '@/lib/liquid-glass';
 import { useIsIOS } from '@/hooks/useIsIOS';
 import { NavigationLink } from './Navigation'; // We will export this from Navigation.tsx
 
@@ -22,29 +21,13 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
     const [isPressed, setIsPressed] = useState(false);
     const isIOS = useIsIOS();
 
-    const activeIndex = bottomNavLinks.findIndex(link => link.href === pathname);
-    const initialIndex = activeIndex >= 0 ? activeIndex : 0;
-
-    const [thumbState, setThumbState] = useState({
-        x: initialIndex,
-        wobbleX: 1,
-        wobbleY: 1
-    });
-
-    const physicsRef = useRef({
-        currentX: initialIndex,
-        targetX: initialIndex,
-        velocity: 0,
-        wobbleX: 1,
-        wobbleY: 1,
-        lastTime: 0
-    });
-
     const bgFilterId = 'liquid-glass-bottom-nav-bg';
     const thumbFilterId = 'liquid-glass-bottom-nav-thumb';
 
     const pressScale = isPressed ? 1.2 : 1;
     const pressScaleY = isPressed ? 1.1 : 1;
+
+    const activeIndex = bottomNavLinks.findIndex(link => link.href === pathname);
 
     const PILL_PADDING = 8;
     // We keep itemWidth for the filter generation which needs exact pixels
@@ -70,50 +53,7 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
         return () => resizeObserver.disconnect();
     }, [bottomNavLinks.length]);
 
-    useEffect(() => {
-        if (activeIndex >= 0) {
-            physicsRef.current.targetX = activeIndex;
-        }
-    }, [activeIndex]);
 
-    useEffect(() => {
-        let rafId: number;
-
-        // Tuning for index-based movement (approx 100x smaller units than pixels)
-        // Previous pixel-based: velocity ~10-100. Factor 0.12.
-        // New index-based: velocity ~0.1-1.0. Factor needs to be higher for same effect.
-        // Let's try 12.0
-        const WOBBLE_FACTOR = 12.0;
-
-        const loop = () => {
-            const p = physicsRef.current;
-            const newX = lerp(p.currentX, p.targetX, 0.22);
-            p.velocity = newX - p.currentX;
-            p.currentX = newX;
-
-            const stretchFactor = 1 + Math.abs(p.velocity) * WOBBLE_FACTOR;
-            const squashFactor = 1 / stretchFactor;
-
-            p.wobbleX = lerp(p.wobbleX, stretchFactor, 0.3);
-            p.wobbleY = lerp(p.wobbleY, squashFactor, 0.3);
-
-            if (Math.abs(p.targetX - p.currentX) < 0.001 && Math.abs(p.wobbleX - 1) < 0.001) {
-                p.currentX = p.targetX;
-                p.wobbleX = 1;
-                p.wobbleY = 1;
-                p.velocity = 0;
-            }
-
-            setThumbState({
-                x: p.currentX,
-                wobbleX: p.wobbleX,
-                wobbleY: p.wobbleY
-            });
-            rafId = requestAnimationFrame(loop);
-        };
-        rafId = requestAnimationFrame(loop);
-        return () => cancelAnimationFrame(rafId);
-    }, []);
 
     const handlePointerDown = () => setIsPressed(true);
     const handlePointerUp = () => setIsPressed(false);
@@ -181,12 +121,14 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
                             top: '50%',
                             marginTop: -24, // Vertically centered (48px height)
                             left: 0,
-                            transform: `translateX(${thumbState.x * 100}%) scale(${thumbState.wobbleX * pressScale}, ${thumbState.wobbleY * pressScaleY})`,
+                            transform: `translateX(${activeIndex * 100}%)`,
                             zIndex: 2,
                             pointerEvents: 'none',
+                            transition: 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)',
                         }}
                     >
                         <div
+                            key={activeIndex} // Trigger animation on index change
                             style={{
                                 width: `calc(100% - ${PILL_PADDING * 2}px)`,
                                 height: '100%',
@@ -198,6 +140,8 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
                                 boxShadow: '0 4px 15px rgba(0, 0, 0, 0.15)',
                                 border: '0.5px solid rgba(255, 255, 255, 0.25)',
                                 transition: 'background 0.1s ease',
+                                transform: `scale(${pressScale}, ${pressScaleY})`,
+                                animation: 'wobble-stretch 0.5s ease-out',
                             }}
                         />
                     </div>
