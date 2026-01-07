@@ -17,7 +17,10 @@ interface SettingsClientProps {
   initialTheme: 'light' | 'dark' | 'auto';
 }
 
+import { useTranslations } from 'next-intl';
+
 export function SettingsClient({ initialTheme }: SettingsClientProps) {
+  const t = useTranslations('settings');
   const queryClient = useQueryClient();
   const router = useRouter();
   const authStore = useAuthStore();
@@ -128,7 +131,7 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
           fontWeight: 'var(--font-weight-6)',
           color: 'var(--text-1)',
         }}>
-          Settings
+          {t('title')}
         </h1>
       </div>
 
@@ -157,12 +160,12 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
 
         <Link href="/profile/edit" className="settings-link" style={{ marginBottom: 'var(--size-2)' }}>
           <User size={20} className="settings-link-icon" />
-          Edit profile
+          {t('editProfile')}
         </Link>
 
         <Link href="/settings/preferences" className="settings-link">
           <Settings2 size={20} className="settings-link-icon" />
-          Preferences
+          {t('preferences')}
         </Link>
       </Card>
 
@@ -174,39 +177,39 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
           marginBottom: 'var(--size-3)',
           color: 'var(--text-2)',
         }}>
-          Quick links
+          {t('quickLinks')}
         </h2>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
           <Link href="/search" className="settings-link mobile-only">
             <Search size={20} className="settings-link-icon" />
-            Search
+            {t('nav.search')}
           </Link>
 
           <Link href="/explore" className="settings-link mobile-only">
             <TrendingUp size={20} className="settings-link-icon" />
-            Trending
+            {t('trending')}
           </Link>
 
           <Link href="/bookmarks" className="settings-link">
             <Bookmark size={20} className="settings-link-icon" />
-            Bookmarks
+            {t('nav.bookmarks')}
           </Link>
 
           <Link href="/lists" className="settings-link">
             <List size={20} className="settings-link-icon" />
-            Lists
+            {t('nav.lists')}
           </Link>
 
           <Link href="/scheduled" className="settings-link">
             <Clock size={20} className="settings-link-icon" />
-            Scheduled posts
+            {t('scheduledPosts')}
           </Link>
 
           {currentAccount.locked && (
             <Link href="/follow-requests" className="settings-link">
               <UserPlus size={20} className="settings-link-icon" />
-              Follow requests
+              {t('followRequests')}
             </Link>
           )}
 
@@ -247,7 +250,7 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
           marginBottom: 'var(--size-3)',
           color: 'var(--text-2)',
         }}>
-          Appearance
+          {t('appearance')}
         </h2>
         <ThemeSelector initialTheme={initialTheme} />
       </Card>
@@ -260,28 +263,28 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
           marginBottom: 'var(--size-3)',
           color: 'var(--text-2)',
         }}>
-          Moderation
+          {t('moderation')}
         </h2>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
           <Link href="/settings/blocks" className="settings-link">
             <Ban size={20} className="settings-link-icon" />
-            Blocked accounts
+            {t('blockedAccounts')}
           </Link>
 
           <Link href="/settings/mutes" className="settings-link">
             <VolumeX size={20} className="settings-link-icon" />
-            Muted accounts
+            {t('mutedAccounts')}
           </Link>
 
           <Link href="/settings/filters" className="settings-link">
             <Filter size={20} className="settings-link-icon" />
-            Filters
+            {t('filtersPage.title')}
           </Link>
 
           <Link href="/settings/notifications" className="settings-link">
             <Bell size={20} className="settings-link-icon" />
-            Push Notifications
+            {t('pushNotifications.title')}
           </Link>
         </div>
       </Card>
@@ -294,13 +297,13 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
           marginBottom: 'var(--size-3)',
           color: 'var(--text-2)',
         }}>
-          Server
+          {t('server')}
         </h2>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
           <Link href="/about" className="settings-link">
             <Info size={20} className="settings-link-icon" />
-            About this server
+            {t('aboutServer')}
           </Link>
         </div>
       </Card>
@@ -313,7 +316,7 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
           marginBottom: 'var(--size-3)',
           color: 'var(--text-2)',
         }}>
-          Account
+          {t('account')}
         </h2>
         <Button
           type="button"
@@ -323,7 +326,7 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
           style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}
         >
           <LogOut size={18} />
-          {isPending ? 'Signing out...' : 'Sign Out'}
+          {isPending ? t('signingOut') : t('signOut')}
         </Button>
       </Card>
     </div>

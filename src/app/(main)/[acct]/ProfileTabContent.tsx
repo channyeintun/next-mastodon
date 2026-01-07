@@ -9,7 +9,7 @@ import { EmptyState } from '@/components/atoms';
 import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
 import type { Status } from '@/types';
 import { useWindowScrollDirection } from '@/hooks/useScrollDirection';
-
+import { useTranslations } from 'next-intl';
 
 // Scroll restoration cache - per tab
 interface ScrollState {
@@ -46,6 +46,7 @@ export function ProfileTabContent({
 
     // Scroll direction detection for scroll-to-top button
     const { showScrollTop, hideScrollTop } = useWindowScrollDirection();
+    const t = useTranslations('account');
 
     // Per-tab scroll cache key - includes acct for isolation
     const scrollCacheKey = `profile-${acct}-${tabKey}`;
@@ -149,7 +150,7 @@ export function ProfileTabContent({
 
     // Empty state
     if (statuses.length === 0) {
-        return <EmptyState title="No posts yet" />;
+        return <EmptyState title={t('empty.posts')} />;
     }
 
     return (
@@ -171,7 +172,7 @@ export function ProfileTabContent({
                                         transform: `translateY(${virtualRow.start - virtualizer.options.scrollMargin}px)`,
                                     }}
                                 >
-                                    <EndIndicator>No more posts</EndIndicator>
+                                    <EndIndicator>{t('empty.end')}</EndIndicator>
                                 </VirtualItemWrapper>
                             );
                         }
@@ -224,6 +225,7 @@ export function MediaTabContent({
     hasNextPage,
     isFetchingNextPage,
 }: MediaTabContentProps) {
+    const t = useTranslations('account');
     if (isLoading && statuses.length === 0) {
         return <MediaGridSkeleton />;
     }
@@ -236,7 +238,7 @@ export function MediaTabContent({
                     onClick={() => fetchNextPage()}
                     disabled={isFetchingNextPage}
                 >
-                    {isFetchingNextPage ? 'Loading...' : 'Load more'}
+                    {isFetchingNextPage ? t('loading') : t('loadMore')}
                 </LoadMoreButton>
             )}
         </MediaTabContainer>

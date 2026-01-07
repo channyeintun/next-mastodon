@@ -6,6 +6,7 @@
 import axios, { type AxiosInstance } from 'axios'
 import { getRootStore } from '../../stores/rootStore'
 import { getNextMaxId } from '../parseLinkHeader'
+import { LOCALE_COOKIE_NAME, defaultLocale } from '@/i18n/config'
 
 /**
  * Response type for paginated endpoints that include Link header pagination
@@ -38,6 +39,18 @@ api.interceptors.request.use(
         if (authStore.accessToken) {
             config.headers.Authorization = `Bearer ${authStore.accessToken}`
         }
+
+        // Parse locale from cookie if running in browser
+        let locale = defaultLocale as string;
+        if (typeof document !== 'undefined') {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${LOCALE_COOKIE_NAME}=`);
+            if (parts.length === 2) {
+                locale = parts.pop()?.split(';').shift() || defaultLocale;
+            }
+        }
+
+        config.headers['Accept-Language'] = locale;
 
         return config
     },

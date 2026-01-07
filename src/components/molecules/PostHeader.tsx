@@ -20,6 +20,7 @@ import {
     UserX,
 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import { Avatar, IconButton, EmojiText } from '@/components/atoms';
 import { formatRelativeTime } from '@/utils/date';
 import { prefillAccountCache } from '@/api';
@@ -76,6 +77,9 @@ export function PostHeader({
     bookmarked = false,
 }: PostHeaderProps) {
     const queryClient = useQueryClient();
+    const tActions = useTranslations('actions');
+    const tCommon = useTranslations('common');
+
 
     const handleProfileClick = () => {
         // Pre-populate account cache before navigation to avoid refetch
@@ -140,7 +144,7 @@ export function PostHeader({
                                             }}
                                         >
                                             {pinned ? <PinOff size={16} /> : <Pin size={16} />}
-                                            <span>{pinned ? 'Unpin from profile' : 'Pin on profile'}</span>
+                                            <span>{pinned ? tActions('unpin') : tActions('pin')}</span>
                                         </button>
                                     )}
 
@@ -155,7 +159,7 @@ export function PostHeader({
                                             }}
                                         >
                                             {muted ? <Volume2 size={16} /> : <VolumeX size={16} />}
-                                            <span>{muted ? 'Unmute conversation' : 'Mute conversation'}</span>
+                                            <span>{muted ? tActions('unmuteConversation') : tActions('muteConversation')}</span>
                                         </button>
                                     )}
 
@@ -169,7 +173,7 @@ export function PostHeader({
                                             }}
                                         >
                                             <Bookmark size={16} fill={bookmarked ? 'currentColor' : 'none'} />
-                                            <span>{bookmarked ? 'Remove bookmark' : 'Bookmark'}</span>
+                                            <span>{bookmarked ? tActions('removeBookmark') : tActions('bookmark')}</span>
                                         </button>
                                     )}
 
@@ -183,7 +187,7 @@ export function PostHeader({
                                             }}
                                         >
                                             <Share size={16} />
-                                            <span>Share</span>
+                                            <span>{tCommon('share')}</span>
                                         </button>
                                     )}
 
@@ -199,7 +203,7 @@ export function PostHeader({
                                             }}
                                         >
                                             <Edit2 size={16} />
-                                            <span>Edit status</span>
+                                            <span>{tActions('editStatus')}</span>
                                         </button>
                                     )}
 
@@ -213,7 +217,7 @@ export function PostHeader({
                                             }}
                                         >
                                             <Trash2 size={16} />
-                                            <span>Delete status</span>
+                                            <span>{tActions('deleteStatus')}</span>
                                         </button>
                                     )}
                                 </div>
@@ -278,17 +282,19 @@ export function PostHeader({
 
                                     <MenuDivider />
 
-                                    <button
-                                        className="options-menu-item danger"
-                                        onMouseDown={(e) => {
-                                            e.preventDefault();
-                                            e.stopPropagation();
-                                            onReport();
-                                        }}
-                                    >
-                                        <Flag size={16} />
-                                        <span>Report</span>
-                                    </button>
+                                    {onReport && (
+                                        <button
+                                            className="options-menu-item danger"
+                                            onMouseDown={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                onReport();
+                                            }}
+                                        >
+                                            <Flag size={16} />
+                                            <span>{tCommon('report')}</span>
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         )}

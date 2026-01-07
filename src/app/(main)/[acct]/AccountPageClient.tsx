@@ -28,15 +28,12 @@ import { ProfileTabContent, MediaTabContent, ContentSection } from './ProfileTab
 import { ProfileHeader, LimitedProfileHeader } from './ProfileHeader';
 import { PinnedPostsSection } from './PinnedPostsSection';
 import { useQueryState, parseAsStringLiteral } from '@/hooks/useQueryState';
+import { useTranslations } from 'next-intl';
 
 type ProfileTab = 'posts' | 'posts_replies' | 'media';
 const VALID_TABS = ['posts', 'posts_replies', 'media'] as const;
 
-const profileTabs: TabItem<ProfileTab>[] = [
-  { value: 'posts', label: 'Posts' },
-  { value: 'posts_replies', label: 'Posts & replies' },
-  { value: 'media', label: 'Media' },
-];
+// Tabs defined inside component for translations
 
 const POSTS_FILTERS = { exclude_replies: true } as const;
 const POSTS_REPLIES_FILTERS = { exclude_replies: false, exclude_reblogs: true } as const;
@@ -55,6 +52,7 @@ interface AccountPageClientProps {
  */
 export function AccountPageClient({ acct }: AccountPageClientProps) {
   const router = useRouter();
+  const t = useTranslations('account');
 
   // TanStack Query - will use cache if hydrated or prepopulated
   const { data: account, isLoading: accountLoading, isError: accountError } = useAccountWithCache(acct);
@@ -70,6 +68,12 @@ export function AccountPageClient({ acct }: AccountPageClientProps) {
     defaultValue: 'posts' as ProfileTab,
     parser: parseAsStringLiteral(VALID_TABS, 'posts'),
   });
+
+  const profileTabs: TabItem<ProfileTab>[] = [
+    { value: 'posts', label: t('tabs.posts') },
+    { value: 'posts_replies', label: t('tabs.posts_replies') },
+    { value: 'media', label: t('tabs.media') },
+  ];
 
   const { data: pinnedStatuses } = usePinnedStatuses(accountId || '');
   const { data: currentAccount } = useCurrentAccount();
@@ -138,8 +142,8 @@ export function AccountPageClient({ acct }: AccountPageClientProps) {
   if (accountError || !account) {
     return (
       <ErrorContainer>
-        <ErrorTitle>Profile Not Found</ErrorTitle>
-        <Link href="/"><Button>Back to Timeline</Button></Link>
+        <ErrorTitle>{t('notFound')}</ErrorTitle>
+        <Link href="/"><Button>{t('backToTimeline')}</Button></Link>
       </ErrorContainer>
     );
   }

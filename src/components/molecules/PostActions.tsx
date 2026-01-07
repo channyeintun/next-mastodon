@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useTranslations } from 'next-intl';
 import {
   Heart,
   Repeat2,
@@ -39,11 +40,12 @@ export function PostActions({
   onQuote,
   onFavourite,
 }: PostActionsProps) {
+  const t = useTranslations('actions');
   return (
     <Container>
       {/* Reply */}
       <ActionGroup>
-        <ActionButton onClick={onReply} title="Reply">
+        <ActionButton onClick={onReply} title={t('reply')}>
           <MessageCircle size={ICON_SIZE} />
         </ActionButton>
         <Count>{repliesCount}</Count>
@@ -56,18 +58,18 @@ export function PostActions({
             onMouseDown={onReblog}
             $isActive={reblogged}
             $activeColor="var(--green-6)"
-            title={reblogged ? 'Undo boost' : 'Boost'}
+            title={reblogged ? 'Undo boost' : t('boost')}
           >
             <Repeat2 size={ICON_SIZE} />
           </ActionButton>
           <BoostPopover className="boost-popover">
             <PopoverButton onMouseDown={onConfirmReblog} $isActive={reblogged}>
               <Repeat2 size={ICON_SIZE} />
-              <span>{reblogged ? 'Undo Boost' : 'Boost'}</span>
+              <span>{reblogged ? 'Undo Boost' : t('boost')}</span>
             </PopoverButton>
             <PopoverButton onMouseDown={onQuote}>
               <MessageSquareQuote size={ICON_SIZE} />
-              <span>Quote</span>
+              <span>{t('quote')}</span>
             </PopoverButton>
           </BoostPopover>
         </BoostContainer>
@@ -80,7 +82,7 @@ export function PostActions({
           onClick={onFavourite}
           $isActive={favourited}
           $activeColor="var(--red-6)"
-          title={favourited ? 'Unfavourite' : 'Favourite'}
+          title={favourited ? 'Unfavourite' : t('favourite')}
         >
           <Heart size={ICON_SIZE} fill={favourited ? 'currentColor' : 'none'} />
         </ActionButton>

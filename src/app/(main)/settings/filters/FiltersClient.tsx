@@ -9,6 +9,7 @@ import { useDeleteFilter } from '@/api/mutations';
 import { IconButton, Button, Card, TextSkeleton } from '@/components/atoms';
 import { toast } from 'sonner';
 import type { Filter } from '@/types/mastodon';
+import { useTranslations } from 'next-intl';
 import {
     FiltersContainer,
     FiltersHeader,
@@ -26,60 +27,47 @@ import {
     ExpirationInfo,
 } from './FilterStyles';
 
-const CONTEXT_LABELS: Record<string, string> = {
-    home: 'Home',
-    notifications: 'Notifications',
-    public: 'Public',
-    thread: 'Conversations',
-    account: 'Profiles',
-};
+// Labels maps removed, will use translations directly
 
-const ACTION_LABELS: Record<string, string> = {
-    warn: 'Warn',
-    hide: 'Hide',
-    blur: 'Blur',
-};
 
-function formatExpiration(expiresAt: string | null): string | null {
+
+// Helper component to translate expiration
+function ExpirationText({ expiresAt }: { expiresAt: string | null }) {
+    const t = useTranslations('settings.filtersPage');
     if (!expiresAt) return null;
 
     const expiresDate = new Date(expiresAt);
     const now = new Date();
 
-    if (expiresDate < now) {
-        return 'Expired';
-    }
+    if (expiresDate < now) return <>{t('expired')}</>;
 
     const diffMs = expiresDate.getTime() - now.getTime();
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffMinutes = Math.floor(diffMs / (1000 * 60));
 
-    if (diffDays > 0) {
-        return `Expires in ${diffDays} day${diffDays > 1 ? 's' : ''}`;
-    } else if (diffHours > 0) {
-        return `Expires in ${diffHours} hour${diffHours > 1 ? 's' : ''}`;
-    } else {
-        return `Expires in ${diffMinutes} minute${diffMinutes > 1 ? 's' : ''}`;
-    }
+    if (diffDays > 0) return <>{t('expiresIn', { count: diffDays, unit: diffDays > 1 ? 'days' : 'day' })}</>;
+    if (diffHours > 0) return <>{t('expiresIn', { count: diffHours, unit: diffHours > 1 ? 'hours' : 'hour' })}</>;
+    return <>{t('expiresIn', { count: diffMinutes, unit: diffMinutes > 1 ? 'minutes' : 'minute' })}</>;
 }
 
 function FilterCardItem({ filter }: { filter: Filter }) {
     const router = useRouter();
     const deleteFilter = useDeleteFilter();
     const [isDeleting, setIsDeleting] = useState(false);
+    const t = useTranslations('settings.filtersPage');
 
     const handleDelete = async () => {
-        if (!window.confirm(`Are you sure you want to delete the filter "${filter.title}"?`)) {
+        if (!window.confirm(t('confirmDelete', { title: filter.title }))) {
             return;
         }
 
         setIsDeleting(true);
         try {
             await deleteFilter.mutateAsync(filter.id);
-            toast.success('Filter deleted');
+            toast.success(t('filterDeleted'));
         } catch {
-            toast.error('Failed to delete filter');
+            toast.error(t('failedToDeleteFilter'));
         } finally {
             setIsDeleting(false);
         }
@@ -90,7 +78,6 @@ function FilterCardItem({ filter }: { filter: Filter }) {
         .map((k) => k.keyword)
         .join(', ');
     const hasMoreKeywords = filter.keywords.length > 5;
-    const expirationText = formatExpiration(filter.expires_at);
     const isExpired = filter.expires_at && new Date(filter.expires_at) < new Date();
 
     return (
@@ -100,14 +87,14 @@ function FilterCardItem({ filter }: { filter: Filter }) {
                     <FilterTitle as={Link} href={`/settings/filters/${filter.id}`}>
                         {filter.title}
                     </FilterTitle>
-                    {expirationText && (
+                    {filter.expires_at && (
                         <ExpirationInfo style={isExpired ? { color: 'var(--red-7)' } : undefined}>
-                            {expirationText}
+                            <ExpirationText expiresAt={filter.expires_at} />
                         </ExpirationInfo>
                     )}
                 </div>
                 <FilterBadge $action={filter.filter_action}>
-                    {ACTION_LABELS[filter.filter_action] || filter.filter_action}
+                    {t(filter.filter_action as any)}
                 </FilterBadge>
             </FilterCardHeader>
 
@@ -121,7 +108,7 @@ function FilterCardItem({ filter }: { filter: Filter }) {
 
             <FilterContexts>
                 {filter.context.map((ctx) => (
-                    <ContextTag key={ctx}>{CONTEXT_LABELS[ctx] || ctx}</ContextTag>
+                    <ContextTag key={ctx}>{t(`context.${ctx}` as any)}</ContextTag>
                 ))}
             </FilterContexts>
 
@@ -132,7 +119,7 @@ function FilterCardItem({ filter }: { filter: Filter }) {
                     onClick={() => router.push(`/settings/filters/${filter.id}`)}
                 >
                     <Edit size={16} />
-                    Edit
+                    {t('edit')}
                 </Button>
                 <Button
                     variant="danger"
@@ -141,7 +128,7 @@ function FilterCardItem({ filter }: { filter: Filter }) {
                     disabled={isDeleting}
                 >
                     <Trash2 size={16} />
-                    {isDeleting ? 'Deleting...' : 'Delete'}
+                    {isDeleting ? t('deleting') : t('delete')}
                 </Button>
             </FilterActions>
         </FilterCard>
@@ -151,6 +138,7 @@ function FilterCardItem({ filter }: { filter: Filter }) {
 export function FiltersClient() {
     const router = useRouter();
     const { data: filters, isLoading, error } = useFilters();
+    const t = useTranslations('settings.filtersPage');
 
     if (isLoading) {
         return (
@@ -206,14 +194,14 @@ export function FiltersClient() {
             {!filters || filters.length === 0 ? (
                 <Card padding="medium">
                     <EmptyState>
-                        <p>You haven&apos;t created any filters yet.</p>
+                        <p>{t('empty')}</p>
                         <p>
-                            Filters allow you to hide or blur posts containing specific words or phrases.
+                            {t('emptyDesc')}
                         </p>
                         <Link href="/settings/filters/new">
                             <Button>
                                 <Plus size={16} />
-                                Create your first filter
+                                {t('createFirst')}
                             </Button>
                         </Link>
                     </EmptyState>

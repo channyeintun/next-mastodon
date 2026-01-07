@@ -5,9 +5,10 @@ import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Pin } from 'lucide-react';
 import { PostCard } from '@/components/organisms';
 import type { Status } from '@/types';
+import { useTranslations } from 'next-intl';
 
 interface PinnedPostsSectionProps {
-    pinnedStatuses: Status[];
+  pinnedStatuses: Status[];
 }
 
 /**
@@ -15,47 +16,48 @@ interface PinnedPostsSectionProps {
  * Shown above the tabs section on profile pages.
  */
 export function PinnedPostsSection({ pinnedStatuses }: PinnedPostsSectionProps) {
-    const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const t = useTranslations('account');
 
-    if (!pinnedStatuses || pinnedStatuses.length === 0) {
-        return null;
-    }
+  if (!pinnedStatuses || pinnedStatuses.length === 0) {
+    return null;
+  }
 
-    const hasMultiple = pinnedStatuses.length > 1;
-    const currentPost = pinnedStatuses[currentIndex];
+  const hasMultiple = pinnedStatuses.length > 1;
+  const currentPost = pinnedStatuses[currentIndex];
 
-    const goToPrevious = () => {
-        setCurrentIndex((prev) => (prev === 0 ? pinnedStatuses.length - 1 : prev - 1));
-    };
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev === 0 ? pinnedStatuses.length - 1 : prev - 1));
+  };
 
-    const goToNext = () => {
-        setCurrentIndex((prev) => (prev === pinnedStatuses.length - 1 ? 0 : prev + 1));
-    };
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev === pinnedStatuses.length - 1 ? 0 : prev + 1));
+  };
 
-    return (
-        <Container>
-            <Header>
-                <PinnedBadge>
-                    <Pin size={14} />
-                    Pinned
-                </PinnedBadge>
-                {hasMultiple && (
-                    <Navigation>
-                        <NavButton onClick={goToPrevious} aria-label="Previous pinned post">
-                            <ChevronLeft size={18} />
-                        </NavButton>
-                        <Counter>
-                            {currentIndex + 1} / {pinnedStatuses.length}
-                        </Counter>
-                        <NavButton onClick={goToNext} aria-label="Next pinned post">
-                            <ChevronRight size={18} />
-                        </NavButton>
-                    </Navigation>
-                )}
-            </Header>
-            <PostCard status={currentPost} />
-        </Container>
-    );
+  return (
+    <Container>
+      <Header>
+        <PinnedBadge>
+          <Pin size={14} />
+          {t('pinned')}
+        </PinnedBadge>
+        {hasMultiple && (
+          <Navigation>
+            <NavButton onClick={goToPrevious} aria-label={t('pinnedNav.prev')}>
+              <ChevronLeft size={18} />
+            </NavButton>
+            <Counter>
+              {currentIndex + 1} / {pinnedStatuses.length}
+            </Counter>
+            <NavButton onClick={goToNext} aria-label={t('pinnedNav.next')}>
+              <ChevronRight size={18} />
+            </NavButton>
+          </Navigation>
+        )}
+      </Header>
+      <PostCard status={currentPost} />
+    </Container>
+  );
 }
 
 // ============================================================================

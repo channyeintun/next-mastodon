@@ -9,12 +9,14 @@ import { SearchHistory } from '@/components/molecules';
 import { SearchContent } from '@/components/organisms';
 import { Input, IconButton } from '@/components/atoms';
 import { useQueryState, parseAsStringLiteral } from '@/hooks/useQueryState';
+import { useTranslations } from 'next-intl';
 
 type TabType = 'all' | 'accounts' | 'statuses' | 'hashtags';
 const VALID_TABS = ['all', 'accounts', 'statuses', 'hashtags'] as const;
 
 export default function SearchPage() {
   const router = useRouter();
+  const t = useTranslations('search');
   const { history, addToHistory, removeFromHistory, clearHistory } = useSearchHistory();
 
   // URL state for query and tab
@@ -99,7 +101,7 @@ export default function SearchPage() {
           <IconButton onClick={() => router.back()}>
             <ArrowLeft size={20} />
           </IconButton>
-          <h1 style={{ fontSize: 'var(--font-size-4)' }}>Search</h1>
+          <h1 style={{ fontSize: 'var(--font-size-4)' }}>{t('title')}</h1>
         </div>
 
         {/* Search Input */}
@@ -107,7 +109,7 @@ export default function SearchPage() {
           <SearchIcon size={18} style={{ position: 'absolute', left: 'var(--size-3)', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-3)' }} />
           <Input
             type="text"
-            placeholder="Search for people, posts, or hashtags (press Enter to search)"
+            placeholder={t('placeholder')}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -151,7 +153,7 @@ export default function SearchPage() {
                   textTransform: 'capitalize',
                 }}
               >
-                {tab}
+                {t(`tabs.${tab}`)}
               </button>
             ))}
           </div>

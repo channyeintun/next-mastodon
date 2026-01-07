@@ -1,0 +1,158 @@
+{
+  "common": {
+    "retry": "再試行",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "delete": "削除",
+    "remove": "削除",
+    "share": "共有",
+    "report": "報告",
+    "verified": "認証済み",
+    "close": "閉じる",
+    "loading": "読み込み中...",
+    "viewAll": "すべて表示",
+    "dontShowAgain": "今後表示しない"
+  },
+  "nav": {
+    "home": "ホーム",
+    "explore": "見つける",
+    "notifications": "通知",
+    "messages": "メッセージ",
+    "bookmarks": "ブックマーク",
+    "lists": "リスト",
+    "settings": "設定",
+    "search": "検索",
+    "compose": "投稿",
+    "sourceCode": "ソースコード",
+    "about": "概要"
+  },
+  "timeline": {
+    "title": "ホーム",
+    "subtitle": "あなたのタイムライン",
+    "empty": "タイムラインは空です",
+    "error": "タイムラインの読み込みエラー",
+    "trending": "トレンド"
+  },
+  "profile": {
+    "posts": "投稿",
+    "following": "フォロー中",
+    "followers": "フォロワー",
+    "noPosts": "投稿はまだありません",
+    "noFollowers": "フォロワーはまだいません",
+    "notFollowing": "まだ誰もフォローしていません",
+    "hiddenInfo": "このユーザーはこの情報を非公開にしています",
+    "profileInfo": "プロフィール情報",
+    "extraFields": "追加フィールド"
+  },
+  "actions": {
+    "reply": "返信",
+    "quote": "引用",
+    "boost": "ブースト",
+    "favourite": "お気に入り",
+    "bookmark": "ブックマーク",
+    "editStatus": "投稿を編集",
+    "deleteStatus": "投稿を削除",
+    "follow": "フォロー",
+    "unfollow": "フォロー解除"
+  },
+  "composer": {
+    "addEmoji": "絵文字を追加",
+    "addMedia": "メディアを追加",
+    "addPoll": "アンケートを追加",
+    "addContentWarning": "コンテンツ警告を追加",
+    "schedulePost": "投稿を予約",
+    "removePoll": "アンケートを削除",
+    "removeOption": "選択肢を削除",
+    "poll": "アンケート",
+    "editAltText": "代替テキストを編集"
+  },
+  "imageCropper": {
+    "zoomIn": "拡大",
+    "zoomOut": "縮小",
+    "rotateLeft": "左に90°回転",
+    "rotateRight": "右に90°回転",
+    "flipHorizontal": "水平反転",
+    "flipVertical": "垂直反転"
+  },
+  "suggestions": {
+    "whoToFollow": "おすすめユーザー",
+    "dismissSuggestions": "おすすめを非表示",
+    "previousItem": "前へ",
+    "nextItem": "次へ"
+  },
+  "search": {
+    "title": "検索",
+    "placeholder": "ユーザー、投稿、ハッシュタグを検索",
+    "recent": "最近",
+    "error": "検索中にエラーが発生しました"
+  },
+  "conversation": {
+    "title": "会話",
+    "noMessages": "メッセージはまだありません"
+  },
+  "notifications": {
+    "title": "通知",
+    "all": "すべて",
+    "mentions": "メンション",
+    "requests": "リクエスト"
+  },
+  "empty": {
+    "noBoosts": "ブーストはまだありません",
+    "noFavourites": "お気に入りはまだありません",
+    "noQuotes": "引用はまだありません",
+    "noFollowRequests": "保留中のフォローリクエストはありません",
+    "noMessages": "メッセージはまだありません",
+    "noUsersFound": "ユーザーが見つかりません",
+    "noSuggestions": "おすすめがありません",
+    "noTrendingPosts": "現在トレンドの投稿はありません",
+    "noTrendingTags": "現在トレンドのタグはありません",
+    "noTrendingNews": "現在トレンドのニュースはありません",
+    "signInToSee": "ログインしておすすめを表示",
+    "failedTrending": "トレンドの読み込みに失敗",
+    "failedTags": "タグの読み込みに失敗",
+    "failedNews": "ニュースの読み込みに失敗",
+    "failedSuggestions": "おすすめの読み込みに失敗"
+  },
+  "settings": {
+    "title": "設定",
+    "preferences": "設定",
+    "notifications": "通知",
+    "filters": "フィルター",
+    "blocks": "ブロック",
+    "mutes": "ミュート",
+    "pushNotifications": "プッシュ通知",
+    "notSupported": "このブラウザではサポートされていません"
+  },
+  "visibility": {
+    "title": "公開範囲",
+    "whoCanQuote": "引用できる人",
+    "public": "公開",
+    "unlisted": "未収載",
+    "private": "フォロワーのみ",
+    "direct": "ダイレクト"
+  },
+  "poll": {
+    "closed": "終了",
+    "vote": "投票",
+    "votes": "票"
+  },
+  "toast": {
+    "copiedToClipboard": "クリップボードにコピーしました",
+    "filterDeleted": "フィルターを削除しました",
+    "filterUpdated": "フィルターを更新しました",
+    "filterCreated": "フィルターを作成しました",
+    "failedToDeleteFilter": "フィルターの削除に失敗しました",
+    "postDeleted": "投稿を削除しました",
+    "postShared": "投稿を共有しました"
+  },
+  "wrapstodon": {
+    "title": "Wrapstodon",
+    "notAvailable": "Wrapstodonは利用できません",
+    "somethingWentWrong": "エラーが発生しました",
+    "mostUsedHashtag": "最も使用したハッシュタグ",
+    "mostPopularPost": "最も人気の投稿"
+  },
+  "about": {
+    "title": "概要"
+  }
+}

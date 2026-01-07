@@ -8,9 +8,11 @@ import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { IconButton, Spinner } from '@/components/atoms';
 import { flattenPages } from '@/utils/fp';
 import type { Account } from '@/types';
+import { useTranslations } from 'next-intl';
 
 export default function MutedAccountsPage() {
     const router = useRouter();
+    const t = useTranslations('settings.mutesPage');
     const {
         data: mutedPages,
         isLoading,
@@ -52,10 +54,10 @@ export default function MutedAccountsPage() {
                 <div>
                     <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                         <VolumeX size={20} />
-                        Muted Accounts
+                        {t('title')}
                     </h1>
                     <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-                        {mutedAccounts.length} muted account{mutedAccounts.length !== 1 ? 's' : ''}
+                        {t('count', { count: mutedAccounts.length })}
                     </p>
                 </div>
             </div>
@@ -87,9 +89,9 @@ export default function MutedAccountsPage() {
                 emptyState={
                     <div style={{ display: 'grid', placeItems: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
                         <VolumeX size={48} style={{ opacity: 0.3, marginBottom: 'var(--size-4)' }} />
-                        <p>No muted accounts</p>
+                        <p>{t('emptyTitle')}</p>
                         <p style={{ fontSize: 'var(--font-size-0)', marginTop: 'var(--size-2)' }}>
-                            When you mute someone, their posts and notifications will be hidden from you.
+                            {t('emptyDesc')}
                         </p>
                     </div>
                 }

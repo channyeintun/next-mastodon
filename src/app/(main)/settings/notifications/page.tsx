@@ -6,6 +6,7 @@ import { ArrowLeft, Bell } from 'lucide-react';
 import { IconButton } from '@/components/atoms';
 import { PushNotificationsSection } from '@/components/molecules/PushNotificationsSection';
 import { useAuthStore } from '@/hooks/useStores';
+import { useTranslations } from 'next-intl';
 import {
     Header,
     Description,
@@ -14,6 +15,7 @@ import {
 export default function NotificationSettingsPage() {
     const router = useRouter();
     const authStore = useAuthStore();
+    const t = useTranslations('settings.pushNotifications');
 
     useEffect(() => {
         if (!authStore.isAuthenticated) {
@@ -29,11 +31,11 @@ export default function NotificationSettingsPage() {
                 <IconButton onClick={() => router.back()} aria-label="Go back">
                     <ArrowLeft size={20} />
                 </IconButton>
-                <h1><Bell size={24} />Push notifications</h1>
+                <h1><Bell size={24} />{t('title')}</h1>
             </Header>
 
             <Description>
-                Configure push notification settings for your device.
+                {t('description')}
             </Description>
 
             <PushNotificationsSection />

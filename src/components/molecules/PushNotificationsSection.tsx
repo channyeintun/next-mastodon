@@ -6,6 +6,7 @@ import { Bell, BellRing, Heart, Repeat2, AtSign, BarChart2 } from 'lucide-react'
 import { Card } from '@/components/atoms';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
 import type { PushAlerts } from '@/types';
+import { useTranslations } from 'next-intl';
 
 /**
  * Push Notifications Settings Section
@@ -26,6 +27,7 @@ export function PushNotificationsSection() {
         unsubscribe,
         updateAlerts,
     } = usePushNotifications();
+    const t = useTranslations('settings.pushNotifications');
 
     const [localAlerts, setLocalAlerts] = useState<Partial<PushAlerts>>({
         follow: true,
@@ -74,8 +76,8 @@ export function PushNotificationsSection() {
                         <BellRing size={20} />
                     </PushIcon>
                     <PushText>
-                        <PushTitle>Push Notifications</PushTitle>
-                        <PushDescription>Not supported in this browser</PushDescription>
+                        <PushTitle>{t('title')}</PushTitle>
+                        <PushDescription>{t('notSupported')}</PushDescription>
                     </PushText>
                 </PushHeader>
             </Card>
@@ -90,8 +92,8 @@ export function PushNotificationsSection() {
                         <BellRing size={20} />
                     </PushIcon>
                     <PushText>
-                        <PushTitle>Push Notifications</PushTitle>
-                        <PushDescription>Permission denied. Enable notifications in your browser settings.</PushDescription>
+                        <PushTitle>{t('title')}</PushTitle>
+                        <PushDescription>{t('permissionDenied')}</PushDescription>
                     </PushText>
                 </PushHeader>
             </Card>
@@ -99,11 +101,11 @@ export function PushNotificationsSection() {
     }
 
     const alertOptions = [
-        { key: 'mention' as const, label: 'Mentions', icon: <AtSign size={16} /> },
-        { key: 'favourite' as const, label: 'Favorites', icon: <Heart size={16} /> },
-        { key: 'reblog' as const, label: 'Boosts', icon: <Repeat2 size={16} /> },
-        { key: 'follow' as const, label: 'Follows', icon: <Bell size={16} /> },
-        { key: 'poll' as const, label: 'Polls', icon: <BarChart2 size={16} /> },
+        { key: 'mention' as const, label: t('mentions'), icon: <AtSign size={16} /> },
+        { key: 'favourite' as const, label: t('favorites'), icon: <Heart size={16} /> },
+        { key: 'reblog' as const, label: t('boosts'), icon: <Repeat2 size={16} /> },
+        { key: 'follow' as const, label: t('follows'), icon: <Bell size={16} /> },
+        { key: 'poll' as const, label: t('polls'), icon: <BarChart2 size={16} /> },
     ];
 
     return (
@@ -113,9 +115,9 @@ export function PushNotificationsSection() {
                     <BellRing size={20} />
                 </PushIcon>
                 <PushText>
-                    <PushTitle>Push notifications</PushTitle>
+                    <PushTitle>{t('title')}</PushTitle>
                     <PushDescription>
-                        {isSubscribed ? 'Enabled - receive notifications even when the app is closed' : 'Receive notifications even when the app is closed'}
+                        {isSubscribed ? t('enabled') : t('disabled')}
                     </PushDescription>
                 </PushText>
                 <PushToggle>
@@ -123,7 +125,7 @@ export function PushNotificationsSection() {
                         checked={isSubscribed}
                         onClick={handleToggle}
                         disabled={isLoading || isSubscribing || isUnsubscribing}
-                        aria-label={isSubscribed ? 'Disable push notifications' : 'Enable push notifications'}
+                        aria-label={isSubscribed ? t('disableLabel') : t('enableLabel')}
                     />
                 </PushToggle>
             </PushHeader>
@@ -134,7 +136,7 @@ export function PushNotificationsSection() {
 
             {isSubscribed && (
                 <AlertsSection>
-                    <AlertsSectionTitle>Alert Types</AlertsSectionTitle>
+                    <AlertsSectionTitle>{t('alertTypes')}</AlertsSectionTitle>
                     {alertOptions.map(option => (
                         <AlertRow key={option.key}>
                             <AlertInfo>

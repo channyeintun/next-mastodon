@@ -8,9 +8,11 @@ import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { IconButton, Spinner } from '@/components/atoms';
 import { flattenPages } from '@/utils/fp';
 import type { Account } from '@/types';
+import { useTranslations } from 'next-intl';
 
 export default function BlockedAccountsPage() {
     const router = useRouter();
+    const t = useTranslations('settings.blocksPage');
     const {
         data: blockedPages,
         isLoading,
@@ -52,10 +54,10 @@ export default function BlockedAccountsPage() {
                 <div>
                     <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                         <Ban size={20} />
-                        Blocked Accounts
+                        {t('title')}
                     </h1>
                     <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-                        {blockedAccounts.length} blocked account{blockedAccounts.length !== 1 ? 's' : ''}
+                        {t('count', { count: blockedAccounts.length })}
                     </p>
                 </div>
             </div>
@@ -87,9 +89,9 @@ export default function BlockedAccountsPage() {
                 emptyState={
                     <div style={{ display: 'grid', placeItems: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
                         <Ban size={48} style={{ opacity: 0.3, marginBottom: 'var(--size-4)' }} />
-                        <p>No blocked accounts</p>
+                        <p>{t('emptyTitle')}</p>
                         <p style={{ fontSize: 'var(--font-size-0)', marginTop: 'var(--size-2)' }}>
-                            When you block someone, they won&apos;t be able to see your posts or interact with you.
+                            {t('emptyDesc')}
                         </p>
                     </div>
                 }

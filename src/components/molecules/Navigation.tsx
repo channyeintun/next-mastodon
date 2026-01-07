@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, PenSquare, Search, Settings, Github, Bell, List, TrendingUp, Mail } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useInstance, useUnreadNotificationCount, useNotificationMarker, useAnnualReportState } from '@/api';
 import { CircleSkeleton, TextSkeleton } from '@/components/atoms';
 
@@ -22,6 +23,7 @@ interface NavigationProps {
 
 export default function Navigation({ isAuthenticated, instanceURL }: NavigationProps) {
   const pathname = usePathname();
+  const t = useTranslations('nav');
   const { data: instance, isLoading: isLoadingInstance } = useInstance();
   const { data: unreadCount } = useUnreadNotificationCount();
   const { initialAnnualReportState, initialWrapstodonYear } = useStores();
@@ -50,23 +52,23 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
 
   // Desktop sidebar includes all links
   const sidebarNavLinks = [
-    { href: '/', label: 'Home', icon: Home },
-    { href: '/explore', label: 'Trending', icon: TrendingUp },
-    { href: '/search', label: 'Search', icon: Search },
-    { href: '/compose', label: 'Create', icon: PenSquare },
-    { href: '/conversations', label: 'Messages', icon: Mail },
-    { href: '/lists', label: 'Lists', icon: List },
-    { href: '/notifications', label: 'Notifications', icon: Bell, badge: unreadCount?.count },
-    { href: '/settings', label: 'Settings', icon: Settings },
+    { href: '/', label: t('home'), icon: Home },
+    { href: '/explore', label: t('explore'), icon: TrendingUp },
+    { href: '/search', label: t('search'), icon: Search },
+    { href: '/compose', label: t('compose'), icon: PenSquare },
+    { href: '/conversations', label: t('messages'), icon: Mail },
+    { href: '/lists', label: t('lists'), icon: List },
+    { href: '/notifications', label: t('notifications'), icon: Bell, badge: unreadCount?.count },
+    { href: '/settings', label: t('settings'), icon: Settings },
   ];
 
   // Mobile bottom nav is simplified - explore accessible via Settings
   const bottomNavLinks = [
-    { href: '/', label: 'Home', icon: Home },
-    { href: '/conversations', label: 'Messages', icon: Mail },
-    { href: '/compose', label: 'Create', icon: PenSquare },
-    { href: '/notifications', label: 'Notifications', icon: Bell, badge: unreadCount?.count },
-    { href: '/settings', label: 'Settings', icon: Settings },
+    { href: '/', label: t('home'), icon: Home },
+    { href: '/conversations', label: t('messages'), icon: Mail },
+    { href: '/compose', label: t('compose'), icon: PenSquare },
+    { href: '/notifications', label: t('notifications'), icon: Bell, badge: unreadCount?.count },
+    { href: '/settings', label: t('settings'), icon: Settings },
   ];
 
   return (
@@ -165,7 +167,7 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
             <div className="navigation-link-icon">
               <Github size={24} />
             </div>
-            <span className="navigation-link-label">Source code</span>
+            <span className="navigation-link-label">{t('sourceCode')}</span>
           </a>
 
 

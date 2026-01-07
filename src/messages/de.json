@@ -1,0 +1,158 @@
+{
+  "common": {
+    "retry": "Erneut versuchen",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "remove": "Entfernen",
+    "share": "Teilen",
+    "report": "Melden",
+    "verified": "Verifiziert",
+    "close": "Schließen",
+    "loading": "Wird geladen...",
+    "viewAll": "Alle anzeigen",
+    "dontShowAgain": "Nicht mehr anzeigen"
+  },
+  "nav": {
+    "home": "Startseite",
+    "explore": "Entdecken",
+    "notifications": "Benachrichtigungen",
+    "messages": "Nachrichten",
+    "bookmarks": "Lesezeichen",
+    "lists": "Listen",
+    "settings": "Einstellungen",
+    "search": "Suche",
+    "compose": "Verfassen",
+    "sourceCode": "Quellcode",
+    "about": "Über"
+  },
+  "timeline": {
+    "title": "Startseite",
+    "subtitle": "Deine persönliche Zeitleiste",
+    "empty": "Deine Zeitleiste ist leer",
+    "error": "Fehler beim Laden der Zeitleiste",
+    "trending": "Trends"
+  },
+  "profile": {
+    "posts": "Beiträge",
+    "following": "Folgt",
+    "followers": "Follower",
+    "noPosts": "Noch keine Beiträge",
+    "noFollowers": "Noch keine Follower",
+    "notFollowing": "Folgt noch niemandem",
+    "hiddenInfo": "Diese Person hat diese Information verborgen",
+    "profileInfo": "Profilinformationen",
+    "extraFields": "Zusätzliche Felder"
+  },
+  "actions": {
+    "reply": "Antworten",
+    "quote": "Zitieren",
+    "boost": "Teilen",
+    "favourite": "Favorisieren",
+    "bookmark": "Lesezeichen",
+    "editStatus": "Beitrag bearbeiten",
+    "deleteStatus": "Beitrag löschen",
+    "follow": "Folgen",
+    "unfollow": "Entfolgen"
+  },
+  "composer": {
+    "addEmoji": "Emoji hinzufügen",
+    "addMedia": "Medien hinzufügen",
+    "addPoll": "Umfrage hinzufügen",
+    "addContentWarning": "Inhaltswarnung hinzufügen",
+    "schedulePost": "Beitrag planen",
+    "removePoll": "Umfrage entfernen",
+    "removeOption": "Option entfernen",
+    "poll": "Umfrage",
+    "editAltText": "Alt-Text bearbeiten"
+  },
+  "imageCropper": {
+    "zoomIn": "Vergrößern",
+    "zoomOut": "Verkleinern",
+    "rotateLeft": "90° nach links drehen",
+    "rotateRight": "90° nach rechts drehen",
+    "flipHorizontal": "Horizontal spiegeln",
+    "flipVertical": "Vertikal spiegeln"
+  },
+  "suggestions": {
+    "whoToFollow": "Wem folgen",
+    "dismissSuggestions": "Vorschläge ausblenden",
+    "previousItem": "Vorheriges",
+    "nextItem": "Nächstes"
+  },
+  "search": {
+    "title": "Suche",
+    "placeholder": "Personen, Beiträge oder Hashtags suchen",
+    "recent": "Kürzlich",
+    "error": "Bei der Suche ist ein Fehler aufgetreten"
+  },
+  "conversation": {
+    "title": "Unterhaltung",
+    "noMessages": "Noch keine Nachrichten"
+  },
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "all": "Alle",
+    "mentions": "Erwähnungen",
+    "requests": "Anfragen"
+  },
+  "empty": {
+    "noBoosts": "Noch keine Shares",
+    "noFavourites": "Noch keine Favoriten",
+    "noQuotes": "Noch keine Zitate",
+    "noFollowRequests": "Keine ausstehenden Folgeanfragen",
+    "noMessages": "Noch keine Nachrichten",
+    "noUsersFound": "Keine Benutzer gefunden",
+    "noSuggestions": "Keine Vorschläge verfügbar",
+    "noTrendingPosts": "Momentan keine Trends",
+    "noTrendingTags": "Momentan keine Trend-Tags",
+    "noTrendingNews": "Momentan keine Trend-Nachrichten",
+    "signInToSee": "Anmelden um Vorschläge zu sehen",
+    "failedTrending": "Trends konnten nicht geladen werden",
+    "failedTags": "Tags konnten nicht geladen werden",
+    "failedNews": "Nachrichten konnten nicht geladen werden",
+    "failedSuggestions": "Vorschläge konnten nicht geladen werden"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "preferences": "Präferenzen",
+    "notifications": "Benachrichtigungen",
+    "filters": "Filter",
+    "blocks": "Blockierungen",
+    "mutes": "Stummschaltungen",
+    "pushNotifications": "Push-Benachrichtigungen",
+    "notSupported": "In diesem Browser nicht unterstützt"
+  },
+  "visibility": {
+    "title": "Sichtbarkeit",
+    "whoCanQuote": "Wer kann zitieren",
+    "public": "Öffentlich",
+    "unlisted": "Nicht gelistet",
+    "private": "Nur Follower",
+    "direct": "Direkt"
+  },
+  "poll": {
+    "closed": "Geschlossen",
+    "vote": "Abstimmen",
+    "votes": "Stimmen"
+  },
+  "toast": {
+    "copiedToClipboard": "In Zwischenablage kopiert",
+    "filterDeleted": "Filter gelöscht",
+    "filterUpdated": "Filter aktualisiert",
+    "filterCreated": "Filter erstellt",
+    "failedToDeleteFilter": "Filter konnte nicht gelöscht werden",
+    "postDeleted": "Beitrag gelöscht",
+    "postShared": "Beitrag geteilt"
+  },
+  "wrapstodon": {
+    "title": "Wrapstodon",
+    "notAvailable": "Wrapstodon nicht verfügbar",
+    "somethingWentWrong": "Etwas ist schiefgelaufen",
+    "mostUsedHashtag": "Meist verwendeter Hashtag",
+    "mostPopularPost": "Beliebtester Beitrag"
+  },
+  "about": {
+    "title": "Über"
+  }
+}

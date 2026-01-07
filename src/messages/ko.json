@@ -1,0 +1,158 @@
+{
+  "common": {
+    "retry": "다시 시도",
+    "cancel": "취소",
+    "save": "저장",
+    "delete": "삭제",
+    "remove": "제거",
+    "share": "공유",
+    "report": "신고",
+    "verified": "인증됨",
+    "close": "닫기",
+    "loading": "로딩 중...",
+    "viewAll": "모두 보기",
+    "dontShowAgain": "다시 표시 안 함"
+  },
+  "nav": {
+    "home": "홈",
+    "explore": "탐색",
+    "notifications": "알림",
+    "messages": "메시지",
+    "bookmarks": "북마크",
+    "lists": "리스트",
+    "settings": "설정",
+    "search": "검색",
+    "compose": "작성",
+    "sourceCode": "소스 코드",
+    "about": "정보"
+  },
+  "timeline": {
+    "title": "홈",
+    "subtitle": "개인 타임라인",
+    "empty": "타임라인이 비어 있습니다",
+    "error": "타임라인 로드 오류",
+    "trending": "인기"
+  },
+  "profile": {
+    "posts": "게시물",
+    "following": "팔로잉",
+    "followers": "팔로워",
+    "noPosts": "게시물 없음",
+    "noFollowers": "팔로워 없음",
+    "notFollowing": "아직 팔로우하는 사람 없음",
+    "hiddenInfo": "이 사용자는 이 정보를 비공개로 설정했습니다",
+    "profileInfo": "프로필 정보",
+    "extraFields": "추가 필드"
+  },
+  "actions": {
+    "reply": "답글",
+    "quote": "인용",
+    "boost": "부스트",
+    "favourite": "좋아요",
+    "bookmark": "북마크",
+    "editStatus": "게시물 수정",
+    "deleteStatus": "게시물 삭제",
+    "follow": "팔로우",
+    "unfollow": "언팔로우"
+  },
+  "composer": {
+    "addEmoji": "이모지 추가",
+    "addMedia": "미디어 추가",
+    "addPoll": "투표 추가",
+    "addContentWarning": "콘텐츠 경고 추가",
+    "schedulePost": "게시물 예약",
+    "removePoll": "투표 제거",
+    "removeOption": "옵션 제거",
+    "poll": "투표",
+    "editAltText": "대체 텍스트 편집"
+  },
+  "imageCropper": {
+    "zoomIn": "확대",
+    "zoomOut": "축소",
+    "rotateLeft": "왼쪽으로 90° 회전",
+    "rotateRight": "오른쪽으로 90° 회전",
+    "flipHorizontal": "좌우 반전",
+    "flipVertical": "상하 반전"
+  },
+  "suggestions": {
+    "whoToFollow": "팔로우 추천",
+    "dismissSuggestions": "추천 숨기기",
+    "previousItem": "이전",
+    "nextItem": "다음"
+  },
+  "search": {
+    "title": "검색",
+    "placeholder": "사람, 게시물 또는 해시태그 검색",
+    "recent": "최근",
+    "error": "검색 중 오류가 발생했습니다"
+  },
+  "conversation": {
+    "title": "대화",
+    "noMessages": "메시지 없음"
+  },
+  "notifications": {
+    "title": "알림",
+    "all": "전체",
+    "mentions": "멘션",
+    "requests": "요청"
+  },
+  "empty": {
+    "noBoosts": "부스트 없음",
+    "noFavourites": "좋아요 없음",
+    "noQuotes": "인용 없음",
+    "noFollowRequests": "대기 중인 팔로우 요청 없음",
+    "noMessages": "메시지 없음",
+    "noUsersFound": "사용자를 찾을 수 없음",
+    "noSuggestions": "추천 없음",
+    "noTrendingPosts": "현재 인기 게시물 없음",
+    "noTrendingTags": "현재 인기 태그 없음",
+    "noTrendingNews": "현재 인기 뉴스 없음",
+    "signInToSee": "추천을 보려면 로그인하세요",
+    "failedTrending": "인기 콘텐츠 로드 실패",
+    "failedTags": "태그 로드 실패",
+    "failedNews": "뉴스 로드 실패",
+    "failedSuggestions": "추천 로드 실패"
+  },
+  "settings": {
+    "title": "설정",
+    "preferences": "환경설정",
+    "notifications": "알림",
+    "filters": "필터",
+    "blocks": "차단",
+    "mutes": "음소거",
+    "pushNotifications": "푸시 알림",
+    "notSupported": "이 브라우저에서 지원되지 않음"
+  },
+  "visibility": {
+    "title": "공개 범위",
+    "whoCanQuote": "인용 가능한 사람",
+    "public": "공개",
+    "unlisted": "비공개",
+    "private": "팔로워만",
+    "direct": "다이렉트"
+  },
+  "poll": {
+    "closed": "종료됨",
+    "vote": "투표",
+    "votes": "표"
+  },
+  "toast": {
+    "copiedToClipboard": "클립보드에 복사됨",
+    "filterDeleted": "필터 삭제됨",
+    "filterUpdated": "필터 업데이트됨",
+    "filterCreated": "필터 생성됨",
+    "failedToDeleteFilter": "필터 삭제 실패",
+    "postDeleted": "게시물 삭제됨",
+    "postShared": "게시물 공유됨"
+  },
+  "wrapstodon": {
+    "title": "Wrapstodon",
+    "notAvailable": "Wrapstodon을 사용할 수 없음",
+    "somethingWentWrong": "오류가 발생했습니다",
+    "mostUsedHashtag": "가장 많이 사용한 해시태그",
+    "mostPopularPost": "가장 인기 있는 게시물"
+  },
+  "about": {
+    "title": "정보"
+  }
+}

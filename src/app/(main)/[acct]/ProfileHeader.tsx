@@ -20,6 +20,7 @@ import {
     LimitedAccountWarning,
     LimitedAccountMessage,
 } from './styles';
+import { useTranslations } from 'next-intl';
 
 interface ProfileHeaderProps {
     account: Account;
@@ -50,6 +51,7 @@ export function ProfileHeader({
     onMuteToggle,
     onNotifyToggle,
 }: ProfileHeaderProps) {
+    const t = useTranslations('account');
     return (
         <ProfileSection itemScope itemType="https://schema.org/Person">
             <HeaderImage $url={account.header} />
@@ -83,7 +85,7 @@ export function ProfileHeader({
                 <NameSection>
                     <DisplayName itemProp="name">
                         <EmojiText text={account.display_name || account.username} emojis={account.emojis} />
-                        {account.bot && <BotBadge>BOT</BotBadge>}
+                        {account.bot && <BotBadge>{t('bot')}</BotBadge>}
                         {account.locked && <LockIcon><Lock size={14} /></LockIcon>}
                     </DisplayName>
                     <HandleExplainer username={account.username} server={new URL(account.url).hostname} />
@@ -96,12 +98,12 @@ export function ProfileHeader({
                     {account.created_at && (
                         <MetaItem>
                             <Calendar size={14} />
-                            Joined {formatJoinDate(account.created_at)}
+                            {t('joined', { date: formatJoinDate(account.created_at) })}
                         </MetaItem>
                     )}
                     <MetaLink href={account.url} target="_blank" rel="noopener noreferrer">
                         <ExternalLink size={14} />
-                        View on instance
+                        {t('viewOnInstance')}
                     </MetaLink>
                 </MetaSection>
                 <ProfileFields fields={account.fields} emojis={account.emojis} />
@@ -143,6 +145,7 @@ export function LimitedProfileHeader({
     onShowProfile,
     domain,
 }: LimitedProfileHeaderProps) {
+    const t = useTranslations('account');
     return (
         <>
             <ProfileSection>
@@ -177,10 +180,10 @@ export function LimitedProfileHeader({
             </ProfileSection>
             <LimitedAccountWarning>
                 <LimitedAccountMessage>
-                    This profile has been hidden by the moderators of {domain}.
+                    {t('hiddenProfile', { domain })}
                 </LimitedAccountMessage>
                 <Button variant="secondary" onClick={onShowProfile}>
-                    Show profile anyway
+                    {t('showProfile')}
                 </Button>
             </LimitedAccountWarning>
         </>

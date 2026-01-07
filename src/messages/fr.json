@@ -1,0 +1,158 @@
+{
+  "common": {
+    "retry": "Réessayer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "remove": "Retirer",
+    "share": "Partager",
+    "report": "Signaler",
+    "verified": "Vérifié",
+    "close": "Fermer",
+    "loading": "Chargement...",
+    "viewAll": "Voir tout",
+    "dontShowAgain": "Ne plus afficher"
+  },
+  "nav": {
+    "home": "Accueil",
+    "explore": "Explorer",
+    "notifications": "Notifications",
+    "messages": "Messages",
+    "bookmarks": "Signets",
+    "lists": "Listes",
+    "settings": "Paramètres",
+    "search": "Rechercher",
+    "compose": "Composer",
+    "sourceCode": "Code source",
+    "about": "À propos"
+  },
+  "timeline": {
+    "title": "Accueil",
+    "subtitle": "Votre fil personnel",
+    "empty": "Votre fil est vide",
+    "error": "Erreur de chargement du fil",
+    "trending": "Tendances"
+  },
+  "profile": {
+    "posts": "Publications",
+    "following": "Abonnements",
+    "followers": "Abonnés",
+    "noPosts": "Aucune publication",
+    "noFollowers": "Aucun abonné",
+    "notFollowing": "Aucun abonnement",
+    "hiddenInfo": "Cet utilisateur a choisi de ne pas rendre cette information disponible",
+    "profileInfo": "Informations du profil",
+    "extraFields": "Champs supplémentaires"
+  },
+  "actions": {
+    "reply": "Répondre",
+    "quote": "Citer",
+    "boost": "Partager",
+    "favourite": "Favoriser",
+    "bookmark": "Ajouter aux signets",
+    "editStatus": "Modifier le statut",
+    "deleteStatus": "Supprimer le statut",
+    "follow": "Suivre",
+    "unfollow": "Ne plus suivre"
+  },
+  "composer": {
+    "addEmoji": "Ajouter un emoji",
+    "addMedia": "Ajouter un média",
+    "addPoll": "Ajouter un sondage",
+    "addContentWarning": "Ajouter un avertissement",
+    "schedulePost": "Programmer la publication",
+    "removePoll": "Supprimer le sondage",
+    "removeOption": "Supprimer l'option",
+    "poll": "Sondage",
+    "editAltText": "Modifier le texte alternatif"
+  },
+  "imageCropper": {
+    "zoomIn": "Zoom avant",
+    "zoomOut": "Zoom arrière",
+    "rotateLeft": "Rotation 90° gauche",
+    "rotateRight": "Rotation 90° droite",
+    "flipHorizontal": "Retourner horizontalement",
+    "flipVertical": "Retourner verticalement"
+  },
+  "suggestions": {
+    "whoToFollow": "Suggestions",
+    "dismissSuggestions": "Masquer les suggestions",
+    "previousItem": "Précédent",
+    "nextItem": "Suivant"
+  },
+  "search": {
+    "title": "Recherche",
+    "placeholder": "Rechercher des personnes, publications ou hashtags",
+    "recent": "Récent",
+    "error": "Une erreur s'est produite lors de la recherche"
+  },
+  "conversation": {
+    "title": "Conversation",
+    "noMessages": "Aucun message"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "all": "Tout",
+    "mentions": "Mentions",
+    "requests": "Demandes"
+  },
+  "empty": {
+    "noBoosts": "Aucun partage",
+    "noFavourites": "Aucun favori",
+    "noQuotes": "Aucune citation",
+    "noFollowRequests": "Aucune demande d'abonnement",
+    "noMessages": "Aucun message",
+    "noUsersFound": "Aucun utilisateur trouvé",
+    "noSuggestions": "Aucune suggestion",
+    "noTrendingPosts": "Aucune tendance en ce moment",
+    "noTrendingTags": "Aucun tag tendance",
+    "noTrendingNews": "Aucune actualité tendance",
+    "signInToSee": "Connectez-vous pour voir les suggestions",
+    "failedTrending": "Impossible de charger les tendances",
+    "failedTags": "Impossible de charger les tags",
+    "failedNews": "Impossible de charger les actualités",
+    "failedSuggestions": "Impossible de charger les suggestions"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "preferences": "Préférences",
+    "notifications": "Notifications",
+    "filters": "Filtres",
+    "blocks": "Blocages",
+    "mutes": "Masquages",
+    "pushNotifications": "Notifications push",
+    "notSupported": "Non pris en charge par ce navigateur"
+  },
+  "visibility": {
+    "title": "Visibilité",
+    "whoCanQuote": "Qui peut citer",
+    "public": "Public",
+    "unlisted": "Non listé",
+    "private": "Abonnés uniquement",
+    "direct": "Direct"
+  },
+  "poll": {
+    "closed": "Fermé",
+    "vote": "Voter",
+    "votes": "votes"
+  },
+  "toast": {
+    "copiedToClipboard": "Copié dans le presse-papiers",
+    "filterDeleted": "Filtre supprimé",
+    "filterUpdated": "Filtre mis à jour",
+    "filterCreated": "Filtre créé",
+    "failedToDeleteFilter": "Impossible de supprimer le filtre",
+    "postDeleted": "Publication supprimée",
+    "postShared": "Publication partagée"
+  },
+  "wrapstodon": {
+    "title": "Wrapstodon",
+    "notAvailable": "Wrapstodon non disponible",
+    "somethingWentWrong": "Une erreur s'est produite",
+    "mostUsedHashtag": "Hashtag le plus utilisé",
+    "mostPopularPost": "Publication la plus populaire"
+  },
+  "about": {
+    "title": "À propos"
+  }
+}

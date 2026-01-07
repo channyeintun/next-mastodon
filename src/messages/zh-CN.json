@@ -1,0 +1,158 @@
+{
+  "common": {
+    "retry": "重试",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "remove": "移除",
+    "share": "分享",
+    "report": "举报",
+    "verified": "已验证",
+    "close": "关闭",
+    "loading": "加载中...",
+    "viewAll": "查看全部",
+    "dontShowAgain": "不再显示"
+  },
+  "nav": {
+    "home": "首页",
+    "explore": "探索",
+    "notifications": "通知",
+    "messages": "消息",
+    "bookmarks": "书签",
+    "lists": "列表",
+    "settings": "设置",
+    "search": "搜索",
+    "compose": "发布",
+    "sourceCode": "源代码",
+    "about": "关于"
+  },
+  "timeline": {
+    "title": "首页",
+    "subtitle": "你的个人时间线",
+    "empty": "时间线是空的",
+    "error": "加载时间线时出错",
+    "trending": "热门"
+  },
+  "profile": {
+    "posts": "帖子",
+    "following": "正在关注",
+    "followers": "粉丝",
+    "noPosts": "暂无帖子",
+    "noFollowers": "暂无粉丝",
+    "notFollowing": "暂未关注任何人",
+    "hiddenInfo": "该用户选择不公开此信息",
+    "profileInfo": "个人资料",
+    "extraFields": "额外字段"
+  },
+  "actions": {
+    "reply": "回复",
+    "quote": "引用",
+    "boost": "转发",
+    "favourite": "喜欢",
+    "bookmark": "收藏",
+    "editStatus": "编辑状态",
+    "deleteStatus": "删除状态",
+    "follow": "关注",
+    "unfollow": "取消关注"
+  },
+  "composer": {
+    "addEmoji": "添加表情",
+    "addMedia": "添加媒体",
+    "addPoll": "添加投票",
+    "addContentWarning": "添加内容警告",
+    "schedulePost": "定时发布",
+    "removePoll": "移除投票",
+    "removeOption": "移除选项",
+    "poll": "投票",
+    "editAltText": "编辑替代文本"
+  },
+  "imageCropper": {
+    "zoomIn": "放大",
+    "zoomOut": "缩小",
+    "rotateLeft": "向左旋转90°",
+    "rotateRight": "向右旋转90°",
+    "flipHorizontal": "水平翻转",
+    "flipVertical": "垂直翻转"
+  },
+  "suggestions": {
+    "whoToFollow": "推荐关注",
+    "dismissSuggestions": "隐藏建议",
+    "previousItem": "上一个",
+    "nextItem": "下一个"
+  },
+  "search": {
+    "title": "搜索",
+    "placeholder": "搜索用户、帖子或话题标签",
+    "recent": "最近",
+    "error": "搜索时出错"
+  },
+  "conversation": {
+    "title": "对话",
+    "noMessages": "暂无消息"
+  },
+  "notifications": {
+    "title": "通知",
+    "all": "全部",
+    "mentions": "提及",
+    "requests": "请求"
+  },
+  "empty": {
+    "noBoosts": "暂无转发",
+    "noFavourites": "暂无喜欢",
+    "noQuotes": "暂无引用",
+    "noFollowRequests": "没有待处理的关注请求",
+    "noMessages": "暂无消息",
+    "noUsersFound": "未找到用户",
+    "noSuggestions": "暂无建议",
+    "noTrendingPosts": "目前没有热门帖子",
+    "noTrendingTags": "目前没有热门话题",
+    "noTrendingNews": "目前没有热门新闻",
+    "signInToSee": "登录以查看建议",
+    "failedTrending": "加载热门内容失败",
+    "failedTags": "加载话题失败",
+    "failedNews": "加载新闻失败",
+    "failedSuggestions": "加载建议失败"
+  },
+  "settings": {
+    "title": "设置",
+    "preferences": "偏好设置",
+    "notifications": "通知",
+    "filters": "过滤器",
+    "blocks": "屏蔽",
+    "mutes": "静音",
+    "pushNotifications": "推送通知",
+    "notSupported": "此浏览器不支持"
+  },
+  "visibility": {
+    "title": "可见性",
+    "whoCanQuote": "谁可以引用",
+    "public": "公开",
+    "unlisted": "不公开",
+    "private": "仅关注者",
+    "direct": "私信"
+  },
+  "poll": {
+    "closed": "已结束",
+    "vote": "投票",
+    "votes": "票"
+  },
+  "toast": {
+    "copiedToClipboard": "已复制到剪贴板",
+    "filterDeleted": "过滤器已删除",
+    "filterUpdated": "过滤器已更新",
+    "filterCreated": "过滤器已创建",
+    "failedToDeleteFilter": "删除过滤器失败",
+    "postDeleted": "帖子已删除",
+    "postShared": "帖子已分享"
+  },
+  "wrapstodon": {
+    "title": "Wrapstodon",
+    "notAvailable": "Wrapstodon 不可用",
+    "somethingWentWrong": "出错了",
+    "mostUsedHashtag": "最常用的话题标签",
+    "mostPopularPost": "最受欢迎的帖子"
+  },
+  "about": {
+    "title": "关于"
+  }
+}

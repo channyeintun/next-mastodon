@@ -1,0 +1,158 @@
+{
+  "common": {
+    "retry": "Reintentar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "remove": "Quitar",
+    "share": "Compartir",
+    "report": "Reportar",
+    "verified": "Verificado",
+    "close": "Cerrar",
+    "loading": "Cargando...",
+    "viewAll": "Ver todo",
+    "dontShowAgain": "No mostrar de nuevo"
+  },
+  "nav": {
+    "home": "Inicio",
+    "explore": "Explorar",
+    "notifications": "Notificaciones",
+    "messages": "Mensajes",
+    "bookmarks": "Marcadores",
+    "lists": "Listas",
+    "settings": "Configuración",
+    "search": "Buscar",
+    "compose": "Redactar",
+    "sourceCode": "Código fuente",
+    "about": "Acerca de"
+  },
+  "timeline": {
+    "title": "Inicio",
+    "subtitle": "Tu línea de tiempo personal",
+    "empty": "Tu línea de tiempo está vacía",
+    "error": "Error al cargar la línea de tiempo",
+    "trending": "Tendencias"
+  },
+  "profile": {
+    "posts": "Publicaciones",
+    "following": "Siguiendo",
+    "followers": "Seguidores",
+    "noPosts": "Sin publicaciones aún",
+    "noFollowers": "Sin seguidores aún",
+    "notFollowing": "No sigue a nadie aún",
+    "hiddenInfo": "Este usuario ha elegido no hacer disponible esta información",
+    "profileInfo": "Información del perfil",
+    "extraFields": "Campos adicionales"
+  },
+  "actions": {
+    "reply": "Responder",
+    "quote": "Citar",
+    "boost": "Impulsar",
+    "favourite": "Favorito",
+    "bookmark": "Marcar",
+    "editStatus": "Editar estado",
+    "deleteStatus": "Eliminar estado",
+    "follow": "Seguir",
+    "unfollow": "Dejar de seguir"
+  },
+  "composer": {
+    "addEmoji": "Añadir emoji",
+    "addMedia": "Añadir multimedia",
+    "addPoll": "Añadir encuesta",
+    "addContentWarning": "Añadir advertencia de contenido",
+    "schedulePost": "Programar publicación",
+    "removePoll": "Quitar encuesta",
+    "removeOption": "Quitar opción",
+    "poll": "Encuesta",
+    "editAltText": "Editar texto alternativo"
+  },
+  "imageCropper": {
+    "zoomIn": "Acercar",
+    "zoomOut": "Alejar",
+    "rotateLeft": "Rotar 90° izquierda",
+    "rotateRight": "Rotar 90° derecha",
+    "flipHorizontal": "Voltear horizontal",
+    "flipVertical": "Voltear vertical"
+  },
+  "suggestions": {
+    "whoToFollow": "A quién seguir",
+    "dismissSuggestions": "Descartar sugerencias",
+    "previousItem": "Anterior",
+    "nextItem": "Siguiente"
+  },
+  "search": {
+    "title": "Buscar",
+    "placeholder": "Buscar personas, publicaciones o hashtags",
+    "recent": "Reciente",
+    "error": "Ocurrió un error al buscar"
+  },
+  "conversation": {
+    "title": "Conversación",
+    "noMessages": "Sin mensajes aún"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "all": "Todo",
+    "mentions": "Menciones",
+    "requests": "Solicitudes"
+  },
+  "empty": {
+    "noBoosts": "Sin impulsos aún",
+    "noFavourites": "Sin favoritos aún",
+    "noQuotes": "Sin citas aún",
+    "noFollowRequests": "Sin solicitudes de seguimiento pendientes",
+    "noMessages": "Sin mensajes aún",
+    "noUsersFound": "No se encontraron usuarios",
+    "noSuggestions": "Sin sugerencias disponibles",
+    "noTrendingPosts": "Sin tendencias en este momento",
+    "noTrendingTags": "Sin etiquetas en tendencia",
+    "noTrendingNews": "Sin noticias en tendencia",
+    "signInToSee": "Inicia sesión para ver sugerencias",
+    "failedTrending": "Error al cargar tendencias",
+    "failedTags": "Error al cargar etiquetas",
+    "failedNews": "Error al cargar noticias",
+    "failedSuggestions": "Error al cargar sugerencias"
+  },
+  "settings": {
+    "title": "Configuración",
+    "preferences": "Preferencias",
+    "notifications": "Notificaciones",
+    "filters": "Filtros",
+    "blocks": "Bloqueos",
+    "mutes": "Silenciados",
+    "pushNotifications": "Notificaciones push",
+    "notSupported": "No compatible con este navegador"
+  },
+  "visibility": {
+    "title": "Visibilidad",
+    "whoCanQuote": "Quién puede citar",
+    "public": "Público",
+    "unlisted": "Sin listar",
+    "private": "Solo seguidores",
+    "direct": "Directo"
+  },
+  "poll": {
+    "closed": "Cerrada",
+    "vote": "Votar",
+    "votes": "votos"
+  },
+  "toast": {
+    "copiedToClipboard": "Copiado al portapapeles",
+    "filterDeleted": "Filtro eliminado",
+    "filterUpdated": "Filtro actualizado",
+    "filterCreated": "Filtro creado",
+    "failedToDeleteFilter": "Error al eliminar el filtro",
+    "postDeleted": "Publicación eliminada",
+    "postShared": "Publicación compartida"
+  },
+  "wrapstodon": {
+    "title": "Wrapstodon",
+    "notAvailable": "Wrapstodon no disponible",
+    "somethingWentWrong": "Algo salió mal",
+    "mostUsedHashtag": "Hashtag más usado",
+    "mostPopularPost": "Publicación más popular"
+  },
+  "about": {
+    "title": "Acerca de"
+  }
+}

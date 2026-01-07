@@ -10,10 +10,12 @@ import { IconButton } from '@/components/atoms';
 import { useNotificationRequests } from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
 import type { NotificationRequest } from '@/types';
+import { useTranslations } from 'next-intl';
 
 export default function NotificationRequestsPage() {
     const router = useRouter();
     const authStore = useAuthStore();
+    const t = useTranslations('notifications.requestsPage');
 
     const {
         data,
@@ -48,10 +50,10 @@ export default function NotificationRequestsPage() {
     return (
         <div className="full-height-container" style={{ maxWidth: '680px', margin: '0 auto' }}>
             <Header>
-                <IconButton onClick={() => router.back()} aria-label="Go back">
+                <IconButton onClick={() => router.back()} aria-label={t('goBack')}>
                     <ArrowLeft size={20} />
                 </IconButton>
-                <HeaderTitle>Filtered notifications</HeaderTitle>
+                <HeaderTitle>{t('title')}</HeaderTitle>
             </Header>
 
             {isLoading && (
@@ -69,9 +71,9 @@ export default function NotificationRequestsPage() {
             {!isLoading && !isError && allRequests.length === 0 && (
                 <EmptyState>
                     <Bell size={48} strokeWidth={1.5} />
-                    <EmptyTitle>All caught up!</EmptyTitle>
+                    <EmptyTitle>{t('emptyTitle')}</EmptyTitle>
                     <EmptyDescription>
-                        No filtered notifications to review.
+                        {t('emptyDesc')}
                     </EmptyDescription>
                 </EmptyState>
             )}
@@ -90,7 +92,7 @@ export default function NotificationRequestsPage() {
                     isLoadingMore={isFetchingNextPage}
                     onLoadMore={handleLoadMore}
                     loadingIndicator={<div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--size-4)' }}><div className="spinner" /></div>}
-                    endIndicator="No more filtered notifications"
+                    endIndicator={t('endOfList')}
                 />
             )}
         </div>

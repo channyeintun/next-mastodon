@@ -2,12 +2,13 @@
 
 import { useEffect, useRef, useMemo, useState } from 'react';
 import { Bell, Filter } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { BiExpandVertical, BiCollapseVertical } from 'react-icons/bi';
 import { IoCheckmarkDoneSharp } from 'react-icons/io5';
 import { TiDelete } from 'react-icons/ti';
 import { GroupedNotificationCard, NotificationSkeletonList } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { Button, Tabs, type TabItem } from '@/components/atoms';
+import { Button, Tabs } from '@/components/atoms';
 import { useInfiniteGroupedNotifications, useClearNotifications, useMarkNotificationsAsRead, useNotificationMarker, useNotificationPolicy, useUpdateNotificationPolicy } from '@/api';
 import type { NotificationGroup, Account, PartialAccountWithAvatar, Status, NotificationPolicyValue } from '@/types';
 import {
@@ -27,35 +28,17 @@ import {
 
 type NotificationTab = 'all' | 'mentions';
 
-const NOTIFICATION_TABS: TabItem<NotificationTab>[] = [
-    { value: 'all', label: 'All' },
-    { value: 'mentions', label: 'Mentions' },
-];
-
 interface PolicyCategory {
     key: 'for_not_following' | 'for_not_followers' | 'for_new_accounts' | 'for_private_mentions' | 'for_limited_accounts';
     label: string;
 }
-
-const policyCategories: PolicyCategory[] = [
-    { key: 'for_not_following', label: 'People you don\'t follow' },
-    { key: 'for_not_followers', label: 'People not following you' },
-    { key: 'for_new_accounts', label: 'New accounts' },
-    { key: 'for_private_mentions', label: 'Unsolicited private mentions' },
-    { key: 'for_limited_accounts', label: 'Moderated accounts' },
-];
-
-const policyOptions: { value: NotificationPolicyValue; label: string }[] = [
-    { value: 'accept', label: 'Accept' },
-    { value: 'filter', label: 'Filter' },
-    { value: 'drop', label: 'Drop' },
-];
 
 interface NotificationsV2Props {
     streamingStatus: string;
 }
 
 export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
+    const t = useTranslations('notifications');
     const [activeTab, setActiveTab] = useState<NotificationTab>('all');
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -164,7 +147,7 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                         <Bell size={24} />
                         <h1 style={{ fontSize: 'var(--font-size-4)', fontWeight: 'var(--font-weight-7)', margin: 0 }}>
-                            Notifications
+                            {t('title')}
                         </h1>
                         {streamingStatus === 'connected' && (
                             <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--green-6)', display: 'flex', alignItems: 'center', gap: 'var(--size-1)' }}>
@@ -187,21 +170,27 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
                 <NotificationSettingsPanel>
                     <NotificationSettingsPanelContent>
                         {/* Actions */}
-                        <NotificationSettingsSectionTitle>Actions</NotificationSettingsSectionTitle>
+                        <NotificationSettingsSectionTitle>{t('actions.title')}</NotificationSettingsSectionTitle>
                         <NotificationActionsRow>
                             <Button variant="ghost" size="small" onClick={handleMarkAsRead} disabled={allGroups.length === 0}>
                                 <IoCheckmarkDoneSharp size={16} />
-                                Mark all as read
+                                {t('actions.markAllRead')}
                             </Button>
                             <Button variant="ghost" size="small" onClick={handleClearAll} disabled={allGroups.length === 0}>
                                 <TiDelete size={16} />
-                                Clear all
+                                {t('actions.clearAll')}
                             </Button>
                         </NotificationActionsRow>
 
                         {/* Filters */}
-                        <NotificationSettingsSectionTitle style={{ marginTop: 'var(--size-3)' }}>Filters</NotificationSettingsSectionTitle>
-                        {policyCategories.map((category) => (
+                        <NotificationSettingsSectionTitle style={{ marginTop: 'var(--size-3)' }}>{t('filters.title')}</NotificationSettingsSectionTitle>
+                        {[
+                            { key: 'for_not_following' as const, label: t('filters.categories.for_not_following') },
+                            { key: 'for_not_followers' as const, label: t('filters.categories.for_not_followers') },
+                            { key: 'for_new_accounts' as const, label: t('filters.categories.for_new_accounts') },
+                            { key: 'for_private_mentions' as const, label: t('filters.categories.for_private_mentions') },
+                            { key: 'for_limited_accounts' as const, label: t('filters.categories.for_limited_accounts') },
+                        ].map((category) => (
                             <NotificationFilterRow key={category.key}>
                                 <NotificationFilterLabel>{category.label}</NotificationFilterLabel>
                                 <NotificationFilterSelect
@@ -209,7 +198,11 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
                                     onChange={(e) => handleFilterChange(category.key, e.target.value as NotificationPolicyValue)}
                                     disabled={updatePolicyMutation.isPending}
                                 >
-                                    {policyOptions.map(option => (
+                                    {[
+                                        { value: 'accept', label: t('filters.options.accept') },
+                                        { value: 'filter', label: t('filters.options.filter') },
+                                        { value: 'drop', label: t('filters.options.drop') },
+                                    ].map(option => (
                                         <option key={option.value} value={option.value}>{option.label}</option>
                                     ))}
                                 </NotificationFilterSelect>
@@ -221,7 +214,7 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
                             <NotificationPendingLink href="/notifications/requests">
                                 <Filter size={16} />
                                 <span>
-                                    {pendingRequestsCount} filtered {pendingRequestsCount === 1 ? 'notification' : 'notifications'}
+                                    {t('filtered', { count: pendingRequestsCount })}
                                 </span>
                             </NotificationPendingLink>
                         )}
@@ -231,7 +224,10 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
 
             {/* Tabs */}
             <Tabs
-                tabs={NOTIFICATION_TABS}
+                tabs={[
+                    { value: 'all', label: t('all') },
+                    { value: 'mentions', label: t('mentions') },
+                ]}
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
                 style={{ padding: '0 var(--size-4)' }}
@@ -245,7 +241,7 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
 
             {isError && (
                 <div style={{ padding: 'var(--size-4)', background: 'var(--red-2)', borderRadius: 'var(--radius-2)', color: 'var(--red-9)', textAlign: 'center' }}>
-                    {error?.message || 'Failed to load notifications'}
+                    {error?.message || t('loadError')}
                 </div>
             )}
 
@@ -269,17 +265,17 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
                     scrollRestorationKey={`notifications-v2-${activeTab}`}
                     height="100%"
                     loadingIndicator={<div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--size-4)' }}><div className="spinner" /></div>}
-                    endIndicator="You've reached the end of your notifications"
+                    endIndicator={t('endOfList')}
                     emptyState={
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--size-8)', textAlign: 'center' }}>
                             <Bell size={48} style={{ color: 'var(--text-3)', marginBottom: 'var(--size-4)' }} />
                             <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)', marginBottom: 'var(--size-2)' }}>
-                                {activeTab === 'mentions' ? 'No mentions yet' : 'No notifications yet'}
+                                {activeTab === 'mentions' ? t('empty.mentionsTitle') : t('empty.allTitle')}
                             </h2>
                             <p style={{ fontSize: 'var(--font-size-1)', color: 'var(--text-3)' }}>
                                 {activeTab === 'mentions'
-                                    ? 'When someone mentions you, you\'ll see it here.'
-                                    : 'When someone interacts with your posts, you\'ll see it here.'
+                                    ? t('empty.mentionsDesc')
+                                    : t('empty.allDesc')
                                 }
                             </p>
                         </div>

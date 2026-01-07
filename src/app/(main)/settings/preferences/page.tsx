@@ -7,28 +7,35 @@ import Select from 'react-select';
 import { useCurrentAccount, usePreferences, useUpdateAccount } from '@/api';
 import { Button, IconButton, Card, CircleSkeleton, TextSkeleton } from '@/components/atoms';
 import { customSelectStyles, CustomOption, CustomSingleValue, OptionType } from './SelectStyles';
+import { useLocale } from '@/hooks/useLocale';
+import { Languages } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 type Visibility = 'public' | 'unlisted' | 'private' | 'direct';
 type QuotePolicy = 'public' | 'followers' | 'nobody';
 
-const visibilityOptions: OptionType[] = [
-    { value: 'public', label: 'Public', description: 'Anyone on and off Mastodon', icon: Globe },
-    { value: 'unlisted', label: 'Quiet public', description: 'Hidden from search results, viral timelines', icon: Lock },
-    { value: 'private', label: 'Followers', description: 'Only your followers', icon: Users },
-    { value: 'direct', label: 'Private mention', description: 'Everyone mentioned in the post', icon: Mail },
-];
-
-const quotePolicyOptions: OptionType[] = [
-    { value: 'public', label: 'Everyone', description: 'Anyone can quote this post', icon: Globe },
-    { value: 'followers', label: 'Followers', description: 'Only followers can quote', icon: Users },
-    { value: 'nobody', label: 'Just me', description: 'No one else can quote', icon: Lock },
-];
+// Options defined inside component to use translations
 
 export default function PreferencesPage() {
     const router = useRouter();
+    const t = useTranslations('settings');
+    const { locale, setLocale, locales } = useLocale();
     const { data: currentAccount, isLoading: isLoadingAccount } = useCurrentAccount();
     const { data: preferences, isLoading: isLoadingPreferences } = usePreferences();
     const updateAccountMutation = useUpdateAccount();
+
+    const visibilityOptions: OptionType[] = [
+        { value: 'public', label: t('options.public'), description: t('options.publicDesc'), icon: Globe },
+        { value: 'unlisted', label: t('options.unlisted'), description: t('options.unlistedDesc'), icon: Lock },
+        { value: 'private', label: t('options.private'), description: t('options.privateDesc'), icon: Users },
+        { value: 'direct', label: t('options.direct'), description: t('options.directDesc'), icon: Mail },
+    ];
+
+    const quotePolicyOptions: OptionType[] = [
+        { value: 'public', label: t('options.quotePublic'), description: t('options.quotePublicDesc'), icon: Globe },
+        { value: 'followers', label: t('options.quoteFollowers'), description: t('options.quoteFollowersDesc'), icon: Users },
+        { value: 'nobody', label: t('options.quoteNobody'), description: t('options.quoteNobodyDesc'), icon: Lock },
+    ];
 
     const [defaultVisibility, setDefaultVisibility] = useState<Visibility>('public');
     const [defaultQuotePolicy, setDefaultQuotePolicy] = useState<QuotePolicy>('public');
@@ -114,46 +121,72 @@ export default function PreferencesPage() {
 
             <form onSubmit={handleSubmit}>
                 <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
-                    <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', marginBottom: 'var(--size-2)', color: 'var(--text-1)' }}>Posting Defaults</h2>
-                    <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)', marginBottom: 'var(--size-4)' }}>Configure default settings for new posts</p>
+                    <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', marginBottom: 'var(--size-2)', color: 'var(--text-1)' }}>{t('interfaceLanguage')}</h2>
+                    <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)', marginBottom: 'var(--size-4)' }}>{t('interfaceLanguageDesc')}</p>
 
                     <div style={{ marginBottom: 'var(--size-4)' }}>
-                        <label style={{ display: 'block', fontSize: 'var(--font-size-1)', fontWeight: 'var(--font-weight-6)', marginBottom: 'var(--size-2)', color: 'var(--text-1)' }}>Visibility</label>
+                        <Select
+                            value={{
+                                value: locale,
+                                label: locale === 'en' ? 'English' : locale === 'de' ? 'Deutsch' : locale === 'fr' ? 'Français' : locale === 'es' ? 'Español' : locale === 'ja' ? '日本語' : locale === 'zh-CN' ? '中文 (简体)' : locale === 'ko' ? '한국어' : locale,
+                                description: locale === 'en' ? 'English' : locale === 'de' ? 'German' : locale === 'fr' ? 'French' : locale === 'es' ? 'Spanish' : locale === 'ja' ? 'Japanese' : locale === 'zh-CN' ? 'Simplified Chinese' : locale === 'ko' ? 'Korean' : locale,
+                                icon: Languages
+                            }}
+                            onChange={(option) => option && setLocale(option.value as any)}
+                            options={locales.map(l => ({
+                                value: l,
+                                label: l === 'en' ? 'English' : l === 'de' ? 'Deutsch' : l === 'fr' ? 'Français' : l === 'es' ? 'Español' : l === 'ja' ? '日本語' : l === 'zh-CN' ? '中文 (简体)' : l === 'ko' ? '한국어' : l,
+                                description: l === 'en' ? 'English' : l === 'de' ? 'German' : l === 'fr' ? 'French' : l === 'es' ? 'Spanish' : l === 'ja' ? 'Japanese' : l === 'zh-CN' ? 'Simplified Chinese' : l === 'ko' ? 'Korean' : l,
+                                icon: Languages
+                            }))}
+                            styles={customSelectStyles}
+                            components={{ Option: CustomOption, SingleValue: CustomSingleValue }}
+                            isSearchable={false}
+                        />
+                    </div>
+                </Card>
+
+                <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
+                    <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', marginBottom: 'var(--size-2)', color: 'var(--text-1)' }}>{t('postingDefaults')}</h2>
+                    <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)', marginBottom: 'var(--size-4)' }}>{t('postingDefaultsDesc')}</p>
+
+                    <div style={{ marginBottom: 'var(--size-4)' }}>
+                        <label style={{ display: 'block', fontSize: 'var(--font-size-1)', fontWeight: 'var(--font-weight-6)', marginBottom: 'var(--size-2)', color: 'var(--text-1)' }}>{t('visibility')}</label>
                         <Select value={visibilityOptions.find(opt => opt.value === defaultVisibility)} onChange={(option) => option && setDefaultVisibility(option.value as Visibility)} options={visibilityOptions} styles={customSelectStyles} components={{ Option: CustomOption, SingleValue: CustomSingleValue }} isSearchable={false} />
                     </div>
 
                     <div style={{ marginBottom: 'var(--size-4)' }}>
-                        <label style={{ display: 'block', fontSize: 'var(--font-size-1)', fontWeight: 'var(--font-weight-6)', marginBottom: 'var(--size-2)', color: 'var(--text-1)' }}>Who can quote</label>
+                        <label style={{ display: 'block', fontSize: 'var(--font-size-1)', fontWeight: 'var(--font-weight-6)', marginBottom: 'var(--size-2)', color: 'var(--text-1)' }}>{t('whoCanQuote')}</label>
                         <Select value={quotePolicyOptions.find(opt => opt.value === defaultQuotePolicy)} onChange={(option) => option && setDefaultQuotePolicy(option.value as QuotePolicy)} options={quotePolicyOptions} styles={customSelectStyles} components={{ Option: CustomOption, SingleValue: CustomSingleValue }} isDisabled={isQuotePolicyDisabled} isSearchable={false} />
-                        {isQuotePolicyDisabled && <div style={{ padding: 'var(--size-2)', fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>Follower-only and private posts can&apos;t be quoted by others.</div>}
+                        {isQuotePolicyDisabled && <div style={{ padding: 'var(--size-2)', fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>{t('quoteDisabled')}</div>}
                     </div>
 
                     <label style={labelStyle}>
                         <input type="checkbox" checked={defaultSensitive} onChange={(e) => setDefaultSensitive(e.target.checked)} style={checkboxStyle} />
-                        <div><div style={{ fontWeight: 'var(--font-weight-6)', color: 'var(--text-1)' }}>Mark media as sensitive by default</div><div style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>Hide media attachments behind a content warning</div></div>
+                        <div><div style={{ fontWeight: 'var(--font-weight-6)', color: 'var(--text-1)' }}>{t('markSensitive')}</div><div style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>{t('markSensitiveDesc')}</div></div>
                     </label>
                 </Card>
 
                 <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
-                    <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', marginBottom: 'var(--size-2)', color: 'var(--text-1)' }}>Privacy</h2>
-                    <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)', marginBottom: 'var(--size-4)' }}>Control your profile visibility and discoverability</p>
+                    <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', marginBottom: 'var(--size-2)', color: 'var(--text-1)' }}>{t('privacy')}</h2>
+                    <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)', marginBottom: 'var(--size-4)' }}>{t('privacyDesc')}</p>
 
                     <div style={{ marginBottom: 'var(--size-3)' }}>
                         <label style={labelStyle}>
                             <input type="checkbox" checked={hideCollections} onChange={(e) => setHideCollections(e.target.checked)} style={checkboxStyle} />
-                            <div><div style={{ fontWeight: 'var(--font-weight-6)', color: 'var(--text-1)' }}>Hide followers and following</div><div style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>Hide your followers and who you follow from your profile</div></div>
+                            <div><div style={{ fontWeight: 'var(--font-weight-6)', color: 'var(--text-1)' }}>{t('hideCollections')}</div><div style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>{t('hideCollectionsDesc')}</div></div>
                         </label>
                     </div>
 
                     <label style={labelStyle}>
                         <input type="checkbox" checked={indexable} onChange={(e) => setIndexable(e.target.checked)} style={checkboxStyle} />
-                        <div><div style={{ fontWeight: 'var(--font-weight-6)', color: 'var(--text-1)' }}>Include public posts in search results</div><div style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>Allow your public posts to be discoverable through search</div></div>
+                        <div><div style={{ fontWeight: 'var(--font-weight-6)', color: 'var(--text-1)' }}>{t('indexable')}</div><div style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>{t('indexableDesc')}</div></div>
                     </label>
                 </Card>
 
                 <div style={{ display: 'flex', gap: 'var(--size-3)', justifyContent: 'flex-end' }}>
-                    <Button type="button" variant="ghost" onClick={() => router.back()} disabled={updateAccountMutation.isPending}>Cancel</Button>
-                    <Button type="submit" disabled={!hasChanges || updateAccountMutation.isPending} isLoading={updateAccountMutation.isPending}>Save changes</Button>
+                    <Button type="button" variant="ghost" onClick={() => router.back()} disabled={updateAccountMutation.isPending}>{t('common.cancel')}</Button>
+                    <Button type="submit" disabled={!hasChanges || updateAccountMutation.isPending} isLoading={updateAccountMutation.isPending}>{t('saveChanges')}</Button>
                 </div>
             </form>
         </div>

@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { type ReactNode, Activity } from 'react';
 import { Smile, Image as ImageIcon, BarChart2, Clock } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface ComposerToolbarProps {
     // Toolbar button states
@@ -64,6 +65,7 @@ export function ComposerToolbar({
     emojiPicker,
 }: ComposerToolbarProps) {
     const remainingChars = maxCharCount - charCount;
+    const t = useTranslations('composer');
 
     return (
         <div className="compose-toolbar-area">
@@ -75,8 +77,8 @@ export function ComposerToolbar({
                             className="compose-tool-btn"
                             type="button"
                             onClick={onEmojiToggle}
-                            title="Add emoji"
-                            aria-label="Add emoji"
+                            title={t('addEmoji')}
+                            aria-label={t('addEmoji')}
                         >
                             <Smile size={18} />
                         </EmojiButton>
@@ -91,8 +93,8 @@ export function ComposerToolbar({
                         type="button"
                         onClick={onMediaClick}
                         disabled={!canAddMedia}
-                        title="Add media"
-                        aria-label="Add media"
+                        title={t('addMedia')}
+                        aria-label={t('addMedia')}
                     >
                         <ImageIcon size={18} />
                     </button>
@@ -103,8 +105,8 @@ export function ComposerToolbar({
                         type="button"
                         onClick={onPollClick}
                         disabled={!canAddPoll}
-                        title="Add poll"
-                        aria-label="Add poll"
+                        title={t('addPoll')}
+                        aria-label={t('addPoll')}
                     >
                         <BarChart2 size={18} />
                     </button>
@@ -115,8 +117,8 @@ export function ComposerToolbar({
                         type="button"
                         onClick={onCWToggle}
                         $isActive={showCWInput}
-                        title="Add content warning"
-                        aria-label="Add content warning"
+                        title={t('addContentWarning')}
+                        aria-label={t('addContentWarning')}
                     >
                         <CWText>CW</CWText>
                     </CWButton>
@@ -127,8 +129,8 @@ export function ComposerToolbar({
                         type="button"
                         onClick={onScheduleToggle}
                         $isActive={showScheduleInput}
-                        title="Schedule post"
-                        aria-label="Schedule post"
+                        title={t('schedulePost')}
+                        aria-label={t('schedulePost')}
                         disabled={!canSchedule}
                     >
                         <Clock size={18} />

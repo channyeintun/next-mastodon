@@ -6,6 +6,7 @@ import { getQueryClient } from '@/lib/getQueryClient';
 import { lookupAccountServer } from '@/lib/serverApi';
 import { queryKeys } from '@/api/queryKeys';
 import { AccountPageClient } from './AccountPageClient';
+import { getTranslations } from 'next-intl/server';
 
 interface AccountPageProps {
     params: Promise<{ acct: string }>;
@@ -19,34 +20,36 @@ export async function generateMetadata({ params }: AccountPageProps): Promise<Me
     const { acct: acctParam } = await params;
     const decodedAcct = decodeURIComponent(acctParam);
 
+    const t = await getTranslations('account');
+
     if (!decodedAcct.startsWith('@')) {
-        return { title: 'Profile Not Found' };
+        return { title: t('notFound') };
     }
 
     const acct = decodedAcct.slice(1);
     const account = await lookupAccountServer(acct);
 
     if (!account) {
-        return { title: 'Profile Not Found' };
+        return { title: t('notFound') };
     }
 
     const displayName = account.display_name || account.username;
     const plainTextBio = account.note?.replace(/<[^>]*>/g, '').slice(0, 160) || '';
 
     return {
-        title: `${displayName} (@${account.acct}) - Mastodon`,
-        description: plainTextBio || `Profile of @${account.acct} on Mastodon`,
+        title: t('meta.title', { name: displayName, acct: account.acct }),
+        description: plainTextBio || t('meta.description', { acct: account.acct }),
         openGraph: {
-            title: `${displayName} (@${account.acct})`,
-            description: plainTextBio || `Profile of @${account.acct} on Mastodon`,
+            title: t('meta.ogTitle', { name: displayName, acct: account.acct }),
+            description: plainTextBio || t('meta.ogDescription', { acct: account.acct }),
             type: 'profile',
             images: account.avatar ? [{ url: account.avatar, alt: displayName }] : [],
             siteName: 'Mastodon',
         },
         twitter: {
             card: 'summary',
-            title: `${displayName} (@${account.acct})`,
-            description: plainTextBio || `Profile of @${account.acct}`,
+            title: t('meta.twitterTitle', { name: displayName, acct: account.acct }),
+            description: plainTextBio || t('meta.twitterDescription', { acct: account.acct }),
             images: account.avatar ? [account.avatar] : [],
         },
     };
