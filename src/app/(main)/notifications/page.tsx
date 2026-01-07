@@ -59,10 +59,54 @@ export default function NotificationsPage() {
                     </h1>
                 </div>
 
-                {/* Tabs skeleton */}
-                <div style={{ padding: '0 var(--size-4)', marginBottom: 'var(--size-3)', display: 'flex', gap: 'var(--size-3)', alignItems: 'flex-end' }}>
-                    <div className="skeleton" style={{ flex: 1, height: '56px', borderRadius: '9999px' }} />
-                    <div className="skeleton" style={{ flex: 1, height: '10px', borderRadius: '9999px' }} />
+                {/* Tabs skeleton - matches Tabs component underline variant */}
+                {/* Tabs skeleton - matches Tabs component underline variant */}
+                <div style={{
+                    padding: '0 var(--size-4)',
+                    marginBottom: 'var(--size-3)',
+                    display: 'flex',
+                    // gap: 'var(--size-4)', // Removed gap to match typical flex:1 tab behavior if needed, or keep it. 
+                    // Usually tabs with flex:1 don't strictly need gap if they fill space, but let's keep gap=0 for equal split
+                    gap: 0,
+                    borderBottom: '1px solid var(--surface-3)',
+                    position: 'relative'
+                }}>
+                    <div style={{
+                        flex: 1,
+                        padding: 'var(--size-3) var(--size-4)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}>
+                        <div className="skeleton" style={{ height: '14px', width: '32px', borderRadius: '4px' }} />
+                    </div>
+                    <div style={{
+                        flex: 1,
+                        padding: 'var(--size-3) var(--size-4)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}>
+                        <div className="skeleton" style={{ height: '14px', width: '64px', borderRadius: '4px' }} />
+                    </div>
+
+                    {/* Active tab indicator simulation */}
+                    <div style={{
+                        position: 'absolute',
+                        bottom: '-1px',
+                        left: 0,
+                        width: '50%', // 50% width since there are 2 equal tabs
+                        height: '3px',
+                        display: 'flex',
+                        justifyContent: 'center'
+                    }}>
+                        <div style={{
+                            width: '100%',
+                            height: '100%',
+                            background: 'var(--blue-6)',
+                            borderRadius: '3px 3px 0 0'
+                        }} />
+                    </div>
                 </div>
 
                 {/* Skeleton list */}
