@@ -3,7 +3,6 @@ import { type CSSProperties, type ReactNode, forwardRef, type ElementType } from
 interface CardProps {
   children: ReactNode;
   padding?: 'none' | 'small' | 'medium' | 'large';
-  hoverable?: boolean;
   style?: CSSProperties;
   className?: string;
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -12,7 +11,7 @@ interface CardProps {
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
-  { children, padding = 'medium', hoverable = false, style, className, onClick, as: Component = 'div', id },
+  { children, padding = 'medium', style, className, onClick, as: Component = 'div', id },
   ref
 ) {
   const paddingMap = {
