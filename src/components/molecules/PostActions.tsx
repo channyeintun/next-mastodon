@@ -167,10 +167,11 @@ const PopoverButton = styled.button<{ $isActive?: boolean }>`
   color: ${({ $isActive }) => ($isActive ? 'var(--green-6)' : 'var(--text-1)')};
   font-size: inherit;
   white-space: nowrap;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease;
   box-shadow: none;
 
   &:hover {
-    background: var(--surface-3);
+    outline: 1px solid var(--surface-4);
+    outline-offset: -1px;
   }
 `;

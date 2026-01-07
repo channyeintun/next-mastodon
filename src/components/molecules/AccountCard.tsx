@@ -345,12 +345,13 @@ const MenuItem = styled.button<{ $isDestructive?: boolean }>`
   cursor: pointer;
   font-size: inherit;
   text-align: left;
-  transition: background 0.2s ease;
+  transition: color 0.2s ease;
   white-space: nowrap;
   box-shadow: none;
 
   &:hover {
-    background: var(--surface-3);
+    outline: 1px solid var(--surface-4);
+    outline-offset: -1px;
   }
 
   &:disabled {
