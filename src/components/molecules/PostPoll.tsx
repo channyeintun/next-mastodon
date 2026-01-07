@@ -130,7 +130,7 @@ const OptionLabel = styled.label<{ $isSelected: boolean }>`
   background: ${({ $isSelected }) => ($isSelected ? 'color-mix(in srgb, var(--blue-6), transparent 85%)' : 'var(--surface-2)')};
   border-radius: var(--radius-2);
   cursor: pointer;
-  border: ${({ $isSelected }) => ($isSelected ? '2px solid var(--blue-6)' : '2px solid transparent')};
+  border: 2px solid transparent;
   transition: all 0.2s ease;
 `;
 
@@ -164,7 +164,7 @@ const ResultOption = styled.div<{ $isOwnVote: boolean }>`
   background: var(--surface-2);
   border-radius: var(--radius-2);
   position: relative;
-  border: ${({ $isOwnVote }) => ($isOwnVote ? '2px solid var(--blue-6)' : '2px solid transparent')};
+  border: 2px solid transparent;
 `;
 
 const ResultBar = styled.div<{ $percentage: number; $isOwnVote: boolean }>`

@@ -207,6 +207,7 @@ export function usePostActions(status: Status, onDeleteClick?: (postId: string) 
       await votePollMutation.mutateAsync({
         pollId: displayStatus.poll.id,
         choices: selectedPollChoices,
+        statusId: displayStatus.id,
       });
       setSelectedPollChoices([]);
     } catch (error) {

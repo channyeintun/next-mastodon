@@ -980,27 +980,59 @@ export function useVotePoll() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ pollId, choices }: { pollId: string; choices: number[] }) =>
+    mutationFn: ({ pollId, choices, statusId: _statusId }: { pollId: string; choices: number[]; statusId?: string }) =>
       votePoll(pollId, choices),
-    onMutate: async ({ pollId, choices }) => {
-      // Cancel any outgoing refetches
+    onMutate: async ({ pollId, choices, statusId }) => {
+      // 1. Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: queryKeys.timelines.all })
       await queryClient.cancelQueries({ queryKey: queryKeys.bookmarks.all() })
 
-      // Store previous state for rollback on error
-      return { pollId, choices }
+      // 2. Find the poll in cache
+      let previousStatus: Status | undefined;
+      if (statusId) {
+        previousStatus = findStatusInCaches(queryClient, statusId);
+      }
+
+      if (previousStatus && previousStatus.poll && previousStatus.poll.id === pollId) {
+        const poll = previousStatus.poll;
+
+        // 3. Create optimistically updated poll
+        const updatedPoll: Poll = {
+          ...poll,
+          voted: true,
+          own_votes: choices,
+          votes_count: poll.votes_count + 1, // Simple approximation
+          options: poll.options.map((option, index) => {
+            if (choices.includes(index)) {
+              return {
+                ...option,
+                votes_count: (option.votes_count || 0) + 1
+              };
+            }
+            return option;
+          })
+        };
+
+        // 4. Update the poll in all caches
+        updatePollInCaches(queryClient, pollId, updatedPoll);
+      }
+
+      return { previousStatus, pollId };
     },
     onSuccess: (updatedPoll, { pollId }) => {
-      // Update the poll in all cached statuses that contain it
+      // Update the poll in all cached statuses that contain it with final server data
       updatePollInCaches(queryClient, pollId, updatedPoll)
     },
-    onError: (_error) => {
-      // Invalidate all relevant queries to refetch on error
+    onError: (_error, __, context) => {
+      // Rollback if we have the previous status
+      if (context?.previousStatus && context.previousStatus.poll) {
+        updatePollInCaches(queryClient, context.pollId, context.previousStatus.poll);
+      }
+
+      // Invalidate relevant queries to ensure sync
       queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
       queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
       queryClient.invalidateQueries({ queryKey: ['accounts'] })
-      queryClient.invalidateQueries({ queryKey: ['timelines', 'hashtag'] })
-      queryClient.invalidateQueries({ queryKey: queryKeys.trends.statuses() })
     },
   })
 }
