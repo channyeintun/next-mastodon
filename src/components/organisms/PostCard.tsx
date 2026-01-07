@@ -237,7 +237,10 @@ export function PostCard({
         {!hideMedia &&
           (!hasContentWarning || showCWContent) &&
           displayStatus.media_attachments.length > 0 && (
-            <MediaContainer>
+            <MediaContainer
+              onClick={singleMedia ? handleMediaClick(0) : undefined}
+              $clickable={!!singleMedia}
+            >
               {/* Dynamic Blurred Background for single media */}
               {singleMedia && (
                 <BlurredBackground
@@ -399,7 +402,7 @@ const StyledStatusContent = styled(StatusContent)`
   margin-top: var(--size-3);
 `;
 
-const MediaContainer = styled.div`
+const MediaContainer = styled.div<{ $clickable?: boolean }>`
   margin-top: var(--size-3);
   margin-inline: calc(-1 * var(--size-4));
   position: relative;
@@ -409,6 +412,15 @@ const MediaContainer = styled.div`
   display: flex;
   justify-content: center;
   transition: background-color 0.3s ease;
+  cursor: ${props => props.$clickable ? 'pointer' : 'default'};
+
+  ${props => props.$clickable && `
+    &:hover {
+      & > div:first-of-type {
+        filter: blur(60px) brightness(0.85) saturate(1.6);
+      }
+    }
+  `}
 `;
 
 const MediaGrid = styled.div<{ $columns: number; $count: number; $blurred: boolean }>`
