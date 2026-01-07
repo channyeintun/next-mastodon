@@ -12,6 +12,9 @@ import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { WrapstodonModal } from '@/components/wrapstodon/WrapstodonModal';
 import { useStores } from '@/hooks/useStores';
 
+
+import { LiquidGlassBottomNav } from './LiquidGlassBottomNav';
+
 interface NavigationProps {
   isAuthenticated: boolean;
   instanceURL?: string | null;
@@ -169,26 +172,9 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
         </div>
       </nav>
 
-      {/* Mobile Bottom Navigation */}
+      {/* Mobile Bottom Navigation with Liquid Glass */}
       {isAuthenticated && (
-        <nav className="navigation-bottom" aria-label="Mobile navigation">
-          {bottomNavLinks.map((link) => {
-            const Icon = link.icon;
-            const isActive = pathname === link.href;
-
-            return (
-              <NavigationLink
-                key={link.href}
-                href={link.href}
-                icon={Icon}
-                label={link.label}
-                isActive={isActive}
-                variant="bottom"
-                badge={link.badge}
-              />
-            );
-          })}
-        </nav>
+        <LiquidGlassBottomNav bottomNavLinks={bottomNavLinks} pathname={pathname} />
       )}
     </>
   );
@@ -205,7 +191,7 @@ interface NavigationLinkProps {
   highlight?: boolean;
 }
 
-function NavigationLink({ href, icon: Icon, label, isActive, variant, badge, textBadge, highlight }: NavigationLinkProps) {
+export function NavigationLink({ href, icon: Icon, label, isActive, variant, badge, textBadge, highlight }: NavigationLinkProps) {
 
   const className = variant === 'sidebar'
     ? `navigation-sidebar-link ${isActive ? 'active' : ''} ${highlight ? 'highlight' : ''}`
@@ -231,7 +217,7 @@ function NavigationLink({ href, icon: Icon, label, isActive, variant, badge, tex
           </Badge>
         )}
       </IconWrapper>
-      <span className="navigation-link-label">{label}</span>
+      {variant !== 'bottom' && <span className="navigation-link-label">{label}</span>}
       {textBadge && <TextBadge>{textBadge}</TextBadge>}
       <LinkStatus />
     </Link>

@@ -20,7 +20,7 @@ html {
 :root {
   --app-max-width: 1200px;
   --app-sidebar-width: 280px;
-  --app-bottom-nav-height: 64px;
+  --app-bottom-nav-height: 90px;
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
   /* Status content link color - adapts to light/dark mode */
   --status-link-color: #5AA7FF;
@@ -572,26 +572,67 @@ input[type="radio"] {
   }
 }
 
-/* Bottom Navigation (Mobile) */
+/* Bottom Navigation (Mobile Redesign - Floating Pill) */
 .navigation-bottom {
   display: flex;
-  /* Visible on mobile */
   position: fixed;
-  bottom: 0;
+  bottom: var(--size-4);
   left: 0;
   right: 0;
-  height: var(--app-bottom-nav-height);
-  background: var(--surface-1);
-  border-top: 1px solid var(--gray-3);
+  height: 64px;
   z-index: 40;
-  justify-content: space-around;
-  align-items: center;
-  padding: var(--size-2) var(--size-3);
-  box-shadow: var(--shadow-2);
-  /* CSS containment and isolation to prevent virtualized content transforms from affecting positioning */
+  background: transparent;
+  border: none;
   isolation: isolate;
-  /* Create a new compositing layer for better performance and positioning isolation */
-  transform: translateZ(0);
+  pointer-events: none;
+  /* Allow clicks through to page */
+  justify-content: center;
+  align-items: center;
+  gap: var(--size-2);
+  padding-inline: var(--size-4);
+}
+
+.navigation-bottom-pill-wrapper {
+  display: flex;
+  position: relative;
+  height: 100%;
+  flex: 1;
+  max-width: 320px;
+  pointer-events: auto;
+}
+
+.navigation-bottom-search-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-1);
+  pointer-events: auto;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, background 0.2s ease;
+
+  &:active {
+    transform: scale(0.9);
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Moving thumb - dark mode adjustments */
+:root[data-theme="dark"] .navigation-bottom-thumb>div {
+  background: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .navigation-bottom-thumb>div {
+    background: rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+  }
 }
 
 .navigation-bottom-link {
@@ -609,7 +650,6 @@ input[type="radio"] {
   transition: all 0.2s ease;
   position: relative;
   cursor: pointer;
-  min-width: 64px;
   flex: 1;
 
   &:hover {
@@ -644,7 +684,6 @@ input[type="radio"] {
 .navigation-bottom-link .navigation-link-label {
   font-size: 11px;
 }
-
 
 
 /* ====================================
