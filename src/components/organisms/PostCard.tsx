@@ -159,7 +159,11 @@ export function PostCard({
       '--text-3': 'rgba(255, 255, 255, 0.6)',
       '--link': '#a78bfa',
     } as CSSProperties
-    : (style || {});
+    : {
+      border: depth > 0 ? '1px solid var(--surface-3)' : 'none',
+      boxShadow: depth > 0 ? 'var(--shadow-1)' : 'none',
+      ...(style || {}),
+    };
   // No longer using JS-based color extraction due to CORS issues
   const singleMedia = displayStatus.media_attachments.length === 1 ? displayStatus.media_attachments[0] : null;
 
