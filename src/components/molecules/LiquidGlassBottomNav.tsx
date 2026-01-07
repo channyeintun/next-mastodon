@@ -22,15 +22,18 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
     const [isPressed, setIsPressed] = useState(false);
     const isIOS = useIsIOS();
 
+    const activeIndex = bottomNavLinks.findIndex(link => link.href === pathname);
+    const initialIndex = activeIndex >= 0 ? activeIndex : 0;
+
     const [thumbState, setThumbState] = useState({
-        x: 0,
+        x: initialIndex,
         wobbleX: 1,
         wobbleY: 1
     });
 
     const physicsRef = useRef({
-        currentX: 0,
-        targetX: 0,
+        currentX: initialIndex,
+        targetX: initialIndex,
         velocity: 0,
         wobbleX: 1,
         wobbleY: 1,
@@ -43,9 +46,9 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
     const pressScale = isPressed ? 1.2 : 1;
     const pressScaleY = isPressed ? 1.1 : 1;
 
-    const activeIndex = bottomNavLinks.findIndex(link => link.href === pathname);
     const PILL_PADDING = 8;
-    const thumbWidth = itemWidth > 0 ? (itemWidth - (PILL_PADDING * 2)) : 48;
+    // We keep itemWidth for the filter generation which needs exact pixels
+    const thumbWidth = itemWidth > 0 ? (itemWidth - (PILL_PADDING * 2)) : 0;
 
     const pillRef = useRef<HTMLDivElement>(null);
 
@@ -68,27 +71,33 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
     }, [bottomNavLinks.length]);
 
     useEffect(() => {
-        if (activeIndex >= 0 && itemWidth > 0) {
-            const targetX = activeIndex * itemWidth + (itemWidth - thumbWidth) / 2;
-            physicsRef.current.targetX = targetX;
+        if (activeIndex >= 0) {
+            physicsRef.current.targetX = activeIndex;
         }
-    }, [activeIndex, itemWidth, thumbWidth]);
+    }, [activeIndex]);
 
     useEffect(() => {
         let rafId: number;
+
+        // Tuning for index-based movement (approx 100x smaller units than pixels)
+        // Previous pixel-based: velocity ~10-100. Factor 0.12.
+        // New index-based: velocity ~0.1-1.0. Factor needs to be higher for same effect.
+        // Let's try 12.0
+        const WOBBLE_FACTOR = 12.0;
+
         const loop = () => {
             const p = physicsRef.current;
             const newX = lerp(p.currentX, p.targetX, 0.22);
             p.velocity = newX - p.currentX;
             p.currentX = newX;
 
-            const stretchFactor = 1 + Math.abs(p.velocity) * 0.12;
+            const stretchFactor = 1 + Math.abs(p.velocity) * WOBBLE_FACTOR;
             const squashFactor = 1 / stretchFactor;
 
             p.wobbleX = lerp(p.wobbleX, stretchFactor, 0.3);
             p.wobbleY = lerp(p.wobbleY, squashFactor, 0.3);
 
-            if (Math.abs(p.targetX - p.currentX) < 0.01 && Math.abs(p.wobbleX - 1) < 0.001) {
+            if (Math.abs(p.targetX - p.currentX) < 0.001 && Math.abs(p.wobbleX - 1) < 0.001) {
                 p.currentX = p.targetX;
                 p.wobbleX = 1;
                 p.wobbleY = 1;
@@ -108,6 +117,9 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
 
     const handlePointerDown = () => setIsPressed(true);
     const handlePointerUp = () => setIsPressed(false);
+
+    const itemCount = bottomNavLinks.length;
+    const itemPercentage = 100 / itemCount;
 
     return (
         <nav className="navigation-bottom" aria-label="Mobile navigation">
@@ -159,24 +171,26 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
                     }}
                 />
 
-                {thumbWidth > 0 && activeIndex >= 0 && (
+                {activeIndex >= 0 && (
                     <div
                         className="navigation-bottom-thumb"
                         style={{
                             position: 'absolute',
                             height: 48,
-                            width: thumbWidth,
-                            top: (dimensions.height - 48) / 2,
+                            width: `${itemPercentage}%`,
+                            top: '50%',
+                            marginTop: -24, // Vertically centered (48px height)
                             left: 0,
-                            transform: `translateX(${thumbState.x}px) scale(${thumbState.wobbleX * pressScale}) scaleY(${thumbState.wobbleY * pressScaleY})`,
+                            transform: `translateX(${thumbState.x * 100}%) scale(${thumbState.wobbleX * pressScale}, ${thumbState.wobbleY * pressScaleY})`,
                             zIndex: 2,
                             pointerEvents: 'none',
                         }}
                     >
                         <div
                             style={{
-                                position: 'absolute',
-                                inset: 0,
+                                width: `calc(100% - ${PILL_PADDING * 2}px)`,
+                                height: '100%',
+                                margin: `0 auto`,
                                 borderRadius: 24,
                                 backdropFilter: isIOS ? 'blur(10px)' : `url(#${thumbFilterId})`,
                                 WebkitBackdropFilter: isIOS ? 'blur(10px)' : `url(#${thumbFilterId})`,
