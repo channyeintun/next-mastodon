@@ -641,6 +641,10 @@ input[type="radio"] {
   white-space: nowrap;
 }
 
+.navigation-bottom-link .navigation-link-label {
+  font-size: 11px;
+}
+
 
 
 /* ====================================
