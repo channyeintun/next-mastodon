@@ -22,15 +22,32 @@ html {
   --app-sidebar-width: 280px;
   --app-bottom-nav-height: 64px;
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
+  /* Status content link color - adapts to light/dark mode */
+  --status-link-color: #5AA7FF;
+  /* Custom theme colors - dark mode defaults */
+  --text-1: #E2E5E9;
+  --surface-1: #1C1C1D;
+  --surface-2: #252728;
 }
+
+/* Light mode colors */
+[data-theme="light"] {
+  --status-link-color: #0064D1;
+  --text-1: #080809;
+  --surface-1: #f2f4f7;
+  --surface-2: #fff;
+}
+
 
 body {
   margin: 0;
   font-family: var(--font-sans);
+  font-size: 0.9375rem;
   line-height: var(--font-lineheight-3);
   background: var(--surface-1);
   color: var(--text-1);
 }
+
 
 h1,
 h2,
@@ -68,14 +85,19 @@ h6 {
 }
 
 p {
-  font-size: var(--font-size-2);
   line-height: var(--font-lineheight-3);
   max-width: var(--size-content-3);
+}
+
+/* Override Open Props normalize font-size to inherit default 15px */
+:where(p, ul, ol, dl, h6) {
+  font-size: inherit;
 }
 
 small {
   font-size: var(--font-size-0);
 }
+
 
 * {
   box-sizing: border-box;
@@ -276,10 +298,10 @@ input[type="radio"] {
 /* Tiptap Editor Styles */
 .tiptap-editor-editable,
 .tiptap-editor-readonly {
-  font-size: var(--font-size-2);
   line-height: 1.6;
   color: var(--text-1);
 }
+
 
 .tiptap-editor-editable {
   min-height: 120px;
@@ -515,7 +537,6 @@ input[type="radio"] {
   padding: var(--size-3) var(--size-4);
   text-decoration: none;
   color: var(--text-2);
-  font-size: var(--font-size-2);
   font-weight: var(--font-weight-6);
   border-radius: var(--radius-3);
   transition: all 0.2s ease;
@@ -548,10 +569,6 @@ input[type="radio"] {
 
   &:has(.pending) {
     animation: var(--animation-blink);
-  }
-
-  .navigation-link-label {
-    font-size: var(--font-size-2);
   }
 }
 
@@ -586,8 +603,8 @@ input[type="radio"] {
   padding: var(--size-2);
   text-decoration: none;
   color: var(--text-2);
-  font-size: var(--font-size-0);
   font-weight: var(--font-weight-5);
+
   border-radius: var(--radius-2);
   transition: all 0.2s ease;
   position: relative;
@@ -621,9 +638,9 @@ input[type="radio"] {
 }
 
 .navigation-link-label {
-  font-size: var(--font-size-0);
   white-space: nowrap;
 }
+
 
 
 /* ====================================
@@ -744,11 +761,10 @@ input[type="radio"] {
   /* Increased from 150px for better writing experience */
   padding: var(--size-2) 0;
   /* Remove horizontal padding for pure text feel */
-  font-size: var(--font-size-fluid-1);
-  /* Larger, more readable */
   line-height: normal;
   outline: none;
 }
+
 
 .compose-editor-area .ProseMirror p {
   margin-bottom: 0;

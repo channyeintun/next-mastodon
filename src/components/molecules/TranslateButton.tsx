@@ -119,7 +119,7 @@ const TranslateLink = styled.button`
   background: transparent;
   border: none;
   box-shadow: none;
-  color: var(--blue-6);
+  color: var(--text-2);
   font-size: var(--font-size-1);
   cursor: pointer;
   transition: all 0.15s ease;
@@ -127,7 +127,8 @@ const TranslateLink = styled.button`
   outline: none;
 
   &:hover:not(:disabled) {
-    color: var(--blue-5);
+    color: var(--text-1);
+    text-decoration: underline;
     box-shadow: none;
     outline: none;
   }
