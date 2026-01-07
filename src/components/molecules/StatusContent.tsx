@@ -1,9 +1,10 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useEffect, useRef, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Emoji, Mention } from '@/types/mastodon';
+import { useTruncation } from '@/hooks/useTruncation';
 
 interface StatusContentProps {
   html: string;
@@ -69,9 +70,9 @@ function shortenUrl(href: string): string {
  * - Highlighted mentions and hashtags
  * - Custom emoji rendering
  * - Internal navigation for mentions and hashtags (no external redirects)
+ * - CSS-only "See more/See less" toggle using checkbox hack
  */
 export function StatusContent({ html, emojis = [], mentions = [], style, className }: StatusContentProps) {
-  const contentRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   // Process HTML to replace emoji shortcodes with img tags
@@ -164,10 +165,13 @@ export function StatusContent({ html, emojis = [], mentions = [], style, classNa
     }
   }, [mentions, router]);
 
-  useEffect(() => {
-    if (!contentRef.current) return;
+  // Use truncation hook to detect if content is clipped
+  const { ref, isTruncated, isExpanded, toggle } = useTruncation<HTMLDivElement>([processedHtml]);
 
-    const container = contentRef.current;
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const container = ref.current;
 
     // Add styling to mentions, hashtags, and regular links
     const mentionLinks = container.querySelectorAll('a.mention, a.u-url.mention');
@@ -224,26 +228,41 @@ export function StatusContent({ html, emojis = [], mentions = [], style, classNa
     return () => {
       container.removeEventListener('click', handleClick);
     };
-  }, [processedHtml, handleClick]);
+  }, [processedHtml, handleClick, ref]);
+
+  const handleSeeMore = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    toggle();
+  };
 
   return (
-    <ContentWrapper
-      ref={contentRef}
-      style={style}
-      className={className}
-      dangerouslySetInnerHTML={{ __html: processedHtml }}
-    />
+    <ContentContainer style={style} className={className}>
+      <ContentWrapper
+        ref={ref}
+        $expanded={isExpanded}
+        dangerouslySetInnerHTML={{ __html: processedHtml }}
+      />
+      {isTruncated && !isExpanded && (
+        <SeeMoreLabel onClick={handleSeeMore}>... See more</SeeMoreLabel>
+      )}
+    </ContentContainer>
   );
 }
 
 
 // Styled components
-const ContentWrapper = styled.div`
+const ContentContainer = styled.div`
   color: var(--text-1);
   font-size: 0.9375rem;
   line-height: 1.5;
   word-break: break-word;
+`;
 
+const ContentWrapper = styled.div<{ $expanded?: boolean }>`
+  display: -webkit-box;
+  -webkit-line-clamp: ${props => props.$expanded ? 'unset' : '6'};
+  -webkit-box-orient: vertical;
+  overflow: ${props => props.$expanded ? 'visible' : 'hidden'};
 
   p {
     font-size: inherit;
@@ -253,7 +272,6 @@ const ContentWrapper = styled.div`
     line-height: normal;
   }
 
-
   p:last-child {
     margin-bottom: 0;
   }
@@ -262,5 +280,16 @@ const ContentWrapper = styled.div`
   a.status-link:hover {
     text-decoration: underline !important;
   }
-
 `;
+
+const SeeMoreLabel = styled.span`
+  display: inline;
+  color: var(--text-2);
+  cursor: pointer;
+  font-weight: var(--font-weight-5);
+  
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
