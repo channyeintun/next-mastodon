@@ -601,26 +601,6 @@ input[type="radio"] {
   pointer-events: auto;
 }
 
-.navigation-bottom-search-circle {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
-  border: 0.5px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-1);
-  pointer-events: auto;
-  flex-shrink: 0;
-  transition: transform 0.2s ease, background 0.2s ease;
-
-  &:active {
-    transform: scale(0.9);
-    background: rgba(255, 255, 255, 0.1);
-  }
-}
 
 /* Moving thumb - dark mode adjustments */
 :root[data-theme="dark"] .navigation-bottom-thumb>div {

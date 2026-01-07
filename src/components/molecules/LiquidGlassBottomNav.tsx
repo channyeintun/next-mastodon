@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
-import Link from 'next/link';
-import { Search } from 'lucide-react';
 import { LiquidGlassFilter } from '@/components/atoms';
 import { lerp } from '@/lib/liquid-glass';
 import { NavigationLink } from './Navigation'; // We will export this from Navigation.tsx
@@ -111,10 +109,6 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
 
     return (
         <nav className="navigation-bottom" aria-label="Mobile navigation">
-            <Link href="/search" className="navigation-bottom-search-circle" aria-label="Search">
-                <Search size={24} />
-            </Link>
-
             <div ref={pillRef} className="navigation-bottom-pill-wrapper">
                 {dimensions.width > 0 && (
                     <LiquidGlassFilter
