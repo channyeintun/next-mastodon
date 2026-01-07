@@ -58,7 +58,7 @@ const ErrorState = () => (
 
 const HashtagCard = ({ tag }: { tag: Tag }) => (
     <HashtagCardWrapper>
-        <Card hoverable>
+        <Card>
             <HashtagContent>
                 <HashtagIcon>
                     <HashIcon size={20} />

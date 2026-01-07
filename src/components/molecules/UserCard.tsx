@@ -46,7 +46,7 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
   };
 
   return (
-    <Card padding="medium" hoverable style={style}>
+    <Card padding="medium" style={style}>
       <StyledLink href={`/@${account.acct}`} onClick={handleProfileClick}>
         <ContentContainer>
           <Avatar
