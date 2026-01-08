@@ -46,4 +46,4 @@ This project uses modern CSS features including:
 
 ## Workarounds & Fallbacks
 
-We've implemented fallbacks where possible, but some features may have reduced functionality in non-Chromium browsers. If you encounter issues, please [open an issue](https://github.com/channyeintun/mastodon-nextjs-client/issues) with your browser details.
+We've implemented fallbacks where possible, but some features may have reduced functionality in non-Chromium browsers. If you encounter issues, please [open an issue](https://github.com/channyeintun/next-mastodon/issues) with your browser details.

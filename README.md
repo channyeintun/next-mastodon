@@ -65,8 +65,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/channyeintun/mastodon-nextjs-client.git
-cd mastodon-nextjs-client
+git clone https://github.com/channyeintun/next-mastodon.git
+cd next-mastodon
 
 # Install dependencies (using Bun for speed)
 bun install
