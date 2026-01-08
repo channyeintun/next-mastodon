@@ -1,10 +1,10 @@
-# 🐘 Mastodon Next.js Client
+# <img src="https://joinmastodon.org/logos/logo-purple.svg" alt="Mastodon" height="32" /> Mastodon Next.js Client
 
 <div align="center">
 
-**A beautiful, fast, and modern web client for Mastodon**
+<img src="https://joinmastodon.org/logos/logo-purple.svg" alt="Mastodon Logo" width="120" />
 
-*Built with Next.js 16, React 19, and the latest web technologies*
+**A beautiful, fast, and modern web client for Mastodon**
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
