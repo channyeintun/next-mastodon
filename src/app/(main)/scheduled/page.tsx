@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useScheduledStatuses, useDeleteScheduledStatus } from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
 import { Card, Button, IconButton } from '@/components/atoms';
@@ -13,6 +14,7 @@ import type { ScheduledStatus } from '@/types';
 
 export default function ScheduledStatusesPage() {
     const router = useRouter();
+    const t = useTranslations('scheduled');
     const authStore = useAuthStore();
     const {
         data: scheduledStatuses,
@@ -32,7 +34,7 @@ export default function ScheduledStatusesPage() {
     }
 
     const handleDelete = async (id: string) => {
-        if (confirm('Are you sure you want to cancel this scheduled post?')) {
+        if (confirm(t('confirmCancel'))) {
             await deleteMutation.mutateAsync(id);
         }
     };
@@ -57,7 +59,7 @@ export default function ScheduledStatusesPage() {
                 borderBottom: '1px solid var(--surface-3)'
             }}>
                 <Clock size={16} />
-                <span>Scheduled for {formatScheduledDate(status.scheduled_at)}</span>
+                <span>{t('scheduledFor', { date: formatScheduledDate(status.scheduled_at) })}</span>
             </div>
 
             <div style={{ marginBottom: 'var(--size-3)' }}>
@@ -104,7 +106,7 @@ export default function ScheduledStatusesPage() {
                     size="small"
                 >
                     <Edit2 size={16} />
-                    <span>Edit</span>
+                    <span>{t('edit')}</span>
                 </Button>
                 <Button
                     variant="danger"
@@ -113,7 +115,7 @@ export default function ScheduledStatusesPage() {
                     disabled={deleteMutation.isPending}
                 >
                     <Trash2 size={16} />
-                    <span>Cancel</span>
+                    <span>{t('cancel')}</span>
                 </Button>
             </div>
         </Card>
@@ -138,10 +140,10 @@ export default function ScheduledStatusesPage() {
                 </IconButton>
                 <div>
                     <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
-                        Scheduled Posts
+                        {t('title')}
                     </h1>
                     <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-                        {allScheduledStatuses.length} {allScheduledStatuses.length === 1 ? 'post' : 'posts'}
+                        {t('count', { count: allScheduledStatuses.length })}
                     </p>
                 </div>
             </div>
@@ -156,7 +158,7 @@ export default function ScheduledStatusesPage() {
                     color: 'var(--red-9)',
                     textAlign: 'center'
                 }}>
-                    {error?.message || 'Failed to load scheduled posts'}
+                    {error?.message || t('failedToLoad')}
                 </div>
             ) : (
                 <VirtualizedList<ScheduledStatus>
@@ -181,7 +183,7 @@ export default function ScheduledStatusesPage() {
                     }
                     endIndicator={
                         <div style={{ padding: 'var(--size-4)', textAlign: 'center', color: 'var(--text-3)' }}>
-                            End of scheduled posts
+                            {t('endOfPosts')}
                         </div>
                     }
                     emptyState={
@@ -196,10 +198,10 @@ export default function ScheduledStatusesPage() {
                         }}>
                             <Calendar size={48} strokeWidth={1.5} />
                             <div>
-                                <h2 style={{ fontSize: 'var(--font-size-3)', marginBottom: 'var(--size-2)' }}>No scheduled posts</h2>
-                                <p>Posts you schedule will appear here.</p>
+                                <h2 style={{ fontSize: 'var(--font-size-3)', marginBottom: 'var(--size-2)' }}>{t('empty.title')}</h2>
+                                <p>{t('empty.description')}</p>
                             </div>
-                            <Button onClick={() => router.push('/compose')}>Create Post</Button>
+                            <Button onClick={() => router.push('/compose')}>{t('empty.createPost')}</Button>
                         </div>
                     }
                 />

@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import AuthGuard from '@/components/organisms/AuthGuard';
 import { useSearchParams } from 'next/navigation';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
@@ -15,6 +16,7 @@ import type { Visibility } from '@/components/molecules/VisibilitySettingsModal'
  */
 export default function ComposePage() {
   const router = useRouter();
+  const t = useTranslations('composer');
   const searchParams = useSearchParams();
   const quotedStatusId = searchParams.get('quoted_status_id') || undefined;
   const scheduledStatusId = searchParams.get('scheduled_status_id') || undefined;
@@ -47,9 +49,9 @@ export default function ComposePage() {
 
   // Determine title
   const getTitle = () => {
-    if (isEditMode) return 'Edit post';
-    if (visibility === 'direct') return 'New message';
-    return 'New post';
+    if (isEditMode) return t('editPost');
+    if (visibility === 'direct') return t('newMessage');
+    return t('newPost');
   };
 
   return (

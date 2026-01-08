@@ -8,6 +8,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Avatar, Card, Button, EmojiText } from '@/components/atoms';
 import type { Account } from '@/types';
 import { useFollowAccount, useUnfollowAccount, useRelationships, prefillAccountCache } from '@/api';
+import { useTranslations } from 'next-intl';
 
 interface UserCardProps {
   account: Account;
@@ -25,6 +26,7 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
   const { data: relationships } = useRelationships([account.id]);
   const relationship = relationships?.[0];
   const queryClient = useQueryClient();
+  const t = useTranslations('account');
 
   const handleFollowToggle = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -88,7 +90,7 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
                   onClick={handleFollowToggle}
                   isLoading={isLoading}
                 >
-                  {isFollowing ? 'Following' : 'Follow'}
+                  {relationship?.requested ? t('requested') : isFollowing ? t('following') : t('follow')}
                 </StyledButton>
               )}
             </HeaderRow>
@@ -106,19 +108,19 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
                 <StatCount>
                   {account.statuses_count.toLocaleString()}
                 </StatCount>{' '}
-                posts
+                {t('posts_count', { count: account.statuses_count })}
               </div>
               <div>
                 <StatCount>
                   {account.followers_count.toLocaleString()}
                 </StatCount>{' '}
-                followers
+                {t('followers_count', { count: account.followers_count })}
               </div>
               <div>
                 <StatCount>
                   {account.following_count.toLocaleString()}
                 </StatCount>{' '}
-                following
+                {t('following_count', { count: account.following_count })}
               </div>
             </StatsRow>
           </InfoSection>

@@ -13,6 +13,7 @@ import { IconButton } from '@/components/atoms/IconButton'
 import { Avatar } from '@/components/atoms/Avatar'
 import { EmojiText } from '@/components/atoms/EmojiText'
 import { Spinner } from '@/components/atoms/Spinner'
+import { useTranslations } from 'next-intl'
 import {
     PageContainer, Header, HeaderInfo, HeaderTitle, HeaderSubtitle,
     FallbackTitle, InputContainer, MessageTextarea, SendButton, DeleteButton,
@@ -39,6 +40,8 @@ function ConversationChatContent() {
     const router = useRouter()
     const queryClient = useQueryClient()
     const conversationStore = useConversationStore()
+    const t = useTranslations('conversation')
+    const tCommon = useTranslations('common')
 
     // Use cached conversation from store (set when clicking from conversation list)
     const conversation = conversationStore.cachedConversation
@@ -128,12 +131,12 @@ function ConversationChatContent() {
     const handleBack = () => router.back()
 
     const handleDelete = async () => {
-        if (!id || !confirm('Delete this conversation?')) return
+        if (!id || !confirm(t('deleteConfirm'))) return
         try {
             await deleteConversation.mutateAsync(id)
             conversationStore.clearConversation()
             router.push('/conversations')
-        } catch { alert('Failed to delete conversation.') }
+        } catch { alert(t('deleteError')) }
     }
 
     const handleSend = async () => {
@@ -157,7 +160,7 @@ function ConversationChatContent() {
             conversationStore.setLastStatusId(newStatus.id)
             setMessageText('')
             clearMedia()
-        } catch { console.error('Failed to send message') }
+        } catch { console.error(t('sendError')) }
     }
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -181,7 +184,7 @@ function ConversationChatContent() {
     return (
         <PageContainer>
             <Header>
-                <IconButton onClick={handleBack} aria-label="Back"><ArrowLeft size={20} /></IconButton>
+                <IconButton onClick={handleBack} aria-label={tCommon('back')}><ArrowLeft size={20} /></IconButton>
                 {otherAccount ? (
                     <HeaderInfo>
                         <Avatar src={otherAccount.avatar} alt={otherAccount.display_name || otherAccount.username} size="small" />
@@ -190,15 +193,15 @@ function ConversationChatContent() {
                             <HeaderSubtitle>@{otherAccount.acct}</HeaderSubtitle>
                         </div>
                     </HeaderInfo>
-                ) : <FallbackTitle>Conversation</FallbackTitle>}
-                <DeleteButton onClick={handleDelete} aria-label="Delete" disabled={deleteConversation.isPending}><Trash2 size={20} /></DeleteButton>
+                ) : <FallbackTitle>{t('title')}</FallbackTitle>}
+                <DeleteButton onClick={handleDelete} aria-label={tCommon('delete')} disabled={deleteConversation.isPending}><Trash2 size={20} /></DeleteButton>
             </Header>
 
             <MessagesContainer>
                 {(isLoading || !context) && R.isEmpty(allStatuses) ? (
                     <EmptyState><Spinner /></EmptyState>
                 ) : R.isEmpty(allStatuses) ? (
-                    <EmptyState>No messages yet</EmptyState>
+                    <EmptyState>{t('noMessages')}</EmptyState>
                 ) : (
                     allStatuses.map((status, index) => {
                         const prevStatus = index > 0 ? allStatuses[index - 1] : null
@@ -238,7 +241,7 @@ function ConversationChatContent() {
                         <MediaPreviewItem key={m.id}>
                             <MediaPreviewImage src={m.preview_url || m.url || ''} alt="" />
                             <MediaPreviewControls className="media-preview-controls">
-                                <MediaPreviewOverlayButton onClick={() => handleMediaRemove(m.id)} title="Remove">
+                                <MediaPreviewOverlayButton onClick={() => handleMediaRemove(m.id)} title={tCommon('remove')}>
                                     <X size={14} />
                                 </MediaPreviewOverlayButton>
                             </MediaPreviewControls>
@@ -251,12 +254,12 @@ function ConversationChatContent() {
             )}
 
             <InputContainer>
-                <AttachButton onClick={() => fileInputRef.current?.click()} aria-label="Attach media" disabled={media.length >= 4 || isUploading}>
+                <AttachButton onClick={() => fileInputRef.current?.click()} aria-label={tCommon('addMedia') || 'Attach media'} disabled={media.length >= 4 || isUploading}>
                     <Image size={20} />
                 </AttachButton>
                 <HiddenInput ref={fileInputRef} type="file" accept="image/*,video/*,audio/*" onChange={handleFileChange} multiple />
-                <MessageTextarea value={messageText} onChange={e => setMessageText(e.target.value)} onKeyDown={handleKeyDown} placeholder="Type a message..." rows={1} />
-                <SendButton onClick={handleSend} disabled={!canSend} aria-label="Send" $active={canSend}><Send size={20} /></SendButton>
+                <MessageTextarea value={messageText} onChange={e => setMessageText(e.target.value)} onKeyDown={handleKeyDown} placeholder={t('typeMessage')} rows={1} />
+                <SendButton onClick={handleSend} disabled={!canSend} aria-label={tCommon('send') || 'Send'} $active={canSend}><Send size={20} /></SendButton>
             </InputContainer>
         </PageContainer>
     )

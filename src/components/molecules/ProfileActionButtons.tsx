@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { MoreHorizontal, Ban, VolumeX, Volume2, Bell, BellRing } from 'lucide-react';
 import { Button, IconButton } from '@/components/atoms';
 import { useRef, useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 interface ProfileActionButtonsProps {
     isOwnProfile: boolean;
@@ -45,6 +46,7 @@ export function ProfileActionButtons({
     onBlockToggle,
     onNotifyToggle,
 }: ProfileActionButtonsProps) {
+    const t = useTranslations('account');
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -68,7 +70,7 @@ export function ProfileActionButtons({
         return (
             <Link href="/profile/edit">
                 <Button variant="secondary">
-                    Edit profile
+                    {t('editProfile')}
                 </Button>
             </Link>
         );
@@ -82,7 +84,7 @@ export function ProfileActionButtons({
                     onClick={onFollowToggle}
                     isLoading={isLoading}
                 >
-                    {isRequested ? 'Requested' : (isFollowing ? 'Following' : 'Follow')}
+                    {isRequested ? t('requested') : (isFollowing ? t('following') : t('follow'))}
                 </Button>
             )}
 
@@ -90,7 +92,7 @@ export function ProfileActionButtons({
             {isFollowing && onNotifyToggle && (
                 <NotifyButton
                     onClick={onNotifyToggle}
-                    title={isNotifying ? `Stop notifying me when @${acct} posts` : `Notify me when @${acct} posts`}
+                    title={isNotifying ? t('stopNotifying', { acct }) : t('startNotifying', { acct })}
                     disabled={isNotifyPending}
                     $isActive={isNotifying}
                 >
@@ -100,7 +102,7 @@ export function ProfileActionButtons({
 
             {/* More actions menu */}
             <MenuContainer ref={menuRef}>
-                <StyledIconButton onClick={() => setShowMenu(!showMenu)}>
+                <StyledIconButton onClick={() => setShowMenu(!showMenu)} aria-label={t('unmute') || 'More'}>
                     <MoreHorizontal size={20} />
                 </StyledIconButton>
 
@@ -117,12 +119,12 @@ export function ProfileActionButtons({
                             {isMuting ? (
                                 <>
                                     <Volume2 size={18} />
-                                    Unmute
+                                    {t('unmute')}
                                 </>
                             ) : (
                                 <>
                                     <VolumeX size={18} />
-                                    Mute
+                                    {t('mute')}
                                 </>
                             )}
                         </MenuItem>
@@ -137,7 +139,7 @@ export function ProfileActionButtons({
                             $isDestructive={!isBlocking}
                         >
                             <Ban size={18} />
-                            {isBlocking ? 'Unblock' : 'Block'}
+                            {isBlocking ? t('unblock') : t('block')}
                         </MenuItem>
                     </Menu>
                 )}

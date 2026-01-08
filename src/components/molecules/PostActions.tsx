@@ -58,14 +58,14 @@ export function PostActions({
             onMouseDown={onReblog}
             $isActive={reblogged}
             $activeColor="var(--green-6)"
-            title={reblogged ? 'Undo boost' : t('boost')}
+            title={reblogged ? t('undoBoost') : t('boost')}
           >
             <Repeat2 size={ICON_SIZE} />
           </ActionButton>
           <BoostPopover className="boost-popover">
             <PopoverButton onMouseDown={onConfirmReblog} $isActive={reblogged}>
               <Repeat2 size={ICON_SIZE} />
-              <span>{reblogged ? 'Undo Boost' : t('boost')}</span>
+              <span>{reblogged ? t('undoBoost') : t('boost')}</span>
             </PopoverButton>
             <PopoverButton onMouseDown={onQuote}>
               <MessageSquareQuote size={ICON_SIZE} />
@@ -82,7 +82,7 @@ export function PostActions({
           onClick={onFavourite}
           $isActive={favourited}
           $activeColor="var(--red-6)"
-          title={favourited ? 'Unfavourite' : t('favourite')}
+          title={favourited ? t('unfavourite') : t('favourite')}
         >
           <Heart size={ICON_SIZE} fill={favourited ? 'currentColor' : 'none'} />
         </ActionButton>

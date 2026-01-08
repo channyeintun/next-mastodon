@@ -4,15 +4,18 @@ import { ArrowLeft, Mail, Shield, BookOpen, ExternalLink } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useInstance, useExtendedDescription } from '@/api';
 import { IconButton, Avatar, TextSkeleton } from '@/components/atoms';
+import { useLocale } from '@/hooks/useLocale';
 import {
   Container, Header, Content, Section, SectionHeader, ServerTitle, ServerDescription,
   SectionTitle, AdminCard, AdminInfo, AdminName, AdminHandle, ContactEmail,
   DescriptionContent, EmptyMessage, RulesList, RuleItem, RuleNumber, RuleText,
+  RuleHint,
   LinkCard, LinkIcon, LinkContent, LinkLabel, LinkDescription, Footer,
 } from './AboutStyles';
 
 export default function AboutPage() {
   const router = useRouter();
+  const { locale } = useLocale();
   const { data: instance, isLoading: instanceLoading } = useInstance();
   const { data: extendedDescription, isLoading: descriptionLoading } = useExtendedDescription();
 
@@ -71,12 +74,21 @@ export default function AboutPage() {
           <Section>
             <SectionTitle>Server rules</SectionTitle>
             <RulesList>
-              {rules.map((rule, index) => (
-                <RuleItem key={rule.id}>
-                  <RuleNumber>{index + 1}</RuleNumber>
-                  <RuleText>{rule.text}</RuleText>
-                </RuleItem>
-              ))}
+              {rules.map((rule, index) => {
+                const localized = rule.translations?.[locale];
+                const text = localized?.text || rule.text;
+                const hint = localized?.hint || rule.hint;
+
+                return (
+                  <RuleItem key={rule.id}>
+                    <RuleNumber>{index + 1}</RuleNumber>
+                    <div>
+                      <RuleText>{text}</RuleText>
+                      {hint && <RuleHint>{hint}</RuleHint>}
+                    </div>
+                  </RuleItem>
+                );
+              })}
             </RulesList>
           </Section>
         )}

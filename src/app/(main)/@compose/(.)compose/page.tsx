@@ -1,6 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import AuthGuard from '@/components/organisms/AuthGuard';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
 import { ComposeModal } from '@/components/molecules/ComposeModal';
@@ -18,6 +19,7 @@ import type { Visibility } from '@/components/molecules/VisibilitySettingsModal'
  */
 export default function ComposeInterceptPage() {
     const searchParams = useSearchParams();
+    const t = useTranslations('composer');
     const quotedStatusId = searchParams.get('quoted_status_id') || undefined;
     const scheduledStatusId = searchParams.get('scheduled_status_id') || undefined;
     const visibility = (searchParams.get('visibility') as Visibility) || undefined;
@@ -49,9 +51,9 @@ export default function ComposeInterceptPage() {
 
     // Determine title
     const getTitle = () => {
-        if (isEditMode) return 'Edit post';
-        if (visibility === 'direct') return 'New message';
-        return 'New post';
+        if (isEditMode) return t('editPost');
+        if (visibility === 'direct') return t('newMessage');
+        return t('newPost');
     };
 
     return (

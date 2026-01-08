@@ -81,12 +81,12 @@ export default async function RootLayout({
         <meta name="theme-color" content="#6364ff" />
       </head>
       <body>
-        <SkipToMain />
         <ServiceWorkerRegister />
         <QueryProvider>
           <StoreProvider initialState={initialState}>
             <ThemeProvider />
             <NextIntlClientProvider messages={messages}>
+              <SkipToMain />
               <VideoSyncProvider>
                 {children}
               </VideoSyncProvider>

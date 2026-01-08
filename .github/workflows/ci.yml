@@ -28,6 +28,9 @@ jobs:
       - name: Run linting
         run: bun run lint
 
+      - name: Check locale synchronization
+        run: bun run lint:locales
+
       - name: Build project (PR validation)
         if: github.event_name == 'pull_request'
         run: bun run build

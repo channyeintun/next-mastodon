@@ -170,6 +170,13 @@ export const RuleText = styled.div`
   padding-top: 3px;
 `;
 
+export const RuleHint = styled.div`
+  color: var(--text-2);
+  font-size: var(--font-size-0);
+  margin-top: var(--size-1);
+  line-height: 1.4;
+`;
+
 export const LinkCard = styled(Link)`
   display: flex;
   align-items: center;

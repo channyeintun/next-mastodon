@@ -9,6 +9,7 @@
     "start": "next start -p 9003",
     "lint": "eslint .",
     "lint:css": "eslint --ext .css .",
+    "lint:locales": "node scripts/verify-locales.mjs",
     "lint:fix": "eslint --fix ."
   },
   "dependencies": {

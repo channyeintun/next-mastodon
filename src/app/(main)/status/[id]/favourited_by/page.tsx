@@ -4,6 +4,7 @@ import { use } from 'react';
 import { indexBy, prop } from 'ramda';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Heart } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useStatus, useInfiniteFavouritedBy, useRelationships } from '@/api';
 import { AccountCard, AccountCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
@@ -18,6 +19,7 @@ export default function FavouritedByPage({
 }) {
     const { id } = use(params);
     const router = useRouter();
+    const t = useTranslations('statusDetail');
 
     const {
         data: status,
@@ -59,9 +61,9 @@ export default function FavouritedByPage({
         return (
             <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
                 <h2 style={{ color: 'var(--red-6)', marginBottom: 'var(--size-3)' }}>
-                    Post Not Found
+                    {t('postNotFound')}
                 </h2>
-                <Button onClick={() => router.back()}>Go Back</Button>
+                <Button onClick={() => router.back()}>{t('goBack')}</Button>
             </div>
         );
     }
@@ -86,10 +88,10 @@ export default function FavouritedByPage({
                     <Heart size={20} style={{ color: 'var(--red-6)' }} />
                     <div>
                         <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
-                            Favourited by
+                            {t('favouritedBy.title')}
                         </h1>
                         <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-                            {status.favourites_count} {status.favourites_count === 1 ? 'person' : 'people'}
+                            {t('favouritedBy.count', { count: status.favourites_count })}
                         </p>
                     </div>
                 </div>
@@ -118,9 +120,9 @@ export default function FavouritedByPage({
                 style={{ flex: 1, minHeight: 0 }}
                 scrollRestorationKey={`favourited-by-${id}`}
                 loadingIndicator={<AccountCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
-                endIndicator="No more users"
+                endIndicator={t('favouritedBy.noMoreUsers')}
                 emptyState={
-                    <EmptyState title="No favourites yet" />
+                    <EmptyState title={t('favouritedBy.noFavouritesYet')} />
                 }
             />
         </div>

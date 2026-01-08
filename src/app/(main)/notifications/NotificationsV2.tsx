@@ -146,7 +146,7 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
                 <NotificationTitleRow>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                         <Bell size={24} />
-                        <h1 style={{ fontSize: 'var(--font-size-4)', fontWeight: 'var(--font-weight-7)', margin: 0 }}>
+                        <h1 style={{ fontSize: 'var(--font-size-4)', fontWeight: 'var(--font-weight-7)', margin: 0, whiteSpace: 'nowrap' }}>
                             {t('title')}
                         </h1>
                         {streamingStatus === 'connected' && (

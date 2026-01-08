@@ -1,9 +1,12 @@
+'use client';
+
 import { useState } from 'react';
 import { UseFormRegister, Control, FieldErrors, UseFormWatch, UseFormSetValue } from 'react-hook-form';
 import { Copy, ChevronDown, ChevronUp, GripVertical } from 'lucide-react';
 import { Input, FormField } from '@/components/atoms';
 import { formatVerificationDate } from '@/utils/date';
 import type { ProfileFormData, ProfileField } from '@/schemas/profileFormSchema';
+import { useTranslations } from 'next-intl';
 import {
   SectionCard,
   SectionTitle,
@@ -47,6 +50,7 @@ export function ProfileFieldsEditor({
   setValue,
   profileUrl,
 }: ProfileFieldsEditorProps) {
+  const t = useTranslations('profileEditor');
   const bio = watch('bio');
   const fields = watch('fields');
 
@@ -126,11 +130,11 @@ export function ProfileFieldsEditor({
     <>
       {/* Profile Information */}
       <SectionCard padding="medium">
-        <SectionTitle>Profile information</SectionTitle>
+        <SectionTitle>{t('title')}</SectionTitle>
 
         <FieldsWrapper>
           <FormField
-            label="Display name"
+            label={t('displayName')}
             htmlFor="display-name"
             error={errors.displayName?.message}
           >
@@ -143,7 +147,7 @@ export function ProfileFieldsEditor({
           </FormField>
 
           <FormField
-            label="Bio"
+            label={t('bio')}
             htmlFor="bio"
             description={`${bio?.length || 0} / 500`}
             error={errors.bio?.message}
@@ -160,9 +164,9 @@ export function ProfileFieldsEditor({
 
       {/* Extra Fields */}
       <SectionCard padding="medium">
-        <FieldsTitle>Extra fields</FieldsTitle>
+        <FieldsTitle>{t('extraFields')}</FieldsTitle>
         <FieldsDescription>
-          You can have up to 4 items displayed as a table on your profile
+          {t('extraFieldsDescription')}
         </FieldsDescription>
 
         <FieldsContainer
@@ -191,7 +195,7 @@ export function ProfileFieldsEditor({
                     type="button"
                     $disabled={index === 0}
                     onClick={() => moveField(index, -1)}
-                    aria-label="Move up"
+                    aria-label={t('moveUp')}
                   >
                     <ChevronUp size={16} />
                   </MoveButton>
@@ -199,26 +203,26 @@ export function ProfileFieldsEditor({
                     type="button"
                     $disabled={index === fields.length - 1}
                     onClick={() => moveField(index, 1)}
-                    aria-label="Move down"
+                    aria-label={t('moveDown')}
                   >
                     <ChevronDown size={16} />
                   </MoveButton>
                 </MoveButtonsContainer>
                 <FieldInput
                   type="text"
-                  placeholder={`Label ${index + 1}`}
+                  placeholder={t('labelPlaceholder', { number: index + 1 })}
                   {...register(`fields.${index}.name`)}
                 />
                 <FieldInput
                   type="text"
-                  placeholder="Content"
+                  placeholder={t('contentPlaceholder')}
                   {...register(`fields.${index}.value`)}
                   $verified={!!field.verified_at}
                 />
                 <VerificationIcon>
                   {field.verified_at && (
                     <span
-                      title={`Verified on ${formatVerificationDate(field.verified_at)}`}
+                      title={t('verifiedOn', { date: formatVerificationDate(field.verified_at) })}
                     >
                       <GreenCheck size={18} />
                     </span>
@@ -237,16 +241,14 @@ export function ProfileFieldsEditor({
         <Details>
           <Summary>
             <ChevronDown size={18} className="details-chevron" />
-            Link verification
+            {t('linkVerification.title')}
           </Summary>
 
           <DetailsContent>
             <VerificationText>
-              You can verify yourself as the owner of the links in your profile
-              metadata. For this, the linked website must contain a link back to
-              your Mastodon profile. The link back must have a{' '}
-              <CodeSnippet>rel=&quot;me&quot;</CodeSnippet>{' '}
-              attribute.
+              {t.rich('linkVerification.description', {
+                code: (chunks) => <CodeSnippet>{chunks}</CodeSnippet>
+              })}
             </VerificationText>
 
             <CodeBlock>
@@ -260,17 +262,17 @@ export function ProfileFieldsEditor({
                     `<a rel="me" href="${profileUrl}">Mastodon</a>`
                   );
                 }}
-                title="Copy to clipboard"
+                title={t('linkVerification.copyToClipboard')}
               >
                 <Copy size={14} />
               </CopyButton>
             </CodeBlock>
 
             <TipText>
-              <strong>Tip:</strong> The link on your website can be invisible. The
-              important part is{' '}
-              <CodeSnippet>rel=&quot;me&quot;</CodeSnippet>{' '}
-              which prevents impersonation.
+              {t.rich('linkVerification.copyTip', {
+                strong: (chunks) => <strong>{chunks}</strong>,
+                code: (chunks) => <CodeSnippet>{chunks}</CodeSnippet>
+              })}
             </TipText>
           </DetailsContent>
         </Details>

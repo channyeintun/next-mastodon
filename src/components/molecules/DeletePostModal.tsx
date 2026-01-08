@@ -3,6 +3,7 @@
 import styled from '@emotion/styled';
 import { useDeleteStatus } from '@/api';
 import { Button } from '@/components/atoms';
+import { useTranslations } from 'next-intl';
 
 interface DeletePostModalProps {
     postId: string;
@@ -12,6 +13,7 @@ interface DeletePostModalProps {
 
 export function DeletePostModal({ postId, onClose, onSuccess }: DeletePostModalProps) {
     const deleteStatusMutation = useDeleteStatus();
+    const t = useTranslations('deletePost');
 
     const handleDelete = async () => {
         try {
@@ -29,10 +31,10 @@ export function DeletePostModal({ postId, onClose, onSuccess }: DeletePostModalP
     return (
         <div className="dialog-content">
             <Title>
-                Delete post?
+                {t('title')}
             </Title>
             <Message>
-                This action cannot be undone. Your post will be permanently deleted from your profile and the timelines of your followers.
+                {t('message')}
             </Message>
             <ButtonRow>
                 <Button
@@ -40,7 +42,7 @@ export function DeletePostModal({ postId, onClose, onSuccess }: DeletePostModalP
                     onClick={onClose}
                     disabled={deleteStatusMutation.isPending}
                 >
-                    Cancel
+                    {t('cancel')}
                 </Button>
                 <DeleteButton
                     onClick={handleDelete}
@@ -48,7 +50,7 @@ export function DeletePostModal({ postId, onClose, onSuccess }: DeletePostModalP
                     isLoading={deleteStatusMutation.isPending}
                     autoFocus
                 >
-                    Delete
+                    {t('delete')}
                 </DeleteButton>
             </ButtonRow>
         </div>

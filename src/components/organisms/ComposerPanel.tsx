@@ -17,8 +17,9 @@ import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { useMediaUpload } from '@/hooks/useMediaUpload';
 import { Globe, Lock, Users, Mail, X } from 'lucide-react';
 import { toLocalISOString, parseDate } from '@/utils/date';
-import type { CreateStatusParams, MediaAttachment } from '@/types';
+import type { CreateStatusParams } from '@/types';
 import { Spinner } from '@/components/atoms/Spinner';
+import { useTranslations } from 'next-intl';
 import {
   DisplayName,
   VisibilityButtonWrapper,
@@ -36,13 +37,6 @@ import {
 
 const MAX_CHAR_COUNT = 500;
 
-export const visibilityOptions: Array<{ value: Visibility; label: string; icon: typeof Globe; description: string }> = [
-  { value: 'public', label: 'Public', icon: Globe, description: 'Visible to everyone' },
-  { value: 'unlisted', label: 'Unlisted', icon: Lock, description: 'Not shown in public timelines' },
-  { value: 'private', label: 'Followers only', icon: Users, description: 'Only visible to followers' },
-  { value: 'direct', label: 'Direct', icon: Mail, description: 'Only mentioned users' },
-];
-
 interface ComposerPanelProps {
   editMode?: boolean;
   statusId?: string;
@@ -50,13 +44,11 @@ interface ComposerPanelProps {
   initialSpoilerText?: string;
   initialVisibility?: Visibility;
   initialSensitive?: boolean;
-  /** Initial media attachments (used for edit mode) */
-  initialMedia?: MediaAttachment[];
+  initialMedia?: any[];
   inReplyToId?: string;
   isReply?: boolean;
   quotedStatusId?: string;
   scheduledStatusId?: string;
-  /** Account acct to prepend as a mention (used for replies) */
   mentionPrefix?: string;
 }
 
@@ -74,6 +66,16 @@ export function ComposerPanel({
   scheduledStatusId,
   mentionPrefix,
 }: ComposerPanelProps) {
+  const t = useTranslations('composer');
+  const tCommon = useTranslations('common');
+
+  const visibilityOptions: Array<{ value: Visibility; label: string; icon: typeof Globe; description: string }> = [
+    { value: 'public', label: t('visibilityOptions.public'), icon: Globe, description: t('visibilityOptions.publicDesc') },
+    { value: 'unlisted', label: t('visibilityOptions.unlisted'), icon: Lock, description: t('visibilityOptions.unlistedDesc') },
+    { value: 'private', label: t('visibilityOptions.private'), icon: Users, description: t('visibilityOptions.privateDesc') },
+    { value: 'direct', label: t('visibilityOptions.direct'), icon: Mail, description: t('visibilityOptions.directDesc') },
+  ];
+
   // Build initial content with mention prefix if provided
   const computedInitialContent = mentionPrefix
     ? `<span data-type="mention" class="mention" data-id="${mentionPrefix}" data-label="${mentionPrefix}">@${mentionPrefix}</span>&nbsp;${initialContent}`
@@ -295,10 +297,10 @@ export function ComposerPanel({
 
   // Compute submit button label
   const submitLabel = editMode
-    ? 'Update'
+    ? t('update')
     : (showScheduleInput && scheduledAt
-      ? (scheduledStatusId ? 'Reschedule' : 'Schedule')
-      : (isReply ? 'Reply' : 'Publish'));
+      ? (scheduledStatusId ? t('reschedule') : t('schedule'))
+      : (isReply ? t('reply') : t('publish')));
 
   return (
     <div>
@@ -333,7 +335,7 @@ export function ComposerPanel({
                 <VisibilityButtonWrapper>
                   <VisibilityButton
                     onClick={editMode ? undefined : handleOpenVisibilitySettings}
-                    title={editMode ? "Visibility cannot be changed when editing" : "Adjust visibility and interaction"}
+                    title={editMode ? undefined : t('visibilityInteraction')}
                     type="button"
                     disabled={editMode}
                   >
@@ -384,7 +386,7 @@ export function ComposerPanel({
         <TiptapEditor
           className={isReply ? "tiptap-editor-compact" : ""}
           content={content}
-          placeholder={isReply ? "Post your reply" : "What's on your mind?"}
+          placeholder={isReply ? t('replyPlaceholder') : t('placeholder')}
           emojis={customEmojis || []}
           onUpdate={(html, text) => {
             setContent(html);
@@ -396,7 +398,7 @@ export function ComposerPanel({
           mentionSuggestion={mentionSuggestion}
           onFilePaste={handleFilePaste}
           maxFiles={4 - media.length}
-          ariaLabel="Compose post"
+          ariaLabel={t('publish')}
         />
       </div>
 
@@ -410,7 +412,7 @@ export function ComposerPanel({
                 <CompactMediaPreviewItem key={m.id}>
                   <CompactMediaPreviewImage src={m.preview_url || m.url || ''} alt="" />
                   <CompactMediaPreviewControls className="compact-media-controls">
-                    <CompactMediaPreviewButton onClick={() => handleMediaRemove(m.id)} title="Remove">
+                    <CompactMediaPreviewButton onClick={() => handleMediaRemove(m.id)} title={tCommon('remove')}>
                       <X size={12} />
                     </CompactMediaPreviewButton>
                   </CompactMediaPreviewControls>

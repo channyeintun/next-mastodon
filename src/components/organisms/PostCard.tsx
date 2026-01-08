@@ -24,6 +24,7 @@ import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { removeQuotePrefix } from '@/utils/fp';
 import { CSSProperties } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 // Max nesting level for quoted posts (matching Mastodon's behavior)
 const MAX_QUOTE_NESTING_LEVEL = 1;
@@ -65,6 +66,7 @@ export function PostCard({
   collapsible = true,
 }: PostCardProps) {
   const { openModal, closeModal } = useGlobalModal();
+  const t = useTranslations('statusDetail');
 
   const handleDeleteClick = (postId: string) => {
     openModal(
@@ -351,7 +353,7 @@ export function PostCard({
                 />
               ) : (
                 <NestedQuoteLink href={`/status/${displayStatus.quote.quoted_status.id}`}>
-                  Quoted a post by @{displayStatus.quote.quoted_status.account.acct}
+                  {t('quotedBy', { acct: displayStatus.quote.quoted_status.account.acct })}
                 </NestedQuoteLink>
               )}
             </QuotedPostWrapper>

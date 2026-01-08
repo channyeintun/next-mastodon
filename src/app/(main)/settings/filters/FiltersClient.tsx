@@ -147,7 +147,7 @@ export function FiltersClient() {
                     <IconButton onClick={() => router.back()}>
                         <ArrowLeft size={20} />
                     </IconButton>
-                    <FiltersTitle>Filters</FiltersTitle>
+                    <FiltersTitle>{t('title')}</FiltersTitle>
                 </FiltersHeader>
                 <Card padding="medium">
                     <TextSkeleton width="100%" height={80} style={{ marginBottom: 'var(--size-3)' }} />
@@ -165,11 +165,11 @@ export function FiltersClient() {
                     <IconButton onClick={() => router.back()}>
                         <ArrowLeft size={20} />
                     </IconButton>
-                    <FiltersTitle>Filters</FiltersTitle>
+                    <FiltersTitle>{t('title')}</FiltersTitle>
                 </FiltersHeader>
                 <Card padding="medium">
                     <EmptyState>
-                        <p>Failed to load filters. Please try again.</p>
+                        <p>{t('failedLoad')}</p>
                     </EmptyState>
                 </Card>
             </FiltersContainer>
@@ -182,11 +182,11 @@ export function FiltersClient() {
                 <IconButton onClick={() => router.back()}>
                     <ArrowLeft size={20} />
                 </IconButton>
-                <FiltersTitle>Filters</FiltersTitle>
+                <FiltersTitle>{t('title')}</FiltersTitle>
                 <Link href="/settings/filters/new" style={{ marginLeft: 'auto' }}>
                     <Button size="small">
                         <Plus size={16} />
-                        Add filter
+                        {t('addFilter')}
                     </Button>
                 </Link>
             </FiltersHeader>

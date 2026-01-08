@@ -1,0 +1,660 @@
+{
+  "about": {
+    "title": "เกี่ยวกับ"
+  },
+  "account": {
+    "backToTimeline": "กลับสู่ไทม์ไลน์",
+    "block": "บล็อก",
+    "bot": "บอท",
+    "editProfile": "แก้ไขโปรไฟล์",
+    "empty": {
+      "end": "ไม่มีโพสต์เพิ่มเติม",
+      "posts": "ยังไม่มีโพสต์"
+    },
+    "end_of_timeline": "You've reached the end of your timeline",
+    "follow": "ติดตาม",
+    "follow_hint": "Follow some people to see their posts here.",
+    "followersPage": {
+      "hiddenInfo": "ผู้ใช้นี้เลือกที่จะไม่แสดงข้อมูลนี้",
+      "noFollowersYet": "ยังไม่มีผู้ติดตาม",
+      "noMoreFollowers": "ไม่มีผู้ติดตามเพิ่มเติม",
+      "title": "ผู้ติดตาม"
+    },
+    "followers_count": "{count, plural, one {# follower} other {# followers}}",
+    "following": "กำลังติดตาม",
+    "followingPage": {
+      "hiddenInfo": "ผู้ใช้นี้เลือกที่จะไม่แสดงข้อมูลนี้",
+      "noMoreAccounts": "ไม่มีบัญชีเพิ่มเติม",
+      "notFollowingYet": "ยังไม่ได้ติดตามใคร",
+      "title": "กำลังติดตาม"
+    },
+    "following_count": "{count, plural, other {# following}}",
+    "hiddenProfile": "โปรไฟล์นี้ถูกซ่อนโดยผู้ดูแลของ {domain}",
+    "joined": "เข้าร่วมเมื่อ {date}",
+    "loadMore": "โหลดเพิ่มเติม",
+    "loading": "กำลังโหลด...",
+    "meta": {
+      "description": "โปรไฟล์ของ @{acct} บน Mastodon",
+      "ogDescription": "โปรไฟล์ของ @{acct} บน Mastodon",
+      "ogTitle": "{name} (@{acct})",
+      "title": "{name} (@{acct}) - Mastodon",
+      "twitterDescription": "โปรไฟล์ของ @{acct}",
+      "twitterTitle": "{name} (@{acct})"
+    },
+    "mute": "ซ่อน",
+    "notFound": "ไม่พบโปรไฟล์",
+    "pinned": "ปักหมุด",
+    "pinnedNav": {
+      "next": "โพสต์ที่ปักหมุดถัดไป",
+      "prev": "โพสต์ที่ปักหมุดก่อนหน้า"
+    },
+    "posts_count": "{count, plural, one {# post} other {# posts}}",
+    "requested": "ร้องขอแล้ว",
+    "showProfile": "แสดงโปรไฟล์ต่อไป",
+    "startNotifying": "แจ้งเตือนเมื่อ @{acct} โพสต์",
+    "stopNotifying": "หยุดแจ้งเตือนเมื่อ @{acct} โพสต์",
+    "tabs": {
+      "media": "สื่อ",
+      "posts": "โพสต์",
+      "posts_replies": "โพสต์และการตอบกลับ"
+    },
+    "unblock": "เลิกบล็อก",
+    "unfollow": "เลิกติดตาม",
+    "unmute": "เลิกซ่อน",
+    "viewOnInstance": "ดูบนอินสแตนซ์"
+  },
+  "actions": {
+    "blockAccount": "บล็อก @{acct}",
+    "bookmark": "คั่นหน้า",
+    "boost": "ดัน",
+    "deleteStatus": "ลบสถานะ",
+    "editStatus": "แก้ไขสถานะ",
+    "favourite": "ชื่นชอบ",
+    "follow": "ติดตาม",
+    "muteConversation": "ปิดการแจ้งเตือนการสนทนา",
+    "pin": "ปักหมุดไว้ที่โปรไฟล์",
+    "quote": "อ้างอิง",
+    "removeBookmark": "ลบบุ๊กมาร์ก",
+    "reply": "ตอบกลับ",
+    "undoBoost": "ยกเลิกการดัน",
+    "unfavourite": "ยกเลิกการชื่นชอบ",
+    "unfollow": "เลิกติดตาม",
+    "unmuteConversation": "เปิดการแจ้งเตือนการสนทนา",
+    "unpin": "เลิกปักหมุดจากโปรไฟล์"
+  },
+  "common": {
+    "back": "กลับ",
+    "backToTop": "กลับไปด้านบน",
+    "cancel": "ยกเลิก",
+    "close": "ปิด",
+    "delete": "ลบ",
+    "done": "เสร็จสิ้น",
+    "dontShowAgain": "ไม่ต้องแสดงอีก",
+    "loading": "กำลังโหลด...",
+    "next": "ถัดไป",
+    "remove": "นำออก",
+    "report": "รายงาน",
+    "retry": "ลองใหม่",
+    "save": "บันทึก",
+    "share": "แชร์",
+    "skipToMain": "ข้ามไปยังเนื้อหาหลัก",
+    "verified": "ยืนยันแล้ว",
+    "viewAll": "ดูทั้งหมด"
+  },
+  "composer": {
+    "addContentWarning": "เพิ่มคำเตือนเนื้อหา",
+    "addEmoji": "เพิ่มอิโมจิ",
+    "addMedia": "เพิ่มสื่อ",
+    "addOption": "เพิ่มตัวเลือก",
+    "addPoll": "เพิ่มการสำรวจ",
+    "charCount": "เหลืออีก {count} อักขระ",
+    "cwLabel": "คำเตือนเนื้อหา",
+    "cwPlaceholder": "เขียนคำเตือนของคุณที่นี่...",
+    "duration": {
+      "1d": "1 วัน",
+      "1h": "1 ชั่วโมง",
+      "30m": "30 นาที",
+      "3d": "3 วัน",
+      "5m": "5 นาที",
+      "6h": "6 ชั่วโมง",
+      "7d": "7 วัน"
+    },
+    "editAltText": "แก้ไขข้อความกำกับภาพ",
+    "editPost": "Edit post",
+    "language": "ภาษา...",
+    "multipleChoice": "เลือกได้หลายข้อ",
+    "newMessage": "New message",
+    "newPost": "New post",
+    "optionPlaceholder": "ตัวเลือกที่ {number}",
+    "options": {
+      "quoteFollowers": "ผู้ติดตาม",
+      "quoteFollowersDesc": "เฉพาะผู้ติดตามของคุณเท่านั้นที่สามารถอ้างอิงโพสต์นี้ได้",
+      "quoteNobody": "ไม่มีใคร",
+      "quoteNobodyDesc": "ปิดการอ้างอิงสำหรับโพสต์นี้",
+      "quotePublic": "ทุกคน",
+      "quotePublicDesc": "ทุกคนสามารถอ้างอิงโพสต์นี้ได้"
+    },
+    "placeholder": "คุณกำลังคิดอะไรอยู่?",
+    "poll": "การสำรวจ",
+    "pollDuration": "ระยะเวลาการสำรวจ",
+    "publish": "เผยแพร่",
+    "quoteDisabled": "โพสต์สำหรับผู้ติดตามเท่านั้นบน Mastodon ไม่สามารถอ้างอิงโดยผู้อื่นได้",
+    "removeCW": "นำคำเตือนเนื้อหาออก",
+    "removeOption": "นำตัวเลือกออก",
+    "removePoll": "นำการสำรวจออก",
+    "removeSchedule": "ยกเลิกการตั้งเวลา",
+    "reply": "ตอบกลับ",
+    "replyPlaceholder": "เขียนการตอบกลับของคุณ",
+    "replyTo": "Reply to @{acct}",
+    "reschedule": "ตั้งเวลาใหม่",
+    "schedule": "ตั้งเวลา",
+    "scheduleHelp": "โพสต์จะถูกเผยแพร่โดยอัตโนมัติตามเวลานี้",
+    "scheduleLabel": "ตั้งเวลาโพสต์",
+    "schedulePost": "ตั้งเวลาโพสต์",
+    "update": "อัปเดต",
+    "upload": {
+      "altText": "ข้อความกำกับภาพ",
+      "altTextDescription": "อธิบายสื่อนี้สำหรับผู้ใช้ที่บกพร่องทางการเห็น...",
+      "editAlt": "แก้ไขข้อความกำกับภาพ",
+      "status": "กำลังอัปโหลดสื่อ..."
+    },
+    "visibility": "ความเป็นส่วนตัว",
+    "visibilityDescription": "ควบคุมว่าใครสามารถโต้ตอบกับโพสต์นี้ได้ คุณยังสามารถใช้การตั้งค่ากับโพสต์ในอนาคตทั้งหมดได้โดยไปที่ การตั้งค่า > ค่าเริ่มต้นการโพสต์",
+    "visibilityInteraction": "ความเป็นส่วนตัวและการโต้ตอบ",
+    "visibilityLabel": "ความเป็นส่วนตัว: {label}",
+    "visibilityOptions": {
+      "direct": "ส่วนตัว",
+      "directDesc": "เฉพาะผู้ที่ถูกกล่าวถึงเท่านั้น",
+      "private": "ผู้ติดตามเท่านั้น",
+      "privateDesc": "เห็นได้เฉพาะผู้ติดตามของคุณ",
+      "public": "สาธารณะ",
+      "publicDesc": "ทุกคนเห็นได้",
+      "unlisted": "ไม่แสดงในรายการ",
+      "unlistedDesc": "ไม่แสดงในไทม์ไลน์สาธารณะ"
+    },
+    "whoCanQuote": "ใครสามารถอ้างอิงได้"
+  },
+  "conversation": {
+    "deleteConfirm": "ลบการสนทนานี้?",
+    "deleteConfirmFull": "คุณแน่ใจหรือไม่ว่าต้องการลบการสนทนานี้? การดำเนินการนี้ไม่สามารถย้อนคืนได้",
+    "deleteError": "ลบการสนทนาไม่สำเร็จ โปรดลองอีกครั้ง",
+    "mediaOnly": "(สื่อเท่านั้น)",
+    "newMessage": "ข้อความใหม่",
+    "noMessages": "ยังไม่มีข้อความ",
+    "sendError": "ส่งข้อความไม่สำเร็จ",
+    "title": "การสนทนา",
+    "typeMessage": "พิมพ์ข้อความ..."
+  },
+  "conversations": {
+    "count": "{count, plural, =0 {ไม่มีการสนทนา} other {# การสนทนา}}",
+    "errorLoading": "เกิดข้อผิดพลาดในการโหลดการสนทนา",
+    "failedLoadDesc": "โหลดข้อความส่วนตัวของคุณไม่สำเร็จ โปรดลองอีกครั้งในภายหลัง",
+    "new": "ข้อความใหม่",
+    "noConversations": "ยังไม่มีการสนทนา",
+    "reachedEnd": "คุณมาถึงจุดสิ้นสุดแล้ว",
+    "sendDirect": "ส่งข้อความส่วนตัวเพื่อเริ่มการสนทนา",
+    "title": "ข้อความส่วนตัว"
+  },
+  "deletePost": {
+    "cancel": "ยกเลิก",
+    "delete": "ลบ",
+    "message": "การดำเนินการนี้ไม่สามารถย้อนคืนได้ โพสต์ของคุณจะถูกลบออกถาวรจากโปรไฟล์และไทม์ไลน์ของผู้ติดตามของคุณ",
+    "title": "ลบโพสต์?"
+  },
+  "empty": {
+    "failedNews": "โหลดข่าวที่กำลังมาแรงไม่สำเร็จ",
+    "failedSuggestions": "โหลดคำแนะนำไม่สำเร็จ",
+    "failedTags": "โหลดแฮชแท็กที่กำลังมาแรงไม่สำเร็จ",
+    "failedTrending": "โหลดโพสต์ที่กำลังมาแรงไม่สำเร็จ",
+    "noBoosts": "ยังไม่มีการดัน",
+    "noFavourites": "ยังไม่มีการชื่นชอบ",
+    "noFollowRequests": "ไม่มีคำขอติดตามที่ค้างอยู่",
+    "noMessages": "ยังไม่มีข้อความ",
+    "noQuotes": "ยังไม่มีการอ้างอิง",
+    "noSuggestions": "ไม่มีคำแนะนำในขณะนี้",
+    "noTrendingNews": "ไม่มีข่าวที่กำลังมาแรงในขณะนี้",
+    "noTrendingPosts": "ไม่มีโพสต์ที่กำลังมาแรงในขณะนี้",
+    "noTrendingTags": "ไม่มีแฮชแท็กที่กำลังมาแรงในขณะนี้",
+    "noUsersFound": "ไม่พบผู้ใช้",
+    "signInToSee": "เข้าสู่ระบบเพื่อดูคำแนะนำ"
+  },
+  "explore": {
+    "failedNews": "โหลดข่าวที่กำลังมาแรงไม่สำเร็จ",
+    "failedTags": "โหลดแท็กที่กำลังมาแรงไม่สำเร็จ",
+    "failedTrending": "โหลดโพสต์ที่กำลังมาแรงไม่สำเร็จ",
+    "noTrendingNews": "ไม่มีข่าวที่กำลังมาแรงในขณะนี้",
+    "noTrendingPosts": "ไม่มีโพสต์ที่กำลังมาแรงในขณะนี้",
+    "noTrendingTags": "ไม่มีแท็กที่กำลังมาแรงในขณะนี้",
+    "personalizedHint": "อ้างอิงจากบัญชีที่คุณติดตาม",
+    "personalizedLabel": "คำแนะนำส่วนบุคคล",
+    "popularHint": "ยอดนิยมในอินสแตนซ์นี้",
+    "popularLabel": "คำแนะนำยอดนิยม",
+    "reachedEndNews": "คุณมาถึงจุดสิ้นสุดของข่าวที่กำลังมาแรงแล้ว",
+    "reachedEndPosts": "คุณมาถึงจุดสิ้นสุดของโพสต์ที่กำลังมาแรงแล้ว",
+    "reachedEndTags": "คุณมาถึงจุดสิ้นสุดของแท็กที่กำลังมาแรงแล้ว",
+    "staffPickHint": "คัดสรรโดยทีมงาน",
+    "staffPickLabel": "ทีมงานแนะนำ",
+    "tabs": {
+      "links": "ข่าว",
+      "people": "ผู้คน",
+      "posts": "โพสต์",
+      "tags": "แท็ก"
+    },
+    "title": "สำรวจ"
+  },
+  "imageCropper": {
+    "flipHorizontal": "พลิกแนวนอน",
+    "flipVertical": "พลิกแนวตั้ง",
+    "rotateLeft": "หมุนซ้าย 90°",
+    "rotateRight": "หมุนขวา 90°",
+    "zoomIn": "ขยาย",
+    "zoomOut": "ย่อ"
+  },
+  "lists": {
+    "count": "{count, plural, =0 {ไม่มีรายการ} other {# รายการ}}",
+    "create": "สร้างรายการ",
+    "createFirst": "สร้างรายการแรกของคุณ",
+    "deleteConfirm": "คุณแน่ใจหรือไม่ว่าต้องการลบ \"{title}\"? การดำเนินการนี้ไม่สามารถย้อนคืนได้",
+    "deleteTitle": "ลบรายการ",
+    "description": "รายการช่วยให้คุณจัดกลุ่มบัญชีที่คุณติดตามลงในไทม์ไลน์ที่คัดสรรแล้ว",
+    "edit": "แก้ไขรายการ",
+    "exclusive": "พิเศษ",
+    "exclusiveDesc": "โพสต์จากสมาชิกในรายการจะไม่ปรากฏในไทม์ไลน์หน้าแรกของคุณ",
+    "exclusiveLabel": "ซ่อนโพสต์เหล่านี้จากหน้าแรก",
+    "manageMembers": "จัดการสมาชิก",
+    "nameLabel": "ชื่อรายการ",
+    "namePlaceholder": "รายการของฉัน",
+    "noLists": "ยังไม่มีรายการ",
+    "repliesPolicy": {
+      "followed": "ผู้ใช้ที่ติดตามทุกคน",
+      "list": "สมาชิกในรายการ",
+      "none": "ไม่มีใคร"
+    },
+    "repliesPolicyLabel": "แสดงการตอบกลับถึง",
+    "repliesPolicyShort": {
+      "followed": "ตอบกลับถึงผู้ที่ติดตาม",
+      "list": "ตอบกลับถึงสมาชิกในรายการ",
+      "none": "ไม่มีการตอบกลับ"
+    },
+    "title": "รายการ"
+  },
+  "media": {
+    "sensitive": "คลิกเพื่อดูเนื้อหาที่ละเอียดอ่อน"
+  },
+  "nav": {
+    "about": "เกี่ยวกับ",
+    "bookmarks": "คั่นหน้า",
+    "compose": "เขียน",
+    "explore": "สำรวจ",
+    "home": "หน้าแรก",
+    "lists": "รายการ",
+    "messages": "ข้อความ",
+    "notifications": "การแจ้งเตือน",
+    "search": "ค้นหา",
+    "settings": "การตั้งค่า",
+    "sourceCode": "ซอร์สโค้ด"
+  },
+  "notifications": {
+    "actions": {
+      "clearAll": "ล้างทั้งหมด",
+      "markAllRead": "ทำเครื่องหมายว่าอ่านแล้วทั้งหมด",
+      "title": "การดำเนินการ"
+    },
+    "all": "ทั้งหมด",
+    "empty": {
+      "allDesc": "เมื่อมีคนโต้ตอบกับโพสต์ของคุณ คุณจะเห็นที่นี่",
+      "allTitle": "ยังไม่มีการแจ้งเตือน",
+      "mentionsDesc": "เมื่อมีคนกล่าวถึงคุณ คุณจะเห็นที่นี่",
+      "mentionsTitle": "ยังไม่มีการกล่าวถึง"
+    },
+    "endOfList": "คุณมาถึงจุดสิ้นสุดของการแจ้งเตือนแล้ว",
+    "filtered": "กรองการแจ้งเตือนแล้ว {count} รายการ",
+    "filters": {
+      "categories": {
+        "for_limited_accounts": "บัญชีที่ถูกจำกัด",
+        "for_new_accounts": "บัญชีใหม่",
+        "for_not_followers": "คนที่ไม่ได้ติดตามคุณ",
+        "for_not_following": "คนที่คุณไม่ได้ติดตาม",
+        "for_private_mentions": "การกล่าวถึงส่วนตัวที่ไม่พึงประสงค์"
+      },
+      "options": {
+        "accept": "ยอมรับ",
+        "drop": "ทิ้ง",
+        "filter": "กรอง"
+      },
+      "title": "ตัวกรอง"
+    },
+    "loadError": "โหลดการแจ้งเตือนไม่สำเร็จ",
+    "mentions": "การกล่าวถึง",
+    "requests": "คำขอ",
+    "requestsPage": {
+      "emptyDesc": "ไม่มีการแจ้งเตือนที่ถูกกรองให้ตรวจสอบ",
+      "emptyTitle": "เรียบร้อยหมดแล้ว!",
+      "endOfList": "ไม่มีการแจ้งเตือนที่ถูกกรองอีกต่อไป",
+      "goBack": "กลับ",
+      "title": "การแจ้งเตือนที่ถูกกรอง"
+    },
+    "title": "การแจ้งเตือน"
+  },
+  "poll": {
+    "closed": "ปิดแล้ว",
+    "vote": "โหวต",
+    "votes": "คะแนนโหวต"
+  },
+  "profile": {
+    "extraFields": "ฟิลด์เพิ่มเติม",
+    "followers": "ผู้ติดตาม",
+    "following": "กำลังติดตาม",
+    "hiddenInfo": "ผู้ใช้นี้เลือกที่จะไม่เปิดเผยข้อมูลนี้",
+    "noFollowers": "ยังไม่มีผู้ติดตาม",
+    "noPosts": "ยังไม่มีโพสต์",
+    "notFollowing": "ยังไม่ได้ติดตามใคร",
+    "posts": "โพสต์",
+    "profileInfo": "ข้อมูลโปรไฟล์"
+  },
+  "profileEditor": {
+    "bio": "ประวัติ",
+    "contentPlaceholder": "เนื้อหา",
+    "displayName": "ชื่อที่แสดง",
+    "extraFields": "ฟิลด์เพิ่มเติม",
+    "extraFieldsDescription": "คุณสามารถแสดงรายการได้สูงสุด 4 รายการในรูปแบบตารางในโปรไฟล์ของคุณ",
+    "labelPlaceholder": "เลเบลที่ {number}",
+    "linkVerification": {
+      "copyTip": "<strong>เคล็ดลับ:</strong> ลิงก์บนเว็บไซต์ของคุณอาจมองไม่เห็น สิ่งสำคัญคือ <code /> ซึ่งช่วยป้องกันการแอบอ้าง",
+      "copyToClipboard": "คัดลอกไปยังคลิปบอร์ด",
+      "description": "คุณสามารถยืนยันตัวเองว่าเป็นเจ้าของลิงก์ในเมตาข้อมูลโปรไฟล์ของคุณได้ สำหรับสิ่งนี้ เว็บไซต์ที่ลิงก์ต้องมีลิงก์กลับไปยังโปรไฟล์ Mastodon ของคุณ ลิงก์กลับต้องมีแอททริบิวต์ <code />",
+      "title": "การยืนยันลิงก์"
+    },
+    "moveDown": "ย้ายลง",
+    "moveUp": "ย้ายขึ้น",
+    "title": "แก้ไขโปรไฟล์",
+    "uploadHeader": "อัปโหลดแบนเนอร์",
+    "verifiedOn": "ยืนยันแล้วเมื่อ {date}"
+  },
+  "report": {
+    "step": {
+      "category": {
+        "description": "เลือกหมวดหมู่ที่เหมาะสมที่สุด",
+        "dislike": {
+          "description": "เป็นสิ่งที่คุณไม่ต้องการเห็น",
+          "label": "ฉันไม่ชอบ"
+        },
+        "legal": {
+          "description": "คุณเชื่อว่ามันละเมิดกฎหมายของประเทศคุณหรือประเทศของเซิร์ฟเวอร์",
+          "label": "ผิดกฎหมาย"
+        },
+        "other": {
+          "description": "ปัญหานี้ไม่เข้ากับหมวดหมู่อื่นๆ",
+          "label": "อื่นๆ"
+        },
+        "post": "โพสต์",
+        "profile": "โปรไฟล์",
+        "spam": {
+          "description": "ลิงก์ที่เป็นอันตราย การมีส่วนร่วมปลอม หรือการตอบกลับซ้ำๆ",
+          "label": "เป็นสแปม"
+        },
+        "title": "บอกเราว่าเกิดอะไรขึ้นกับ{type}นี้",
+        "violation": {
+          "description": "คุณแน่ใจว่ามันละเมิดกฎบางข้อ",
+          "label": "ละเมิดกฎของเซิร์ฟเวอร์"
+        }
+      },
+      "comment": {
+        "description": "เพิ่มความคิดเห็นเพิ่มเติมที่อาจช่วยให้เราเข้าใจสถานการณ์ได้ดีขึ้น",
+        "forward": "ส่งต่อให้ {domain}",
+        "placeholder": "เพิ่มความคิดเห็นเพิ่มเติมที่นี่...",
+        "submit": "ส่งรายงาน",
+        "submitting": "กำลังส่ง...",
+        "title": "มีอะไรอีกที่เราควรทราบไหม?"
+      },
+      "rules": {
+        "description": "เลือกทั้งหมดที่เกี่ยวข้อง",
+        "title": "กฎข้อไหนที่ถูกละเมิด?"
+      },
+      "statuses": {
+        "description": "คุณสามารถรวมโพสต์เพิ่มเติมจากบัญชีนี้ได้หากต้องการ",
+        "included": "โพสต์ที่คุณเลือกได้ถูกรวมไว้ในรายงานแล้ว",
+        "optional": "คุณสามารถเลือกโพสต์เฉพาะเพื่อรวมไว้ในรายงานได้หากเกี่ยวข้อง",
+        "title": "มีอย่างอื่นที่ต้องการเพิ่มไหม?"
+      },
+      "thanks": {
+        "description": {
+          "dislike": "แม้ว่าเราจะไม่ดำเนินการใดๆ กับรายงานนี้โดยตรง แต่คุณมีตัวเลือกในการลดสิ่งที่คุณเห็นจากบัญชีนี้ได้",
+          "other": "รายงานของคุณถูกส่งแล้ว เราจะตรวจสอบเรื่องนี้และดำเนินการตามความเหมาะสมหากจำเป็น"
+        },
+        "suggestions": {
+          "block": "บล็อกบัญชีเพื่อซ่อนเนื้อหาของพวกเขา",
+          "filter": "กรองคำสำคัญหรือวลีเฉพาะ",
+          "unfollow": "เลิกติดตามหรือซ่อนบัญชี"
+        },
+        "title": {
+          "dislike": "รับทราบแล้ว",
+          "other": "ขอบคุณสำหรับการรายงาน"
+        }
+      }
+    },
+    "title": "รายงาน @{acct}"
+  },
+  "scheduled": {
+    "cancel": "Cancel",
+    "confirmCancel": "Are you sure you want to cancel this scheduled post?",
+    "count": "{count, plural, one {# post} other {# posts}}",
+    "edit": "Edit",
+    "empty": {
+      "createPost": "Create Post",
+      "description": "Posts you schedule will appear here.",
+      "title": "No scheduled posts"
+    },
+    "endOfPosts": "End of scheduled posts",
+    "failedToLoad": "Failed to load scheduled posts",
+    "scheduledFor": "Scheduled for {date}",
+    "title": "Scheduled Posts"
+  },
+  "search": {
+    "clearAll": "ล้างทั้งหมด",
+    "emptyHistory": "ค้นหาผู้คน โพสต์ หรือแฮชแท็ก",
+    "enterToStart": "ป้อนชื่อหรือชื่อผู้ใช้เพื่อเริ่มการสนทนา",
+    "error": "เกิดข้อผิดพลาดขณะค้นหา",
+    "noResults": "ไม่พบผลลัพธ์",
+    "people": "ค้นหาผู้คน",
+    "placeholder": "ค้นหาผู้คน โพสต์ หรือแฮชแท็ก (กด Enter เพื่อค้นหา)",
+    "recent": "ล่าสุด",
+    "tabs": {
+      "accounts": "ผู้คน",
+      "all": "ทั้งหมด",
+      "hashtags": "แฮชแท็ก",
+      "statuses": "โพสต์"
+    },
+    "title": "ค้นหา",
+    "tryDifferent": "ลองค้นหาด้วยชื่ออื่น"
+  },
+  "settings": {
+    "aboutServer": "เกี่ยวกับเซิร์ฟเวอร์นี้",
+    "account": "บัญชี",
+    "appearance": "รูปลักษณ์",
+    "blockedAccounts": "บัญชีที่บล็อก",
+    "blocksPage": {
+      "count": "{count} บัญชีที่ถูกบล็อก",
+      "emptyDesc": "เมื่อคุณบล็อกใครบางคน พวกเขาจะไม่สามารถเห็นโพสต์ของคุณหรือโต้ตอบกับคุณได้",
+      "emptyTitle": "ไม่มีบัญชีที่ถูกบล็อก",
+      "title": "บัญชีที่บล็อก"
+    },
+    "editProfile": "แก้ไขโปรไฟล์",
+    "filtersPage": {
+      "addFilter": "เพิ่มตัวกรอง",
+      "blur": "เบลอ",
+      "confirmDelete": "คุณแน่ใจหรือไม่ว่าต้องการลบตัวกรอง \"{title}\"?",
+      "context": {
+        "account": "โปรไฟล์",
+        "home": "หน้าแรก",
+        "notifications": "การแจ้งเตือน",
+        "public": "สาธารณะ",
+        "thread": "การสนทนา"
+      },
+      "createFirst": "สร้างตัวกรองแรกของคุณ",
+      "empty": "คุณยังไม่ได้สร้างตัวกรองใดๆ",
+      "emptyDesc": "ตัวกรองช่วยให้คุณซ่อนหรือเบลอโพสต์ที่มีคำหรือวลีเฉพาะเจาะจง",
+      "expired": "หมดอายุแล้ว",
+      "expiresIn": "หมดอายุใน {count} {unit}",
+      "failedLoad": "โหลดตัวกรกรองไม่สำเร็จ โปรดลองอีกครั้ง",
+      "hide": "ซ่อน",
+      "title": "ตัวกรอง",
+      "warn": "เตือน"
+    },
+    "followRequests": "คำขอติดตาม",
+    "interfaceLanguage": "ภาษาของส่วนติดต่อผู้ใช้",
+    "interfaceLanguageDesc": "เปลี่ยนภาษาของแอปพลิเคชัน",
+    "moderation": "การควบคุมเนื้อหา",
+    "mutedAccounts": "บัญชีที่ซ่อน",
+    "mutesPage": {
+      "count": "{count} บัญชีที่ถูกซ่อน",
+      "emptyDesc": "เมื่อคุณซ่อนใครบางคน โพสต์และการแจ้งเตือนของพวกเขาจะถูกซ่อนจากคุณ",
+      "emptyTitle": "ไม่มีบัญชีที่ถูกซ่อน",
+      "title": "บัญชีที่ซ่อนไว้"
+    },
+    "nav": {
+      "bookmarks": "คั่นหน้า",
+      "lists": "รายการ",
+      "search": "ค้นหา"
+    },
+    "notifications": "การแจ้งเตือน",
+    "options": {
+      "direct": "การกล่าวถึงส่วนตัว",
+      "directDesc": "ทุกคนที่ถูกกล่าวถึงในโพสต์",
+      "private": "ผู้ติดตาม",
+      "privateDesc": "เฉพาะผู้ติดตามของคุณ",
+      "public": "สาธารณะ",
+      "publicDesc": "ทุกคนทั้งในและนอก Mastodon",
+      "quoteFollowers": "ผู้ติดตาม",
+      "quoteFollowersDesc": "เฉพาะผู้ติดตามเท่านั้นที่สามารถอ้างอิงได้",
+      "quoteNobody": "เฉพาะฉัน",
+      "quoteNobodyDesc": "ไม่มีใครอื่นสามารถอ้างอิงได้",
+      "quotePublic": "ทุกคน",
+      "quotePublicDesc": "ใครก็สามารถอ้างอิงโพสต์นี้ได้",
+      "unlisted": "ไม่แสดงในรายการ",
+      "unlistedDesc": "ซ่อนจากผลการค้นหาและไทม์ไลน์ยอดนิยม"
+    },
+    "preferences": "การปรับแต่ง",
+    "preferencesPage": {
+      "botAccount": "บัญชีบอท",
+      "botAccountDesc": "บัญชีนี้ดำเนินการอัตโนมัติเป็นหลัก",
+      "discoverable": "แนะนำบัญชีให้ผู้อื่น",
+      "discoverableDesc": "อนุญาตให้บัญชีของคุณถูกค้นพบได้",
+      "hideCollections": "ซ่อนผู้ติดตามและการติดตาม",
+      "hideCollectionsDesc": "ซ่อนรายชื่อผู้ติดตามและคนที่คุณติดตามจากโปรไฟล์ของคุณ",
+      "indexable": "รวมโพสต์สาธารณะในผลการค้นหา",
+      "indexableDesc": "อนุญาตให้โพสต์สาธารณะของคุณถูกค้นพบผ่านการค้นหา",
+      "lockedAccount": "บัญชีที่ล็อค",
+      "lockedAccountDesc": "อนุมัติผู้ติดตามด้วยตนเอง",
+      "markSensitive": "ทำเครื่องหมายสื่อว่าล่อแหลมโดยค่าเริ่มต้น",
+      "markSensitiveDesc": "ซ่อนไฟล์แนบสื่อไว้หลังคำเตือนเนื้อหา",
+      "postingDefaults": "ค่าเริ่มต้นการโพสต์",
+      "postingDefaultsDesc": "กำหนดค่าเริ่มต้นสำหรับโพสต์ใหม่",
+      "privacy": "ความเป็นส่วนตัว",
+      "privacyDesc": "ควบคุมความเป็นส่วนตัวและการค้นพบโปรไฟล์ของคุณ",
+      "quoteDisabled": "โพสต์สำหรับผู้ติดตามเท่านั้นและโพสต์ส่วนตัวไม่สามารถอ้างอิงโดยผู้อื่นได้",
+      "saveChanges": "บันทึกการเปลี่ยนแปลง",
+      "visibility": "ความเป็นส่วนตัว",
+      "whoCanQuote": "ใครสามารถอ้างอิงได้"
+    },
+    "pushNotifications": {
+      "alertTypes": "ประเภทการแจ้งเตือน",
+      "boosts": "การดัน",
+      "description": "กำหนดค่าการแจ้งเตือนแบบพุชสำหรับอุปกรณ์ของคุณ",
+      "disableLabel": "ปิดการแจ้งเตือนแบบพุช",
+      "disabled": "รับการแจ้งเตือนแม้จะปิดแอป",
+      "enableLabel": "เปิดการแจ้งเตือนแบบพุช",
+      "enabled": "เปิดใช้งาน - รับการแจ้งเตือนแม้จะปิดแอป",
+      "favorites": "รายการโปรด",
+      "follows": "การติดตาม",
+      "mentions": "การกล่าวถึง",
+      "notSupported": "ไม่รองรับในเบราว์เซอร์นี้",
+      "permissionDenied": "ถูกปฏิเสธสิทธิ์ อนุญาตการแจ้งเตือนในการตั้งค่าเบราว์เซอร์ของคุณ",
+      "polls": "การสำรวจ",
+      "title": "การแจ้งเตือนแบบพุช"
+    },
+    "quickLinks": "ลิงก์ด่วน",
+    "scheduledPosts": "โพสต์ที่ตั้งเวลาไว้",
+    "server": "เซิร์ฟเวอร์",
+    "signOut": "ออกจากระบบ",
+    "signingOut": "กำลังออกจากระบบ...",
+    "title": "การตั้งค่า",
+    "trending": "กำลังมาแรง"
+  },
+  "statusDetail": {
+    "boostedBy": {
+      "count": "{count, plural, one {# person} other {# people}}",
+      "noBoostsYet": "No boosts yet",
+      "noMoreUsers": "No more users",
+      "title": "Boosted by"
+    },
+    "errorLoading": "เกิดข้อผิดพลาดในการโหลดโพสต์",
+    "failedLoadDesc": "ไม่พบโพสต์นี้หรือโหลดไม่สำเร็จ",
+    "favouritedBy": {
+      "count": "{count, plural, one {# person} other {# people}}",
+      "noFavouritesYet": "No favourites yet",
+      "noMoreUsers": "No more users",
+      "title": "Favourited by"
+    },
+    "goBack": "Go Back",
+    "postNotFound": "Post Not Found",
+    "quotedBy": "อ้างอิงโพสต์โดย @{acct}",
+    "quotesPage": {
+      "count": "{count, plural, one {# quote} other {# quotes}}",
+      "noMoreQuotes": "No more quotes",
+      "noQuotesYet": "No quotes yet",
+      "title": "Quotes"
+    },
+    "replies": "การตอบกลับ ({count})",
+    "stats": {
+      "boosts": "{count, plural, other {ดัน}}",
+      "favourites": "{count, plural, other {ชื่นชอบ}}",
+      "quotes": "{count, plural, other {อ้างอิง}}"
+    },
+    "title": "โพสต์"
+  },
+  "suggestions": {
+    "dismissSuggestions": "ปิดคำแนะนำ",
+    "dontShowAgain": "Don't show again",
+    "nextItem": "รายการถัดไป",
+    "personalized": "Personalized",
+    "personalizedHint": "Based on accounts you follow",
+    "popular": "Popular",
+    "popularHint": "Popular on this instance",
+    "previousItem": "รายการก่อนหน้า",
+    "staffPick": "Staff pick",
+    "staffPickHint": "Hand-picked by the team",
+    "whoToFollow": "ใครที่น่าติดตาม"
+  },
+  "timeline": {
+    "empty": "ไทม์ไลน์ของคุณว่างเปล่า",
+    "error": "เกิดข้อผิดพลาดในการโหลดไทม์ไลน์",
+    "subtitle": "ไทม์ไลน์ส่วนตัวของคุณ",
+    "title": "หน้าแรก",
+    "trending": "กำลังมาแรง"
+  },
+  "toast": {
+    "copiedToClipboard": "คัดลอกไปยังคลิปบอร์ดแล้ว",
+    "failedToDeleteFilter": "ลบตัวกรองไม่สำเร็จ",
+    "filterCreated": "สร้างตัวกรองแล้ว",
+    "filterDeleted": "ลบตัวกรองแล้ว",
+    "filterUpdated": "อัปเดตตัวกรองแล้ว",
+    "postDeleted": "ลบโพสต์แล้ว",
+    "postShared": "แชร์โพสต์แล้ว"
+  },
+  "visibility": {
+    "direct": "ส่วนตัว",
+    "private": "ผู้ติดตามเท่านั้น",
+    "public": "สาธารณะ",
+    "title": "ความเป็นส่วนตัว",
+    "unlisted": "ไม่แสดงในรายการ",
+    "whoCanQuote": "ใครสามารถอ้างอิงได้"
+  },
+  "wrapstodon": {
+    "mostPopularPost": "โพสต์ที่ยอดนิยมที่สุด",
+    "mostUsedHashtag": "แฮชแท็กที่ใช้บ่อยที่สุด",
+    "notAvailable": "Wrapstodon ไม่พร้อมใช้งาน",
+    "somethingWentWrong": "เกิดข้อผิดพลาดบางอย่าง",
+    "title": "Wrapstodon"
+  }
+}

@@ -1,0 +1,660 @@
+{
+  "about": {
+    "title": "Giới thiệu"
+  },
+  "account": {
+    "backToTimeline": "Quay lại Bảng tin",
+    "block": "Chặn",
+    "bot": "BOT",
+    "editProfile": "Chỉnh sửa hồ sơ",
+    "empty": {
+      "end": "Hết bài đăng",
+      "posts": "Chưa có bài đăng nào"
+    },
+    "end_of_timeline": "You've reached the end of your timeline",
+    "follow": "Theo dõi",
+    "follow_hint": "Follow some people to see their posts here.",
+    "followersPage": {
+      "hiddenInfo": "Người dùng này đã chọn ẩn thông tin",
+      "noFollowersYet": "Chưa có người theo dõi",
+      "noMoreFollowers": "Không còn người theo dõi",
+      "title": "Người theo dõi"
+    },
+    "followers_count": "{count, plural, one {# follower} other {# followers}}",
+    "following": "Đang theo dõi",
+    "followingPage": {
+      "hiddenInfo": "Người dùng này đã chọn ẩn thông tin",
+      "noMoreAccounts": "Không còn tài khoản",
+      "notFollowingYet": "Chưa theo dõi ai",
+      "title": "Đang theo dõi"
+    },
+    "following_count": "{count, plural, other {# following}}",
+    "hiddenProfile": "Hồ sơ này đã bị ẩn bởi quản trị viên của {domain}.",
+    "joined": "Đã tham gia {date}",
+    "loadMore": "Tải thêm",
+    "loading": "Đang tải...",
+    "meta": {
+      "description": "Hồ sơ của @{acct} trên Mastodon",
+      "ogDescription": "Hồ sơ của @{acct} trên Mastodon",
+      "ogTitle": "{name} (@{acct})",
+      "title": "{name} (@{acct}) - Mastodon",
+      "twitterDescription": "Hồ sơ của @{acct}",
+      "twitterTitle": "{name} (@{acct})"
+    },
+    "mute": "Ẩn",
+    "notFound": "Không tìm thấy hồ sơ",
+    "pinned": "Đã ghim",
+    "pinnedNav": {
+      "next": "Bài ghim sau",
+      "prev": "Bài ghim trước"
+    },
+    "posts_count": "{count, plural, one {# post} other {# posts}}",
+    "requested": "Đã yêu cầu",
+    "showProfile": "Vẫn hiển thị hồ sơ",
+    "startNotifying": "Thông báo khi @{acct} đăng bài",
+    "stopNotifying": "Ngừng thông báo khi @{acct} đăng bài",
+    "tabs": {
+      "media": "Đa phương tiện",
+      "posts": "Bài đăng",
+      "posts_replies": "Bài đăng & trả lời"
+    },
+    "unblock": "Bỏ chặn",
+    "unfollow": "Bỏ theo dõi",
+    "unmute": "Bỏ ẩn",
+    "viewOnInstance": "Xem trên máy chủ gốc"
+  },
+  "actions": {
+    "blockAccount": "Chặn @{acct}",
+    "bookmark": "Dấu trang",
+    "boost": "Đăng lại",
+    "deleteStatus": "Xóa bài đăng",
+    "editStatus": "Sửa bài đăng",
+    "favourite": "Thích",
+    "follow": "Theo dõi",
+    "muteConversation": "Ẩn cuộc hội thoại",
+    "pin": "Ghim vào hồ sơ",
+    "quote": "Trích dẫn",
+    "removeBookmark": "Xóa dấu trang",
+    "reply": "Trả lời",
+    "undoBoost": "Hủy đăng lại",
+    "unfavourite": "Bỏ thích",
+    "unfollow": "Bỏ theo dõi",
+    "unmuteConversation": "Bỏ ẩn cuộc hội thoại",
+    "unpin": "Bỏ ghim khỏi hồ sơ"
+  },
+  "common": {
+    "back": "Quay lại",
+    "backToTop": "Lên đầu trang",
+    "cancel": "Hủy",
+    "close": "Đóng",
+    "delete": "Xóa",
+    "done": "Xong",
+    "dontShowAgain": "Không hiển thị lại",
+    "loading": "Đang tải...",
+    "next": "Tiếp theo",
+    "remove": "Gỡ bỏ",
+    "report": "Báo cáo",
+    "retry": "Thử lại",
+    "save": "Lưu",
+    "share": "Chia sẻ",
+    "skipToMain": "Chuyển đến nội dung chính",
+    "verified": "Đã xác minh",
+    "viewAll": "Xem tất cả"
+  },
+  "composer": {
+    "addContentWarning": "Thêm cảnh báo nội dung",
+    "addEmoji": "Thêm biểu tượng",
+    "addMedia": "Thêm đa phương tiện",
+    "addOption": "Thêm lựa chọn",
+    "addPoll": "Thêm bình chọn",
+    "charCount": "còn {count} ký tự",
+    "cwLabel": "Cảnh báo nội dung",
+    "cwPlaceholder": "Viết cảnh báo của bạn ở đây...",
+    "duration": {
+      "1d": "1 ngày",
+      "1h": "1 giờ",
+      "30m": "30 phút",
+      "3d": "3 ngày",
+      "5m": "5 phút",
+      "6h": "6 giờ",
+      "7d": "7 ngày"
+    },
+    "editAltText": "Sửa văn bản thay thế",
+    "editPost": "Edit post",
+    "language": "Ngôn ngữ...",
+    "multipleChoice": "Cho phép chọn nhiều",
+    "newMessage": "New message",
+    "newPost": "New post",
+    "optionPlaceholder": "Lựa chọn {number}",
+    "options": {
+      "quoteFollowers": "Người theo dõi",
+      "quoteFollowersDesc": "Chỉ người theo dõi mới có thể trích dẫn bài đăng này",
+      "quoteNobody": "Không ai",
+      "quoteNobodyDesc": "Tắt tính năng trích dẫn cho bài đăng này",
+      "quotePublic": "Mọi người",
+      "quotePublicDesc": "Bất kỳ ai cũng có thể trích dẫn bài đăng này"
+    },
+    "placeholder": "Bạn đang nghĩ gì?",
+    "poll": "Bình chọn",
+    "pollDuration": "Thời gian bình chọn",
+    "publish": "Đăng",
+    "quoteDisabled": "Các bài đăng chỉ dành cho người theo dõi trên Mastodon không thể bị trích dẫn bởi người khác.",
+    "removeCW": "Gỡ bỏ cảnh báo",
+    "removeOption": "Gỡ bỏ lựa chọn",
+    "removePoll": "Gỡ bỏ bình chọn",
+    "removeSchedule": "Hủy hẹn giờ",
+    "reply": "Trả lời",
+    "replyPlaceholder": "Viết câu trả lời của bạn",
+    "replyTo": "Reply to @{acct}",
+    "reschedule": "Đổi giờ",
+    "schedule": "Hẹn giờ",
+    "scheduleHelp": "Bài đăng sẽ được tự động đăng vào thời gian này.",
+    "scheduleLabel": "Hẹn giờ đăng",
+    "schedulePost": "Hẹn giờ đăng",
+    "update": "Cập nhật",
+    "upload": {
+      "altText": "Văn bản thay thế",
+      "altTextDescription": "Mô tả phương tiện này cho người dùng khiếm thị...",
+      "editAlt": "Sửa văn bản thay thế",
+      "status": "Đang tải phương tiện lên..."
+    },
+    "visibility": "Chế độ hiển thị",
+    "visibilityDescription": "Kiểm soát ai có thể tương tác với bài đăng này. Bạn cũng có thể áp dụng cài đặt cho tất cả các bài đăng trong tương lai tại Cài đặt > Mặc định đăng bài.",
+    "visibilityInteraction": "Hiển thị và tương tác",
+    "visibilityLabel": "Chế độ hiển thị: {label}",
+    "visibilityOptions": {
+      "direct": "Trực tiếp",
+      "directDesc": "Chỉ những người được nhắc tên",
+      "private": "Chỉ người theo dõi",
+      "privateDesc": "Chỉ người theo dõi bạn mới thấy",
+      "public": "Công khai",
+      "publicDesc": "Mọi người đều thấy",
+      "unlisted": "Không công khai",
+      "unlistedDesc": "Không hiện trên bảng tin công khai"
+    },
+    "whoCanQuote": "Ai có thể trích dẫn"
+  },
+  "conversation": {
+    "deleteConfirm": "Xóa cuộc trò chuyện này?",
+    "deleteConfirmFull": "Bạn có chắc chắn muốn xóa cuộc trò chuyện này? Hành động này không thể hoàn tác.",
+    "deleteError": "Không thể xóa cuộc trò chuyện. Vui lòng thử lại.",
+    "mediaOnly": "(Chỉ đa phương tiện)",
+    "newMessage": "Tin nhắn mới",
+    "noMessages": "Chưa có tin nhắn nào",
+    "sendError": "Gửi tin nhắn thất bại",
+    "title": "Trò chuyện",
+    "typeMessage": "Nhập tin nhắn..."
+  },
+  "conversations": {
+    "count": "{count, plural, =0 {Chưa có cuộc trò chuyện nào} other {# cuộc trò chuyện}}",
+    "errorLoading": "Lỗi khi tải các cuộc trò chuyện",
+    "failedLoadDesc": "Không thể tải tin nhắn trực tiếp của bạn. Vui lòng thử lại sau.",
+    "new": "Tin nhắn mới",
+    "noConversations": "Chưa có cuộc trò chuyện nào",
+    "reachedEnd": "Bạn đã xem hết",
+    "sendDirect": "Gửi một tin nhắn trực tiếp để bắt đầu trò chuyện",
+    "title": "Tin nhắn trực tiếp"
+  },
+  "deletePost": {
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "message": "Hành động này không thể hoàn tác. Bài đăng của bạn sẽ bị xóa vĩnh viễn khỏi hồ sơ và bảng tin của những người theo dõi bạn.",
+    "title": "Xóa bài đăng?"
+  },
+  "empty": {
+    "failedNews": "Không thể tải tin tức xu hướng",
+    "failedSuggestions": "Không thể tải gợi ý",
+    "failedTags": "Không thể tải hashtag xu hướng",
+    "failedTrending": "Không thể tải bài đăng xu hướng",
+    "noBoosts": "Chưa có lượt đăng lại nào",
+    "noFavourites": "Chưa có lượt thích nào",
+    "noFollowRequests": "Không có yêu cầu theo dõi nào",
+    "noMessages": "Chưa có tin nhắn nào",
+    "noQuotes": "Chưa có lượt trích dẫn nào",
+    "noSuggestions": "Không có gợi ý nào",
+    "noTrendingNews": "Chưa có tin tức xu hướng nào",
+    "noTrendingPosts": "Chưa có bài đăng xu hướng nào",
+    "noTrendingTags": "Chưa có hashtag xu hướng nào",
+    "noUsersFound": "Không tìm thấy người dùng",
+    "signInToSee": "Đăng nhập để xem gợi ý"
+  },
+  "explore": {
+    "failedNews": "Không thể tải tin tức xu hướng",
+    "failedTags": "Không thể tải thẻ xu hướng",
+    "failedTrending": "Không thể tải bài đăng xu hướng",
+    "noTrendingNews": "Chưa có tin tức xu hướng nào",
+    "noTrendingPosts": "Chưa có bài đăng xu hướng nào",
+    "noTrendingTags": "Chưa có thẻ xu hướng nào",
+    "personalizedHint": "Dựa trên các tài khoản bạn theo dõi",
+    "personalizedLabel": "Gợi ý cá nhân hóa",
+    "popularHint": "Phổ biến trên máy chủ này",
+    "popularLabel": "Gợi ý phổ biến",
+    "reachedEndNews": "Bạn đã xem hết các tin tức xu hướng",
+    "reachedEndPosts": "Bạn đã xem hết các bài đăng xu hướng",
+    "reachedEndTags": "Bạn đã xem hết các thẻ xu hướng",
+    "staffPickHint": "Được chọn bởi đội ngũ quản trị",
+    "staffPickLabel": "Lựa chọn của đội ngũ",
+    "tabs": {
+      "links": "Tin tức",
+      "people": "Mọi người",
+      "posts": "Bài đăng",
+      "tags": "Thẻ"
+    },
+    "title": "Khám phá"
+  },
+  "imageCropper": {
+    "flipHorizontal": "Lật ngang",
+    "flipVertical": "Lật dọc",
+    "rotateLeft": "Xoay trái 90°",
+    "rotateRight": "Xoay phải 90°",
+    "zoomIn": "Phóng to",
+    "zoomOut": "Thu nhỏ"
+  },
+  "lists": {
+    "count": "{count, plural, =0 {Chưa có danh sách nào} other {# danh sách}}",
+    "create": "Tạo danh sách",
+    "createFirst": "Tạo danh sách đầu tiên của bạn",
+    "deleteConfirm": "Bạn có chắc chắn muốn xóa \"{title}\"? Hành động này không thể hoàn tác.",
+    "deleteTitle": "Xóa danh sách",
+    "description": "Danh sách giúp bạn sắp xếp các tài khoản bạn theo dõi thành các bảng tin chọn lọc.",
+    "edit": "Sửa danh sách",
+    "exclusive": "Độc quyền",
+    "exclusiveDesc": "Bài đăng từ các thành viên trong danh sách sẽ không hiện trên trang chủ của bạn",
+    "exclusiveLabel": "Ẩn các bài đăng này khỏi trang chủ",
+    "manageMembers": "Quản lý thành viên",
+    "nameLabel": "Tên danh sách",
+    "namePlaceholder": "Danh sách của tôi",
+    "noLists": "Chưa có danh sách nào",
+    "repliesPolicy": {
+      "followed": "Bất kỳ ai bạn theo dõi",
+      "list": "Thành viên trong danh sách",
+      "none": "Không ai cả"
+    },
+    "repliesPolicyLabel": "Hiển thị câu trả lời tới",
+    "repliesPolicyShort": {
+      "followed": "Trả lời tới người đang theo dõi",
+      "list": "Trả lời tới thành viên danh sách",
+      "none": "Không có câu trả lời"
+    },
+    "title": "Danh sách"
+  },
+  "media": {
+    "sensitive": "Nhấn để xem nội dung nhạy cảm"
+  },
+  "nav": {
+    "about": "Giới thiệu",
+    "bookmarks": "Dấu trang",
+    "compose": "Đăng bài",
+    "explore": "Khám phá",
+    "home": "Trang chủ",
+    "lists": "Danh sách",
+    "messages": "Tin nhắn",
+    "notifications": "Thông báo",
+    "search": "Tìm kiếm",
+    "settings": "Cài đặt",
+    "sourceCode": "Mã nguồn"
+  },
+  "notifications": {
+    "actions": {
+      "clearAll": "Xóa tất cả",
+      "markAllRead": "Đánh dấu tất cả đã đọc",
+      "title": "Thao tác"
+    },
+    "all": "Tất cả",
+    "empty": {
+      "allDesc": "Khi có người tương tác với bài đăng của bạn, thông báo sẽ hiện ở đây.",
+      "allTitle": "Chưa có thông báo nào",
+      "mentionsDesc": "Khi có người nhắc đến bạn, thông báo sẽ hiện ở đây.",
+      "mentionsTitle": "Chưa có lượt nhắc nào"
+    },
+    "endOfList": "Bạn đã xem hết thông báo",
+    "filtered": "Đã lọc {count} thông báo",
+    "filters": {
+      "categories": {
+        "for_limited_accounts": "Tài khoản bị hạn chế",
+        "for_new_accounts": "Tài khoản mới",
+        "for_not_followers": "Người không theo dõi bạn",
+        "for_not_following": "Người bạn không theo dõi",
+        "for_private_mentions": "Lượt nhắc riêng tư không mong muốn"
+      },
+      "options": {
+        "accept": "Chấp nhận",
+        "drop": "Bỏ qua",
+        "filter": "Lọc"
+      },
+      "title": "Bộ lọc"
+    },
+    "loadError": "Không thể tải thông báo",
+    "mentions": "Lượt nhắc",
+    "requests": "Yêu cầu",
+    "requestsPage": {
+      "emptyDesc": "Không có thông báo nào cần xem lại.",
+      "emptyTitle": "Đã xong!",
+      "endOfList": "Hết thông báo đã lọc",
+      "goBack": "Quay lại",
+      "title": "Thông báo đã lọc"
+    },
+    "title": "Thông báo"
+  },
+  "poll": {
+    "closed": "Đã đóng",
+    "vote": "Bình chọn",
+    "votes": "lượt bình chọn"
+  },
+  "profile": {
+    "extraFields": "Thông tin thêm",
+    "followers": "Người theo dõi",
+    "following": "Đang theo dõi",
+    "hiddenInfo": "Người dùng này đã chọn không công khai thông tin này",
+    "noFollowers": "Chưa có người theo dõi nào",
+    "noPosts": "Chưa có bài đăng nào",
+    "notFollowing": "Chưa theo dõi ai",
+    "posts": "Bài đăng",
+    "profileInfo": "Thông tin hồ sơ"
+  },
+  "profileEditor": {
+    "bio": "Tiểu sử",
+    "contentPlaceholder": "Nội dung",
+    "displayName": "Tên hiển thị",
+    "extraFields": "Thông tin thêm",
+    "extraFieldsDescription": "Bạn có thể hiển thị tối đa 4 mục dưới dạng bảng trên hồ sơ của mình",
+    "labelPlaceholder": "Nhãn {number}",
+    "linkVerification": {
+      "copyTip": "<strong>Mẹo:</strong> Liên kết trên trang web của bạn có thể ẩn. Phần quan trọng là <code /> giúp ngăn chặn việc mạo danh.",
+      "copyToClipboard": "Sao chép vào bộ nhớ tạm",
+      "description": "Bạn có thể xác minh mình là chủ sở hữu của các liên kết trong siêu dữ liệu hồ sơ của mình. Để thực hiện việc này, trang web được liên kết phải chứa liên kết quay lại hồ sơ Mastodon của bạn. Liên kết quay lại phải có thuộc tính <code />.",
+      "title": "Xác minh liên kết"
+    },
+    "moveDown": "Di chuyển xuống",
+    "moveUp": "Di chuyển lên",
+    "title": "Chỉnh sửa hồ sơ",
+    "uploadHeader": "Tải lên ảnh bìa",
+    "verifiedOn": "Đã xác minh vào {date}"
+  },
+  "report": {
+    "step": {
+      "category": {
+        "description": "Chọn loại phù hợp nhất",
+        "dislike": {
+          "description": "Đó là thứ bạn không muốn thấy",
+          "label": "Tôi không thích nó"
+        },
+        "legal": {
+          "description": "Bạn tin rằng nó vi phạm luật pháp quốc gia của bạn hoặc của máy chủ",
+          "label": "Nó phạm pháp"
+        },
+        "other": {
+          "description": "Vấn đề không thuộc các loại trên",
+          "label": "Khác"
+        },
+        "post": "bài đăng",
+        "profile": "hồ sơ",
+        "spam": {
+          "description": "Liên kết độc hại, tương tác giả mạo hoặc trả lời lặp lại",
+          "label": "Đó là spam"
+        },
+        "title": "Hãy cho chúng tôi biết về {type} này",
+        "violation": {
+          "description": "Bạn chắc chắn rằng nó vi phạm một quy tắc cụ thể",
+          "label": "Vi phạm quy tắc máy chủ"
+        }
+      },
+      "comment": {
+        "description": "Thêm bất kỳ nhận xét bổ sung nào có thể giúp chúng tôi hiểu tình hình hơn",
+        "forward": "Chuyển tiếp cho {domain}",
+        "placeholder": "Thêm bất kỳ nhận xét bổ sung nào ở đây...",
+        "submit": "Gửi báo cáo",
+        "submitting": "Đang gửi...",
+        "title": "Còn điều gì khác chúng tôi nên biết không?"
+      },
+      "rules": {
+        "description": "Chọn tất cả những mục phù hợp",
+        "title": "Quy tắc nào đang bị vi phạm?"
+      },
+      "statuses": {
+        "description": "Bạn có thể bao gồm thêm nhiều bài đăng từ tài khoản này nếu muốn",
+        "included": "Bài đăng bạn chọn đã được bao gồm trong báo cáo.",
+        "optional": "Bạn có thể chọn các bài đăng cụ thể để bao gồm trong báo cáo nếu thấy phù hợp.",
+        "title": "Bạn có muốn thêm gì nữa không?"
+      },
+      "thanks": {
+        "description": {
+          "dislike": "Mặc dù chúng tôi không trực tiếp xử lý báo cáo này, nhưng bạn có các tùy chọn để giảm bớt nội dung từ tài khoản này.",
+          "other": "Báo cáo của bạn đã được gửi. Chúng tôi sẽ xem xét và thực hiện hành động thích hợp nếu cần thiết."
+        },
+        "suggestions": {
+          "block": "Chặn tài khoản để ẩn nội dung của họ",
+          "filter": "Lọc các từ khóa hoặc cụm từ cụ thể",
+          "unfollow": "Bỏ theo dõi hoặc ẩn tài khoản"
+        },
+        "title": {
+          "dislike": "Đã ghi nhận",
+          "other": "Cảm ơn bạn đã báo cáo"
+        }
+      }
+    },
+    "title": "Báo cáo @{acct}"
+  },
+  "scheduled": {
+    "cancel": "Cancel",
+    "confirmCancel": "Are you sure you want to cancel this scheduled post?",
+    "count": "{count, plural, one {# post} other {# posts}}",
+    "edit": "Edit",
+    "empty": {
+      "createPost": "Create Post",
+      "description": "Posts you schedule will appear here.",
+      "title": "No scheduled posts"
+    },
+    "endOfPosts": "End of scheduled posts",
+    "failedToLoad": "Failed to load scheduled posts",
+    "scheduledFor": "Scheduled for {date}",
+    "title": "Scheduled Posts"
+  },
+  "search": {
+    "clearAll": "Xóa tất cả",
+    "emptyHistory": "Tìm kiếm người, bài đăng hoặc hashtag",
+    "enterToStart": "Nhập tên hoặc tên người dùng để bắt đầu trò chuyện",
+    "error": "Đã xảy ra lỗi khi tìm kiếm",
+    "noResults": "Không tìm thấy kết quả",
+    "people": "Tìm kiếm mọi người",
+    "placeholder": "Tìm kiếm người, bài đăng hoặc hashtag (nhấn Enter để tìm)",
+    "recent": "Gần đây",
+    "tabs": {
+      "accounts": "Mọi người",
+      "all": "Tất cả",
+      "hashtags": "Hashtag",
+      "statuses": "Bài đăng"
+    },
+    "title": "Tìm kiếm",
+    "tryDifferent": "Hãy thử tìm kiếm với tên khác"
+  },
+  "settings": {
+    "aboutServer": "Về máy chủ này",
+    "account": "Tài khoản",
+    "appearance": "Giao diện",
+    "blockedAccounts": "Tài khoản đã chặn",
+    "blocksPage": {
+      "count": "{count} tài khoản đã chặn",
+      "emptyDesc": "Khi bạn chặn ai đó, họ sẽ không thể xem bài đăng hoặc tương tác với bạn.",
+      "emptyTitle": "Chưa chặn tài khoản nào",
+      "title": "Tài khoản đã chặn"
+    },
+    "editProfile": "Chỉnh sửa hồ sơ",
+    "filtersPage": {
+      "addFilter": "Thêm bộ lọc",
+      "blur": "Làm mờ",
+      "confirmDelete": "Bạn có chắc chắn muốn xóa bộ lọc \"{title}\"?",
+      "context": {
+        "account": "Hồ sơ",
+        "home": "Trang chủ",
+        "notifications": "Thông báo",
+        "public": "Công khai",
+        "thread": "Cuộc trò chuyện"
+      },
+      "createFirst": "Tạo bộ lọc đầu tiên của bạn",
+      "empty": "Bạn chưa tạo bộ lọc nào.",
+      "emptyDesc": "Bộ lọc cho phép bạn ẩn hoặc làm mờ bài đăng chứa từ hoặc cụm từ cụ thể.",
+      "expired": "Đã hết hạn",
+      "expiresIn": "Hết hạn sau {count} {unit}",
+      "failedLoad": "Không thể tải bộ lọc. Vui lòng thử lại.",
+      "hide": "Ẩn",
+      "title": "Bộ lọc",
+      "warn": "Cảnh báo"
+    },
+    "followRequests": "Yêu cầu theo dõi",
+    "interfaceLanguage": "Ngôn ngữ giao diện",
+    "interfaceLanguageDesc": "Thay đổi ngôn ngữ của ứng dụng",
+    "moderation": "Kiểm duyệt",
+    "mutedAccounts": "Tài khoản đã ẩn",
+    "mutesPage": {
+      "count": "{count} tài khoản đã ẩn",
+      "emptyDesc": "Khi bạn ẩn ai đó, bài đăng và thông báo của họ sẽ không hiện với bạn.",
+      "emptyTitle": "Chưa ẩn tài khoản nào",
+      "title": "Tài khoản đã ẩn"
+    },
+    "nav": {
+      "bookmarks": "Dấu trang",
+      "lists": "Danh sách",
+      "search": "Tìm kiếm"
+    },
+    "notifications": "Thông báo",
+    "options": {
+      "direct": "Nhắn riêng",
+      "directDesc": "Tất cả những người được đề cập trong bài đăng",
+      "private": "Người theo dõi",
+      "privateDesc": "Chỉ những người theo dõi bạn",
+      "public": "Công khai",
+      "publicDesc": "Bất kỳ ai trong và ngoài Mastodon",
+      "quoteFollowers": "Người theo dõi",
+      "quoteFollowersDesc": "Chỉ người theo dõi có thể trích dẫn",
+      "quoteNobody": "Chỉ mình tôi",
+      "quoteNobodyDesc": "Không ai khác có thể trích dẫn",
+      "quotePublic": "Tất cả",
+      "quotePublicDesc": "Bất kỳ ai cũng có thể trích dẫn bài đăng này",
+      "unlisted": "Không liệt kê",
+      "unlistedDesc": "Ẩn khỏi kết quả tìm kiếm và lượt thông cảm"
+    },
+    "preferences": "Tùy chọn",
+    "preferencesPage": {
+      "botAccount": "Tài khoản bot",
+      "botAccountDesc": "Tài khoản này chủ yếu thực hiện các hành động tự động",
+      "discoverable": "Gợi ý tài khoản cho người khác",
+      "discoverableDesc": "Cho phép tài khoản của bạn được khám phá",
+      "hideCollections": "Ẩn danh sách theo dõi và người theo dõi",
+      "hideCollectionsDesc": "Ẩn thông tin về những người bạn theo dõi và những người theo dõi bạn",
+      "indexable": "Bao gồm bài đăng công khai trong kết quả tìm kiếm",
+      "indexableDesc": "Cho phép bài đăng công khai của bạn được tìm thấy qua tìm kiếm",
+      "lockedAccount": "Tài khoản bị khóa",
+      "lockedAccountDesc": "Duyệt người theo dõi thủ công",
+      "markSensitive": "Mặc định đánh dấu đa phương tiện là nhạy cảm",
+      "markSensitiveDesc": "Ẩn đa phương tiện sau cảnh báo nội dung",
+      "postingDefaults": "Mặc định đăng bài",
+      "postingDefaultsDesc": "Cấu hình mặc định cho các bài đăng mới",
+      "privacy": "Quyền riêng tư",
+      "privacyDesc": "Kiểm soát hiển thị và khả năng tìm thấy hồ sơ của bạn",
+      "quoteDisabled": "Các bài đăng riêng tư và chỉ dành cho người theo dõi không thể bị trích dẫn.",
+      "saveChanges": "Lưu thay đổi",
+      "visibility": "Hiển thị",
+      "whoCanQuote": "Ai có thể trích dẫn"
+    },
+    "pushNotifications": {
+      "alertTypes": "Loại thông báo",
+      "boosts": "Lượt đăng lại",
+      "description": "Cấu hình thông báo đẩy cho thiết bị của bạn.",
+      "disableLabel": "Tắt thông báo đẩy",
+      "disabled": "Nhận thông báo ngay cả khi đóng ứng dụng",
+      "enableLabel": "Bật thông báo đẩy",
+      "enabled": "Đã bật - nhận thông báo ngay cả khi đóng ứng dụng",
+      "favorites": "Lượt thích",
+      "follows": "Lượt theo dõi",
+      "mentions": "Lượt nhắc",
+      "notSupported": "Trình duyệt này không hỗ trợ",
+      "permissionDenied": "Quyền bị từ chối. Hãy bật thông báo trong cài đặt trình duyệt.",
+      "polls": "Bình chọn",
+      "title": "Thông báo đẩy"
+    },
+    "quickLinks": "Liên kết nhanh",
+    "scheduledPosts": "Bài đăng đã hẹn giờ",
+    "server": "Máy chủ",
+    "signOut": "Đăng xuất",
+    "signingOut": "Đang đăng xuất...",
+    "title": "Cài đặt",
+    "trending": "Xu hướng"
+  },
+  "statusDetail": {
+    "boostedBy": {
+      "count": "{count, plural, one {# person} other {# people}}",
+      "noBoostsYet": "No boosts yet",
+      "noMoreUsers": "No more users",
+      "title": "Boosted by"
+    },
+    "errorLoading": "Lỗi khi tải bài đăng",
+    "failedLoadDesc": "Không tìm thấy hoặc không thể tải bài đăng này.",
+    "favouritedBy": {
+      "count": "{count, plural, one {# person} other {# people}}",
+      "noFavouritesYet": "No favourites yet",
+      "noMoreUsers": "No more users",
+      "title": "Favourited by"
+    },
+    "goBack": "Go Back",
+    "postNotFound": "Post Not Found",
+    "quotedBy": "Trích dẫn bài đăng của @{acct}",
+    "quotesPage": {
+      "count": "{count, plural, one {# quote} other {# quotes}}",
+      "noMoreQuotes": "No more quotes",
+      "noQuotesYet": "No quotes yet",
+      "title": "Quotes"
+    },
+    "replies": "Câu trả lời ({count})",
+    "stats": {
+      "boosts": "{count, plural, other {Đăng lại}}",
+      "favourites": "{count, plural, other {Thích}}",
+      "quotes": "{count, plural, other {Trích dẫn}}"
+    },
+    "title": "Bài đăng"
+  },
+  "suggestions": {
+    "dismissSuggestions": "Ẩn gợi ý",
+    "dontShowAgain": "Don't show again",
+    "nextItem": "Mục sau",
+    "personalized": "Personalized",
+    "personalizedHint": "Based on accounts you follow",
+    "popular": "Popular",
+    "popularHint": "Popular on this instance",
+    "previousItem": "Mục trước",
+    "staffPick": "Staff pick",
+    "staffPickHint": "Hand-picked by the team",
+    "whoToFollow": "Gợi ý theo dõi"
+  },
+  "timeline": {
+    "empty": "Bảng tin của bạn đang trống",
+    "error": "Lỗi khi tải bảng tin",
+    "subtitle": "Bảng tin cá nhân của bạn",
+    "title": "Trang chủ",
+    "trending": "Xu hướng"
+  },
+  "toast": {
+    "copiedToClipboard": "Đã sao chép vào bộ nhớ tạm",
+    "failedToDeleteFilter": "Xóa bộ lọc thất bại",
+    "filterCreated": "Đã tạo bộ lọc",
+    "filterDeleted": "Đã xóa bộ lọc",
+    "filterUpdated": "Đã cập nhật bộ lọc",
+    "postDeleted": "Đã xóa bài đăng",
+    "postShared": "Đã chia sẻ bài đăng"
+  },
+  "visibility": {
+    "direct": "Trực tiếp",
+    "private": "Chỉ người theo dõi",
+    "public": "Công khai",
+    "title": "Hiển thị",
+    "unlisted": "Không công khai",
+    "whoCanQuote": "Ai có thể trích dẫn"
+  },
+  "wrapstodon": {
+    "mostPopularPost": "Bài đăng phổ biến nhất",
+    "mostUsedHashtag": "Hashtag dùng nhiều nhất",
+    "notAvailable": "Wrapstodon chưa sẵn sàng",
+    "somethingWentWrong": "Đã xảy ra lỗi",
+    "title": "Wrapstodon"
+  }
+}

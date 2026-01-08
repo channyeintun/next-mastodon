@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useCurrentAccount, useUpdateAccount } from '@/api';
 import { Button, IconButton } from '@/components/atoms';
 import {
@@ -19,6 +20,8 @@ import { profileFormSchema, type ProfileFormData, type ProfileField } from '@/sc
 
 export default function ProfileEditPage() {
     const router = useRouter();
+    const t = useTranslations('profileEditor');
+    const tCommon = useTranslations('common');
     const { data: currentAccount, isLoading } = useCurrentAccount();
     const updateAccountMutation = useUpdateAccount();
     const [cropperType, setCropperType] = useState<'avatar' | 'header' | null>(null);
@@ -193,7 +196,7 @@ export default function ProfileEditPage() {
                     fontWeight: 'var(--font-weight-6)',
                     color: 'var(--text-1)',
                 }}>
-                    Edit profile
+                    {t('title')}
                 </h1>
             </div>
 
@@ -220,7 +223,6 @@ export default function ProfileEditPage() {
 
                 <PrivacySettingsForm control={control} />
 
-                {/* Actions */}
                 <div style={{
                     display: 'flex',
                     gap: 'var(--size-3)',
@@ -232,14 +234,14 @@ export default function ProfileEditPage() {
                         onClick={() => router.back()}
                         disabled={updateAccountMutation.isPending}
                     >
-                        Cancel
+                        {tCommon('cancel')}
                     </Button>
                     <Button
                         type="submit"
                         disabled={updateAccountMutation.isPending}
                         isLoading={updateAccountMutation.isPending}
                     >
-                        Save changes
+                        {tCommon('save')}
                     </Button>
                 </div>
             </form>

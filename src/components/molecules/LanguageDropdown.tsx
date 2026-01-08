@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import Select, { StylesConfig } from 'react-select';
 import { Languages } from 'lucide-react';
 import { useInstanceLanguages } from '@/api';
+import { useTranslations } from 'next-intl';
 
 interface LanguageDropdownProps {
   value: string;
@@ -127,6 +128,7 @@ const formatOptionLabel = (option: LanguageOption, { context }: { context: 'menu
  */
 export function LanguageDropdown({ value, onChange, disabled }: LanguageDropdownProps) {
   const { data: languages = [] } = useInstanceLanguages();
+  const t = useTranslations('composer');
 
   // Convert languages to react-select format
   const options: LanguageOption[] = useMemo(() => {
@@ -151,7 +153,7 @@ export function LanguageDropdown({ value, onChange, disabled }: LanguageDropdown
       formatOptionLabel={formatOptionLabel}
       isDisabled={disabled}
       isSearchable
-      placeholder="Language..."
+      placeholder={t('language')}
       menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
       menuPlacement="auto"
     />

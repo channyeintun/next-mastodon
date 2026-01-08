@@ -5,6 +5,7 @@ import { indexBy, prop } from 'ramda';
 import { useRouter, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useAccountWithCache, useInfiniteFollowing, useRelationships } from '@/api';
 import { AccountCard, AccountCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
@@ -26,6 +27,7 @@ export default function FollowingPage({
     }
 
     const acct = decodedAcct.slice(1);
+    const t = useTranslations('account');
 
     const {
         data: account,
@@ -65,10 +67,10 @@ export default function FollowingPage({
         return (
             <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
                 <h2 style={{ color: 'var(--red-6)', marginBottom: 'var(--size-3)' }}>
-                    Profile Not Found
+                    {t('notFound')}
                 </h2>
                 <Link href="/">
-                    <Button>Back to Timeline</Button>
+                    <Button>{t('backToTimeline')}</Button>
                 </Link>
             </div>
         );
@@ -92,7 +94,7 @@ export default function FollowingPage({
                 </IconButton>
                 <div>
                     <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
-                        Following
+                        {t('followingPage.title')}
                     </h1>
                     <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
                         <EmojiText text={account.display_name || account.username} emojis={account.emojis} />
@@ -123,12 +125,12 @@ export default function FollowingPage({
                 style={{ flex: 1, minHeight: 0 }}
                 scrollRestorationKey={`following-${acct}`}
                 loadingIndicator={<AccountCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
-                endIndicator="No more accounts"
+                endIndicator={t('followingPage.noMoreAccounts')}
                 emptyState={
                     account.following_count > 0 ? (
-                        <EmptyState title="This user has chosen to not make this information available" />
+                        <EmptyState title={t('followingPage.hiddenInfo')} />
                     ) : (
-                        <EmptyState title="Not following anyone yet" />
+                        <EmptyState title={t('followingPage.notFollowingYet')} />
                     )
                 }
             />

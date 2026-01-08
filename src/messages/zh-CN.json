@@ -1,158 +1,660 @@
 {
-  "common": {
-    "retry": "重试",
-    "cancel": "取消",
-    "save": "保存",
-    "delete": "删除",
-    "remove": "移除",
-    "share": "分享",
-    "report": "举报",
-    "verified": "已验证",
-    "close": "关闭",
-    "loading": "加载中...",
-    "viewAll": "查看全部",
-    "dontShowAgain": "不再显示"
+  "about": {
+    "title": "关于"
   },
-  "nav": {
-    "home": "首页",
-    "explore": "探索",
-    "notifications": "通知",
-    "messages": "消息",
-    "bookmarks": "书签",
-    "lists": "列表",
-    "settings": "设置",
-    "search": "搜索",
-    "compose": "发布",
-    "sourceCode": "源代码",
-    "about": "关于"
-  },
-  "timeline": {
-    "title": "首页",
-    "subtitle": "你的个人时间线",
-    "empty": "时间线是空的",
-    "error": "加载时间线时出错",
-    "trending": "热门"
-  },
-  "profile": {
-    "posts": "帖子",
+  "account": {
+    "backToTimeline": "返回时间线",
+    "block": "屏蔽",
+    "bot": "机器人",
+    "editProfile": "编辑资料",
+    "empty": {
+      "end": "没有更多帖子了",
+      "posts": "暂无帖子"
+    },
+    "end_of_timeline": "You've reached the end of your timeline",
+    "follow": "关注",
+    "follow_hint": "Follow some people to see their posts here.",
+    "followersPage": {
+      "hiddenInfo": "该用户选择不公开此信息",
+      "noFollowersYet": "尚无关注者",
+      "noMoreFollowers": "没有更多关注者了",
+      "title": "关注者"
+    },
+    "followers_count": "{count, plural, one {# follower} other {# followers}}",
     "following": "正在关注",
-    "followers": "粉丝",
-    "noPosts": "暂无帖子",
-    "noFollowers": "暂无粉丝",
-    "notFollowing": "暂未关注任何人",
-    "hiddenInfo": "该用户选择不公开此信息",
-    "profileInfo": "个人资料",
-    "extraFields": "额外字段"
+    "followingPage": {
+      "hiddenInfo": "This user has chosen to not make this information available",
+      "noMoreAccounts": "No more accounts",
+      "notFollowingYet": "Not following anyone yet",
+      "title": "Following"
+    },
+    "following_count": "{count, plural, other {# following}}",
+    "hiddenProfile": "此个人资料已被 {domain} 的管理员隐藏。",
+    "joined": "{date} 加入",
+    "loadMore": "加载更多",
+    "loading": "加载中...",
+    "meta": {
+      "description": "Mastodon 上的 @{acct} 个人资料",
+      "ogDescription": "Mastodon 上的 @{acct} 个人资料",
+      "ogTitle": "{name} (@{acct})",
+      "title": "{name} (@{acct}) - Mastodon",
+      "twitterDescription": "@{acct} 的个人资料",
+      "twitterTitle": "{name} (@{acct})"
+    },
+    "mute": "静音",
+    "notFound": "未找到个人资料",
+    "pinned": "已置顶",
+    "pinnedNav": {
+      "next": "下一个置顶帖子",
+      "prev": "上一个置顶帖子"
+    },
+    "posts_count": "{count, plural, one {# post} other {# posts}}",
+    "requested": "已请求",
+    "showProfile": "仍然显示个人资料",
+    "startNotifying": "当 @{acct} 发布帖子时通知我",
+    "stopNotifying": "当 @{acct} 发布帖子时停止通知我",
+    "tabs": {
+      "media": "媒体",
+      "posts": "帖子",
+      "posts_replies": "帖子与回复"
+    },
+    "unblock": "取消屏蔽",
+    "unfollow": "取消关注",
+    "unmute": "取消静音",
+    "viewOnInstance": "在原实例上查看"
   },
   "actions": {
-    "reply": "回复",
-    "quote": "引用",
-    "boost": "转发",
-    "favourite": "喜欢",
+    "blockAccount": "屏蔽 @{acct}",
     "bookmark": "收藏",
-    "editStatus": "编辑状态",
+    "boost": "转发",
     "deleteStatus": "删除状态",
+    "editStatus": "编辑状态",
+    "favourite": "喜欢",
     "follow": "关注",
-    "unfollow": "取消关注"
+    "muteConversation": "静音对话",
+    "pin": "置顶到个人资料",
+    "quote": "引用",
+    "removeBookmark": "移除书签",
+    "reply": "回复",
+    "undoBoost": "取消转发",
+    "unfavourite": "取消喜欢",
+    "unfollow": "取消关注",
+    "unmuteConversation": "取消静音对话",
+    "unpin": "取消个人资料置顶"
+  },
+  "common": {
+    "back": "返回",
+    "backToTop": "返回顶部",
+    "cancel": "取消",
+    "close": "关闭",
+    "delete": "删除",
+    "done": "完成",
+    "dontShowAgain": "不再显示",
+    "loading": "加载中...",
+    "next": "下一步",
+    "remove": "移除",
+    "report": "举报",
+    "retry": "重试",
+    "save": "保存",
+    "share": "分享",
+    "skipToMain": "跳转到主要内容",
+    "verified": "已验证",
+    "viewAll": "查看全部"
   },
   "composer": {
+    "addContentWarning": "添加内容警告",
     "addEmoji": "添加表情",
     "addMedia": "添加媒体",
+    "addOption": "添加选项",
     "addPoll": "添加投票",
-    "addContentWarning": "添加内容警告",
-    "schedulePost": "定时发布",
-    "removePoll": "移除投票",
-    "removeOption": "移除选项",
+    "charCount": "剩余 {count} 个字符",
+    "cwLabel": "内容警告",
+    "cwPlaceholder": "在此输入你的警告...",
+    "duration": {
+      "1d": "1 天",
+      "1h": "1 小时",
+      "30m": "30 分钟",
+      "3d": "3 天",
+      "5m": "5 分钟",
+      "6h": "6 小时",
+      "7d": "7 天"
+    },
+    "editAltText": "编辑替代文本",
+    "editPost": "Edit post",
+    "language": "语言...",
+    "multipleChoice": "多选",
+    "newMessage": "New message",
+    "newPost": "New post",
+    "optionPlaceholder": "选项 {number}",
+    "options": {
+      "quoteFollowers": "关注者",
+      "quoteFollowersDesc": "只有你的关注者可以引用此帖子",
+      "quoteNobody": "无",
+      "quoteNobodyDesc": "禁止引用此帖子",
+      "quotePublic": "任何人",
+      "quotePublicDesc": "任何人都可以引用此帖子"
+    },
+    "placeholder": "在想些什么？",
     "poll": "投票",
-    "editAltText": "编辑替代文本"
-  },
-  "imageCropper": {
-    "zoomIn": "放大",
-    "zoomOut": "缩小",
-    "rotateLeft": "向左旋转90°",
-    "rotateRight": "向右旋转90°",
-    "flipHorizontal": "水平翻转",
-    "flipVertical": "垂直翻转"
-  },
-  "suggestions": {
-    "whoToFollow": "推荐关注",
-    "dismissSuggestions": "隐藏建议",
-    "previousItem": "上一个",
-    "nextItem": "下一个"
-  },
-  "search": {
-    "title": "搜索",
-    "placeholder": "搜索用户、帖子或话题标签",
-    "recent": "最近",
-    "error": "搜索时出错"
+    "pollDuration": "投票时限",
+    "publish": "发布",
+    "quoteDisabled": "在 Mastodon 上发布的“仅关注者”帖子不能被他人引用。",
+    "removeCW": "移除内容警告",
+    "removeOption": "移除选项",
+    "removePoll": "移除投票",
+    "removeSchedule": "移除定时",
+    "reply": "回复",
+    "replyPlaceholder": "发布你的回复",
+    "replyTo": "Reply to @{acct}",
+    "reschedule": "重新定时",
+    "schedule": "定时",
+    "scheduleHelp": "帖子将在该时间自动发布。",
+    "scheduleLabel": "定时发布",
+    "schedulePost": "定时发布",
+    "update": "更新",
+    "upload": {
+      "altText": "替代文本",
+      "altTextDescription": "为视障用户描述此媒体...",
+      "editAlt": "编辑替代文本",
+      "status": "正在上传媒体..."
+    },
+    "visibility": "可见性",
+    "visibilityDescription": "控制谁可以与此帖子互动。你也可以在 首选项 > 发布默认设置 中将设置应用于所有未来的帖子。",
+    "visibilityInteraction": "可见性与交互",
+    "visibilityLabel": "可见性：{label}",
+    "visibilityOptions": {
+      "direct": "私信",
+      "directDesc": "仅提及的用户",
+      "private": "仅关注者",
+      "privateDesc": "仅对你的关注者可见",
+      "public": "公开",
+      "publicDesc": "所有人可见",
+      "unlisted": "不公开",
+      "unlistedDesc": "不在公共时间线上显示"
+    },
+    "whoCanQuote": "谁可以引用"
   },
   "conversation": {
+    "deleteConfirm": "删除此对话？",
+    "deleteConfirmFull": "你确定要删除此对话吗？此操作无法撤销。",
+    "deleteError": "删除对话失败。请重试。",
+    "mediaOnly": "(仅媒体)",
+    "newMessage": "新消息",
+    "noMessages": "暂无消息",
+    "sendError": "发送消息失败",
     "title": "对话",
-    "noMessages": "暂无消息"
+    "typeMessage": "输入消息..."
   },
-  "notifications": {
-    "title": "通知",
-    "all": "全部",
-    "mentions": "提及",
-    "requests": "请求"
+  "conversations": {
+    "count": "{count, plural, =0 {暂无对话} other {# 条对话}}",
+    "errorLoading": "加载对话出错",
+    "failedLoadDesc": "无法加载你的私信。请稍后再试。",
+    "new": "新私信",
+    "noConversations": "暂无对话",
+    "reachedEnd": "你已看完全部",
+    "sendDirect": "发送私信以开始对话",
+    "title": "私信"
+  },
+  "deletePost": {
+    "cancel": "取消",
+    "delete": "删除",
+    "message": "此操作无法撤销。你的帖子将永久从你的个人资料和关注者的时轴中删除。",
+    "title": "删除帖子？"
   },
   "empty": {
+    "failedNews": "加载热门新闻失败",
+    "failedSuggestions": "加载建议失败",
+    "failedTags": "加载热门话题失败",
+    "failedTrending": "加载热门帖子失败",
     "noBoosts": "暂无转发",
     "noFavourites": "暂无喜欢",
-    "noQuotes": "暂无引用",
     "noFollowRequests": "没有待处理的关注请求",
     "noMessages": "暂无消息",
-    "noUsersFound": "未找到用户",
+    "noQuotes": "暂无引用",
     "noSuggestions": "暂无建议",
+    "noTrendingNews": "目前没有热门新闻",
     "noTrendingPosts": "目前没有热门帖子",
     "noTrendingTags": "目前没有热门话题",
+    "noUsersFound": "未找到用户",
+    "signInToSee": "登录以查看建议"
+  },
+  "explore": {
+    "failedNews": "加载热门新闻失败",
+    "failedTags": "加载热门话题失败",
+    "failedTrending": "加载热门帖子失败",
     "noTrendingNews": "目前没有热门新闻",
-    "signInToSee": "登录以查看建议",
-    "failedTrending": "加载热门内容失败",
-    "failedTags": "加载话题失败",
-    "failedNews": "加载新闻失败",
-    "failedSuggestions": "加载建议失败"
+    "noTrendingPosts": "目前没有热门帖子",
+    "noTrendingTags": "目前没有热门话题",
+    "personalizedHint": "基于你关注的账号",
+    "personalizedLabel": "个性化推荐",
+    "popularHint": "在此实例上很热门",
+    "popularLabel": "热门推荐",
+    "reachedEndNews": "你已看完全部热门新闻",
+    "reachedEndPosts": "你已看完全部热门帖子",
+    "reachedEndTags": "你已看完全部热门话题",
+    "staffPickHint": "由团队精心挑选",
+    "staffPickLabel": "编辑推荐",
+    "tabs": {
+      "links": "新闻",
+      "people": "用户",
+      "posts": "帖子",
+      "tags": "话题"
+    },
+    "title": "探索"
   },
-  "settings": {
-    "title": "设置",
-    "preferences": "偏好设置",
+  "imageCropper": {
+    "flipHorizontal": "水平翻转",
+    "flipVertical": "垂直翻转",
+    "rotateLeft": "向左旋转 90°",
+    "rotateRight": "向右旋转 90°",
+    "zoomIn": "放大",
+    "zoomOut": "缩小"
+  },
+  "lists": {
+    "count": "{count, plural, =0 {暂无列表} other {# 个列表}}",
+    "create": "创建列表",
+    "createFirst": "创建你的第一个列表",
+    "deleteConfirm": "你确定要删除“{title}”吗？此操作无法撤销。",
+    "deleteTitle": "删除列表",
+    "description": "列表允许你将关注的账号整理到精心挑选的时间线中。",
+    "edit": "编辑列表",
+    "exclusive": "专属",
+    "exclusiveDesc": "来自列表成员的帖子将不会出现在你的首页时间线中",
+    "exclusiveLabel": "在首页隐藏这些帖子",
+    "manageMembers": "管理成员",
+    "nameLabel": "列表名称",
+    "namePlaceholder": "我的列表",
+    "noLists": "暂无列表",
+    "repliesPolicy": {
+      "followed": "任何关注的用户",
+      "list": "列表成员",
+      "none": "无"
+    },
+    "repliesPolicyLabel": "显示回复给",
+    "repliesPolicyShort": {
+      "followed": "回复给关注的人",
+      "list": "回复给列表成员",
+      "none": "无回复"
+    },
+    "title": "列表"
+  },
+  "media": {
+    "sensitive": "点击以查看敏感内容"
+  },
+  "nav": {
+    "about": "关于",
+    "bookmarks": "书签",
+    "compose": "发布",
+    "explore": "探索",
+    "home": "首页",
+    "lists": "列表",
+    "messages": "消息",
     "notifications": "通知",
-    "filters": "过滤器",
-    "blocks": "屏蔽",
-    "mutes": "静音",
-    "pushNotifications": "推送通知",
-    "notSupported": "此浏览器不支持"
+    "search": "搜索",
+    "settings": "设置",
+    "sourceCode": "源代码"
   },
-  "visibility": {
-    "title": "可见性",
-    "whoCanQuote": "谁可以引用",
-    "public": "公开",
-    "unlisted": "不公开",
-    "private": "仅关注者",
-    "direct": "私信"
+  "notifications": {
+    "actions": {
+      "clearAll": "清除全部",
+      "markAllRead": "全部设为已读",
+      "title": "操作"
+    },
+    "all": "全部",
+    "empty": {
+      "allDesc": "当有人与你的帖子互动时，你会在这里看到通知。",
+      "allTitle": "暂无通知",
+      "mentionsDesc": "当有人提及你时，你会在这里看到通知。",
+      "mentionsTitle": "暂无提及"
+    },
+    "endOfList": "没有更多通知了",
+    "filtered": "{count} 条已过滤通知",
+    "filters": {
+      "categories": {
+        "for_limited_accounts": "受限账号",
+        "for_new_accounts": "新账号",
+        "for_not_followers": "未关注你的人",
+        "for_not_following": "未关注的人",
+        "for_private_mentions": "非请求的私信提及"
+      },
+      "options": {
+        "accept": "接受",
+        "drop": "忽略",
+        "filter": "过滤"
+      },
+      "title": "过滤器"
+    },
+    "loadError": "加载通知失败",
+    "mentions": "提及",
+    "requests": "请求",
+    "requestsPage": {
+      "emptyDesc": "没有需要查看的已过滤通知。",
+      "emptyTitle": "全部处理完毕！",
+      "endOfList": "没有更多已过滤通知了",
+      "goBack": "返回",
+      "title": "已过滤通知"
+    },
+    "title": "通知"
   },
   "poll": {
-    "closed": "已结束",
+    "closed": "已关闭",
     "vote": "投票",
     "votes": "票"
   },
+  "profile": {
+    "extraFields": "额外字段",
+    "followers": "关注者",
+    "following": "正在关注",
+    "hiddenInfo": "该用户选择不公开此信息",
+    "noFollowers": "暂无关注者",
+    "noPosts": "暂无帖子",
+    "notFollowing": "暂未关注任何人",
+    "posts": "帖子",
+    "profileInfo": "个人资料信息"
+  },
+  "profileEditor": {
+    "bio": "个人简介",
+    "contentPlaceholder": "内容",
+    "displayName": "显示名称",
+    "extraFields": "额外字段",
+    "extraFieldsDescription": "你最多可以在个人资料上以表格形式显示 4 个项目",
+    "labelPlaceholder": "标签 {number}",
+    "linkVerification": {
+      "copyTip": "<strong>提示：</strong> 网站上的链接可以是不可见的。重要的是 <code />，它可以防止冒充。",
+      "copyToClipboard": "复制到剪贴板",
+      "description": "你可以验证自己是个人资料元数据中链接的所有者。为此，链接的网站必须包含返回你 Mastodon 个人资料的链接。返回链接必须具有 <code /> 属性。",
+      "title": "链接验证"
+    },
+    "moveDown": "下移",
+    "moveUp": "上移",
+    "title": "编辑资料",
+    "uploadHeader": "上传背景图",
+    "verifiedOn": "验证于 {date}"
+  },
+  "report": {
+    "step": {
+      "category": {
+        "description": "选择最合适的分类",
+        "dislike": {
+          "description": "你不想看到的内容",
+          "label": "我不喜欢"
+        },
+        "legal": {
+          "description": "你认为它违反了你所在国家或服务器所在国家的法律",
+          "label": "这是违法的"
+        },
+        "other": {
+          "description": "问题不属于其他类别",
+          "label": "其他"
+        },
+        "post": "帖子",
+        "profile": "个人资料",
+        "spam": {
+          "description": "恶意链接、伪造互动或重复回复",
+          "label": "这是垃圾内容"
+        },
+        "title": "请告诉我们此{type}的情况",
+        "violation": {
+          "description": "你确信它违反了特定的规则",
+          "label": "它违反了服务器规则"
+        }
+      },
+      "comment": {
+        "description": "添加任何有助于我们了解情况的其他注释",
+        "forward": "转发至 {domain}",
+        "placeholder": "在此处添加任何其他注释...",
+        "submit": "提交举报",
+        "submitting": "正在提交...",
+        "title": "还有什么我们需要知道的吗？"
+      },
+      "rules": {
+        "description": "选择所有适用的项",
+        "title": "违反了哪些规则？"
+      },
+      "statuses": {
+        "description": "如果你愿意，可以包含该账号的更多帖子",
+        "included": "你选择的帖子已包含在举报中。",
+        "optional": "如果有相关帖子，你可以选择将其包含在举报中。",
+        "title": "还有什么要添加的吗？"
+      },
+      "thanks": {
+        "description": {
+          "dislike": "虽然我们不会对该举报采取行动，但你可以选择减少看到该账号的内容。",
+          "other": "你的举报已提交。我们将对此进行核查，并在必要时采取适当行动。"
+        },
+        "suggestions": {
+          "block": "屏蔽该账号以隐藏其内容",
+          "filter": "过滤特定的关键词或短语",
+          "unfollow": "取消关注或静音该账号"
+        },
+        "title": {
+          "dislike": "已记录",
+          "other": "感谢举报"
+        }
+      }
+    },
+    "title": "举报 @{acct}"
+  },
+  "scheduled": {
+    "cancel": "Cancel",
+    "confirmCancel": "Are you sure you want to cancel this scheduled post?",
+    "count": "{count, plural, one {# post} other {# posts}}",
+    "edit": "Edit",
+    "empty": {
+      "createPost": "Create Post",
+      "description": "Posts you schedule will appear here.",
+      "title": "No scheduled posts"
+    },
+    "endOfPosts": "End of scheduled posts",
+    "failedToLoad": "Failed to load scheduled posts",
+    "scheduledFor": "Scheduled for {date}",
+    "title": "Scheduled Posts"
+  },
+  "search": {
+    "clearAll": "清除全部",
+    "emptyHistory": "搜索用户、帖子或话题标签",
+    "enterToStart": "输入名称或用户名以开始对话",
+    "error": "搜索时出错",
+    "noResults": "未找到结果",
+    "people": "搜索用户",
+    "placeholder": "搜索用户、帖子或话题标签 (按回车键搜索)",
+    "recent": "最近搜索",
+    "tabs": {
+      "accounts": "用户",
+      "all": "全部",
+      "hashtags": "话题标签",
+      "statuses": "帖子"
+    },
+    "title": "搜索",
+    "tryDifferent": "尝试搜索其他名称"
+  },
+  "settings": {
+    "aboutServer": "关于此服务器",
+    "account": "账号",
+    "appearance": "外观",
+    "blockedAccounts": "已屏蔽账号",
+    "blocksPage": {
+      "count": "{count} 个已屏蔽账号",
+      "emptyDesc": "当你屏蔽某人时，他们将无法查看你的帖子或与你互动。",
+      "emptyTitle": "暂无屏蔽账号",
+      "title": "已屏蔽账号"
+    },
+    "editProfile": "编辑资料",
+    "filtersPage": {
+      "addFilter": "添加过滤器",
+      "blur": "模糊",
+      "confirmDelete": "你确定要删除过滤器“{title}”吗？",
+      "context": {
+        "account": "个人资料",
+        "home": "首页",
+        "notifications": "通知",
+        "public": "公共",
+        "thread": "对话"
+      },
+      "createFirst": "创建你的第一个过滤器",
+      "empty": "你还没有创建任何过滤器。",
+      "emptyDesc": "过滤器允许你隐藏或模糊包含特定单词或短语的帖子。",
+      "expired": "已过期",
+      "expiresIn": "{count} {unit} 后到期",
+      "failedLoad": "加载过滤器失败。请重试。",
+      "hide": "隐藏",
+      "title": "过滤器",
+      "warn": "警告"
+    },
+    "followRequests": "关注请求",
+    "interfaceLanguage": "界面语言",
+    "interfaceLanguageDesc": "更改应用程序界面语言",
+    "moderation": "内容审核",
+    "mutedAccounts": "已静音账号",
+    "mutesPage": {
+      "count": "{count} 个已静音账号",
+      "emptyDesc": "当你静音某人时，他们的帖子和通知将对你隐藏。",
+      "emptyTitle": "暂无静音账号",
+      "title": "已静音账号"
+    },
+    "nav": {
+      "bookmarks": "书签",
+      "lists": "列表",
+      "search": "搜索"
+    },
+    "notifications": "通知",
+    "options": {
+      "direct": "私信",
+      "directDesc": "帖子中提及的所有人",
+      "private": "关注者",
+      "privateDesc": "仅你的关注者",
+      "public": "公开",
+      "publicDesc": "Mastodon 内外的任何人",
+      "quoteFollowers": "关注者",
+      "quoteFollowersDesc": "仅关注者可以引用",
+      "quoteNobody": "仅我",
+      "quoteNobodyDesc": "其他人无法引用",
+      "quotePublic": "所有人",
+      "quotePublicDesc": "任何人都可以引用此帖子",
+      "unlisted": "不公开",
+      "unlistedDesc": "从搜索结果和趋势时间线中隐藏"
+    },
+    "preferences": "首选项",
+    "preferencesPage": {
+      "botAccount": "机器人账户",
+      "botAccountDesc": "此账户主要执行自动化操作",
+      "discoverable": "向他人推荐账户",
+      "discoverableDesc": "允许你的账户被发现",
+      "hideCollections": "隐藏关注者和关注中",
+      "hideCollectionsDesc": "在个人资料中隐藏你的关注者和关注的人",
+      "indexable": "在搜索结果中包含公开帖子",
+      "indexableDesc": "允许通过搜索发现你的公开帖子",
+      "lockedAccount": "锁定账户",
+      "lockedAccountDesc": "手动审批关注者",
+      "markSensitive": "默认将媒体标记为敏感",
+      "markSensitiveDesc": "在内容警告后隐藏媒体附件",
+      "postingDefaults": "发布默认设置",
+      "postingDefaultsDesc": "为新帖子配置默认设置",
+      "privacy": "隐私",
+      "privacyDesc": "控制你的资料可见性和可搜索性",
+      "quoteDisabled": "仅关注者和私密帖子不能被他人引用。",
+      "saveChanges": "保存更改",
+      "visibility": "可见性",
+      "whoCanQuote": "谁可以引用"
+    },
+    "pushNotifications": {
+      "alertTypes": "提醒类型",
+      "boosts": "转发",
+      "description": "为你的设备配置推送通知设置。",
+      "disableLabel": "关闭推送通知",
+      "disabled": "即使应用关闭也能收到通知",
+      "enableLabel": "开启推送通知",
+      "enabled": "已启用 - 即使应用关闭也能收到通知",
+      "favorites": "喜欢",
+      "follows": "关注",
+      "mentions": "提及",
+      "notSupported": "此浏览器不支持",
+      "permissionDenied": "权限被拒绝。请在浏览器设置中启用通知。",
+      "polls": "投票",
+      "title": "推送通知"
+    },
+    "quickLinks": "快速链接",
+    "scheduledPosts": "定时帖子",
+    "server": "服务器",
+    "signOut": "登出",
+    "signingOut": "正在登出...",
+    "title": "设置",
+    "trending": "热门"
+  },
+  "statusDetail": {
+    "boostedBy": {
+      "count": "{count, plural, one {# person} other {# people}}",
+      "noBoostsYet": "No boosts yet",
+      "noMoreUsers": "No more users",
+      "title": "Boosted by"
+    },
+    "errorLoading": "加载帖子出错",
+    "failedLoadDesc": "找不到或无法加载此帖子。",
+    "favouritedBy": {
+      "count": "{count, plural, one {# person} other {# people}}",
+      "noFavouritesYet": "No favourites yet",
+      "noMoreUsers": "No more users",
+      "title": "Favourited by"
+    },
+    "goBack": "Go Back",
+    "postNotFound": "Post Not Found",
+    "quotedBy": "引用了 @{acct} 的帖子",
+    "quotesPage": {
+      "count": "{count, plural, one {# quote} other {# quotes}}",
+      "noMoreQuotes": "No more quotes",
+      "noQuotesYet": "No quotes yet",
+      "title": "Quotes"
+    },
+    "replies": "回复 ({count})",
+    "stats": {
+      "boosts": "{count, plural, other {转发}}",
+      "favourites": "{count, plural, other {喜欢}}",
+      "quotes": "{count, plural, other {引用}}"
+    },
+    "title": "帖子"
+  },
+  "suggestions": {
+    "dismissSuggestions": "隐藏建议",
+    "dontShowAgain": "Don't show again",
+    "nextItem": "下一个",
+    "personalized": "Personalized",
+    "personalizedHint": "Based on accounts you follow",
+    "popular": "Popular",
+    "popularHint": "Popular on this instance",
+    "previousItem": "上一个",
+    "staffPick": "Staff pick",
+    "staffPickHint": "Hand-picked by the team",
+    "whoToFollow": "推荐关注"
+  },
+  "timeline": {
+    "empty": "你的时间线是空的",
+    "error": "加载时间线时出错",
+    "subtitle": "你的个人时间线",
+    "title": "首页",
+    "trending": "热门"
+  },
   "toast": {
     "copiedToClipboard": "已复制到剪贴板",
+    "failedToDeleteFilter": "删除过滤器失败",
+    "filterCreated": "过滤器已创建",
     "filterDeleted": "过滤器已删除",
     "filterUpdated": "过滤器已更新",
-    "filterCreated": "过滤器已创建",
-    "failedToDeleteFilter": "删除过滤器失败",
     "postDeleted": "帖子已删除",
     "postShared": "帖子已分享"
   },
+  "visibility": {
+    "direct": "私信",
+    "private": "仅关注者",
+    "public": "公开",
+    "title": "可见性",
+    "unlisted": "不公开",
+    "whoCanQuote": "谁可以引用"
+  },
   "wrapstodon": {
-    "title": "Wrapstodon",
+    "mostPopularPost": "最受欢迎帖子",
+    "mostUsedHashtag": "最常用话题标签",
     "notAvailable": "Wrapstodon 不可用",
     "somethingWentWrong": "出错了",
-    "mostUsedHashtag": "最常用的话题标签",
-    "mostPopularPost": "最受欢迎的帖子"
-  },
-  "about": {
-    "title": "关于"
+    "title": "Wrapstodon"
   }
 }

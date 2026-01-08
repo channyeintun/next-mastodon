@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { X, Plus } from 'lucide-react';
 import { Button } from '../atoms/Button';
 import { IconButton } from '../atoms/IconButton';
+import { useTranslations } from 'next-intl';
 
 export interface PollData {
   options: string[];
@@ -17,20 +18,21 @@ interface PollComposerProps {
   onPollChange: (poll: PollData | null) => void;
 }
 
-const EXPIRY_OPTIONS = [
-  { label: '5 minutes', value: 300 },
-  { label: '30 minutes', value: 1800 },
-  { label: '1 hour', value: 3600 },
-  { label: '6 hours', value: 21600 },
-  { label: '1 day', value: 86400 },
-  { label: '3 days', value: 259200 },
-  { label: '7 days', value: 604800 },
-];
-
 export function PollComposer({ poll, onPollChange }: PollComposerProps) {
+  const t = useTranslations('composer');
   const [options, setOptions] = useState<string[]>(poll?.options || ['', '']);
   const [expiresIn, setExpiresIn] = useState<number>(poll?.expiresIn || 86400);
   const [multiple, setMultiple] = useState<boolean>(poll?.multiple || false);
+
+  const EXPIRY_OPTIONS = [
+    { label: t('duration.5m') || '5 minutes', value: 300 },
+    { label: t('duration.30m') || '30 minutes', value: 1800 },
+    { label: t('duration.1h') || '1 hour', value: 3600 },
+    { label: t('duration.6h') || '6 hours', value: 21600 },
+    { label: t('duration.1d') || '1 day', value: 86400 },
+    { label: t('duration.3d') || '3 days', value: 259200 },
+    { label: t('duration.7d') || '7 days', value: 604800 },
+  ];
 
   const handleOptionChange = (index: number, value: string) => {
     const newOptions = [...options];
@@ -85,8 +87,8 @@ export function PollComposer({ poll, onPollChange }: PollComposerProps) {
     <Container>
       {/* Header */}
       <Header>
-        <Title>Poll</Title>
-        <IconButton size="small" onClick={handleRemovePoll} title="Remove poll">
+        <Title>{t('poll')}</Title>
+        <IconButton size="small" onClick={handleRemovePoll} title={t('removePoll')}>
           <X size={16} />
         </IconButton>
       </Header>
@@ -99,14 +101,14 @@ export function PollComposer({ poll, onPollChange }: PollComposerProps) {
               type="text"
               value={option}
               onChange={(e) => handleOptionChange(index, e.target.value)}
-              placeholder={`Option ${index + 1}`}
+              placeholder={t('optionPlaceholder', { number: index + 1 })}
               maxLength={50}
             />
             {options.length > 2 && (
               <IconButton
                 size="small"
                 onClick={() => handleRemoveOption(index)}
-                title="Remove option"
+                title={t('removeOption')}
               >
                 <X size={16} />
               </IconButton>
@@ -122,7 +124,7 @@ export function PollComposer({ poll, onPollChange }: PollComposerProps) {
             onClick={handleAddOption}
           >
             <Plus size={14} />
-            Add Option
+            {t('addOption')}
           </Button>
         )}
       </OptionsSection>
@@ -131,7 +133,7 @@ export function PollComposer({ poll, onPollChange }: PollComposerProps) {
       <SettingsRow>
         {/* Expiry */}
         <SettingField>
-          <SettingLabel>Poll duration</SettingLabel>
+          <SettingLabel>{t('pollDuration')}</SettingLabel>
           <Select
             value={expiresIn}
             onChange={(e) => handleExpiryChange(Number(e.target.value))}
@@ -152,7 +154,7 @@ export function PollComposer({ poll, onPollChange }: PollComposerProps) {
               checked={multiple}
               onChange={(e) => handleMultipleChange(e.target.checked)}
             />
-            <CheckboxText>Multiple choice</CheckboxText>
+            <CheckboxText>{t('multipleChoice')}</CheckboxText>
           </CheckboxLabel>
         </div>
       </SettingsRow>

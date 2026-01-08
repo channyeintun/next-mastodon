@@ -3,6 +3,7 @@
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, MessageSquareQuote } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useStatus, useInfiniteStatusQuotes } from '@/api';
 import { PostCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
 import { PostCard, VirtualizedList } from '@/components/organisms';
@@ -17,6 +18,7 @@ export default function QuotesPage({
 }) {
     const { id } = use(params);
     const router = useRouter();
+    const t = useTranslations('statusDetail');
 
     const {
         data: status,
@@ -52,9 +54,9 @@ export default function QuotesPage({
         return (
             <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
                 <h2 style={{ color: 'var(--red-6)', marginBottom: 'var(--size-3)' }}>
-                    Post Not Found
+                    {t('postNotFound')}
                 </h2>
-                <Button onClick={() => router.back()}>Go Back</Button>
+                <Button onClick={() => router.back()}>{t('goBack')}</Button>
             </div>
         );
     }
@@ -79,10 +81,10 @@ export default function QuotesPage({
                     <MessageSquareQuote size={20} style={{ color: 'var(--blue-6)' }} />
                     <div>
                         <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
-                            Quotes
+                            {t('quotesPage.title')}
                         </h1>
                         <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-                            {status.quotes_count || 0} {(status.quotes_count || 0) === 1 ? 'quote' : 'quotes'}
+                            {t('quotesPage.count', { count: status.quotes_count || 0 })}
                         </p>
                     </div>
                 </div>
@@ -108,9 +110,9 @@ export default function QuotesPage({
                 style={{ flex: 1, minHeight: 0, paddingTop: 'var(--size-2)' }}
                 scrollRestorationKey={`quotes-${id}`}
                 loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
-                endIndicator="No more quotes"
+                endIndicator={t('quotesPage.noMoreQuotes')}
                 emptyState={
-                    <EmptyState title="No quotes yet" />
+                    <EmptyState title={t('quotesPage.noQuotesYet')} />
                 }
             />
         </div>

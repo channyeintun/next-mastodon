@@ -11,6 +11,8 @@ import { Avatar, Button, EmojiText } from '@/components/atoms';
 import { useAuthStore } from '@/hooks/useStores';
 import type { Field, Account } from '@/types';
 
+import { useTranslations } from 'next-intl';
+
 const SUGGESTIONS_DISMISSED_KEY = 'mastodon_suggestions_dismissed';
 
 interface SuggestionsSectionProps {
@@ -19,25 +21,25 @@ interface SuggestionsSectionProps {
 }
 
 // Get localized source label based on suggestion source
-const getSourceLabel = (sources: string[]): { label: string; hint: string } | null => {
+const getSourceLabel = (sources: string[], t: any): { label: string; hint: string } | null => {
     const source = sources[0];
     switch (source) {
         case 'friends_of_friends':
         case 'similar_to_recently_followed':
             return {
-                label: 'Personalized',
-                hint: 'Based on accounts you follow'
+                label: t('personalized'),
+                hint: t('personalizedHint')
             };
         case 'featured':
             return {
-                label: 'Staff pick',
-                hint: 'Hand-picked by the team'
+                label: t('staffPick'),
+                hint: t('staffPickHint')
             };
         case 'most_followed':
         case 'most_interactions':
             return {
-                label: 'Popular',
-                hint: 'Popular on this instance'
+                label: t('popular'),
+                hint: t('popularHint')
             };
         default:
             return null;
@@ -59,6 +61,9 @@ const extractLinkText = (html: string): string => {
 };
 
 export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionProps) => {
+    const t = useTranslations('suggestions');
+    const tAccount = useTranslations('account');
+    const tCommon = useTranslations('common');
     const authStore = useAuthStore();
     const queryClient = useQueryClient();
     const { data: suggestions, isLoading, isError } = useSuggestions({ limit });
@@ -110,7 +115,7 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
         return (
             <Container>
                 <Header>
-                    <Title>Who to follow</Title>
+                    <Title>{t('whoToFollow')}</Title>
                 </Header>
                 <ScrollContainer>
                     <ScrollContent>
@@ -137,13 +142,13 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
     return (
         <Container>
             <Header>
-                <Title>Who to follow</Title>
+                <Title>{t('whoToFollow')}</Title>
                 <HeaderActions>
-                    <ViewAllLink href="/explore?tab=people">View all</ViewAllLink>
+                    <ViewAllLink href="/explore?tab=people">{tCommon('viewAll')}</ViewAllLink>
                     <DismissSectionButton
                         onClick={handleDismiss}
-                        title="Dismiss suggestions"
-                        aria-label="Dismiss suggestions"
+                        title={t('dismissSuggestions')}
+                        aria-label={t('dismissSuggestions')}
                     >
                         <X size={18} />
                     </DismissSectionButton>
@@ -151,7 +156,7 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
             </Header>
             <BodyWrapper>
                 <ScrollContainer ref={scrollRef} id="suggestions-scroller">
-                    <NavButton className="previous" onClick={handleScrollLeft} aria-label="Previous item" title="Previous item">
+                    <NavButton className="previous" onClick={handleScrollLeft} aria-label={t('previousItem')} title={t('previousItem')}>
                         <svg viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none">
                             <path d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                         </svg>
@@ -165,7 +170,7 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
                                 (followMutation.isPending && followMutation.variables?.id === suggestion.account.id) ||
                                 (unfollowMutation.isPending && unfollowMutation.variables === suggestion.account.id);
                             const verifiedField = getVerifiedField(suggestion.account.fields);
-                            const sourceInfo = getSourceLabel(suggestion.sources);
+                            const sourceInfo = getSourceLabel(suggestion.sources, t);
 
                             return (
                                 <Card key={suggestion.account.id}>
@@ -175,7 +180,7 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
                                             e.stopPropagation();
                                             deleteSuggestion.mutate(suggestion.account.id);
                                         }}
-                                        title="Don't show again"
+                                        title={t('dontShowAgain')}
                                         disabled={deleteSuggestion.isPending}
                                     >
                                         <X size={14} />
@@ -240,13 +245,13 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
                                         disabled={isLoading}
                                         isLoading={isLoading}
                                     >
-                                        {relationship?.requested ? 'Requested' : isFollowing ? 'Following' : 'Follow'}
+                                        {relationship?.requested ? tAccount('requested') : isFollowing ? tAccount('following') : tAccount('follow')}
                                     </Button>
                                 </Card>
                             );
                         })}
                     </ScrollContent>
-                    <NavButton className="next" onClick={handleScrollRight} aria-label="Next item" title="Next item">
+                    <NavButton className="next" onClick={handleScrollRight} aria-label={t('nextItem')} title={t('nextItem')}>
                         <svg viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none">
                             <path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                         </svg>

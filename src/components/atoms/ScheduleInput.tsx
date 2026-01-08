@@ -2,6 +2,7 @@
 
 import styled from '@emotion/styled';
 import { X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface ScheduleInputProps {
     value: string;
@@ -17,11 +18,12 @@ export function ScheduleInput({
     onChange,
     onRemove,
 }: ScheduleInputProps) {
+    const t = useTranslations('composer');
     return (
         <Container>
             <Header>
-                <Label htmlFor="schedule-input">Schedule post</Label>
-                <RemoveButton aria-label="Remove schedule" onClick={onRemove}>
+                <Label htmlFor="schedule-input">{t('scheduleLabel')}</Label>
+                <RemoveButton aria-label={t('removeSchedule')} onClick={onRemove}>
                     <X size={16} />
                 </RemoveButton>
             </Header>
@@ -32,7 +34,7 @@ export function ScheduleInput({
                 min={new Date().toISOString().slice(0, 16)}
                 onChange={(e) => onChange(e.target.value)}
             />
-            <HelpText>Post will be published automatically at this time.</HelpText>
+            <HelpText>{t('scheduleHelp')}</HelpText>
         </Container>
     );
 }

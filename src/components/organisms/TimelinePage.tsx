@@ -49,6 +49,7 @@ import { useTranslations } from 'next-intl';
 export const TimelinePage = observer(() => {
     const t = useTranslations('timeline');
     const tCommon = useTranslations('common');
+    const tAccount = useTranslations('account');
     const { data: statusPages, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteHomeTimeline();
     const { data: user, isLoading: isLoadingUser } = useCurrentAccount();
     const queryClient = useQueryClient();
@@ -217,7 +218,7 @@ export const TimelinePage = observer(() => {
                 <EmptyContainer>
                     <EmptyTitle>{t('empty')}</EmptyTitle>
                     <EmptyMessage>
-                        Follow some people to see their posts here.
+                        {tAccount('follow_hint')}
                     </EmptyMessage>
                     <Link href="/explore">
                         <Button>{t('trending')}</Button>
@@ -280,7 +281,7 @@ export const TimelinePage = observer(() => {
                                 }}
                             >
                                 {item.type === 'endIndicator' ? (
-                                    <EndIndicator>You've reached the end of your timeline</EndIndicator>
+                                    <EndIndicator>{tAccount('end_of_timeline')}</EndIndicator>
                                 ) : item.type === 'suggestions' ? (
                                     <SuggestionsSection />
                                 ) : (

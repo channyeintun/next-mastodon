@@ -11,6 +11,7 @@ import { useDeleteConversation } from '@/api/mutations'
 import { markConversationAsRead } from '@/api/client'
 import { queryKeys } from '@/api/queryKeys'
 import { useConversationStore } from '@/hooks/useStores'
+import { useTranslations } from 'next-intl'
 import { stripMentions } from '@/utils/conversationUtils'
 import { formatTimeAgo } from '@/utils/date'
 import type { Conversation } from '@/types/mastodon'
@@ -26,6 +27,7 @@ export function ConversationCard({ conversation, style }: ConversationCardProps)
   const queryClient = useQueryClient()
   const conversationStore = useConversationStore()
   const deleteConversation = useDeleteConversation()
+  const t = useTranslations('conversation')
 
   const accountNames = conversation.accounts
     .map(acc => acc.display_name || acc.username)
@@ -38,11 +40,11 @@ export function ConversationCard({ conversation, style }: ConversationCardProps)
 
   // Get text preview from last status
   const getTextPreview = () => {
-    if (!lastStatus) return 'No messages yet'
+    if (!lastStatus) return t('noMessages')
     // Strip mentions and HTML tags for preview
     const strippedHtml = stripMentions(lastStatus.content)
     const text = strippedHtml.replace(/<[^>]*>/g, '')
-    return text.trim() || '(Media only)'
+    return text.trim() || t('mediaOnly')
   }
 
   const handleClick = () => {
@@ -86,7 +88,7 @@ export function ConversationCard({ conversation, style }: ConversationCardProps)
     e.preventDefault()
     e.stopPropagation()
 
-    if (!confirm('Are you sure you want to delete this conversation? This cannot be undone.')) {
+    if (!confirm(t('deleteConfirmFull'))) {
       return
     }
 
@@ -94,7 +96,7 @@ export function ConversationCard({ conversation, style }: ConversationCardProps)
       await deleteConversation.mutateAsync(conversation.id)
     } catch (error) {
       console.error('Failed to delete conversation:', error)
-      alert('Failed to delete conversation. Please try again.')
+      alert(t('deleteError'))
     }
   }
 
@@ -128,7 +130,7 @@ export function ConversationCard({ conversation, style }: ConversationCardProps)
       <DeleteButton className="delete-button">
         <IconButton
           onClick={handleDelete}
-          aria-label="Delete conversation"
+          aria-label={t('title')}
           disabled={deleteConversation.isPending}
           style={{
             color: 'var(--text-2)',

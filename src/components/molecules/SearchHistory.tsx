@@ -3,6 +3,7 @@
 import styled from '@emotion/styled';
 import { Clock, X, Search } from 'lucide-react';
 import { EmptyState } from '@/components/atoms';
+import { useTranslations } from 'next-intl';
 
 interface SearchHistoryProps {
     /** List of recent search terms */
@@ -24,11 +25,12 @@ export function SearchHistory({
     onRemove,
     onClear,
 }: SearchHistoryProps) {
+    const t = useTranslations('search');
     if (history.length === 0) {
         return (
             <EmptyState
                 icon={<Search size={48} />}
-                title="Search for people, posts, or hashtags"
+                title={t('emptyHistory')}
             />
         );
     }
@@ -36,9 +38,9 @@ export function SearchHistory({
     return (
         <Container>
             <Header>
-                <Title>Recent</Title>
+                <Title>{t('recent')}</Title>
                 <ClearButton onClick={onClear}>
-                    Clear all
+                    {t('clearAll')}
                 </ClearButton>
             </Header>
             <HistoryList>
@@ -58,6 +60,7 @@ export function SearchHistory({
                                 onRemove(term);
                             }}
                             className="recent-search-remove"
+                            aria-label={t('clearAll')}
                         >
                             <X size={16} />
                         </RemoveButton>

@@ -3,6 +3,7 @@
 import styled from '@emotion/styled';
 import Link from 'next/link';
 import { Heart, Repeat2, MessageSquareQuote } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface StatusStatsProps {
     statusId: string;
@@ -22,6 +23,7 @@ export function StatusStats({
     reblogsCount,
     quotesCount = 0,
 }: StatusStatsProps) {
+    const t = useTranslations('statusDetail');
     const hasStats = favouritesCount > 0 || reblogsCount > 0 || quotesCount > 0;
 
     if (!hasStats) {
@@ -36,7 +38,7 @@ export function StatusStats({
                         <Repeat2 size={16} />
                     </StatIcon>
                     <StatCount>{reblogsCount}</StatCount>
-                    <StatLabel>Boost{reblogsCount !== 1 ? 's' : ''}</StatLabel>
+                    <StatLabel>{t('stats.boosts', { count: reblogsCount })}</StatLabel>
                 </StatLink>
             )}
 
@@ -46,7 +48,7 @@ export function StatusStats({
                         <MessageSquareQuote size={16} />
                     </StatIcon>
                     <StatCount>{quotesCount}</StatCount>
-                    <StatLabel>Quote{quotesCount !== 1 ? 's' : ''}</StatLabel>
+                    <StatLabel>{t('stats.quotes', { count: quotesCount })}</StatLabel>
                 </StatLink>
             )}
 
@@ -56,7 +58,7 @@ export function StatusStats({
                         <Heart size={16} />
                     </StatIcon>
                     <StatCount>{favouritesCount}</StatCount>
-                    <StatLabel>Favourite{favouritesCount !== 1 ? 's' : ''}</StatLabel>
+                    <StatLabel>{t('stats.favourites', { count: favouritesCount })}</StatLabel>
                 </StatLink>
             )}
         </Container>

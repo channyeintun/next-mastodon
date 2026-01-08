@@ -391,10 +391,7 @@ export interface Instance {
     email: string
     account: Account
   }
-  rules: Array<{
-    id: string
-    text: string
-  }>
+  rules: Rule[]
   // Wrapstodon year - when set, indicates annual reports are available for this year
   wrapstodon?: number
 }
@@ -777,6 +774,7 @@ export interface Rule {
   id: string
   text: string
   hint?: string
+  translations?: Record<string, { text: string; hint: string }>
 }
 
 // Instance Privacy Policy

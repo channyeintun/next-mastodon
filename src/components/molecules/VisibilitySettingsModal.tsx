@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useState, useEffect } from 'react';
 import { X, Globe, Lock, Users, Mail, Check } from 'lucide-react';
 import Select, { components, OptionProps, SingleValueProps, StylesConfig } from 'react-select';
+import { useTranslations } from 'next-intl';
 
 export type Visibility = 'public' | 'unlisted' | 'private' | 'direct';
 export type QuoteVisibility = 'public' | 'followers' | 'nobody';
@@ -139,6 +140,8 @@ export function VisibilitySettingsModal({
     onSave,
     onClose,
 }: VisibilitySettingsModalProps) {
+    const t = useTranslations('composer');
+    const tCommon = useTranslations('common');
     const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
     const [quoteVisibility, setQuoteVisibility] = useState<QuoteVisibility>(initialQuoteVisibility);
 
@@ -150,16 +153,16 @@ export function VisibilitySettingsModal({
     }, [visibility, isReply]);
 
     const visibilityOptions: OptionType[] = [
-        { value: 'public', label: 'Public', description: 'Anyone on and off Mastodon', icon: Globe },
-        { value: 'unlisted', label: 'Quiet public', description: 'Hidden from search results, viral timelines', icon: Lock },
-        { value: 'private', label: 'Followers', description: 'Only your followers', icon: Users },
-        { value: 'direct', label: 'Private mention', description: 'Everyone mentioned in the post', icon: Mail },
+        { value: 'public', label: t('visibilityOptions.public'), description: t('visibilityOptions.publicDesc'), icon: Globe },
+        { value: 'unlisted', label: t('visibilityOptions.unlisted'), description: t('visibilityOptions.unlistedDesc'), icon: Lock },
+        { value: 'private', label: t('visibilityOptions.private'), description: t('visibilityOptions.privateDesc'), icon: Users },
+        { value: 'direct', label: t('visibilityOptions.direct'), description: t('visibilityOptions.directDesc'), icon: Mail },
     ];
 
     const quoteOptions: OptionType[] = [
-        { value: 'public', label: 'Everyone', description: 'Anyone can quote this post', icon: Globe },
-        { value: 'followers', label: 'Followers', description: 'Only followers can quote', icon: Users },
-        { value: 'nobody', label: 'Just me', description: 'No one else can quote', icon: Lock },
+        { value: 'public', label: t('options.quotePublic'), description: t('options.quotePublicDesc'), icon: Globe },
+        { value: 'followers', label: t('options.quoteFollowers'), description: t('options.quoteFollowersDesc'), icon: Users },
+        { value: 'nobody', label: t('options.quoteNobody'), description: t('options.quoteNobodyDesc'), icon: Lock },
     ];
 
     const isQuoteDisabled = visibility === 'private' || visibility === 'direct' || isReply;
@@ -169,7 +172,7 @@ export function VisibilitySettingsModal({
             {/* Header */}
             <div className="dialog-header">
                 <HeaderTitle>
-                    Visibility and interaction
+                    {t('visibilityInteraction')}
                 </HeaderTitle>
                 <CloseButton onClick={onClose}>
                     <X size={20} />
@@ -179,11 +182,11 @@ export function VisibilitySettingsModal({
             {/* Content */}
             <div className="dialog-body" style={{ overflow: 'visible' }}>
                 <Description>
-                    Control who can interact with this post. You can also apply settings to all future posts by navigating to Preferences &gt; Posting defaults.
+                    {t('visibilityDescription')}
                 </Description>
 
                 <FieldContainer>
-                    <FieldLabel>Visibility</FieldLabel>
+                    <FieldLabel>{t('visibility')}</FieldLabel>
                     <Select
                         value={visibilityOptions.find(opt => opt.value === visibility)}
                         onChange={(option) => option && setVisibility(option.value as Visibility)}
@@ -195,7 +198,7 @@ export function VisibilitySettingsModal({
                 </FieldContainer>
 
                 <FieldContainer>
-                    <FieldLabel>Who can quote</FieldLabel>
+                    <FieldLabel>{t('whoCanQuote')}</FieldLabel>
                     <Select
                         value={quoteOptions.find(opt => opt.value === quoteVisibility)}
                         onChange={(option) => option && setQuoteVisibility(option.value as QuoteVisibility)}
@@ -207,7 +210,7 @@ export function VisibilitySettingsModal({
                     />
                     {isQuoteDisabled && (
                         <DisabledMessage>
-                            Follower-only posts authored on Mastodon can't be quoted by others.
+                            {t('quoteDisabled')}
                         </DisabledMessage>
                     )}
                 </FieldContainer>
@@ -217,13 +220,13 @@ export function VisibilitySettingsModal({
             {/* Footer */}
             <div className="dialog-footer">
                 <CancelButton onClick={onClose}>
-                    Cancel
+                    {tCommon('cancel')}
                 </CancelButton>
                 <SaveButton
                     onClick={() => onSave(visibility, quoteVisibility)}
                     autoFocus
                 >
-                    Save
+                    {tCommon('save')}
                 </SaveButton>
             </div>
         </Container>

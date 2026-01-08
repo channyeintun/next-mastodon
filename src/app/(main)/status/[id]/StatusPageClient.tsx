@@ -14,6 +14,7 @@ import { PostCard } from '@/components/organisms';
 import { PostCardSkeleton, StatusStats } from '@/components/molecules';
 import { Button, IconButton } from '@/components/atoms';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
+import { useTranslations } from 'next-intl';
 
 interface StatusPageClientProps {
   statusId: string;
@@ -26,6 +27,8 @@ interface StatusPageClientProps {
  * - Client navigation: Status from prepopulated cache, context fetches
  */
 export function StatusPageClient({ statusId }: StatusPageClientProps) {
+  const t = useTranslations('statusDetail');
+  const commonT = useTranslations('common');
   const {
     data: status,
     isLoading: statusLoading,
@@ -68,7 +71,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
           <IconButton onClick={() => router.back()}>
             <ArrowLeft size={20} />
           </IconButton>
-          <Title>Post</Title>
+          <Title>{t('title')}</Title>
         </Header>
         <div className="virtualized-list-container">
           <HighlightedPost>
@@ -82,13 +85,13 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
   if (statusError || !status) {
     return (
       <ErrorContainer>
-        <ErrorTitle>Error Loading Post</ErrorTitle>
+        <ErrorTitle>{t('errorLoading')}</ErrorTitle>
         <ErrorMessage>
           {statusErrorData instanceof Error
             ? statusErrorData.message
-            : 'This post could not be found or loaded.'}
+            : t('failedLoadDesc')}
         </ErrorMessage>
-        <Button onClick={() => router.back()}>Go Back</Button>
+        <Button onClick={() => router.back()}>{commonT('back')}</Button>
       </ErrorContainer>
     );
   }
@@ -103,7 +106,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
         <IconButton onClick={() => router.back()}>
           <ArrowLeft size={20} />
         </IconButton>
-        <Title>Post</Title>
+        <Title>{t('title')}</Title>
       </Header>
 
       {/* Thread container */}
@@ -162,7 +165,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
           {descendants.length > 0 && (
             <div>
               <RepliesHeader>
-                Replies ({descendants.length})
+                {t('replies', { count: descendants.length })}
               </RepliesHeader>
               {descendants.map((descendant, index) => (
                 <div key={descendant.id}>

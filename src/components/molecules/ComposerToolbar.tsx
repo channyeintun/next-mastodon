@@ -142,7 +142,7 @@ export function ComposerToolbar({
                             className="compose-tool-btn"
                             type="button"
                             onClick={onVisibilityClick}
-                            title={`Visibility: ${visibilityLabel}`}
+                            title={t('visibilityLabel', { label: visibilityLabel || '' })}
                         >
                             <VisibilityIcon size={18} />
                         </button>
@@ -154,7 +154,7 @@ export function ComposerToolbar({
                     <div
                         className={`compose-char-count ${isOverLimit ? 'danger' : charCount > maxCharCount - 50 ? 'warning' : ''}`}
                         aria-live="polite"
-                        aria-label={`${remainingChars} characters remaining`}
+                        aria-label={t('charCount', { count: remainingChars })}
                     >
                         {remainingChars}
                     </div>

@@ -14,6 +14,7 @@ import { IconButton } from '@/components/atoms/IconButton'
 import { Spinner } from '@/components/atoms/Spinner'
 import { Avatar } from '@/components/atoms/Avatar'
 import { EmojiText } from '@/components/atoms/EmojiText'
+import { useTranslations } from 'next-intl';
 import {
     PageContainer, Header, HeaderInfo, HeaderTitle, HeaderSubtitle,
     PageTitle, InputContainer, MessageTextarea, SendButton, EmptyState,
@@ -27,6 +28,9 @@ import type { Account } from '@/types/mastodon'
 export default function NewConversationPage() {
     const router = useRouter()
     const queryClient = useQueryClient()
+    const t = useTranslations('conversation');
+    const tSearch = useTranslations('search');
+    const tCommon = useTranslations('common');
     const [searchQuery, setSearchQuery] = useState('')
     const [debouncedQuery, setDebouncedQuery] = useState('')
     const [selectedAccount, setSelectedAccount] = useState<Account | null>(null)
@@ -81,7 +85,7 @@ export default function NewConversationPage() {
             // Invalidate conversations query to refresh the list
             queryClient.invalidateQueries({ queryKey: queryKeys.conversations.list() })
             router.push('/conversations')
-        } catch { console.error('Failed to send') }
+        } catch { console.error(t('sendError')) }
     }
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend() }
@@ -92,7 +96,7 @@ export default function NewConversationPage() {
     return (
         <PageContainer>
             <Header>
-                <IconButton onClick={handleBack} aria-label="Back"><ArrowLeft size={20} /></IconButton>
+                <IconButton onClick={handleBack} aria-label={tCommon('back')}><ArrowLeft size={20} /></IconButton>
                 {selectedAccount ? (
                     <HeaderInfo>
                         <Avatar src={selectedAccount.avatar} alt={selectedAccount.display_name || selectedAccount.username} size="small" />
@@ -101,12 +105,12 @@ export default function NewConversationPage() {
                             <HeaderSubtitle>@{selectedAccount.acct}</HeaderSubtitle>
                         </div>
                     </HeaderInfo>
-                ) : <PageTitle>New Message</PageTitle>}
+                ) : <PageTitle>{t('newMessage')}</PageTitle>}
             </Header>
 
             {selectedAccount ? (
                 <MessageInterface>
-                    <EmptyMessages>No messages yet</EmptyMessages>
+                    <EmptyMessages>{t('noMessages')}</EmptyMessages>
 
                     {/* Image Cropper Modal */}
                     {cropperImage && (
@@ -125,7 +129,7 @@ export default function NewConversationPage() {
                                 <MediaPreviewItem key={m.id}>
                                     <MediaPreviewImage src={m.preview_url || m.url || ''} alt="" />
                                     <MediaPreviewControls className="media-preview-controls">
-                                        <MediaPreviewOverlayButton onClick={() => handleMediaRemove(m.id)} title="Remove">
+                                        <MediaPreviewOverlayButton onClick={() => handleMediaRemove(m.id)} title={tCommon('remove')}>
                                             <X size={14} />
                                         </MediaPreviewOverlayButton>
                                     </MediaPreviewControls>
@@ -138,12 +142,12 @@ export default function NewConversationPage() {
                     )}
 
                     <InputContainer>
-                        <AttachButton onClick={() => fileInputRef.current?.click()} aria-label="Attach media" disabled={media.length >= 4 || isUploading}>
+                        <AttachButton onClick={() => fileInputRef.current?.click()} aria-label={tCommon('addMedia')} disabled={media.length >= 4 || isUploading}>
                             <Image size={20} />
                         </AttachButton>
                         <HiddenInput ref={fileInputRef} type="file" accept="image/*,video/*,audio/*" onChange={handleFileChange} multiple />
-                        <MessageTextarea value={messageText} onChange={e => setMessageText(e.target.value)} onKeyDown={handleKeyDown} placeholder="Type a message..." rows={1} />
-                        <SendButton onClick={handleSend} disabled={!canSend} aria-label="Send" $active={canSend}><Send size={20} /></SendButton>
+                        <MessageTextarea value={messageText} onChange={e => setMessageText(e.target.value)} onKeyDown={handleKeyDown} placeholder={t('typeMessage')} rows={1} />
+                        <SendButton onClick={handleSend} disabled={!canSend} aria-label={tCommon('send')} $active={canSend}><Send size={20} /></SendButton>
                     </InputContainer>
                 </MessageInterface>
             ) : (
@@ -151,8 +155,8 @@ export default function NewConversationPage() {
                     <SearchSection>
                         <SearchInputWrapper>
                             <SearchIcon size={18} />
-                            <SearchInput type="text" placeholder="Search for people..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} autoFocus $hasValue={!!searchQuery} />
-                            {searchQuery && <ClearButton onClick={handleClear} aria-label="Clear"><X size={16} /></ClearButton>}
+                            <SearchInput type="text" placeholder={tSearch('people')} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} autoFocus $hasValue={!!searchQuery} />
+                            {searchQuery && <ClearButton onClick={handleClear} aria-label={tSearch('clearAll')}><X size={16} /></ClearButton>}
                         </SearchInputWrapper>
                     </SearchSection>
 
@@ -161,8 +165,8 @@ export default function NewConversationPage() {
                             <EmptyState>
                                 <div>
                                     <EmptySearchIcon><Search size={48} style={{ color: 'var(--text-3)' }} /></EmptySearchIcon>
-                                    <EmptySearchTitle>Search for people</EmptySearchTitle>
-                                    <EmptySearchSubtitle>Enter a name or username to start a conversation</EmptySearchSubtitle>
+                                    <EmptySearchTitle>{tSearch('people')}</EmptySearchTitle>
+                                    <EmptySearchSubtitle>{tSearch('enterToStart')}</EmptySearchSubtitle>
                                 </div>
                             </EmptyState>
                         ) : isLoading ? (
@@ -181,8 +185,8 @@ export default function NewConversationPage() {
                         ) : (
                             <EmptyState>
                                 <div>
-                                    <EmptySearchTitle>No results found</EmptySearchTitle>
-                                    <EmptySearchSubtitle>Try searching with a different name</EmptySearchSubtitle>
+                                    <EmptySearchTitle>{tSearch('noResults')}</EmptySearchTitle>
+                                    <EmptySearchSubtitle>{tSearch('tryDifferent')}</EmptySearchSubtitle>
                                 </div>
                             </EmptyState>
                         )}

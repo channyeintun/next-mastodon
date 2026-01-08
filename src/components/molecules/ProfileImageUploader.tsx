@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useRef } from 'react';
 import { Upload, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Button, IconButton, Card } from '@/components/atoms';
 import type { Account } from '@/types';
 
@@ -21,6 +22,7 @@ export function ProfileImageUploader({
   onHeaderChange,
   onRemoveHeader,
 }: ProfileImageUploaderProps) {
+  const t = useTranslations('profileEditor');
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const headerInputRef = useRef<HTMLInputElement>(null);
 
@@ -50,7 +52,7 @@ export function ProfileImageUploader({
                 onClick={() => headerInputRef.current?.click()}
               >
                 <Upload size={16} />
-                Upload Header
+                {t('uploadHeader')}
               </Button>
               {headerPreview && (
                 <IconButton size="small" onClick={onRemoveHeader}>

@@ -4,6 +4,7 @@ import { use } from 'react';
 import { indexBy, prop } from 'ramda';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Repeat2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useStatus, useInfiniteRebloggedBy, useRelationships } from '@/api';
 import { AccountCard, AccountCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
@@ -18,6 +19,7 @@ export default function RebloggedByPage({
 }) {
     const { id } = use(params);
     const router = useRouter();
+    const t = useTranslations('statusDetail');
 
     const {
         data: status,
@@ -59,9 +61,9 @@ export default function RebloggedByPage({
         return (
             <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
                 <h2 style={{ color: 'var(--red-6)', marginBottom: 'var(--size-3)' }}>
-                    Post Not Found
+                    {t('postNotFound')}
                 </h2>
-                <Button onClick={() => router.back()}>Go Back</Button>
+                <Button onClick={() => router.back()}>{t('goBack')}</Button>
             </div>
         );
     }
@@ -86,10 +88,10 @@ export default function RebloggedByPage({
                     <Repeat2 size={20} style={{ color: 'var(--green-6)' }} />
                     <div>
                         <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
-                            Boosted by
+                            {t('boostedBy.title')}
                         </h1>
                         <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-                            {status.reblogs_count} {status.reblogs_count === 1 ? 'person' : 'people'}
+                            {t('boostedBy.count', { count: status.reblogs_count })}
                         </p>
                     </div>
                 </div>
@@ -118,9 +120,9 @@ export default function RebloggedByPage({
                 style={{ flex: 1, minHeight: 0 }}
                 scrollRestorationKey={`reblogged-by-${id}`}
                 loadingIndicator={<AccountCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
-                endIndicator="No more users"
+                endIndicator={t('boostedBy.noMoreUsers')}
                 emptyState={
-                    <EmptyState title="No boosts yet" />
+                    <EmptyState title={t('boostedBy.noBoostsYet')} />
                 }
             />
         </div>

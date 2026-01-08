@@ -21,26 +21,28 @@ type TrendingTab = 'posts' | 'tags' | 'links' | 'people';
 
 const VALID_TABS = ['posts', 'tags', 'links', 'people'] as const;
 
+import { useTranslations } from 'next-intl';
+
 // Get localized source label based on suggestion source
-const getSourceLabel = (sources: string[]): { label: string; hint: string } | null => {
+const getSourceLabel = (sources: string[], t: any): { label: string; hint: string } | null => {
     const source = sources[0];
     switch (source) {
         case 'friends_of_friends':
         case 'similar_to_recently_followed':
             return {
-                label: 'Personalized suggestion',
-                hint: 'Based on accounts you follow'
+                label: t('personalizedLabel'),
+                hint: t('personalizedHint')
             };
         case 'featured':
             return {
-                label: 'Staff pick',
-                hint: 'Hand-picked by the team'
+                label: t('staffPickLabel'),
+                hint: t('staffPickHint')
             };
         case 'most_followed':
         case 'most_interactions':
             return {
-                label: 'Popular suggestion',
-                hint: 'Popular on this instance'
+                label: t('popularLabel'),
+                hint: t('popularHint')
             };
         default:
             return null;
@@ -59,12 +61,6 @@ const extractLinkText = (html: string): string => {
     return text.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
 };
 
-const trendingTabs: TabItem<TrendingTab>[] = [
-    { value: 'posts', label: 'Posts', icon: <FileText size={18} /> },
-    { value: 'tags', label: 'Tags', icon: <Hash size={18} /> },
-    { value: 'people', label: 'People', icon: <UserPlus size={18} /> },
-    { value: 'links', label: 'News', icon: <Newspaper size={18} /> },
-];
 
 interface TrendingContentProps {
     header?: ReactNode;
@@ -72,10 +68,20 @@ interface TrendingContentProps {
 }
 
 export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'trending' }: TrendingContentProps) => {
+    const t = useTranslations('explore');
+    const commonT = useTranslations('common');
+    const accountT = useTranslations('account');
     const [activeTab, setActiveTab] = useQueryState('tab', {
         defaultValue: 'posts' as TrendingTab,
         parser: parseAsStringLiteral(VALID_TABS, 'posts'),
     });
+
+    const trendingTabs: TabItem<TrendingTab>[] = [
+        { value: 'posts', label: t('tabs.posts'), icon: <FileText size={18} /> },
+        { value: 'tags', label: t('tabs.tags'), icon: <Hash size={18} /> },
+        { value: 'people', label: t('tabs.people'), icon: <UserPlus size={18} /> },
+        { value: 'links', label: t('tabs.links'), icon: <Newspaper size={18} /> },
+    ];
 
     const authStore = useAuthStore();
     const queryClient = useQueryClient();
@@ -152,12 +158,12 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                     ) : statusesError ? (
                         <ErrorContainer>
                             <ErrorText>
-                                {statusesErrorMsg instanceof Error ? statusesErrorMsg.message : 'Failed to load posts'}
+                                {statusesErrorMsg instanceof Error ? statusesErrorMsg.message : t('failedTrending')}
                             </ErrorText>
-                            <Button onClick={() => window.location.reload()}>Retry</Button>
+                            <Button onClick={() => window.location.reload()}>{commonT('retry')}</Button>
                         </ErrorContainer>
                     ) : uniqueStatuses.length === 0 ? (
-                        <EmptyState title="No trending posts at the moment" />
+                        <EmptyState title={t('noTrendingPosts')} />
                     ) : (
                         <VirtualizedList<Status>
                             items={uniqueStatuses}
@@ -176,7 +182,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             className={authStore.isAuthenticated ? undefined : 'guest-list'}
                             scrollRestorationKey={`${scrollRestorationPrefix}-posts`}
                             loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
-                            endIndicator="You've reached the end of trending posts"
+                            endIndicator={t('reachedEndPosts')}
                         />
 
                     )}
@@ -194,9 +200,9 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             </SkeletonList>
                         </ListContainer>
                     ) : tagsError ? (
-                        <EmptyState title="Failed to load trending tags" />
+                        <EmptyState title={t('failedTags')} />
                     ) : uniqueTags.length === 0 ? (
-                        <EmptyState title="No trending tags at the moment" />
+                        <EmptyState title={t('noTrendingTags')} />
                     ) : (
                         <VirtualizedList<Tag>
                             items={uniqueTags}
@@ -215,7 +221,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             className={authStore.isAuthenticated ? undefined : 'guest-list'}
                             scrollRestorationKey={`${scrollRestorationPrefix}-tags`}
                             loadingIndicator={<TrendingTagCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
-                            endIndicator="You've reached the end of trending tags"
+                            endIndicator={t('reachedEndTags')}
                         />
 
                     )}
@@ -233,9 +239,9 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             </SkeletonList>
                         </ListContainer>
                     ) : linksError ? (
-                        <EmptyState title="Failed to load trending news" />
+                        <EmptyState title={t('failedNews')} />
                     ) : uniqueLinks.length === 0 ? (
-                        <EmptyState title="No trending news at the moment" />
+                        <EmptyState title={t('noTrendingNews')} />
                     ) : (
                         <VirtualizedList<TrendingLink>
                             items={uniqueLinks}
@@ -254,7 +260,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             className={authStore.isAuthenticated ? undefined : 'guest-list'}
                             scrollRestorationKey={`${scrollRestorationPrefix}-links`}
                             loadingIndicator={<TrendingLinkCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
-                            endIndicator="You've reached the end of trending news"
+                            endIndicator={t('reachedEndNews')}
                         />
 
                     )}
@@ -264,7 +270,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
             <Activity mode={activeTab === 'people' ? 'visible' : 'hidden'}>
                 <TabContent>
                     {!authStore.isAuthenticated ? (
-                        <EmptyState title="Sign in to see suggestions" />
+                        <EmptyState title={t('signInToSeeSuggestions', { defaultValue: 'Sign in to see suggestions' })} />
                     ) : suggestionsLoading ? (
                         <ListContainer className="virtualized-list-container">
                             <SuggestionsList>
@@ -274,9 +280,9 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             </SuggestionsList>
                         </ListContainer>
                     ) : suggestionsError ? (
-                        <EmptyState title="Failed to load suggestions" />
+                        <EmptyState title={t('failedSuggestions', { defaultValue: 'Failed to load suggestions' })} />
                     ) : !suggestions || suggestions.length === 0 ? (
-                        <EmptyState title="No suggestions available" />
+                        <EmptyState title={t('noSuggestions', { defaultValue: 'No suggestions available' })} />
                     ) : (
                         <SuggestionsList>
                             {suggestions.map((suggestion) => {
@@ -285,7 +291,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                                 const isMutating =
                                     (followMutation.isPending && followMutation.variables?.id === suggestion.account.id) ||
                                     (unfollowMutation.isPending && unfollowMutation.variables === suggestion.account.id);
-                                const sourceInfo = getSourceLabel(suggestion.sources);
+                                const sourceInfo = getSourceLabel(suggestion.sources, t);
 
                                 return (
                                     <SuggestionCard key={suggestion.account.id}>
@@ -326,7 +332,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                                         <CardActions>
                                             <DismissButton
                                                 onClick={() => deleteSuggestion.mutate(suggestion.account.id)}
-                                                title="Don't show again"
+                                                title={commonT('dontShowAgain')}
                                                 disabled={deleteSuggestion.isPending}
                                             >
                                                 <X size={16} />
@@ -346,7 +352,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                                                 disabled={isMutating}
                                                 isLoading={isMutating}
                                             >
-                                                {relationship?.requested ? 'Requested' : isFollowing ? 'Following' : 'Follow'}
+                                                {relationship?.requested ? accountT('requested') : isFollowing ? accountT('following') : accountT('follow')}
                                             </Button>
                                         </CardActions>
                                     </SuggestionCard>

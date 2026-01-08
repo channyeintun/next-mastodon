@@ -6,6 +6,7 @@ import { Button } from '../atoms/Button';
 import { ImageCropper } from './ImageCropper';
 import { useCropper } from '@/hooks/useCropper';
 import type { MediaAttachment } from '@/types/mastodon';
+import { useTranslations } from 'next-intl';
 import {
   HiddenInput,
   AltEditor,
@@ -50,6 +51,8 @@ export const MediaUpload = forwardRef<MediaUploadHandle, MediaUploadProps>(funct
   isUploading,
   maxMedia = 4,
 }, ref) {
+  const t = useTranslations('composer');
+  const tCommon = useTranslations('common');
   const [editingAlt, setEditingAlt] = useState<string | null>(null);
   const [altText, setAltText] = useState<string>('');
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
@@ -179,7 +182,7 @@ export const MediaUpload = forwardRef<MediaUploadHandle, MediaUploadProps>(funct
           {editingAlt && (
             <AltEditor>
               <AltEditorHeader>
-                <AltLabel>Alt Text</AltLabel>
+                <AltLabel>{t('upload.altText')}</AltLabel>
                 <CloseButton
                   onClick={() => {
                     setEditingAlt(null);
@@ -192,14 +195,14 @@ export const MediaUpload = forwardRef<MediaUploadHandle, MediaUploadProps>(funct
               <AltTextarea
                 value={altText}
                 onChange={(e) => setAltText(e.target.value)}
-                placeholder="Describe this media for visually impaired users..."
+                placeholder={t('upload.altTextDescription')}
                 maxLength={1500}
                 rows={3}
               />
               <AltFooter>
                 <CharCount $isNearLimit={altText.length > 1400}>{altText.length} / 1500</CharCount>
                 <Button size="small" onClick={handleAltSave}>
-                  Save
+                  {tCommon('save')}
                 </Button>
               </AltFooter>
             </AltEditor>
@@ -225,14 +228,14 @@ export const MediaUpload = forwardRef<MediaUploadHandle, MediaUploadProps>(funct
                   <OverlayButton
                     size="small"
                     onClick={() => handleAltEdit(attachment)}
-                    title="Edit alt text"
+                    title={t('upload.editAlt')}
                   >
                     <Edit2 size={14} />
                   </OverlayButton>
                   <OverlayButton
                     size="small"
                     onClick={() => onMediaRemove(attachment.id)}
-                    title="Remove"
+                    title={tCommon('remove')}
                   >
                     <X size={14} />
                   </OverlayButton>
@@ -256,7 +259,7 @@ export const MediaUpload = forwardRef<MediaUploadHandle, MediaUploadProps>(funct
           {isUploading && (
             <UploadingContainer>
               <UploadingSpinner />
-              <UploadingText>Uploading media...</UploadingText>
+              <UploadingText>{t('upload.status')}</UploadingText>
             </UploadingContainer>
           )}
         </div>

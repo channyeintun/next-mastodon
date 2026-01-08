@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { List, MoreVertical, Pencil, Trash2, Users, MessageCircle } from 'lucide-react';
 import { IconButton, Spinner } from '@/components/atoms';
+import { useTranslations } from 'next-intl';
 import type { List as ListType, ListRepliesPolicy, CreateListParams, UpdateListParams } from '@/types';
 
 interface ListModalContentProps {
@@ -14,6 +15,8 @@ interface ListModalContentProps {
 }
 
 export function ListModalContent({ onClose, list, onSubmit, isPending }: ListModalContentProps) {
+    const t = useTranslations('lists');
+    const commonT = useTranslations('common');
     const [title, setTitle] = useState(list?.title || '');
     const [repliesPolicy, setRepliesPolicy] = useState<ListRepliesPolicy>(list?.replies_policy || 'list');
     const [exclusive, setExclusive] = useState(list?.exclusive || false);
@@ -28,21 +31,21 @@ export function ListModalContent({ onClose, list, onSubmit, isPending }: ListMod
         <div style={{ maxWidth: '400px', width: '90vw' }}>
             <div className="dialog-header">
                 <h2 style={{ fontSize: 'var(--font-size-4)', margin: 0 }}>
-                    {list ? 'Edit List' : 'Create list'}
+                    {list ? t('edit') : t('create')}
                 </h2>
             </div>
             <form onSubmit={handleSubmit}>
                 <div className="dialog-body">
                     <div style={{ marginBottom: 'var(--size-4)' }}>
                         <label htmlFor="list-title" style={{ display: 'block', marginBottom: 'var(--size-2)', fontSize: 'var(--font-size-1)', color: 'var(--text-2)' }}>
-                            List Name
+                            {t('nameLabel')}
                         </label>
                         <input
                             id="list-title"
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            placeholder="My List"
+                            placeholder={t('namePlaceholder')}
                             autoFocus
                             style={{ width: '100%', padding: 'var(--size-3)', background: 'var(--surface-3)', border: '1px solid var(--surface-4)', borderRadius: 'var(--radius-2)', color: 'var(--text-1)', fontSize: 'var(--font-size-2)' }}
                         />
@@ -50,7 +53,7 @@ export function ListModalContent({ onClose, list, onSubmit, isPending }: ListMod
 
                     <div style={{ marginBottom: 'var(--size-4)' }}>
                         <label htmlFor="replies-policy" style={{ display: 'block', marginBottom: 'var(--size-2)', fontSize: 'var(--font-size-1)', color: 'var(--text-2)' }}>
-                            Show replies to
+                            {t('repliesPolicyLabel')}
                         </label>
                         <select
                             id="replies-policy"
@@ -58,30 +61,30 @@ export function ListModalContent({ onClose, list, onSubmit, isPending }: ListMod
                             onChange={(e) => setRepliesPolicy(e.target.value as ListRepliesPolicy)}
                             style={{ width: '100%', padding: 'var(--size-3)', background: 'var(--surface-3)', border: '1px solid var(--surface-4)', borderRadius: 'var(--radius-2)', color: 'var(--text-1)', fontSize: 'var(--font-size-2)' }}
                         >
-                            <option value="list">Members of the list</option>
-                            <option value="followed">Any followed user</option>
-                            <option value="none">No one</option>
+                            <option value="list">{t('repliesPolicy.list')}</option>
+                            <option value="followed">{t('repliesPolicy.followed')}</option>
+                            <option value="none">{t('repliesPolicy.none')}</option>
                         </select>
                     </div>
 
                     <div>
                         <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)', fontSize: 'var(--font-size-1)', color: 'var(--text-2)', cursor: 'pointer' }}>
                             <input type="checkbox" checked={exclusive} onChange={(e) => setExclusive(e.target.checked)} style={{ width: 18, height: 18, accentColor: 'var(--brand)' }} />
-                            Hide these posts from home
+                            {t('exclusiveLabel')}
                         </label>
                         <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-3)', marginTop: 'var(--size-1)', marginLeft: 'var(--size-5)' }}>
-                            Posts from list members won&apos;t appear in your home timeline
+                            {t('exclusiveDesc')}
                         </p>
                     </div>
                 </div>
 
                 <div className="dialog-footer">
                     <button type="button" onClick={onClose} disabled={isPending} style={{ padding: 'var(--size-2) var(--size-4)', background: 'transparent', border: '1px solid var(--surface-4)', borderRadius: 'var(--radius-2)', color: 'var(--text-2)', cursor: 'pointer' }}>
-                        Cancel
+                        {commonT('cancel')}
                     </button>
                     <button type="submit" disabled={!title.trim() || isPending} style={{ padding: 'var(--size-2) var(--size-4)', background: 'var(--blue-6)', border: 'none', borderRadius: 'var(--radius-2)', color: 'white', cursor: 'pointer', opacity: !title.trim() || isPending ? 0.5 : 1, display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                         {isPending && <Spinner size="small" />}
-                        {list ? 'Save' : 'Create'}
+                        {list ? commonT('save') : t('create')}
                     </button>
                 </div>
             </form>
@@ -97,23 +100,25 @@ interface DeleteConfirmModalContentProps {
 }
 
 export function DeleteConfirmModalContent({ onClose, onConfirm, listTitle, isPending }: DeleteConfirmModalContentProps) {
+    const t = useTranslations('lists');
+    const commonT = useTranslations('common');
     return (
         <div style={{ maxWidth: '400px', width: '90vw' }}>
             <div className="dialog-header">
-                <h2 style={{ fontSize: 'var(--font-size-4)', margin: 0 }}>Delete list</h2>
+                <h2 style={{ fontSize: 'var(--font-size-4)', margin: 0 }}>{t('deleteTitle')}</h2>
             </div>
             <div className="dialog-body">
                 <p style={{ color: 'var(--text-2)', margin: 0 }}>
-                    Are you sure you want to delete &quot;{listTitle}&quot;? This action cannot be undone.
+                    {t('deleteConfirm', { title: listTitle })}
                 </p>
             </div>
             <div className="dialog-footer">
                 <button type="button" onClick={onClose} disabled={isPending} style={{ padding: 'var(--size-2) var(--size-4)', background: 'transparent', border: '1px solid var(--surface-4)', borderRadius: 'var(--radius-2)', color: 'var(--text-2)', cursor: 'pointer' }}>
-                    Cancel
+                    {commonT('cancel')}
                 </button>
                 <button type="button" onClick={onConfirm} disabled={isPending} autoFocus style={{ padding: 'var(--size-2) var(--size-4)', background: 'var(--red-6)', border: 'none', borderRadius: 'var(--radius-2)', color: 'white', cursor: 'pointer', opacity: isPending ? 0.5 : 1, display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                     {isPending && <Spinner size="small" />}
-                    Delete
+                    {commonT('delete')}
                 </button>
             </div>
         </div>
@@ -126,14 +131,15 @@ interface ListItemProps {
     onDelete: (list: ListType) => void;
 }
 
-const repliesPolicyLabels: Record<ListRepliesPolicy, string> = {
-    followed: 'Replies to followed users',
-    list: 'Replies to list members',
-    none: 'No replies',
-};
-
 export function ListItem({ list, onEdit, onDelete }: ListItemProps) {
+    const t = useTranslations('lists');
     const [showMenu, setShowMenu] = useState(false);
+
+    const repliesPolicyLabels: Record<ListRepliesPolicy, string> = {
+        followed: t('repliesPolicyShort.followed'),
+        list: t('repliesPolicyShort.list'),
+        none: t('repliesPolicyShort.none'),
+    };
 
     return (
         <div style={{ display: 'flex', alignItems: 'center', padding: 'var(--size-4)', gap: 'var(--size-3)', background: 'var(--surface-2)', borderRadius: 'var(--radius-3)' }}>
@@ -146,13 +152,13 @@ export function ListItem({ list, onEdit, onDelete }: ListItemProps) {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)', fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
                         <MessageCircle size={12} />
                         <span>{repliesPolicyLabels[list.replies_policy]}</span>
-                        {list.exclusive && (<><span>•</span><span>Exclusive</span></>)}
+                        {list.exclusive && (<><span>•</span><span>{t('exclusive')}</span></>)}
                     </div>
                 </div>
             </Link>
 
             <div style={{ position: 'relative' }}>
-                <IconButton onClick={(e) => { e.preventDefault(); setShowMenu(!showMenu); }} aria-label="List options">
+                <IconButton onClick={(e) => { e.preventDefault(); setShowMenu(!showMenu); }} aria-label={t('manageMembers')}>
                     <MoreVertical size={18} />
                 </IconButton>
 
@@ -161,13 +167,13 @@ export function ListItem({ list, onEdit, onDelete }: ListItemProps) {
                         <div style={{ position: 'fixed', inset: 0, zIndex: 40 }} onClick={() => setShowMenu(false)} />
                         <div style={{ position: 'absolute', right: 0, top: '100%', background: 'var(--surface-2)', border: '1px solid var(--surface-3)', borderRadius: 'var(--radius-2)', boxShadow: 'var(--shadow-4)', minWidth: 150, zIndex: 50, overflow: 'hidden' }}>
                             <button onClick={() => { setShowMenu(false); onEdit(list); }} style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)', width: '100%', padding: 'var(--size-3) var(--size-4)', background: 'transparent', border: 'none', color: 'var(--text-1)', fontSize: 'var(--font-size-1)', cursor: 'pointer', textAlign: 'left' }}>
-                                <Pencil size={16} /> Edit list
+                                <Pencil size={16} /> {t('edit')}
                             </button>
                             <Link href={`/lists/${list.id}/members`} onClick={() => setShowMenu(false)} style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)', width: '100%', padding: 'var(--size-3) var(--size-4)', background: 'transparent', border: 'none', color: 'var(--text-1)', fontSize: 'var(--font-size-1)', cursor: 'pointer', textAlign: 'left', textDecoration: 'none' }}>
-                                <Users size={16} /> Manage members
+                                <Users size={16} /> {t('manageMembers')}
                             </Link>
                             <button onClick={() => { setShowMenu(false); onDelete(list); }} style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)', width: '100%', padding: 'var(--size-3) var(--size-4)', background: 'transparent', border: 'none', color: 'var(--red)', fontSize: 'var(--font-size-1)', cursor: 'pointer', textAlign: 'left' }}>
-                                <Trash2 size={16} /> Delete list
+                                <Trash2 size={16} /> {t('deleteTitle')}
                             </button>
                         </div>
                     </>

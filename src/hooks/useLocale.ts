@@ -1,5 +1,3 @@
-'use client';
-
 import { useCallback } from 'react';
 import { useLocale as useNextIntlLocale } from 'next-intl';
 import { locales, LOCALE_COOKIE_NAME, type Locale } from '@/i18n/config';

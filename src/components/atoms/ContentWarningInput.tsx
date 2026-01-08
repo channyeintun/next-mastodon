@@ -2,6 +2,7 @@
 
 import styled from '@emotion/styled';
 import { X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface ContentWarningInputProps {
     value: string;
@@ -17,11 +18,12 @@ export function ContentWarningInput({
     onChange,
     onRemove,
 }: ContentWarningInputProps) {
+    const t = useTranslations('composer');
     return (
         <Container>
             <Header>
-                <Label htmlFor="cw-input">Content Warning</Label>
-                <RemoveButton aria-label="Remove content warning" onClick={onRemove}>
+                <Label htmlFor="cw-input">{t('cwLabel')}</Label>
+                <RemoveButton aria-label={t('removeCW')} onClick={onRemove}>
                     <X size={16} />
                 </RemoveButton>
             </Header>
@@ -30,7 +32,7 @@ export function ContentWarningInput({
                 type="text"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                placeholder="Write your warning here..."
+                placeholder={t('cwPlaceholder')}
             />
         </Container>
     );

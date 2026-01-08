@@ -9,9 +9,11 @@ import { TextSkeleton } from '@/components/atoms/TextSkeleton'
 import { VirtualizedList } from '@/components/organisms/VirtualizedList'
 import { useConversationStream } from '@/hooks/useStreaming'
 import { IconButton } from '@/components/atoms/IconButton'
+import { useTranslations } from 'next-intl'
 import type { Conversation } from '@/types/mastodon'
 
 export default function ConversationsPage() {
+  const t = useTranslations('conversations')
   const router = useRouter()
   const { data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useConversations()
 
@@ -30,7 +32,7 @@ export default function ConversationsPage() {
           flexShrink: 0,
         }}>
           <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
-            Direct Messages
+            {t('title')}
           </h1>
           <TextSkeleton width="120px" height="var(--font-size-0)" />
         </div>
@@ -55,16 +57,16 @@ export default function ConversationsPage() {
           flexShrink: 0,
         }}>
           <h1 style={{ fontSize: 'var(--font-size-4)' }}>
-            Direct Messages
+            {t('title')}
           </h1>
         </div>
 
         {/* Error state */}
         <div style={{ textAlign: 'center', marginTop: 'var(--size-8)', padding: 'var(--size-4)' }}>
           <Mail size={48} style={{ color: 'var(--text-3)', marginBottom: 'var(--size-4)' }} />
-          <p style={{ fontSize: 'var(--font-size-3)', marginBottom: 'var(--size-3)', fontWeight: 600 }}>Error loading conversations</p>
+          <p style={{ fontSize: 'var(--font-size-3)', marginBottom: 'var(--size-3)', fontWeight: 600 }}>{t('errorLoading')}</p>
           <p style={{ fontSize: 'var(--font-size-1)', color: 'var(--text-2)' }}>
-            Failed to load your direct messages. Please try again later.
+            {t('failedLoadDesc')}
           </p>
         </div>
       </div>
@@ -84,15 +86,15 @@ export default function ConversationsPage() {
       }}>
         <div>
           <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
-            Direct Messages
+            {t('title')}
           </h1>
           <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-            {allConversations.length} {allConversations.length === 1 ? 'conversation' : 'conversations'}
+            {t('count', { count: allConversations.length })}
           </p>
         </div>
         <IconButton
           onClick={() => router.push('/conversations/new')}
-          aria-label="New message"
+          aria-label={t('new')}
           style={{ flexShrink: 0 }}
         >
           <Edit size={20} />
@@ -117,13 +119,13 @@ export default function ConversationsPage() {
         height="auto"
         style={{ flex: 1, minHeight: 0 }}
         scrollRestorationKey="conversations"
-        endIndicator="You've reached the end"
+        endIndicator={t('reachedEnd')}
         emptyState={
           <div style={{ display: 'grid', placeItems: 'center', marginTop: 'var(--size-8)', padding: 'var(--size-4)' }}>
             <Mail size={48} style={{ color: 'var(--text-3)', marginBottom: 'var(--size-4)' }} />
-            <p style={{ fontSize: 'var(--font-size-3)', marginBottom: 'var(--size-2)', fontWeight: 600 }}>No conversations yet</p>
+            <p style={{ fontSize: 'var(--font-size-3)', marginBottom: 'var(--size-2)', fontWeight: 600 }}>{t('noConversations')}</p>
             <p style={{ fontSize: 'var(--font-size-1)', color: 'var(--text-2)' }}>
-              Send a direct message to start a conversation
+              {t('sendDirect')}
             </p>
           </div>
         }

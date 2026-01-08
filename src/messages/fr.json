@@ -1,158 +1,660 @@
 {
-  "common": {
-    "retry": "Réessayer",
-    "cancel": "Annuler",
-    "save": "Enregistrer",
-    "delete": "Supprimer",
-    "remove": "Retirer",
-    "share": "Partager",
-    "report": "Signaler",
-    "verified": "Vérifié",
-    "close": "Fermer",
-    "loading": "Chargement...",
-    "viewAll": "Voir tout",
-    "dontShowAgain": "Ne plus afficher"
+  "about": {
+    "title": "À propos"
   },
-  "nav": {
-    "home": "Accueil",
-    "explore": "Explorer",
-    "notifications": "Notifications",
-    "messages": "Messages",
-    "bookmarks": "Signets",
-    "lists": "Listes",
-    "settings": "Paramètres",
-    "search": "Rechercher",
-    "compose": "Composer",
-    "sourceCode": "Code source",
-    "about": "À propos"
-  },
-  "timeline": {
-    "title": "Accueil",
-    "subtitle": "Votre fil personnel",
-    "empty": "Votre fil est vide",
-    "error": "Erreur de chargement du fil",
-    "trending": "Tendances"
-  },
-  "profile": {
-    "posts": "Publications",
+  "account": {
+    "backToTimeline": "Retour au fil",
+    "block": "Bloquer",
+    "bot": "BOT",
+    "editProfile": "Modifier le profil",
+    "empty": {
+      "end": "Plus de publications",
+      "posts": "Aucune publication pour le moment"
+    },
+    "end_of_timeline": "You've reached the end of your timeline",
+    "follow": "Suivre",
+    "follow_hint": "Follow some people to see their posts here.",
+    "followersPage": {
+      "hiddenInfo": "Cet utilisateur a choisi de masquer cette information",
+      "noFollowersYet": "Aucun abonné pour le moment",
+      "noMoreFollowers": "Plus aucun abonné",
+      "title": "Abonnés"
+    },
+    "followers_count": "{count, plural, one {# follower} other {# followers}}",
     "following": "Abonnements",
-    "followers": "Abonnés",
-    "noPosts": "Aucune publication",
-    "noFollowers": "Aucun abonné",
-    "notFollowing": "Aucun abonnement",
-    "hiddenInfo": "Cet utilisateur a choisi de ne pas rendre cette information disponible",
-    "profileInfo": "Informations du profil",
-    "extraFields": "Champs supplémentaires"
+    "followingPage": {
+      "hiddenInfo": "Cet utilisateur a choisi de masquer cette information",
+      "noMoreAccounts": "Plus aucun compte",
+      "notFollowingYet": "Aucun abonnement pour le moment",
+      "title": "Abonnements"
+    },
+    "following_count": "{count, plural, other {# following}}",
+    "hiddenProfile": "Ce profil a été masqué par les modérateurs de {domain}.",
+    "joined": "A rejoint le {date}",
+    "loadMore": "Charger plus",
+    "loading": "Chargement...",
+    "meta": {
+      "description": "Profil de @{acct} sur Mastodon",
+      "ogDescription": "Profil de @{acct} sur Mastodon",
+      "ogTitle": "{name} (@{acct})",
+      "title": "{name} (@{acct}) - Mastodon",
+      "twitterDescription": "Profil de @{acct}",
+      "twitterTitle": "{name} (@{acct})"
+    },
+    "mute": "Masquer",
+    "notFound": "Profil non trouvé",
+    "pinned": "Épinglé",
+    "pinnedNav": {
+      "next": "Publication épinglée suivante",
+      "prev": "Publication épinglée précédente"
+    },
+    "posts_count": "{count, plural, one {# post} other {# posts}}",
+    "requested": "Demandé",
+    "showProfile": "Afficher le profil malgré tout",
+    "startNotifying": "M'informer quand @{acct} publie",
+    "stopNotifying": "Cesser de m'informer quand @{acct} publie",
+    "tabs": {
+      "media": "Médias",
+      "posts": "Publications",
+      "posts_replies": "Publications & réponses"
+    },
+    "unblock": "Débloquer",
+    "unfollow": "Ne plus suivre",
+    "unmute": "Ne plus masquer",
+    "viewOnInstance": "Voir sur l'instance"
   },
   "actions": {
-    "reply": "Répondre",
-    "quote": "Citer",
-    "boost": "Partager",
-    "favourite": "Favoriser",
+    "blockAccount": "Bloquer @{acct}",
     "bookmark": "Ajouter aux signets",
-    "editStatus": "Modifier le statut",
+    "boost": "Partager",
     "deleteStatus": "Supprimer le statut",
+    "editStatus": "Modifier le statut",
+    "favourite": "Favoriser",
     "follow": "Suivre",
-    "unfollow": "Ne plus suivre"
+    "muteConversation": "Masquer la conversation",
+    "pin": "Épingler sur le profil",
+    "quote": "Citer",
+    "removeBookmark": "Supprimer le marque-page",
+    "reply": "Répondre",
+    "undoBoost": "Hủy đăng lại",
+    "unfavourite": "Enlever des favoris",
+    "unfollow": "Ne plus suivre",
+    "unmuteConversation": "Ne plus masquer la conversation",
+    "unpin": "Désépingler du profil"
+  },
+  "common": {
+    "back": "Retour",
+    "backToTop": "Retour en haut",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "delete": "Supprimer",
+    "done": "Terminé",
+    "dontShowAgain": "Ne plus afficher",
+    "loading": "Chargement...",
+    "next": "Suivant",
+    "remove": "Retirer",
+    "report": "Signaler",
+    "retry": "Réessayer",
+    "save": "Enregistrer",
+    "share": "Partager",
+    "skipToMain": "Aller au contenu principal",
+    "verified": "Vérifié",
+    "viewAll": "Voir tout"
   },
   "composer": {
+    "addContentWarning": "Ajouter un avertissement",
     "addEmoji": "Ajouter un emoji",
     "addMedia": "Ajouter un média",
+    "addOption": "Ajouter une option",
     "addPoll": "Ajouter un sondage",
-    "addContentWarning": "Ajouter un avertissement",
-    "schedulePost": "Programmer la publication",
-    "removePoll": "Supprimer le sondage",
-    "removeOption": "Supprimer l'option",
+    "charCount": "{count} caractères restants",
+    "cwLabel": "Avertissement de contenu",
+    "cwPlaceholder": "Écrivez votre avertissement ici...",
+    "duration": {
+      "1d": "1 jour",
+      "1h": "1 heure",
+      "30m": "30 minutes",
+      "3d": "3 jours",
+      "5m": "5 minutes",
+      "6h": "6 heures",
+      "7d": "7 jours"
+    },
+    "editAltText": "Modifier le texte alternatif",
+    "editPost": "Edit post",
+    "language": "Langue...",
+    "multipleChoice": "Choix multiple",
+    "newMessage": "New message",
+    "newPost": "New post",
+    "optionPlaceholder": "Option {number}",
+    "options": {
+      "quoteFollowers": "Abonnés",
+      "quoteFollowersDesc": "Seuls vos abonnés peuvent citer cette publication",
+      "quoteNobody": "Personne",
+      "quoteNobodyDesc": "Désactiver les citations pour cette publication",
+      "quotePublic": "Tout le monde",
+      "quotePublicDesc": "Tout le monde peut citer cette publication"
+    },
+    "placeholder": "Quoi de neuf ?",
     "poll": "Sondage",
-    "editAltText": "Modifier le texte alternatif"
-  },
-  "imageCropper": {
-    "zoomIn": "Zoom avant",
-    "zoomOut": "Zoom arrière",
-    "rotateLeft": "Rotation 90° gauche",
-    "rotateRight": "Rotation 90° droite",
-    "flipHorizontal": "Retourner horizontalement",
-    "flipVertical": "Retourner verticalement"
-  },
-  "suggestions": {
-    "whoToFollow": "Suggestions",
-    "dismissSuggestions": "Masquer les suggestions",
-    "previousItem": "Précédent",
-    "nextItem": "Suivant"
-  },
-  "search": {
-    "title": "Recherche",
-    "placeholder": "Rechercher des personnes, publications ou hashtags",
-    "recent": "Récent",
-    "error": "Une erreur s'est produite lors de la recherche"
+    "pollDuration": "Durée du sondage",
+    "publish": "Publier",
+    "quoteDisabled": "Les publications réservées aux abonnés sur Mastodon ne peuvent pas être citées par les autres.",
+    "removeCW": "Retirer l'avertissement de contenu",
+    "removeOption": "Supprimer l'option",
+    "removePoll": "Supprimer le sondage",
+    "removeSchedule": "Annuler la programmation",
+    "reply": "Répondre",
+    "replyPlaceholder": "Publiez votre réponse",
+    "replyTo": "Reply to @{acct}",
+    "reschedule": "Reprogrammer",
+    "schedule": "Programmer",
+    "scheduleHelp": "La publication sera automatiquement publiée à cette date.",
+    "scheduleLabel": "Programmer la publication",
+    "schedulePost": "Programmer la publication",
+    "update": "Mettre à jour",
+    "upload": {
+      "altText": "Texte alternatif",
+      "altTextDescription": "Décrivez ce média pour les personnes malvoyantes...",
+      "editAlt": "Modifier le texte alternatif",
+      "status": "Téléversement des médias..."
+    },
+    "visibility": "Visibilité",
+    "visibilityDescription": "Contrôlez qui peut interagir avec cette publication. Vous pouvez également appliquer ces paramètres à toutes vos futures publications dans Préférences > Paramètres par défaut.",
+    "visibilityInteraction": "Visibilité et interaction",
+    "visibilityLabel": "Visibilité : {label}",
+    "visibilityOptions": {
+      "direct": "Direct",
+      "directDesc": "Uniquement les personnes mentionnées",
+      "private": "Abonnés uniquement",
+      "privateDesc": "Visible uniquement par vos abonnés",
+      "public": "Public",
+      "publicDesc": "Visible pour tout le monde",
+      "unlisted": "Non listé",
+      "unlistedDesc": "N'apparaît pas dans les fils publics"
+    },
+    "whoCanQuote": "Qui peut citer"
   },
   "conversation": {
+    "deleteConfirm": "Supprimer cette conversation ?",
+    "deleteConfirmFull": "Êtes-vous sûr de vouloir supprimer cette conversation ? Cette action est irréversible.",
+    "deleteError": "Échec de suppression de la conversation. Veuillez réessayer.",
+    "mediaOnly": "(Média uniquement)",
+    "newMessage": "Nouveau message",
+    "noMessages": "Aucun message pour le moment",
+    "sendError": "Échec d'envoi du message",
     "title": "Conversation",
-    "noMessages": "Aucun message"
+    "typeMessage": "Écrire un message..."
   },
-  "notifications": {
-    "title": "Notifications",
-    "all": "Tout",
-    "mentions": "Mentions",
-    "requests": "Demandes"
+  "conversations": {
+    "count": "{count, plural, =0 {Aucune conversation} one {1 conversation} other {# conversations}}",
+    "errorLoading": "Erreur lors du chargement des conversations",
+    "failedLoadDesc": "Échec du chargement de vos messages directs. Veuillez réessayer plus tard.",
+    "new": "Nouveau message",
+    "noConversations": "Pas encore de conversations",
+    "reachedEnd": "Vous avez atteint la fin",
+    "sendDirect": "Envoyez un message direct pour commencer une conversation",
+    "title": "Messages directs"
+  },
+  "deletePost": {
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "message": "Cette action ne peut pas être annulée. Votre message sera définitivement supprimé de votre profil et du fil d'actualité de vos abonnés.",
+    "title": "Supprimer le message ?"
   },
   "empty": {
+    "failedNews": "Échec de chargement des actualités",
+    "failedSuggestions": "Échec de chargement des suggestions",
+    "failedTags": "Échec de chargement des tags",
+    "failedTrending": "Échec de chargement des tendances",
     "noBoosts": "Aucun partage",
     "noFavourites": "Aucun favori",
+    "noFollowRequests": "Aucune demande d'abonnement en attente",
+    "noMessages": "Aucun message pour le moment",
     "noQuotes": "Aucune citation",
-    "noFollowRequests": "Aucune demande d'abonnement",
-    "noMessages": "Aucun message",
+    "noSuggestions": "Aucune suggestion disponible",
+    "noTrendingNews": "Aucune actualité tendance pour le moment",
+    "noTrendingPosts": "Aucune tendance pour le moment",
+    "noTrendingTags": "Aucun tag tendance pour le moment",
     "noUsersFound": "Aucun utilisateur trouvé",
-    "noSuggestions": "Aucune suggestion",
-    "noTrendingPosts": "Aucune tendance en ce moment",
-    "noTrendingTags": "Aucun tag tendance",
-    "noTrendingNews": "Aucune actualité tendance",
-    "signInToSee": "Connectez-vous pour voir les suggestions",
-    "failedTrending": "Impossible de charger les tendances",
-    "failedTags": "Impossible de charger les tags",
-    "failedNews": "Impossible de charger les actualités",
-    "failedSuggestions": "Impossible de charger les suggestions"
+    "signInToSee": "Connectez-vous pour voir les suggestions"
   },
-  "settings": {
-    "title": "Paramètres",
-    "preferences": "Préférences",
+  "explore": {
+    "failedNews": "Échec du chargement des actualités tendance",
+    "failedTags": "Échec du chargement des tags tendance",
+    "failedTrending": "Échec du chargement des posts tendance",
+    "noTrendingNews": "Pas d'actualités tendance pour le moment",
+    "noTrendingPosts": "Pas de posts tendance pour le moment",
+    "noTrendingTags": "Pas de tags tendance pour le moment",
+    "personalizedHint": "Basé sur les comptes que vous suivez",
+    "personalizedLabel": "Suggestion personnalisée",
+    "popularHint": "Populaire sur cette instance",
+    "popularLabel": "Suggestion populaire",
+    "reachedEndNews": "Vous avez atteint la fin des actualités tendance",
+    "reachedEndPosts": "Vous avez atteint la fin des posts tendance",
+    "reachedEndTags": "Vous avez atteint la fin des tags tendance",
+    "staffPickHint": "Sélectionné à la main par l'équipe",
+    "staffPickLabel": "Sélection de l'équipe",
+    "tabs": {
+      "links": "Actualités",
+      "people": "Personnes",
+      "posts": "Posts",
+      "tags": "Tags"
+    },
+    "title": "Explorer"
+  },
+  "imageCropper": {
+    "flipHorizontal": "Retourner horizontalement",
+    "flipVertical": "Retourner verticalement",
+    "rotateLeft": "Rotation 90° gauche",
+    "rotateRight": "Rotation 90° droite",
+    "zoomIn": "Zoom avant",
+    "zoomOut": "Zoom arrière"
+  },
+  "lists": {
+    "count": "{count, plural, =0 {Aucune liste} one {1 liste} other {# listes}}",
+    "create": "Créer une liste",
+    "createFirst": "Créez votre première liste",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer \"{title}\" ? Cette action est irréversible.",
+    "deleteTitle": "Supprimer la liste",
+    "description": "Les listes vous permettent d'organiser les comptes que vous suivez dans des fils d'actualité sélectionnés.",
+    "edit": "Modifier la liste",
+    "exclusive": "Exclusif",
+    "exclusiveDesc": "Les posts des membres de la liste n'apparaîtront pas dans votre fil d'accueil",
+    "exclusiveLabel": "Masquer ces posts de l'accueil",
+    "manageMembers": "Gérer les membres",
+    "nameLabel": "Nom de la liste",
+    "namePlaceholder": "Ma liste",
+    "noLists": "Pas encore de listes",
+    "repliesPolicy": {
+      "followed": "Tout utilisateur suivi",
+      "list": "Membres de la liste",
+      "none": "Personne"
+    },
+    "repliesPolicyLabel": "Afficher les réponses à",
+    "repliesPolicyShort": {
+      "followed": "Réponses aux utilisateurs suivis",
+      "list": "Réponses aux membres de la liste",
+      "none": "Pas de réponses"
+    },
+    "title": "Listes"
+  },
+  "media": {
+    "sensitive": "Cliquez pour voir le contenu sensible"
+  },
+  "nav": {
+    "about": "À propos",
+    "bookmarks": "Signets",
+    "compose": "Composer",
+    "explore": "Explorer",
+    "home": "Accueil",
+    "lists": "Listes",
+    "messages": "Messages",
     "notifications": "Notifications",
-    "filters": "Filtres",
-    "blocks": "Blocages",
-    "mutes": "Masquages",
-    "pushNotifications": "Notifications push",
-    "notSupported": "Non pris en charge par ce navigateur"
+    "search": "Recherche",
+    "settings": "Paramètres",
+    "sourceCode": "Code source"
   },
-  "visibility": {
-    "title": "Visibilité",
-    "whoCanQuote": "Qui peut citer",
-    "public": "Public",
-    "unlisted": "Non listé",
-    "private": "Abonnés uniquement",
-    "direct": "Direct"
+  "notifications": {
+    "actions": {
+      "clearAll": "Tout effacer",
+      "markAllRead": "Tout marquer comme lu",
+      "title": "Actions"
+    },
+    "all": "Tout",
+    "empty": {
+      "allDesc": "Quand quelqu'un interagit avec vos publications, vous le verrez ici.",
+      "allTitle": "Aucune notification pour le moment",
+      "mentionsDesc": "Quand quelqu'un vous mentionne, vous le verrez ici.",
+      "mentionsTitle": "Aucune mention pour le moment"
+    },
+    "endOfList": "Vous avez atteint la fin de vos notifications",
+    "filtered": "{count} {count, plural, one {notification filtrée} other {notifications filtrées}}",
+    "filters": {
+      "categories": {
+        "for_limited_accounts": "Comptes modérés",
+        "for_new_accounts": "Nouveaux comptes",
+        "for_not_followers": "Personnes qui ne vous suivent pas",
+        "for_not_following": "Personnes que vous ne suivez pas",
+        "for_private_mentions": "Mentions privées non sollicitées"
+      },
+      "options": {
+        "accept": "Accepter",
+        "drop": "Ignorer",
+        "filter": "Filtrer"
+      },
+      "title": "Filtres"
+    },
+    "loadError": "Échec de chargement des notifications",
+    "mentions": "Mentions",
+    "requests": "Demandes",
+    "requestsPage": {
+      "emptyDesc": "Aucune notification filtrée à examiner.",
+      "emptyTitle": "Tout est à jour !",
+      "endOfList": "Plus de notifications filtrées",
+      "goBack": "Retour",
+      "title": "Notifications filtrées"
+    },
+    "title": "Notifications"
   },
   "poll": {
     "closed": "Fermé",
     "vote": "Voter",
     "votes": "votes"
   },
+  "profile": {
+    "extraFields": "Champs supplémentaires",
+    "followers": "Abonnés",
+    "following": "Abonnements",
+    "hiddenInfo": "Cet utilisateur a choisi de ne pas rendre cette information disponible",
+    "noFollowers": "Aucun abonné",
+    "noPosts": "Aucune publication",
+    "notFollowing": "Aucun abonnement",
+    "posts": "Publications",
+    "profileInfo": "Informations du profil"
+  },
+  "profileEditor": {
+    "bio": "Bio",
+    "contentPlaceholder": "Contenu",
+    "displayName": "Nom affiché",
+    "extraFields": "Champs supplémentaires",
+    "extraFieldsDescription": "Vous pouvez afficher jusqu'à 4 éléments sous forme de tableau sur votre profil",
+    "labelPlaceholder": "Étiquette {number}",
+    "linkVerification": {
+      "copyTip": "<strong>Astuce :</strong> Le lien sur votre site peut être invisible. L'important est l'attribut <code /> qui empêche l'usurpation d'identité.",
+      "copyToClipboard": "Copier dans le presse-papiers",
+      "description": "Vous pouvez prouver que vous êtes le ou la propriétaire des liens présents dans les métadonnées de votre profil. Pour cela, le site web lié doit contenir un lien vers votre profil Mastodon. Ce lien de retour doit disposer d'un attribut <code />.",
+      "title": "Vérification des liens"
+    },
+    "moveDown": "Descendre",
+    "moveUp": "Monter",
+    "title": "Modifier le profil",
+    "uploadHeader": "Télécharger la bannière",
+    "verifiedOn": "Vérifié le {date}"
+  },
+  "report": {
+    "step": {
+      "category": {
+        "description": "Sélectionnez ce qui correspond le mieux",
+        "dislike": {
+          "description": "Ce n'est pas quelque chose que vous voulez voir",
+          "label": "Cela ne me plaît pas"
+        },
+        "legal": {
+          "description": "Vous pensez que cela viole la loi de votre pays ou de celui du serveur",
+          "label": "C'est illégal"
+        },
+        "other": {
+          "description": "Le problème ne correspond pas aux autres catégories",
+          "label": "C'est autre chose"
+        },
+        "post": "ce message",
+        "profile": "ce profil",
+        "spam": {
+          "description": "Liens malveillants, faux engagement ou réponses répétitives",
+          "label": "C'est du spam"
+        },
+        "title": "Dites-nous ce qu'il se passe avec {type}",
+        "violation": {
+          "description": "Vous savez que des règles précises sont enfreintes",
+          "label": "Infraction des règles du serveur"
+        }
+      },
+      "comment": {
+        "description": "Ajoutez tout commentaire supplémentaire qui pourrait nous aider à comprendre la situation",
+        "forward": "Transférer à {domain}",
+        "placeholder": "Ajoutez vos commentaires ici...",
+        "submit": "Envoyer le signalement",
+        "submitting": "Envoi en cours...",
+        "title": "Y a-t-il autre chose que nous devrions savoir ?"
+      },
+      "rules": {
+        "description": "Sélectionnez toutes les réponses appropriées",
+        "title": "Quelles règles sont enfreintes ?"
+      },
+      "statuses": {
+        "description": "Vous pouvez inclure d'autres messages de ce compte si vous le souhaitez",
+        "included": "Le message que vous avez sélectionné a été inclus dans votre signalement.",
+        "optional": "Vous pouvez sélectionner des messages spécifiques à inclure dans votre signalement si nécessaire.",
+        "title": "Y a-t-il autre chose que vous voulez ajouter ?"
+      },
+      "thanks": {
+        "description": {
+          "dislike": "Bien que nous ne prendrons pas de mesures immédiates sur ce signalement, vous avez des options pour réduire ce que vous voyez de ce compte.",
+          "other": "Votre signalement a été envoyé. Nous allons étudier cela et prendre les mesures nécessaires si besoin."
+        },
+        "suggestions": {
+          "block": "Bloquer le compte pour cacher son contenu",
+          "filter": "Filtrer des mots-clés ou phrases spécifiques",
+          "unfollow": "Ne plus suivre ou masquer le compte"
+        },
+        "title": {
+          "dislike": "Bien reçu",
+          "other": "Merci pour votre signalement"
+        }
+      }
+    },
+    "title": "Signaler @{acct}"
+  },
+  "scheduled": {
+    "cancel": "Cancel",
+    "confirmCancel": "Are you sure you want to cancel this scheduled post?",
+    "count": "{count, plural, one {# post} other {# posts}}",
+    "edit": "Edit",
+    "empty": {
+      "createPost": "Create Post",
+      "description": "Posts you schedule will appear here.",
+      "title": "No scheduled posts"
+    },
+    "endOfPosts": "End of scheduled posts",
+    "failedToLoad": "Failed to load scheduled posts",
+    "scheduledFor": "Scheduled for {date}",
+    "title": "Scheduled Posts"
+  },
+  "search": {
+    "clearAll": "Tout effacer",
+    "emptyHistory": "Rechercher des personnes, publications ou hashtags",
+    "enterToStart": "Entrez un nom ou un nom d'utilisateur pour commencer une conversation",
+    "error": "Une erreur s'est produite lors de la recherche",
+    "noResults": "Aucun résultat trouvé",
+    "people": "Rechercher des personnes",
+    "placeholder": "Rechercher des personnes, publications ou hashtags (Appuyez sur Entrée pour rechercher)",
+    "recent": "Récent",
+    "tabs": {
+      "accounts": "Personnes",
+      "all": "Tout",
+      "hashtags": "Hashtags",
+      "statuses": "Publications"
+    },
+    "title": "Recherche",
+    "tryDifferent": "Essayez avec un autre nom"
+  },
+  "settings": {
+    "aboutServer": "À propos de ce serveur",
+    "account": "Compte",
+    "appearance": "Apparence",
+    "blockedAccounts": "Comptes bloqués",
+    "blocksPage": {
+      "count": "{count} {count, plural, one {compte bloqué} other {comptes bloqués}}",
+      "emptyDesc": "Quand vous bloquez quelqu'un, il ne pourra plus voir vos publications ni interagir avec vous.",
+      "emptyTitle": "Aucun compte bloqué",
+      "title": "Comptes bloqués"
+    },
+    "editProfile": "Modifier le profil",
+    "filtersPage": {
+      "addFilter": "Ajouter un filtre",
+      "blur": "Flouter",
+      "confirmDelete": "Êtes-vous sûr de vouloir supprimer le filtre \"{title}\" ?",
+      "context": {
+        "account": "Profils",
+        "home": "Accueil",
+        "notifications": "Notifications",
+        "public": "Public",
+        "thread": "Conversations"
+      },
+      "createFirst": "Créez votre premier filtre",
+      "empty": "Vous n'avez pas encore créé de filtre.",
+      "emptyDesc": "Les filtres vous permettent de masquer ou de flouter des publications contenant des mots ou phrases spécifiques.",
+      "expired": "Expiré",
+      "expiresIn": "Expire dans {count} {unit}",
+      "failedLoad": "Échec de chargement des filtres. Veuillez réessayer.",
+      "hide": "Masquer",
+      "title": "Filtres",
+      "warn": "Avertir"
+    },
+    "followRequests": "Demandes d'abonnement",
+    "interfaceLanguage": "Langue de l'interface",
+    "interfaceLanguageDesc": "Changer la langue de l'interface de l'application",
+    "moderation": "Modération",
+    "mutedAccounts": "Comptes masqués",
+    "mutesPage": {
+      "count": "{count} {count, plural, one {compte masqué} other {comptes masqués}}",
+      "emptyDesc": "Quand vous masquez quelqu'un, ses publications et notifications seront masquées pour vous.",
+      "emptyTitle": "Aucun compte masqué",
+      "title": "Comptes masqués"
+    },
+    "nav": {
+      "bookmarks": "Signets",
+      "lists": "Listes",
+      "search": "Rechercher"
+    },
+    "notifications": "Notifications",
+    "options": {
+      "direct": "Mention privée",
+      "directDesc": "Toutes les personnes mentionnées dans la publication",
+      "private": "Abonnés",
+      "privateDesc": "Seulement vos abonnés",
+      "public": "Public",
+      "publicDesc": "Tout le monde sur et en dehors de Mastodon",
+      "quoteFollowers": "Abonnés",
+      "quoteFollowersDesc": "Seuls les abonnés peuvent citer",
+      "quoteNobody": "Moi uniquement",
+      "quoteNobodyDesc": "Personne d'autre ne peut citer",
+      "quotePublic": "Tout le monde",
+      "quotePublicDesc": "N'importe qui peut citer cette publication",
+      "unlisted": "Non listé",
+      "unlistedDesc": "Caché des résultats de recherche et des fils viraux"
+    },
+    "preferences": "Préférences",
+    "preferencesPage": {
+      "botAccount": "Compte bot",
+      "botAccountDesc": "Ce compte effectue principalement des actions automatisées",
+      "discoverable": "Suggérer le compte aux autres",
+      "discoverableDesc": "Permettre à votre compte d'être découvert",
+      "hideCollections": "Masquer les abonnés et abonnements",
+      "hideCollectionsDesc": "Masquer vos abonnés et vos abonnements sur votre profil",
+      "indexable": "Inclure les publications publiques dans les résultats de recherche",
+      "indexableDesc": "Permettre à vos publications publiques d'être découvertes par la recherche",
+      "lockedAccount": "Compte verrouillé",
+      "lockedAccountDesc": "Approuver manuellement les abonnés",
+      "markSensitive": "Marquer les médias comme sensibles par défaut",
+      "markSensitiveDesc": "Masquer les pièces jointes derrière un avertissement de contenu",
+      "postingDefaults": "Paramètres par défaut",
+      "postingDefaultsDesc": "Configurez les paramètres par défaut des nouvelles publications",
+      "privacy": "Confidentialité",
+      "privacyDesc": "Contrôlez la visibilité et la découvrabilité d'un profil",
+      "quoteDisabled": "Les publications privées ou réservées aux abonnés ne peuvent pas être citées.",
+      "saveChanges": "Enregistrer les modifications",
+      "visibility": "Visibilité",
+      "whoCanQuote": "Qui peut citer"
+    },
+    "pushNotifications": {
+      "alertTypes": "Types d'alertes",
+      "boosts": "Partages",
+      "description": "Configurez les paramètres de notifications push pour votre appareil.",
+      "disableLabel": "Désactiver les notifications push",
+      "disabled": "Recevez des notifications même quand l'application est fermée",
+      "enableLabel": "Activer les notifications push",
+      "enabled": "Activé - recevez des notifications même quand l'application est fermée",
+      "favorites": "Favoris",
+      "follows": "Abonnements",
+      "mentions": "Mentions",
+      "notSupported": "Non supporté par ce navigateur",
+      "permissionDenied": "Permission refusée. Activez les notifications dans les paramètres de votre navigateur.",
+      "polls": "Sondages",
+      "title": "Notifications push"
+    },
+    "quickLinks": "Liens rapides",
+    "scheduledPosts": "Publications programmées",
+    "server": "Serveur",
+    "signOut": "Se déconnecter",
+    "signingOut": "Déconnexion...",
+    "title": "Paramètres",
+    "trending": "Tendances"
+  },
+  "statusDetail": {
+    "boostedBy": {
+      "count": "{count, plural, one {# person} other {# people}}",
+      "noBoostsYet": "No boosts yet",
+      "noMoreUsers": "No more users",
+      "title": "Boosted by"
+    },
+    "errorLoading": "Erreur de chargement du post",
+    "failedLoadDesc": "Ce post n'a pas pu être trouvé ou chargé.",
+    "favouritedBy": {
+      "count": "{count, plural, one {# person} other {# people}}",
+      "noFavouritesYet": "No favourites yet",
+      "noMoreUsers": "No more users",
+      "title": "Favourited by"
+    },
+    "goBack": "Go Back",
+    "postNotFound": "Post Not Found",
+    "quotedBy": "Quoted a post by @{acct}",
+    "quotesPage": {
+      "count": "{count, plural, one {# quote} other {# quotes}}",
+      "noMoreQuotes": "No more quotes",
+      "noQuotesYet": "No quotes yet",
+      "title": "Quotes"
+    },
+    "replies": "Réponses ({count})",
+    "stats": {
+      "boosts": "{count, plural, one {Partage} other {Partages}}",
+      "favourites": "{count, plural, one {Favori} other {Favoris}}",
+      "quotes": "{count, plural, one {Citation} other {Citations}}"
+    },
+    "title": "Post"
+  },
+  "suggestions": {
+    "dismissSuggestions": "Masquer les suggestions",
+    "dontShowAgain": "Don't show again",
+    "nextItem": "Élément suivant",
+    "personalized": "Personalized",
+    "personalizedHint": "Based on accounts you follow",
+    "popular": "Popular",
+    "popularHint": "Popular on this instance",
+    "previousItem": "Élément précédent",
+    "staffPick": "Staff pick",
+    "staffPickHint": "Hand-picked by the team",
+    "whoToFollow": "Suggestions"
+  },
+  "timeline": {
+    "empty": "Votre fil est vide",
+    "error": "Erreur de chargement du fil",
+    "subtitle": "Votre fil personnel",
+    "title": "Accueil",
+    "trending": "Tendances"
+  },
   "toast": {
     "copiedToClipboard": "Copié dans le presse-papiers",
+    "failedToDeleteFilter": "Échec de suppression du filtre",
+    "filterCreated": "Filtre créé",
     "filterDeleted": "Filtre supprimé",
     "filterUpdated": "Filtre mis à jour",
-    "filterCreated": "Filtre créé",
-    "failedToDeleteFilter": "Impossible de supprimer le filtre",
     "postDeleted": "Publication supprimée",
     "postShared": "Publication partagée"
   },
+  "visibility": {
+    "direct": "Direct",
+    "private": "Abonnés uniquement",
+    "public": "Public",
+    "title": "Visibilité",
+    "unlisted": "Non listé",
+    "whoCanQuote": "Qui peut citer"
+  },
   "wrapstodon": {
-    "title": "Wrapstodon",
+    "mostPopularPost": "Publication la plus populaire",
+    "mostUsedHashtag": "Hashtag le plus utilisé",
     "notAvailable": "Wrapstodon non disponible",
     "somethingWentWrong": "Une erreur s'est produite",
-    "mostUsedHashtag": "Hashtag le plus utilisé",
-    "mostPopularPost": "Publication la plus populaire"
-  },
-  "about": {
-    "title": "À propos"
+    "title": "Wrapstodon"
   }
 }

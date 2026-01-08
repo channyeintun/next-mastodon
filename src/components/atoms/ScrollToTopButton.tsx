@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { ChevronUp } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 const Button = styled.button<{ $visible: boolean }>`
     position: fixed;
@@ -46,6 +47,7 @@ interface ScrollToTopButtonProps {
 
 export function ScrollToTopButton({ visible, onClick }: ScrollToTopButtonProps) {
     const [mounted, setMounted] = useState(false);
+    const t = useTranslations('common');
 
     useEffect(() => {
         setMounted(true);
@@ -55,10 +57,10 @@ export function ScrollToTopButton({ visible, onClick }: ScrollToTopButtonProps) 
         <Button
             $visible={visible}
             onClick={onClick}
-            aria-label="Scroll to top"
+            aria-label={t('backToTop')}
         >
             <ChevronUp size={16} />
-            Back to top
+            {t('backToTop')}
         </Button>
     );
 

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Plus, List } from 'lucide-react';
 import { useLists, useCreateList, useUpdateList, useDeleteList } from '@/api';
 import { IconButton } from '@/components/atoms';
+import { useTranslations } from 'next-intl';
 import { ListItemSkeleton } from '@/components/molecules';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { ListModalContent, DeleteConfirmModalContent, ListItem } from './ListComponents';
@@ -11,6 +12,7 @@ import type { List as ListType, CreateListParams, UpdateListParams } from '@/typ
 
 export default function ListsPage() {
     const router = useRouter();
+    const t = useTranslations('lists');
     const { openModal, closeModal } = useGlobalModal();
     const { data: lists, isLoading } = useLists();
     const createListMutation = useCreateList();
@@ -77,16 +79,16 @@ export default function ListsPage() {
                     <div>
                         <h1 style={{ fontSize: 'var(--font-size-4)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                             <List size={22} />
-                            Lists
+                            {t('title')}
                         </h1>
                         {lists && (
                             <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-                                {lists.length} list{lists.length !== 1 ? 's' : ''}
+                                {t('count', { count: lists.length })}
                             </p>
                         )}
                     </div>
                 </div>
-                <IconButton onClick={handleOpenCreateModal} aria-label="Create new list">
+                <IconButton onClick={handleOpenCreateModal} aria-label={t('create')}>
                     <Plus size={20} />
                 </IconButton>
             </div>
@@ -107,9 +109,9 @@ export default function ListsPage() {
             ) : (
                 <div style={{ display: 'grid', placeItems: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
                     <List size={48} style={{ opacity: 0.3, marginBottom: 'var(--size-4)' }} />
-                    <p>No lists yet</p>
+                    <p>{t('noLists')}</p>
                     <p style={{ fontSize: 'var(--font-size-0)', marginTop: 'var(--size-2)', textAlign: 'center' }}>
-                        Lists let you organize the accounts you follow into curated timelines.
+                        {t('description')}
                     </p>
                     <button onClick={handleOpenCreateModal} style={{
                         marginTop: 'var(--size-4)', padding: 'var(--size-2) var(--size-4)',
@@ -117,7 +119,7 @@ export default function ListsPage() {
                         color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 'var(--size-2)',
                     }}>
                         <Plus size={16} />
-                        Create your first list
+                        {t('createFirst')}
                     </button>
                 </div>
             )}

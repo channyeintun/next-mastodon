@@ -1,158 +1,660 @@
 {
-  "common": {
-    "retry": "再試行",
-    "cancel": "キャンセル",
-    "save": "保存",
-    "delete": "削除",
-    "remove": "削除",
-    "share": "共有",
-    "report": "報告",
-    "verified": "認証済み",
-    "close": "閉じる",
-    "loading": "読み込み中...",
-    "viewAll": "すべて表示",
-    "dontShowAgain": "今後表示しない"
+  "about": {
+    "title": "概要"
   },
-  "nav": {
-    "home": "ホーム",
-    "explore": "見つける",
-    "notifications": "通知",
-    "messages": "メッセージ",
-    "bookmarks": "ブックマーク",
-    "lists": "リスト",
-    "settings": "設定",
-    "search": "検索",
-    "compose": "投稿",
-    "sourceCode": "ソースコード",
-    "about": "概要"
-  },
-  "timeline": {
-    "title": "ホーム",
-    "subtitle": "あなたのタイムライン",
-    "empty": "タイムラインは空です",
-    "error": "タイムラインの読み込みエラー",
-    "trending": "トレンド"
-  },
-  "profile": {
-    "posts": "投稿",
+  "account": {
+    "backToTimeline": "タイムラインに戻る",
+    "block": "ブロック",
+    "bot": "BOT",
+    "editProfile": "プロフィールを編集",
+    "empty": {
+      "end": "これ以上の投稿はありません",
+      "posts": "投稿はまだありません"
+    },
+    "end_of_timeline": "You've reached the end of your timeline",
+    "follow": "フォロー",
+    "follow_hint": "Follow some people to see their posts here.",
+    "followersPage": {
+      "hiddenInfo": "このユーザーは情報を公開していません",
+      "noFollowersYet": "まだフォロワーがいません",
+      "noMoreFollowers": "これ以上のフォロワーはありません",
+      "title": "フォロワー"
+    },
+    "followers_count": "{count, plural, one {# follower} other {# followers}}",
     "following": "フォロー中",
-    "followers": "フォロワー",
-    "noPosts": "投稿はまだありません",
-    "noFollowers": "フォロワーはまだいません",
-    "notFollowing": "まだ誰もフォローしていません",
-    "hiddenInfo": "このユーザーはこの情報を非公開にしています",
-    "profileInfo": "プロフィール情報",
-    "extraFields": "追加フィールド"
+    "followingPage": {
+      "hiddenInfo": "このユーザーは情報を公開していません",
+      "noMoreAccounts": "これ以上のアカウントはありません",
+      "notFollowingYet": "まだ誰もフォローしていません",
+      "title": "フォロー中"
+    },
+    "following_count": "{count, plural, other {# following}}",
+    "hiddenProfile": "このプロフィールは {domain} のモデレーターによって非表示にされています。",
+    "joined": "{date}に登録",
+    "loadMore": "さらに読み込む",
+    "loading": "読み込み中...",
+    "meta": {
+      "description": "Mastodon上の @{acct} のプロフィール",
+      "ogDescription": "Mastodon上の @{acct} のプロフィール",
+      "ogTitle": "{name} (@{acct})",
+      "title": "{name} (@{acct}) - Mastodon",
+      "twitterDescription": "@{acct} のプロフィール",
+      "twitterTitle": "{name} (@{acct})"
+    },
+    "mute": "ミュート",
+    "notFound": "プロフィールが見つかりませんでした",
+    "pinned": "固定済み",
+    "pinnedNav": {
+      "next": "次の固定済み投稿",
+      "prev": "前の固定済み投稿"
+    },
+    "posts_count": "{count, plural, one {# post} other {# posts}}",
+    "requested": "リクエスト済み",
+    "showProfile": "プロフィールを表示する",
+    "startNotifying": "@{acct} が投稿した時に通知",
+    "stopNotifying": "@{acct} が投稿した時の通知を停止",
+    "tabs": {
+      "media": "メディア",
+      "posts": "投稿",
+      "posts_replies": "投稿と返信"
+    },
+    "unblock": "ブロック解除",
+    "unfollow": "フォロー解除",
+    "unmute": "ミュート解除",
+    "viewOnInstance": "インスタンスで表示"
   },
   "actions": {
-    "reply": "返信",
-    "quote": "引用",
-    "boost": "ブースト",
-    "favourite": "お気に入り",
+    "blockAccount": "@{acct}をブロック",
     "bookmark": "ブックマーク",
-    "editStatus": "投稿を編集",
+    "boost": "ブースト",
     "deleteStatus": "投稿を削除",
+    "editStatus": "投稿を編集",
+    "favourite": "お気に入り",
     "follow": "フォロー",
-    "unfollow": "フォロー解除"
+    "muteConversation": "会話をミュート",
+    "pin": "プロフィールに固定",
+    "quote": "引用",
+    "removeBookmark": "ブックマークを外す",
+    "reply": "返信",
+    "undoBoost": "ブースト解除",
+    "unfavourite": "お気に入り解除",
+    "unfollow": "フォロー解除",
+    "unmuteConversation": "会話のミュートを解除",
+    "unpin": "プロフィールの固定を解除"
+  },
+  "common": {
+    "back": "戻る",
+    "backToTop": "トップに戻る",
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "delete": "削除",
+    "done": "完了",
+    "dontShowAgain": "今後表示しない",
+    "loading": "読み込み中...",
+    "next": "次へ",
+    "remove": "削除",
+    "report": "報告",
+    "retry": "再試行",
+    "save": "保存",
+    "share": "共有",
+    "skipToMain": "メインコンテンツにスキップ",
+    "verified": "認証済み",
+    "viewAll": "すべて表示"
   },
   "composer": {
+    "addContentWarning": "コンテンツ警告を追加",
     "addEmoji": "絵文字を追加",
     "addMedia": "メディアを追加",
+    "addOption": "選択肢を追加",
     "addPoll": "アンケートを追加",
-    "addContentWarning": "コンテンツ警告を追加",
-    "schedulePost": "投稿を予約",
-    "removePoll": "アンケートを削除",
-    "removeOption": "選択肢を削除",
+    "charCount": "残り{count}文字",
+    "cwLabel": "コンテンツ警告",
+    "cwPlaceholder": "警告内容を入力...",
+    "duration": {
+      "1d": "1日",
+      "1h": "1時間",
+      "30m": "30分",
+      "3d": "3日",
+      "5m": "5分",
+      "6h": "6時間",
+      "7d": "7日"
+    },
+    "editAltText": "代替テキストを編集",
+    "editPost": "Edit post",
+    "language": "言語...",
+    "multipleChoice": "複数回答可",
+    "newMessage": "New message",
+    "newPost": "New post",
+    "optionPlaceholder": "選択肢 {number}",
+    "options": {
+      "quoteFollowers": "フォロワー",
+      "quoteFollowersDesc": "フォロワーのみがこの投稿を引用できます",
+      "quoteNobody": "誰も許可しない",
+      "quoteNobodyDesc": "この投稿の引用を無効にする",
+      "quotePublic": "全員",
+      "quotePublicDesc": "誰でもこの投稿を引用できます"
+    },
+    "placeholder": "今なにしてる？",
     "poll": "アンケート",
-    "editAltText": "代替テキストを編集"
-  },
-  "imageCropper": {
-    "zoomIn": "拡大",
-    "zoomOut": "縮小",
-    "rotateLeft": "左に90°回転",
-    "rotateRight": "右に90°回転",
-    "flipHorizontal": "水平反転",
-    "flipVertical": "垂直反転"
-  },
-  "suggestions": {
-    "whoToFollow": "おすすめユーザー",
-    "dismissSuggestions": "おすすめを非表示",
-    "previousItem": "前へ",
-    "nextItem": "次へ"
-  },
-  "search": {
-    "title": "検索",
-    "placeholder": "ユーザー、投稿、ハッシュタグを検索",
-    "recent": "最近",
-    "error": "検索中にエラーが発生しました"
+    "pollDuration": "アンケート期間",
+    "publish": "公開",
+    "quoteDisabled": "Mastodonで作成された「フォロワー限定」の投稿は、他人が引用することはできません。",
+    "removeCW": "コンテンツ警告を削除",
+    "removeOption": "選択肢を削除",
+    "removePoll": "アンケートを削除",
+    "removeSchedule": "予約を解除",
+    "reply": "返信",
+    "replyPlaceholder": "返信を投稿",
+    "replyTo": "Reply to @{acct}",
+    "reschedule": "予約変更",
+    "schedule": "予約",
+    "scheduleHelp": "投稿はこの日時に自動的に公開されます。",
+    "scheduleLabel": "投稿を予約",
+    "schedulePost": "投稿を予約",
+    "update": "更新",
+    "upload": {
+      "altText": "代替テキスト",
+      "altTextDescription": "視覚障害のあるユーザー向けにこのメディアを説明してください...",
+      "editAlt": "代替テキストを編集",
+      "status": "メディアをアップロード中..."
+    },
+    "visibility": "公開範囲",
+    "visibilityDescription": "この投稿にやり取りできる人を制限します。「設定 > 投稿のデフォルト設定」から、将来のすべての投稿に適用することもできます。",
+    "visibilityInteraction": "公開範囲とやり取り",
+    "visibilityLabel": "公開範囲: {label}",
+    "visibilityOptions": {
+      "direct": "ダイレクト",
+      "directDesc": "指定したユーザーのみ",
+      "private": "フォロワー限定",
+      "privateDesc": "フォロワーからのみ見ることができます",
+      "public": "公開",
+      "publicDesc": "誰からでも見ることができます",
+      "unlisted": "未収載",
+      "unlistedDesc": "公開タイムラインには表示されません"
+    },
+    "whoCanQuote": "引用できる人"
   },
   "conversation": {
+    "deleteConfirm": "この会話を削除しますか？",
+    "deleteConfirmFull": "本当にこの会話を削除しますか？この操作は取り消せません。",
+    "deleteError": "会話の削除に失敗しました。もう一度お試しください。",
+    "mediaOnly": "(メディアのみ)",
+    "newMessage": "新しいメッセージ",
+    "noMessages": "メッセージはまだありません",
+    "sendError": "メッセージの送信に失敗しました",
     "title": "会話",
-    "noMessages": "メッセージはまだありません"
+    "typeMessage": "メッセージを入力..."
   },
-  "notifications": {
-    "title": "通知",
-    "all": "すべて",
-    "mentions": "メンション",
-    "requests": "リクエスト"
+  "conversations": {
+    "count": "{count, plural, =0 {会話なし} other {# 件の会話}}",
+    "errorLoading": "会話の読み込みエラー",
+    "failedLoadDesc": "ダイレクトメッセージの読み込みに失敗しました。後でもう一度お試しください。",
+    "new": "新しいメッセージ",
+    "noConversations": "会話はまだありません",
+    "reachedEnd": "最後に達しました",
+    "sendDirect": "ダイレクトメッセージを送って会話を始めましょう",
+    "title": "ダイレクトメッセージ"
+  },
+  "deletePost": {
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "message": "この操作は取り消せません。投稿はプロフィールとフォロワーのタイムラインから完全に削除されます。",
+    "title": "投稿を削除しますか？"
   },
   "empty": {
+    "failedNews": "ニュースの読み込みに失敗しました",
+    "failedSuggestions": "おすすめの読み込みに失敗しました",
+    "failedTags": "タグの読み込みに失敗しました",
+    "failedTrending": "トレンドの読み込みに失敗しました",
     "noBoosts": "ブーストはまだありません",
     "noFavourites": "お気に入りはまだありません",
-    "noQuotes": "引用はまだありません",
     "noFollowRequests": "保留中のフォローリクエストはありません",
     "noMessages": "メッセージはまだありません",
-    "noUsersFound": "ユーザーが見つかりません",
-    "noSuggestions": "おすすめがありません",
+    "noQuotes": "引用はまだありません",
+    "noSuggestions": "おすすめはありません",
+    "noTrendingNews": "現在トレンドのニュースはありません",
     "noTrendingPosts": "現在トレンドの投稿はありません",
     "noTrendingTags": "現在トレンドのタグはありません",
+    "noUsersFound": "ユーザーが見つかりませんでした",
+    "signInToSee": "ログインしておすすめを表示"
+  },
+  "explore": {
+    "failedNews": "トレンドニュースの読み込みに失敗しました",
+    "failedTags": "トレンドタグの読み込みに失敗しました",
+    "failedTrending": "トレンド投稿の読み込みに失敗しました",
     "noTrendingNews": "現在トレンドのニュースはありません",
-    "signInToSee": "ログインしておすすめを表示",
-    "failedTrending": "トレンドの読み込みに失敗",
-    "failedTags": "タグの読み込みに失敗",
-    "failedNews": "ニュースの読み込みに失敗",
-    "failedSuggestions": "おすすめの読み込みに失敗"
+    "noTrendingPosts": "現在トレンドの投稿はありません",
+    "noTrendingTags": "現在トレンドのタグはありません",
+    "personalizedHint": "フォロー中のアカウントに基づく",
+    "personalizedLabel": "パーソナライズされたおすすめ",
+    "popularHint": "このインスタンスで人気",
+    "popularLabel": "人気のおすすめ",
+    "reachedEndNews": "トレンドニュースの最後に達しました",
+    "reachedEndPosts": "トレンド投稿の最後に達しました",
+    "reachedEndTags": "トレンドタグの最後に達しました",
+    "staffPickHint": "チームによる厳選",
+    "staffPickLabel": "スタッフのおすすめ",
+    "tabs": {
+      "links": "ニュース",
+      "people": "ユーザー",
+      "posts": "投稿",
+      "tags": "タグ"
+    },
+    "title": "見つける"
   },
-  "settings": {
-    "title": "設定",
-    "preferences": "設定",
+  "imageCropper": {
+    "flipHorizontal": "水平反転",
+    "flipVertical": "垂直反転",
+    "rotateLeft": "左に90°回転",
+    "rotateRight": "右に90°回転",
+    "zoomIn": "拡大",
+    "zoomOut": "縮小"
+  },
+  "lists": {
+    "count": "{count, plural, =0 {リストなし} other {# 個のリスト}}",
+    "create": "リストを作成",
+    "createFirst": "最初のリストを作成する",
+    "deleteConfirm": "本当に「{title}」を削除しますか？この操作は取り消せません。",
+    "deleteTitle": "リストを削除",
+    "description": "リストを使うと、フォローしているアカウントを特定のタイムラインに整理できます。",
+    "edit": "リストを編集",
+    "exclusive": "排他的",
+    "exclusiveDesc": "リスト内のメンバーの投稿はホームタイムラインに表示されなくなります",
+    "exclusiveLabel": "これらの投稿をホームから隠す",
+    "manageMembers": "メンバーを管理",
+    "nameLabel": "リスト名",
+    "namePlaceholder": "マイリスト",
+    "noLists": "リストはまだありません",
+    "repliesPolicy": {
+      "followed": "フォローしているすべてのユーザー",
+      "list": "リストのメンバー",
+      "none": "なし"
+    },
+    "repliesPolicyLabel": "返信の表示対象",
+    "repliesPolicyShort": {
+      "followed": "フォロー中への返信",
+      "list": "リスト内への返信",
+      "none": "返信なし"
+    },
+    "title": "リスト"
+  },
+  "media": {
+    "sensitive": "クリックしてセンシティブなコンテンツを表示"
+  },
+  "nav": {
+    "about": "概要",
+    "bookmarks": "ブックマーク",
+    "compose": "投稿",
+    "explore": "見つける",
+    "home": "ホーム",
+    "lists": "リスト",
+    "messages": "メッセージ",
     "notifications": "通知",
-    "filters": "フィルター",
-    "blocks": "ブロック",
-    "mutes": "ミュート",
-    "pushNotifications": "プッシュ通知",
-    "notSupported": "このブラウザではサポートされていません"
+    "search": "検索",
+    "settings": "設定",
+    "sourceCode": "ソースコード"
   },
-  "visibility": {
-    "title": "公開範囲",
-    "whoCanQuote": "引用できる人",
-    "public": "公開",
-    "unlisted": "未収載",
-    "private": "フォロワーのみ",
-    "direct": "ダイレクト"
+  "notifications": {
+    "actions": {
+      "clearAll": "すべて消去",
+      "markAllRead": "すべて既読にする",
+      "title": "アクション"
+    },
+    "all": "すべて",
+    "empty": {
+      "allDesc": "誰かがあなたの投稿に反応すると、ここに表示されます。",
+      "allTitle": "通知はまだありません",
+      "mentionsDesc": "誰かがあなたをメンションすると、ここに表示されます。",
+      "mentionsTitle": "メンションはまだありません"
+    },
+    "endOfList": "すべての通知を表示しました",
+    "filtered": "{count}件のフィルタリングされた通知",
+    "filters": {
+      "categories": {
+        "for_limited_accounts": "制限されたアカウント",
+        "for_new_accounts": "新しいアカウント",
+        "for_not_followers": "フォローされていない人",
+        "for_not_following": "フォローしていない人",
+        "for_private_mentions": "望まないダイレクトメッセージ"
+      },
+      "options": {
+        "accept": "承認",
+        "drop": "拒否",
+        "filter": "フィルター"
+      },
+      "title": "フィルター"
+    },
+    "loadError": "通知の読み込みに失敗しました",
+    "mentions": "メンション",
+    "requests": "リクエスト",
+    "requestsPage": {
+      "emptyDesc": "確認が必要な通知はありません。",
+      "emptyTitle": "すべて確認しました！",
+      "endOfList": "これ以上の通知はありません",
+      "goBack": "戻る",
+      "title": "フィルタリングされた通知"
+    },
+    "title": "通知"
   },
   "poll": {
     "closed": "終了",
     "vote": "投票",
     "votes": "票"
   },
+  "profile": {
+    "extraFields": "追加フィールド",
+    "followers": "フォロワー",
+    "following": "フォロー中",
+    "hiddenInfo": "このユーザーはこの情報を非公開にしています",
+    "noFollowers": "フォロワーはまだいません",
+    "noPosts": "投稿はまだありません",
+    "notFollowing": "まだ誰もフォローしていません",
+    "posts": "投稿",
+    "profileInfo": "プロフィール情報"
+  },
+  "profileEditor": {
+    "bio": "自己紹介",
+    "contentPlaceholder": "内容",
+    "displayName": "表示名",
+    "extraFields": "追加フィールド",
+    "extraFieldsDescription": "プロフィールに表として最大4つの項目を表示できます",
+    "labelPlaceholder": "ラベル {number}",
+    "linkVerification": {
+      "copyTip": "<strong>ヒント:</strong> ウェブサイト上のリンクは非表示にできます。重要なのは<code />で、なりすましを防ぎます。",
+      "copyToClipboard": "クリップボードにコピー",
+      "description": "プロフィールメタデータ内のリンクの所有者として自分自身を認証できます。そのためには、リンク先のウェブサイトにMastodonプロフィールへのリンクを含める必要があります。バックリンクには<code />属性が必要です。",
+      "title": "リンク認証"
+    },
+    "moveDown": "下へ移動",
+    "moveUp": "上へ移動",
+    "title": "プロフィールを編集",
+    "uploadHeader": "ヘッダーをアップロード",
+    "verifiedOn": "{date}に確認済み"
+  },
+  "report": {
+    "step": {
+      "category": {
+        "description": "近いものを選択してください",
+        "dislike": {
+          "description": "見たくない内容の場合",
+          "label": "興味がありません"
+        },
+        "legal": {
+          "description": "あなたの国またはサーバーの国の法律に違反していると思われます",
+          "label": "違法です"
+        },
+        "other": {
+          "description": "上記に当てはまらない場合",
+          "label": "その他"
+        },
+        "post": "投稿",
+        "profile": "プロフィール",
+        "spam": {
+          "description": "悪意のあるリンクや虚偽の情報、執拗な返信など",
+          "label": "これはスパムです"
+        },
+        "title": "この{type}について教えてください",
+        "violation": {
+          "description": "ルールに違反しているのを見つけた場合",
+          "label": "サーバーのルールに違反しています"
+        }
+      },
+      "comment": {
+        "description": "状況を理解するのに役立つ追加のコメントがあれば入力してください",
+        "forward": "{domain}に転送する",
+        "placeholder": "追加のコメントを入力...",
+        "submit": "通報内容を送信",
+        "submitting": "送信中...",
+        "title": "その他に私たちに伝えておくべき事はありますか？"
+      },
+      "rules": {
+        "description": "当てはまるものをすべて選んでください",
+        "title": "どのルールに違反していますか？"
+      },
+      "statuses": {
+        "description": "他にも含めたい投稿があれば選択してください",
+        "included": "選択した投稿はレポートに含まれています。",
+        "optional": "関連する投稿を選択してレポートに含めることができます。",
+        "title": "この通報を裏付けるような投稿はありますか？"
+      },
+      "thanks": {
+        "description": {
+          "dislike": "この通報に対して直接の対応は行われませんが、このアカウントから表示される内容を減らすためのオプションがあります。",
+          "other": "レポートは送信されました。内容を確認し、必要に応じて適切な対応を行います。"
+        },
+        "suggestions": {
+          "block": "アカウントをブロックして非表示にする",
+          "filter": "特定のキーワードやフレーズをフィルタリングする",
+          "unfollow": "アカウントをフォロー解除またはミュートする"
+        },
+        "title": {
+          "dislike": "承知いたしました",
+          "other": "ご報告ありがとうございます"
+        }
+      }
+    },
+    "title": "@{acct}さんを通報"
+  },
+  "scheduled": {
+    "cancel": "Cancel",
+    "confirmCancel": "Are you sure you want to cancel this scheduled post?",
+    "count": "{count, plural, one {# post} other {# posts}}",
+    "edit": "Edit",
+    "empty": {
+      "createPost": "Create Post",
+      "description": "Posts you schedule will appear here.",
+      "title": "No scheduled posts"
+    },
+    "endOfPosts": "End of scheduled posts",
+    "failedToLoad": "Failed to load scheduled posts",
+    "scheduledFor": "Scheduled for {date}",
+    "title": "Scheduled Posts"
+  },
+  "search": {
+    "clearAll": "すべて消去",
+    "emptyHistory": "ユーザー、投稿、またはハッシュタグを検索",
+    "enterToStart": "名前またはユーザー名を入力して会話を開始します",
+    "error": "検索中におエラーが発生しました",
+    "noResults": "結果が見つかりませんでした",
+    "people": "ユーザーを検索",
+    "placeholder": "ユーザー、投稿、またはハッシュタグを検索 (Enterで検索)",
+    "recent": "最近の検索",
+    "tabs": {
+      "accounts": "ユーザー",
+      "all": "すべて",
+      "hashtags": "ハッシュタグ",
+      "statuses": "投稿"
+    },
+    "title": "検索",
+    "tryDifferent": "別の名前で検索してみてください"
+  },
+  "settings": {
+    "aboutServer": "このサーバーについて",
+    "account": "アカウント",
+    "appearance": "外観",
+    "blockedAccounts": "ブロックしたユーザー",
+    "blocksPage": {
+      "count": "{count}人のブロックしたユーザー",
+      "emptyDesc": "ユーザーをブロックすると、そのユーザーはあなたの投稿を見たり、反応したりできなくなります。",
+      "emptyTitle": "ブロックしているユーザーはいません",
+      "title": "ブロックしたユーザー"
+    },
+    "editProfile": "プロフィールを編集",
+    "filtersPage": {
+      "addFilter": "フィルターを追加",
+      "blur": "ぼかす",
+      "confirmDelete": "フィルター「{title}」を削除してもよろしいですか？",
+      "context": {
+        "account": "プロフィール",
+        "home": "ホーム",
+        "notifications": "通知",
+        "public": "公開タイムライン",
+        "thread": "会話"
+      },
+      "createFirst": "最初のフィルターを作成",
+      "empty": "まだフィルターを作成していません。",
+      "emptyDesc": "フィルターを使用すると、特定の単語やフレーズを含む投稿を非表示にしたり、ぼかしたりできます。",
+      "expired": "期限切れ",
+      "expiresIn": "{count}{unit}で期限切れ",
+      "failedLoad": "フィルターの読み込みに失敗しました。もう一度お試しください。",
+      "hide": "非表示",
+      "title": "フィルター",
+      "warn": "警告"
+    },
+    "followRequests": "フォローリクエスト",
+    "interfaceLanguage": "言語",
+    "interfaceLanguageDesc": "アプリケーションの表示言語を変更します",
+    "moderation": "モデレーション",
+    "mutedAccounts": "ミュートしたユーザー",
+    "mutesPage": {
+      "count": "{count}人のミュートしたユーザー",
+      "emptyDesc": "ユーザーをミュートすると、そのユーザーの投稿と通知が表示されなくなります。",
+      "emptyTitle": "ミュートしているユーザーはいません",
+      "title": "ミュートしたユーザー"
+    },
+    "nav": {
+      "bookmarks": "ブックマーク",
+      "lists": "リスト",
+      "search": "検索"
+    },
+    "notifications": "通知",
+    "options": {
+      "direct": "ダイレクトメッセージ",
+      "directDesc": "投稿で言及された全員",
+      "private": "フォロワー",
+      "privateDesc": "あなたのフォロワーのみ",
+      "public": "公開",
+      "publicDesc": "Mastodon内外の誰でも",
+      "quoteFollowers": "フォロワー",
+      "quoteFollowersDesc": "フォロワーのみが引用可能",
+      "quoteNobody": "自分のみ",
+      "quoteNobodyDesc": "誰も引用できません",
+      "quotePublic": "全員",
+      "quotePublicDesc": "誰でもこの投稿を引用できます",
+      "unlisted": "未収載",
+      "unlistedDesc": "検索結果やトレンドタイムラインから非表示"
+    },
+    "preferences": "基本設定",
+    "preferencesPage": {
+      "botAccount": "Botアカウント",
+      "botAccountDesc": "このアカウントは主に自動化されたアクションを実行します",
+      "discoverable": "他の人にアカウントをおすすめ",
+      "discoverableDesc": "アカウントを発見可能にします",
+      "hideCollections": "フォロワー一覧とフォロー一覧を非公開にする",
+      "hideCollectionsDesc": "プロフィールからフォロワーとフォローしている人を隠します",
+      "indexable": "公開投稿を検索結果に含める",
+      "indexableDesc": "公開投稿を検索で見つけられるようにします",
+      "lockedAccount": "鍵付きアカウント",
+      "lockedAccountDesc": "フォロワーを手動で承認",
+      "markSensitive": "常にメディアを「閲覧注意」にする",
+      "markSensitiveDesc": "メディアをコンテンツ警告の背後に隠します",
+      "postingDefaults": "投稿のデフォルト設定",
+      "postingDefaultsDesc": "新規投稿時のデフォルト設定を行います",
+      "privacy": "プライバシー",
+      "privacyDesc": "プロフィールの公開範囲と検索性を制御します",
+      "quoteDisabled": "フォロワー限定または非公開の投稿は、他人が引用することはできません。",
+      "saveChanges": "変更を保存",
+      "visibility": "公開範囲",
+      "whoCanQuote": "引用できる人"
+    },
+    "pushNotifications": {
+      "alertTypes": "通知の種類",
+      "boosts": "ブースト",
+      "description": "デバイスのプッシュ通知設定を行います。",
+      "disableLabel": "プッシュ通知を無効にする",
+      "disabled": "アプリが閉じている時も通知を受け取ります",
+      "enableLabel": "プッシュ通知を有効にする",
+      "enabled": "有効 - アプリが閉じている時も通知を受け取ります",
+      "favorites": "お気に入り",
+      "follows": "フォロー",
+      "mentions": "メンション",
+      "notSupported": "お使いのブラウザではサポートされていません",
+      "permissionDenied": "許可されていません。ブラウザの設定で通知を有効にしてください。",
+      "polls": "アンケート",
+      "title": "プッシュ通知"
+    },
+    "quickLinks": "クイックリンク",
+    "scheduledPosts": "予約投稿",
+    "server": "サーバー",
+    "signOut": "ログアウト",
+    "signingOut": "ログアウト中...",
+    "title": "設定",
+    "trending": "トレンド"
+  },
+  "statusDetail": {
+    "boostedBy": {
+      "count": "{count, plural, one {# person} other {# people}}",
+      "noBoostsYet": "No boosts yet",
+      "noMoreUsers": "No more users",
+      "title": "Boosted by"
+    },
+    "errorLoading": "投稿の読み込みエラー",
+    "failedLoadDesc": "この投稿は見つからないか、読み込めませんでした。",
+    "favouritedBy": {
+      "count": "{count, plural, one {# person} other {# people}}",
+      "noFavouritesYet": "No favourites yet",
+      "noMoreUsers": "No more users",
+      "title": "Favourited by"
+    },
+    "goBack": "Go Back",
+    "postNotFound": "Post Not Found",
+    "quotedBy": "Quoted a post by @{acct}",
+    "quotesPage": {
+      "count": "{count, plural, one {# quote} other {# quotes}}",
+      "noMoreQuotes": "No more quotes",
+      "noQuotesYet": "No quotes yet",
+      "title": "Quotes"
+    },
+    "replies": "返信 ({count})",
+    "stats": {
+      "boosts": "{count, plural, other {ブースト}}",
+      "favourites": "{count, plural, other {お気に入り}}",
+      "quotes": "{count, plural, other {引用}}"
+    },
+    "title": "投稿"
+  },
+  "suggestions": {
+    "dismissSuggestions": "おすすめを非表示",
+    "dontShowAgain": "Don't show again",
+    "nextItem": "次の項目",
+    "personalized": "Personalized",
+    "personalizedHint": "Based on accounts you follow",
+    "popular": "Popular",
+    "popularHint": "Popular on this instance",
+    "previousItem": "前の項目",
+    "staffPick": "Staff pick",
+    "staffPickHint": "Hand-picked by the team",
+    "whoToFollow": "おすすめユーザー"
+  },
+  "timeline": {
+    "empty": "タイムラインは空です",
+    "error": "タイムラインの読み込みエラー",
+    "subtitle": "あなたのタイムライン",
+    "title": "ホーム",
+    "trending": "トレンド"
+  },
   "toast": {
     "copiedToClipboard": "クリップボードにコピーしました",
+    "failedToDeleteFilter": "フィルターの削除に失敗しました",
+    "filterCreated": "フィルターを作成しました",
     "filterDeleted": "フィルターを削除しました",
     "filterUpdated": "フィルターを更新しました",
-    "filterCreated": "フィルターを作成しました",
-    "failedToDeleteFilter": "フィルターの削除に失敗しました",
     "postDeleted": "投稿を削除しました",
     "postShared": "投稿を共有しました"
   },
+  "visibility": {
+    "direct": "ダイレクト",
+    "private": "フォロワー限定",
+    "public": "公開",
+    "title": "公開範囲",
+    "unlisted": "未収載",
+    "whoCanQuote": "引用できる人"
+  },
   "wrapstodon": {
-    "title": "Wrapstodon",
+    "mostPopularPost": "最も人気の投稿",
+    "mostUsedHashtag": "最も使用したハッシュタグ",
     "notAvailable": "Wrapstodonは利用できません",
     "somethingWentWrong": "エラーが発生しました",
-    "mostUsedHashtag": "最も使用したハッシュタグ",
-    "mostPopularPost": "最も人気の投稿"
-  },
-  "about": {
-    "title": "概要"
+    "title": "Wrapstodon"
   }
 }

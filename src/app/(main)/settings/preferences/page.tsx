@@ -7,8 +7,6 @@ import Select from 'react-select';
 import { useCurrentAccount, usePreferences, useUpdateAccount } from '@/api';
 import { Button, IconButton, Card, CircleSkeleton, TextSkeleton } from '@/components/atoms';
 import { customSelectStyles, CustomOption, CustomSingleValue, OptionType } from './SelectStyles';
-import { useLocale } from '@/hooks/useLocale';
-import { Languages } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 type Visibility = 'public' | 'unlisted' | 'private' | 'direct';
@@ -18,23 +16,25 @@ type QuotePolicy = 'public' | 'followers' | 'nobody';
 
 export default function PreferencesPage() {
     const router = useRouter();
-    const t = useTranslations('settings');
-    const { locale, setLocale, locales } = useLocale();
+    const tSettings = useTranslations('settings');
+    const t = useTranslations('settings.preferencesPage');
+    const tCommon = useTranslations('common');
+    const tOptions = useTranslations('settings.options');
     const { data: currentAccount, isLoading: isLoadingAccount } = useCurrentAccount();
     const { data: preferences, isLoading: isLoadingPreferences } = usePreferences();
     const updateAccountMutation = useUpdateAccount();
 
     const visibilityOptions: OptionType[] = [
-        { value: 'public', label: t('options.public'), description: t('options.publicDesc'), icon: Globe },
-        { value: 'unlisted', label: t('options.unlisted'), description: t('options.unlistedDesc'), icon: Lock },
-        { value: 'private', label: t('options.private'), description: t('options.privateDesc'), icon: Users },
-        { value: 'direct', label: t('options.direct'), description: t('options.directDesc'), icon: Mail },
+        { value: 'public', label: tOptions('public'), description: tOptions('publicDesc'), icon: Globe },
+        { value: 'unlisted', label: tOptions('unlisted'), description: tOptions('unlistedDesc'), icon: Lock },
+        { value: 'private', label: tOptions('private'), description: tOptions('privateDesc'), icon: Users },
+        { value: 'direct', label: tOptions('direct'), description: tOptions('directDesc'), icon: Mail },
     ];
 
     const quotePolicyOptions: OptionType[] = [
-        { value: 'public', label: t('options.quotePublic'), description: t('options.quotePublicDesc'), icon: Globe },
-        { value: 'followers', label: t('options.quoteFollowers'), description: t('options.quoteFollowersDesc'), icon: Users },
-        { value: 'nobody', label: t('options.quoteNobody'), description: t('options.quoteNobodyDesc'), icon: Lock },
+        { value: 'public', label: tOptions('quotePublic'), description: tOptions('quotePublicDesc'), icon: Globe },
+        { value: 'followers', label: tOptions('quoteFollowers'), description: tOptions('quoteFollowersDesc'), icon: Users },
+        { value: 'nobody', label: tOptions('quoteNobody'), description: tOptions('quoteNobodyDesc'), icon: Lock },
     ];
 
     const [defaultVisibility, setDefaultVisibility] = useState<Visibility>('public');
@@ -113,38 +113,13 @@ export default function PreferencesPage() {
     return (
         <div style={{ maxWidth: '680px', margin: '0 auto', padding: 'var(--size-4) var(--size-2)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)', marginBottom: 'var(--size-5)' }}>
-                <IconButton onClick={() => router.back()}><ArrowLeft size={20} /></IconButton>
+                <IconButton onClick={() => router.back()} aria-label={tCommon('back')}><ArrowLeft size={20} /></IconButton>
                 <h1 style={{ fontSize: 'var(--font-size-4)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-1)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
-                    <Settings2 size={24} />Preferences
+                    <Settings2 size={24} />{tSettings('preferences')}
                 </h1>
             </div>
 
             <form onSubmit={handleSubmit}>
-                <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
-                    <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', marginBottom: 'var(--size-2)', color: 'var(--text-1)' }}>{t('interfaceLanguage')}</h2>
-                    <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)', marginBottom: 'var(--size-4)' }}>{t('interfaceLanguageDesc')}</p>
-
-                    <div style={{ marginBottom: 'var(--size-4)' }}>
-                        <Select
-                            value={{
-                                value: locale,
-                                label: locale === 'en' ? 'English' : locale === 'de' ? 'Deutsch' : locale === 'fr' ? 'Français' : locale === 'es' ? 'Español' : locale === 'ja' ? '日本語' : locale === 'zh-CN' ? '中文 (简体)' : locale === 'ko' ? '한국어' : locale,
-                                description: locale === 'en' ? 'English' : locale === 'de' ? 'German' : locale === 'fr' ? 'French' : locale === 'es' ? 'Spanish' : locale === 'ja' ? 'Japanese' : locale === 'zh-CN' ? 'Simplified Chinese' : locale === 'ko' ? 'Korean' : locale,
-                                icon: Languages
-                            }}
-                            onChange={(option) => option && setLocale(option.value as any)}
-                            options={locales.map(l => ({
-                                value: l,
-                                label: l === 'en' ? 'English' : l === 'de' ? 'Deutsch' : l === 'fr' ? 'Français' : l === 'es' ? 'Español' : l === 'ja' ? '日本語' : l === 'zh-CN' ? '中文 (简体)' : l === 'ko' ? '한국어' : l,
-                                description: l === 'en' ? 'English' : l === 'de' ? 'German' : l === 'fr' ? 'French' : l === 'es' ? 'Spanish' : l === 'ja' ? 'Japanese' : l === 'zh-CN' ? 'Simplified Chinese' : l === 'ko' ? 'Korean' : l,
-                                icon: Languages
-                            }))}
-                            styles={customSelectStyles}
-                            components={{ Option: CustomOption, SingleValue: CustomSingleValue }}
-                            isSearchable={false}
-                        />
-                    </div>
-                </Card>
 
                 <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
                     <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', marginBottom: 'var(--size-2)', color: 'var(--text-1)' }}>{t('postingDefaults')}</h2>
@@ -185,7 +160,7 @@ export default function PreferencesPage() {
                 </Card>
 
                 <div style={{ display: 'flex', gap: 'var(--size-3)', justifyContent: 'flex-end' }}>
-                    <Button type="button" variant="ghost" onClick={() => router.back()} disabled={updateAccountMutation.isPending}>{t('common.cancel')}</Button>
+                    <Button type="button" variant="ghost" onClick={() => router.back()} disabled={updateAccountMutation.isPending}>{tCommon('cancel')}</Button>
                     <Button type="submit" disabled={!hasChanges || updateAccountMutation.isPending} isLoading={updateAccountMutation.isPending}>{t('saveChanges')}</Button>
                 </div>
             </form>

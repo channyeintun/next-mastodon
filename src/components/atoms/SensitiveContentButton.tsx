@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useTranslations } from 'next-intl';
 
 const Button = styled.button<{ $isHovered: boolean }>`
   padding: var(--size-3) var(--size-4);
@@ -28,8 +29,9 @@ interface SensitiveContentButtonProps {
 
 export function SensitiveContentButton({
   onClick,
-  label = 'Click to view sensitive content',
+  label,
 }: SensitiveContentButtonProps) {
+  const t = useTranslations('media');
   return (
     <Button
       $isHovered={false}
@@ -39,7 +41,7 @@ export function SensitiveContentButton({
         onClick(e);
       }}
     >
-      {label}
+      {label || t('sensitive')}
     </Button>
   );
 }
