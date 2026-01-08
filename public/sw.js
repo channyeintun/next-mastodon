@@ -1,20 +1,28 @@
 /**
- * Service Worker for Push Notifications
- * This service worker handles push notifications from Mastodon.
- * Caching functionality has been removed to avoid page reload issues.
+ * Service Worker for Push Notifications and Offline Support
+ * This service worker handles push notifications from Mastodon
+ * and provides an offline fallback page.
  */
 
-// Activate immediately and take control
-self.addEventListener('install', () => {
+const OFFLINE_CACHE = 'offline-v1';
+const OFFLINE_PAGE = '/offline.html';
+
+// Cache offline page on install
+self.addEventListener('install', (event) => {
+    event.waitUntil(
+        caches.open(OFFLINE_CACHE).then((cache) => cache.add(OFFLINE_PAGE))
+    );
     self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-    // Clean up any old caches from previous PWA implementation
+    // Clean up old caches except our offline cache
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
-                cacheNames.map((name) => caches.delete(name))
+                cacheNames
+                    .filter((name) => name !== OFFLINE_CACHE)
+                    .map((name) => caches.delete(name))
             );
         })
     );
@@ -171,9 +179,19 @@ self.addEventListener('notificationclick', (event) => {
     event.waitUntil(reactToNotificationClick);
 });
 
-// Dummy fetch listener to satisfy PWA installability requirements
-// We don't cache anything to avoid Next.js caching issues
+// Fetch listener - serve offline page when network is unavailable
 self.addEventListener('fetch', (event) => {
-    // Just perform a normal network request
+    // Only handle navigation requests (HTML pages)
+    if (event.request.mode === 'navigate') {
+        event.respondWith(
+            fetch(event.request).catch(() => {
+                // Network failed, serve offline page
+                return caches.match(OFFLINE_PAGE);
+            })
+        );
+        return;
+    }
+
+    // For other requests, just fetch normally
     event.respondWith(fetch(event.request));
 });
