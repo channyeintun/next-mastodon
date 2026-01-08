@@ -1,8 +1,8 @@
-# <img src="src/app/icon.png" alt="Logo" height="32" /> Mastodon Next.js Client
+# <img src="src/app/apple-icon.png" alt="Logo" height="32" /> Mastodon Next.js Client
 
 <div align="center">
 
-<img src="src/app/icon.png" alt="Logo" width="120" />
+<img src="src/app/apple-icon.png" alt="Logo" width="120" />
 
 **A beautiful, fast, and modern web client for Mastodon**
 
