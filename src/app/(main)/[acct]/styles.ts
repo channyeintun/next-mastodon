@@ -78,12 +78,7 @@ export const DisplayName = styled.h1`
   flex-wrap: wrap;
 `;
 
-export const BotBadge = styled.span`
-  font-size: var(--font-size-0);
-  background: var(--surface-3);
-  padding: 2px var(--size-2);
-  border-radius: var(--radius-1);
-`;
+
 
 export const LockIcon = styled.span`
   font-size: var(--font-size-1);
