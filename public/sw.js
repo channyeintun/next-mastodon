@@ -170,3 +170,10 @@ self.addEventListener('notificationclick', (event) => {
 
     event.waitUntil(reactToNotificationClick);
 });
+
+// Dummy fetch listener to satisfy PWA installability requirements
+// We don't cache anything to avoid Next.js caching issues
+self.addEventListener('fetch', (event) => {
+    // Just perform a normal network request
+    event.respondWith(fetch(event.request));
+});
