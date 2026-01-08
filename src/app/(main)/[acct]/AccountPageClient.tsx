@@ -22,12 +22,14 @@ import {
 import { AccountProfileSkeleton } from '@/components/molecules';
 import { Button, IconButton, Tabs } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
+import { useRef } from 'react';
 import { flattenAndUniqById } from '@/utils/fp';
-import { PageContainer, FixedBackButton, ErrorContainer, ErrorTitle } from './styles';
+import { PageContainer, FixedBackButton, ErrorContainer, ErrorTitle, BottomSpacer } from './styles';
 import { ProfileTabContent, MediaTabContent, ContentSection } from './ProfileTabContent';
 import { ProfileHeader, LimitedProfileHeader } from './ProfileHeader';
 import { PinnedPostsSection } from './PinnedPostsSection';
 import { useQueryState, parseAsStringLiteral } from '@/hooks/useQueryState';
+import { useDynamicBottomSpacer } from '@/hooks/useDynamicBottomSpacer';
 import { useTranslations } from 'next-intl';
 
 type ProfileTab = 'posts' | 'posts_replies' | 'media';
@@ -128,6 +130,13 @@ export function AccountPageClient({ acct }: AccountPageClientProps) {
     try { return new URL(account.url).hostname; } catch { return 'this server'; }
   };
 
+  // Dynamic spacer for scroll anchoring
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const { headerRef, contentBelowRef, spacerRef } = useDynamicBottomSpacer({
+    anchorRef,
+    deps: [activeTab, postsStatuses.length, postsRepliesStatuses.length, mediaStatuses.length, showLimitedProfile],
+  });
+
   if (accountLoading) {
     return (
       <PageContainer>
@@ -178,8 +187,12 @@ export function AccountPageClient({ acct }: AccountPageClientProps) {
         ) : (
           <>
             <ProfileHeader {...commonHeaderProps} />
-            <Tabs tabs={profileTabs} activeTab={activeTab} onTabChange={setActiveTab} />
-            <ContentSection>
+            <div ref={headerRef}>
+              <div ref={anchorRef}>
+                <Tabs tabs={profileTabs} activeTab={activeTab} onTabChange={setActiveTab} sticky />
+              </div>
+            </div>
+            <ContentSection ref={contentBelowRef}>
               {(activeTab === 'posts' || activeTab === 'posts_replies') && pinnedStatuses && pinnedStatuses.length > 0 && (
                 <PinnedPostsSection pinnedStatuses={pinnedStatuses} />
               )}
@@ -215,6 +228,7 @@ export function AccountPageClient({ acct }: AccountPageClientProps) {
                 />
               )}
             </ContentSection>
+            <BottomSpacer ref={spacerRef} />
           </>
         )}
       </div>

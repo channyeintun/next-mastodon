@@ -6,6 +6,8 @@ export const PageContainer = styled.div`
   padding: 0;
   display: flex;
   flex-direction: column;
+  /* Stabilize entire page scroll anchoring */
+  overflow-anchor: auto;
 
   @media (max-width: 767px) {
     padding: 0 var(--size-2);
@@ -154,3 +156,9 @@ export const LimitedAccountMessage = styled.p`
   line-height: 1.5;
   max-width: 400px;
 `;
+
+export const BottomSpacer = styled.div`
+  /* Don't let the browser anchor to the spacer itself as it changes size dynamically */
+  overflow-anchor: none;
+`;
+

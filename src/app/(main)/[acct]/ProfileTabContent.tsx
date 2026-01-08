@@ -57,9 +57,17 @@ export function ProfileTabContent({
     // Measure scroll margin from list element's position
     useLayoutEffect(() => {
         if (listRef.current) {
-            setScrollMargin(listRef.current.offsetTop);
+            // Use a slight delay or RAF to ensure the layout has settled, especially when transitioning from skeleton
+            const measure = () => {
+                if (listRef.current) {
+                    setScrollMargin(listRef.current.offsetTop);
+                }
+            };
+            measure();
+            const rafId = requestAnimationFrame(measure);
+            return () => cancelAnimationFrame(rafId);
         }
-    }, []);
+    }, [acct, tabKey, isLoading]); // Re-measure when tab or loading state changes
 
     // Include an extra item for the "end indicator" when we've reached the end
     const showEndIndicator = !hasNextPage && statuses.length > 0 && !isFetchingNextPage;
@@ -139,29 +147,40 @@ export function ProfileTabContent({
         hideScrollTop();
     };
 
-    // Loading state - only show skeleton if we have no data at all
-    if (isLoading && statuses.length === 0) {
-        return (
-            <LoadingContainer>
-                <PostCardSkeletonList count={1} />
-            </LoadingContainer>
-        );
-    }
-
-    // Empty state
-    if (statuses.length === 0) {
+    // Empty state - only show if not loading
+    if (!isLoading && statuses.length === 0) {
         return <EmptyState title={t('empty.posts')} />;
     }
 
     return (
         <>
-            <div ref={listRef}>
-                <VirtualContent style={{ height: `${virtualizer.getTotalSize()}px` }}>
-                    {virtualItems.map((virtualRow) => {
-                        const item = mixedItems[virtualRow.index];
-                        if (!item) return null;
+            <div ref={listRef} style={{ overflowAnchor: 'auto' }}>
+                {isLoading && statuses.length === 0 ? (
+                    <LoadingContainer>
+                        <PostCardSkeletonList count={6} />
+                    </LoadingContainer>
+                ) : (
+                    <VirtualContent style={{ height: `${virtualizer.getTotalSize()}px` }}>
+                        {virtualItems.map((virtualRow) => {
+                            const item = mixedItems[virtualRow.index];
+                            if (!item) return null;
 
-                        if (item.type === 'endIndicator') {
+                            if (item.type === 'endIndicator') {
+                                return (
+                                    <VirtualItemWrapper
+                                        key={virtualRow.key}
+                                        data-index={virtualRow.index}
+                                        ref={virtualizer.measureElement}
+                                        className="window-virtual-item"
+                                        style={{
+                                            transform: `translateY(${virtualRow.start - virtualizer.options.scrollMargin}px)`,
+                                        }}
+                                    >
+                                        <EndIndicator>{t('empty.end')}</EndIndicator>
+                                    </VirtualItemWrapper>
+                                );
+                            }
+
                             return (
                                 <VirtualItemWrapper
                                     key={virtualRow.key}
@@ -172,28 +191,14 @@ export function ProfileTabContent({
                                         transform: `translateY(${virtualRow.start - virtualizer.options.scrollMargin}px)`,
                                     }}
                                 >
-                                    <EndIndicator>{t('empty.end')}</EndIndicator>
+                                    <PostCard status={item.data} style={{ marginBottom: 'var(--size-3)' }} />
                                 </VirtualItemWrapper>
                             );
-                        }
+                        })}
+                    </VirtualContent>
+                )}
 
-                        return (
-                            <VirtualItemWrapper
-                                key={virtualRow.key}
-                                data-index={virtualRow.index}
-                                ref={virtualizer.measureElement}
-                                className="window-virtual-item"
-                                style={{
-                                    transform: `translateY(${virtualRow.start - virtualizer.options.scrollMargin}px)`,
-                                }}
-                            >
-                                <PostCard status={item.data} style={{ marginBottom: 'var(--size-3)' }} />
-                            </VirtualItemWrapper>
-                        );
-                    })}
-                </VirtualContent>
-
-                {/* Loading indicator */}
+                {/* Loading indicator for pagination */}
                 {isFetchingNextPage && (
                     <PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />
                 )}
@@ -226,20 +231,23 @@ export function MediaTabContent({
     isFetchingNextPage,
 }: MediaTabContentProps) {
     const t = useTranslations('account');
-    if (isLoading && statuses.length === 0) {
-        return <MediaGridSkeleton />;
-    }
 
     return (
         <MediaTabContainer>
-            <MediaGrid statuses={statuses} />
-            {hasNextPage && (
-                <LoadMoreButton
-                    onClick={() => fetchNextPage()}
-                    disabled={isFetchingNextPage}
-                >
-                    {isFetchingNextPage ? t('loading') : t('loadMore')}
-                </LoadMoreButton>
+            {isLoading && statuses.length === 0 ? (
+                <MediaGridSkeleton />
+            ) : (
+                <>
+                    <MediaGrid statuses={statuses} />
+                    {hasNextPage && (
+                        <LoadMoreButton
+                            onClick={() => fetchNextPage()}
+                            disabled={isFetchingNextPage}
+                        >
+                            {isFetchingNextPage ? t('loading') : t('loadMore')}
+                        </LoadMoreButton>
+                    )}
+                </>
             )}
         </MediaTabContainer>
     );
@@ -252,15 +260,16 @@ export function MediaTabContent({
 export const ContentSection = styled.div`
   display: flex;
   flex-direction: column;
-  /* Disable scroll anchoring to prevent scroll jumps when skeleton is replaced with content */
-  overflow-anchor: none;
+  /* Enable scroll anchoring to stabilize view when data replaces skeletons */
+  overflow-anchor: auto;
+  min-height: 50vh; /* Prevent layout collapse during transitions */
 `;
 
 const LoadingContainer = styled.div`
   flex: 1;
   overflow: auto;
-  /* Disable scroll anchoring to prevent scroll jumps when skeleton is replaced with content */
-  overflow-anchor: none;
+  overflow-anchor: auto;
+  min-height: 50vh;
 `;
 
 const VirtualContent = styled.div`
@@ -288,7 +297,7 @@ const EndIndicator = styled.div`
 
 const MediaTabContainer = styled.div`
   flex: 1;
-  min-height: 0;
+  min-height: 50vh;
   display: flex;
   flex-direction: column;
 `;

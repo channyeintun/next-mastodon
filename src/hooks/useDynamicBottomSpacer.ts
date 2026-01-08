@@ -33,11 +33,10 @@ export function useDynamicBottomSpacer({ anchorRef, deps = [] }: UseDynamicBotto
     useLayoutEffect(() => {
         const calculate = () => {
             const anchor = anchorRef.current;
-            const header = headerRef.current;
             const contentBelow = contentBelowRef.current;
             const spacer = spacerRef.current;
 
-            if (!anchor || !header || !spacer) return;
+            if (!anchor || !spacer) return;
 
             const viewportHeight = window.innerHeight;
             const anchorHeight = anchor.getBoundingClientRect().height;
