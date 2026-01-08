@@ -106,8 +106,8 @@ self.addEventListener('push', (event) => {
                 // Build notification options
                 const options = {
                     body: notification.status ? htmlToPlainText(notification.status.content) : body,
-                    icon: notification.account?.avatar_static || icon || '/icons/icon-192.png',
-                    badge: '/icons/icon-192.png',
+                    icon: notification.account?.avatar_static || icon || '/icon.png',
+                    badge: '/icon.png',
                     tag: notification.id || notification_id,
                     timestamp: notification.created_at && new Date(notification.created_at),
                     data: {
@@ -133,15 +133,15 @@ self.addEventListener('push', (event) => {
                     const { title, body, icon } = event.data.json();
                     return self.registration.showNotification(title || 'Mastodon', {
                         body: body || 'You have a new notification',
-                        icon: icon || '/icons/icon-192.png',
-                        badge: '/icons/icon-192.png',
+                        icon: icon || '/icon.png',
+                        badge: '/icon.png',
                         data: { url: '/notifications' },
                     });
                 } catch {
                     return self.registration.showNotification('Mastodon', {
                         body: 'You have a new notification',
-                        icon: '/icons/icon-192.png',
-                        badge: '/icons/icon-192.png',
+                        icon: '/icon.png',
+                        badge: '/icon.png',
                         data: { url: '/notifications' },
                     });
                 }
