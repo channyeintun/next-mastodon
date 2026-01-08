@@ -172,7 +172,7 @@ const ResultBar = styled.div<{ $percentage: number; $isOwnVote: boolean }>`
   top: 0;
   left: 0;
   height: 100%;
-  background: ${({ $isOwnVote }) => ($isOwnVote ? 'var(--blue-4)' : 'var(--blue-3)')};
+  background: ${({ $isOwnVote }) => ($isOwnVote ? 'var(--poll-bar-bg-own)' : 'var(--poll-bar-bg)')};
   border-radius: var(--radius-2);
   width: ${({ $percentage }) => $percentage}%;
   transition: width 0.5s ease;

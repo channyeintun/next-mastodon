@@ -6,6 +6,8 @@ export const PageContainer = styled.div`
   padding: 0;
   display: flex;
   flex-direction: column;
+  /* Stabilize entire page scroll anchoring */
+  overflow-anchor: auto;
 
   @media (max-width: 767px) {
     padding: 0 var(--size-2);
@@ -78,12 +80,7 @@ export const DisplayName = styled.h1`
   flex-wrap: wrap;
 `;
 
-export const BotBadge = styled.span`
-  font-size: var(--font-size-0);
-  background: var(--surface-3);
-  padding: 2px var(--size-2);
-  border-radius: var(--radius-1);
-`;
+
 
 export const LockIcon = styled.span`
   font-size: var(--font-size-1);
@@ -159,3 +156,9 @@ export const LimitedAccountMessage = styled.p`
   line-height: 1.5;
   max-width: 400px;
 `;
+
+export const BottomSpacer = styled.div`
+  /* Don't let the browser anchor to the spacer itself as it changes size dynamically */
+  overflow-anchor: none;
+`;
+

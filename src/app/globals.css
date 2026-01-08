@@ -28,6 +28,8 @@ html {
   --text-1: #E2E5E9;
   --surface-1: #1C1C1D;
   --surface-2: #252728;
+  --poll-bar-bg: var(--blue-8);
+  --poll-bar-bg-own: var(--blue-7);
 }
 
 /* Light mode colors */
@@ -36,6 +38,8 @@ html {
   --text-1: #080809;
   --surface-1: #f2f4f7;
   --surface-2: #fff;
+  --poll-bar-bg: var(--blue-3);
+  --poll-bar-bg-own: var(--blue-4);
 }
 
 
@@ -289,11 +293,25 @@ input[type="radio"] {
 }
 
 @keyframes wobble-stretch {
-  0% { transform: scale(1, 1); }
-  25% { transform: scale(1.25, 0.75); }
-  50% { transform: scale(0.9, 1.1); }
-  75% { transform: scale(1.05, 0.95); }
-  100% { transform: scale(1, 1); }
+  0% {
+    transform: scale(1, 1);
+  }
+
+  25% {
+    transform: scale(1.25, 0.75);
+  }
+
+  50% {
+    transform: scale(0.9, 1.1);
+  }
+
+  75% {
+    transform: scale(1.05, 0.95);
+  }
+
+  100% {
+    transform: scale(1, 1);
+  }
 }
 
 /* Skeleton Loading */

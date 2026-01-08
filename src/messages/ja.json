@@ -5,7 +5,6 @@
   "account": {
     "backToTimeline": "タイムラインに戻る",
     "block": "ブロック",
-    "bot": "BOT",
     "editProfile": "プロフィールを編集",
     "empty": {
       "end": "これ以上の投稿はありません",

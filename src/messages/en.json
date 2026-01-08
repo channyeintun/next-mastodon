@@ -20,7 +20,6 @@
   "account": {
     "joined": "Joined {date}",
     "viewOnInstance": "View on instance",
-    "bot": "BOT",
     "hiddenProfile": "This profile has been hidden by the moderators of {domain}.",
     "showProfile": "Show profile anyway",
     "pinned": "Pinned",

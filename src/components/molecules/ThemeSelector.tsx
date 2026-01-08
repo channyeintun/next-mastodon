@@ -1,9 +1,9 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sun, Moon, Monitor } from 'lucide-react';
-import { setCookie, deleteCookie, type CookieOptions } from '../../utils/cookies';
+import { setCookie, deleteCookie, getCookie, type CookieOptions } from '../../utils/cookies';
 
 type Theme = 'light' | 'dark' | 'auto';
 
@@ -86,6 +86,22 @@ function getActiveTheme(theme: Theme): 'light' | 'dark' {
 export function ThemeSelector({ initialTheme = 'auto' }: ThemeSelectorProps) {
     // Initialize state with server-provided theme, no useEffect needed
     const [currentTheme, setCurrentTheme] = useState<Theme>(initialTheme);
+
+    // Sync with actual cookie value on mount to handle back/forward navigation
+    useEffect(() => {
+        const syncTheme = async () => {
+            const cookieTheme = await getCookie('theme');
+            // If cookie exists, it should be the source of truth
+            // If cookie is missing, it means 'auto'
+            const actualTheme = (cookieTheme as Theme) || 'auto';
+
+            if (actualTheme !== currentTheme) {
+                setCurrentTheme(actualTheme);
+            }
+        };
+
+        syncTheme();
+    }, []);
 
     const handleThemeChange = async (theme: Theme) => {
         // Update state for button highlighting

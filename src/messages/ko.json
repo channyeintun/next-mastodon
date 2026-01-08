@@ -5,7 +5,6 @@
   "account": {
     "backToTimeline": "타임라인으로 돌아가기",
     "block": "차단",
-    "bot": "봇",
     "editProfile": "프로필 편집",
     "empty": {
       "end": "더 이상 게시물이 없습니다",
