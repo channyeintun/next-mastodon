@@ -40,7 +40,7 @@ import {
   HiddenQuoteContainer,
   HiddenQuoteText,
   ShowAnywayButton,
-} from './PostCard.styles';
+} from './postCardStyles';
 
 // Max nesting level for quoted posts (matching Mastodon's behavior)
 const MAX_QUOTE_NESTING_LEVEL = 1;

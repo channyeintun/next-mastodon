@@ -37,7 +37,7 @@ import {
     TimeText,
     DismissButton,
     NewCard,
-} from './GroupedNotificationCard.styles';
+} from './groupedNotificationCardStyles';
 
 interface GroupedNotificationCardProps {
     group: NotificationGroup;
