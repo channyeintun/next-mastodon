@@ -263,7 +263,6 @@ const Container = styled.div<{ $height: string }>`
   -webkit-overflow-scrolling: touch;
   contain: paint;
   position: relative;
-  scroll-behavior: smooth;
 `;
 
 const VirtualContent = styled.div<{ $height: number }>`
