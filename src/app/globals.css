@@ -1453,6 +1453,16 @@ dialog:has(.media-modal) {
   box-shadow: none;
 }
 
+/* Disable close transition for media modal (allows swipe-to-close to feel instant) */
+dialog:has(.media-modal):not([open]) {
+  transition: none;
+  opacity: 0;
+}
+
+dialog:has(.media-modal)::backdrop {
+  transition: none;
+}
+
 /* Modal-specific styles (opened with showModal()) */
 dialog:modal {
   /* Animation properties */

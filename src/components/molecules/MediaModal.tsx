@@ -3,6 +3,7 @@
 import styled from '@emotion/styled';
 import { X, ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { motion, useMotionValue, useTransform, animate, PanInfo } from 'motion/react';
 import type { MediaAttachment } from '@/types';
 import { ModalVideoPlayer } from './ModalVideoPlayer';
 
@@ -11,6 +12,9 @@ interface MediaModalProps {
   initialIndex?: number;
   onClose: () => void;
 }
+
+// Swipe threshold in pixels to trigger close
+const SWIPE_CLOSE_THRESHOLD = 100;
 
 /**
  * Modal for displaying media attachments with navigation
@@ -25,14 +29,37 @@ export function MediaModal({
   const currentMedia = mediaAttachments[currentIndex];
   const hasMultiple = mediaAttachments.length > 1;
 
+  // Motion values for drag gesture
+  const y = useMotionValue(0);
+  const opacity = useTransform(y, [0, 300], [1, 0]);
+
+  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    if (info.offset.y > SWIPE_CLOSE_THRESHOLD) {
+      // Animate out and close
+      animate(y, window.innerHeight, {
+        type: 'tween',
+        duration: 0.2,
+        ease: 'easeOut',
+        onComplete: onClose,
+      });
+    } else {
+      // Snap back
+      animate(y, 0, {
+        type: 'spring',
+        stiffness: 500,
+        damping: 30,
+      });
+    }
+  };
+
   const goToPrevious = () => {
     setCurrentIndex((prev) => (prev === 0 ? mediaAttachments.length - 1 : prev - 1));
-    setShowAlt(false); // Hide alt when changing image
+    setShowAlt(false);
   };
 
   const goToNext = () => {
     setCurrentIndex((prev) => (prev === mediaAttachments.length - 1 ? 0 : prev + 1));
-    setShowAlt(false); // Hide alt when changing image
+    setShowAlt(false);
   };
 
   // Keyboard navigation
@@ -53,7 +80,14 @@ export function MediaModal({
   const isGifv = currentMedia.type === 'gifv';
 
   return (
-    <ModalContainer className="media-modal">
+    <ModalContainer
+      className="media-modal"
+      drag="y"
+      dragConstraints={{ top: 0, bottom: 0 }}
+      dragElastic={{ top: 0, bottom: 0.5 }}
+      onDragEnd={handleDragEnd}
+      style={{ y, opacity }}
+    >
       {/* Close button */}
       <CloseButton onClick={onClose} aria-label="Close">
         <X size={24} />
@@ -134,8 +168,8 @@ export function MediaModal({
   );
 }
 
-// Styled components
-const ModalContainer = styled.div`
+// Styled components - use motion.div for the container
+const ModalContainer = styled(motion.div)`
   position: relative;
   max-width: 100%;
   height: 100dvh;
@@ -145,6 +179,12 @@ const ModalContainer = styled.div`
   background: #252527;
   border-radius: 0;
   overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  
+  &:active {
+    cursor: grabbing;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -204,6 +244,8 @@ const MediaImage = styled.img`
   max-width: 100%;
   max-height: 100dvh;
   object-fit: contain;
+  pointer-events: none;
+  user-select: none;
 `;
 
 const VideoPlayerWrapper = styled.div`
