@@ -393,6 +393,10 @@ const NewPostsPill = styled.button`
     &:active {
         transform: translateX(-50%) scale(0.95);
     }
+
+    @media (min-width: 768px) {
+        left: calc(50% + var(--app-sidebar-width, 280px) / 2);
+    }
 `;
 
 const Header = styled.div`
