@@ -333,7 +333,10 @@
     "failedNews": "Failed to load trending news",
     "reachedEndPosts": "You've reached the end of trending posts",
     "reachedEndTags": "You've reached the end of trending tags",
-    "reachedEndNews": "You've reached the end of trending news"
+    "reachedEndNews": "You've reached the end of trending news",
+    "signInToSeeSuggestions": "Sign in to see suggestions",
+    "failedSuggestions": "Failed to load suggestions",
+    "noSuggestions": "No suggestions available"
   },
   "imageCropper": {
     "zoomIn": "Zoom In",
