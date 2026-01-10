@@ -3,9 +3,10 @@
 import styled from '@emotion/styled';
 import { ChevronUp } from 'lucide-react';
 import { createPortal } from 'react-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type RefObject } from 'react';
 import { useTranslations } from 'next-intl';
 import { useClientSettings } from '@/hooks/useClientSettings';
+import { useScrollDirection, useWindowScrollDirection } from '@/hooks/useScrollDirection';
 
 const Button = styled.button<{ $visible: boolean }>`
     position: fixed;
@@ -42,23 +43,45 @@ const Button = styled.button<{ $visible: boolean }>`
 `;
 
 interface ScrollToTopButtonProps {
-    visible: boolean;
+    scrollRef?: RefObject<HTMLElement | null>;
+    visible?: boolean; // Keep for manual override if needed
     onClick: () => void;
 }
 
-export function ScrollToTopButton({ visible, onClick }: ScrollToTopButtonProps) {
+export function ScrollToTopButton({ scrollRef, visible, onClick }: ScrollToTopButtonProps) {
     const { showScrollToTop, isLoaded } = useClientSettings();
     const [mounted, setMounted] = useState(false);
     const t = useTranslations('common');
+
+    // Internal scroll tracking
+    const windowScroll = useWindowScrollDirection();
+    const elementScroll = useScrollDirection(scrollRef || { current: null });
+
+    const isVisible = scrollRef
+        ? elementScroll.showScrollTop
+        : windowScroll.showScrollTop;
+
+    const hideInternal = scrollRef
+        ? elementScroll.hideScrollTop
+        : windowScroll.hideScrollTop;
 
     useEffect(() => {
         setMounted(true);
     }, []);
 
+    const handleButtonClick = () => {
+        onClick();
+        hideInternal();
+    };
+
+    const isActuallyVisible = isLoaded
+        ? (showScrollToTop && (visible !== undefined ? (visible && isVisible) : isVisible))
+        : false;
+
     const button = (
         <Button
-            $visible={isLoaded ? (showScrollToTop && visible) : false}
-            onClick={onClick}
+            $visible={isActuallyVisible}
+            onClick={handleButtonClick}
             aria-label={t('backToTop')}
         >
             <ChevronUp size={16} />

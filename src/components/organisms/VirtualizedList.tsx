@@ -3,7 +3,6 @@
 import styled from '@emotion/styled';
 import { useRef, useEffect, useCallback, useMemo, type CSSProperties, type ReactNode } from 'react';
 import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
-import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
 
@@ -141,9 +140,6 @@ export function VirtualizedList<T>({
   // Determine overscan: use prop if provided, otherwise conditional default
   const overscan = overscanProp ?? (isMobile ? 1 : 5);
 
-  // Scroll direction detection for scroll-to-top button
-  const { showScrollTop, hideScrollTop } = useScrollDirection(parentRef);
-
   // Get saved scroll state if available
   const savedState = scrollRestorationKey
     ? scrollStateCache.get(scrollRestorationKey)
@@ -229,7 +225,6 @@ export function VirtualizedList<T>({
   // Handle scroll to top
   const handleScrollToTop = () => {
     parentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-    hideScrollTop();
   };
 
   // Infinite scroll - fetch next page when near bottom
@@ -302,7 +297,7 @@ export function VirtualizedList<T>({
       )}
 
       {/* Scroll to top button */}
-      <ScrollToTopButton visible={showScrollTop} onClick={handleScrollToTop} />
+      <ScrollToTopButton scrollRef={parentRef} onClick={handleScrollToTop} />
     </Container>
   );
 }

@@ -23,7 +23,6 @@ import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
 import { Search, ArrowUp } from 'lucide-react';
 import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';
-import { useWindowScrollDirection } from '@/hooks/useScrollDirection';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useTimelineStream } from '@/hooks/useStreaming';
 
@@ -60,8 +59,6 @@ export const TimelinePage = observer(() => {
     const listRef = useRef<HTMLDivElement>(null);
     const [scrollMargin, setScrollMargin] = useState(0);
 
-    // Scroll direction detection for scroll-to-top button
-    const { showScrollTop, hideScrollTop } = useWindowScrollDirection();
     const isMobile = useIsMobile();
 
     const uniqueStatuses = useMemo(() => flattenAndUniqById(statusPages?.pages), [statusPages?.pages]);
@@ -158,7 +155,6 @@ export const TimelinePage = observer(() => {
 
     const handleScrollToTop = () => {
         window.scrollTo(0, 0);
-        hideScrollTop();
     };
 
     // Pre-populate account cache before navigation
@@ -350,7 +346,7 @@ export const TimelinePage = observer(() => {
             </div>
 
             {/* Scroll to top button */}
-            <ScrollToTopButton visible={showScrollTop} onClick={handleScrollToTop} />
+            <ScrollToTopButton onClick={handleScrollToTop} />
         </Container>
     );
 });
