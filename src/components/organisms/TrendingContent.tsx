@@ -145,7 +145,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                 onTabChange={setActiveTab}
                 variant="underline"
                 sticky
-                style={{ padding: '0 var(--size-4)' }}
+                style={{ padding: '0 var(--size-1)' }}
             />
 
             {/* Tab Content - using Activity for toggling */}

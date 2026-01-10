@@ -195,7 +195,7 @@ export function NotificationsV1({ streamingStatus }: NotificationsV1Props) {
                 tabs={NOTIFICATION_TABS}
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
-                style={{ padding: '0 var(--size-4)' }}
+                style={{ padding: '0 var(--size-1)' }}
             />
 
             {isLoading && (

@@ -230,7 +230,7 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
                 ]}
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
-                style={{ padding: '0 var(--size-4)' }}
+                style={{ padding: '0 var(--size-1)' }}
             />
 
             {isLoading && (
