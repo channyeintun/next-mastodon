@@ -193,5 +193,5 @@ self.addEventListener('fetch', (event) => {
     }
 
     // For other requests, just fetch normally
-    event.respondWith(fetch(event.request));
+    event.respondWith(fetch(event.request).catch(() => new Response(null, { status: 500 })));
 });
