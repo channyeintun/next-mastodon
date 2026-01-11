@@ -197,7 +197,7 @@ export function VirtualizedList<T>({
     const endIndex = virtualItems[virtualItems.length - 1].index;
 
     // Prefetch items a bit ahead/behind the current visible range
-    const preloadOverscan = 20;
+    const preloadOverscan = 5;
     const start = Math.max(0, startIndex - preloadOverscan);
     const end = Math.min(items.length - 1, endIndex + preloadOverscan);
 
