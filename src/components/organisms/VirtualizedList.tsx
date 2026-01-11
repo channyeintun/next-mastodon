@@ -3,7 +3,6 @@
 import styled from '@emotion/styled';
 import { useRef, useEffect, useCallback, useMemo, type CSSProperties, type ReactNode } from 'react';
 import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
-import { useIsMobile } from '@/hooks/useIsMobile';
 import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
 
 interface VirtualizedListProps<T> {
@@ -135,10 +134,9 @@ export function VirtualizedList<T>({
   className,
 }: VirtualizedListProps<T>) {
   const parentRef = useRef<HTMLDivElement>(null);
-  const isMobile = useIsMobile();
 
   // Determine overscan: use prop if provided, otherwise conditional default
-  const overscan = overscanProp ?? (isMobile ? 2 : 5);
+  const overscan = overscanProp ?? 5;
 
   // Get saved scroll state if available
   const savedState = scrollRestorationKey

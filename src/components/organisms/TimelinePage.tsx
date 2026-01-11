@@ -23,7 +23,6 @@ import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
 import { Search, ArrowUp } from 'lucide-react';
 import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';
-import { useIsMobile } from '@/hooks/useIsMobile';
 import { useTimelineStream } from '@/hooks/useStreaming';
 
 // Scroll restoration cache
@@ -58,8 +57,6 @@ export const TimelinePage = observer(() => {
 
     const listRef = useRef<HTMLDivElement>(null);
     const [scrollMargin, setScrollMargin] = useState(0);
-
-    const isMobile = useIsMobile();
 
     const uniqueStatuses = useMemo(() => flattenAndUniqById(statusPages?.pages), [statusPages?.pages]);
 
@@ -119,7 +116,7 @@ export const TimelinePage = observer(() => {
         count: mixedItems.length,
         estimateSize,
         getItemKey,
-        overscan: isMobile ? 2 : 5,
+        overscan: 5,
         scrollMargin,
         initialOffset: cachedState?.offset,
         initialMeasurementsCache: cachedState?.measurementsCache,
