@@ -305,7 +305,6 @@ export function VirtualizedList<T>({
 const Container = styled.div<{ $height: string }>`
   height: ${props => props.$height};
   overflow: auto;
-  -webkit-overflow-scrolling: touch;
   contain: paint;
   position: relative;
 `;
