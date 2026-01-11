@@ -1,10 +1,9 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Emoji, Mention } from '@/types/mastodon';
-import { useTruncation } from '@/hooks/useTruncation';
 
 interface StatusContentProps {
   html: string;
@@ -12,7 +11,6 @@ interface StatusContentProps {
   mentions?: Mention[];
   style?: React.CSSProperties;
   className?: string;
-  collapsible?: boolean;
 }
 
 /**
@@ -64,17 +62,15 @@ function shortenUrl(href: string): string {
     return href;
   }
 }
-
-
 /**
  * Renders Mastodon status content HTML with:
  * - Highlighted mentions and hashtags
  * - Custom emoji rendering
  * - Internal navigation for mentions and hashtags (no external redirects)
- * - CSS-only "See more/See less" toggle using checkbox hack
  */
-export function StatusContent({ html, emojis = [], mentions = [], style, className, collapsible = true }: StatusContentProps) {
+export function StatusContent({ html, emojis = [], mentions = [], style, className }: StatusContentProps) {
   const router = useRouter();
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // Process HTML to replace emoji shortcodes with img tags
   const processedHtml = useMemo(() => {
@@ -166,17 +162,14 @@ export function StatusContent({ html, emojis = [], mentions = [], style, classNa
     }
   }, [mentions, router]);
 
-  // Use truncation hook to detect if content is clipped
-  const { ref, isTruncated, isExpanded, toggle } = useTruncation<HTMLDivElement>([processedHtml]);
-
   useEffect(() => {
-    if (!ref.current) return;
+    if (!contentRef.current) return;
 
-    const container = ref.current;
+    const container = contentRef.current;
 
     // Add styling to mentions, hashtags, and regular links
     const mentionLinks = container.querySelectorAll('a.mention, a.u-url.mention');
-    mentionLinks.forEach((link) => {
+    mentionLinks.forEach((link: Element) => {
       const anchor = link as HTMLAnchorElement;
       anchor.style.color = 'var(--status-link-color)';
       anchor.style.fontWeight = 'var(--font-weight-6)';
@@ -185,7 +178,7 @@ export function StatusContent({ html, emojis = [], mentions = [], style, classNa
     });
 
     const hashtags = container.querySelectorAll('a.hashtag');
-    hashtags.forEach((link) => {
+    hashtags.forEach((link: Element) => {
       const anchor = link as HTMLAnchorElement;
       anchor.style.color = 'var(--status-link-color)';
       anchor.style.fontWeight = 'var(--font-weight-6)';
@@ -195,7 +188,7 @@ export function StatusContent({ html, emojis = [], mentions = [], style, classNa
 
     // Style custom emoji images
     const customEmojis = container.querySelectorAll('img.custom-emoji, img[data-emoji]');
-    customEmojis.forEach((img) => {
+    customEmojis.forEach((img: Element) => {
       const emojiImg = img as HTMLImageElement;
       emojiImg.style.height = '1.2em';
       emojiImg.style.width = '1.2em';
@@ -207,7 +200,7 @@ export function StatusContent({ html, emojis = [], mentions = [], style, classNa
 
     // Style regular links (not mentions or hashtags)
     const allLinks = container.querySelectorAll('a');
-    allLinks.forEach((link) => {
+    allLinks.forEach((link: Element) => {
       const anchor = link as HTMLAnchorElement;
       // Skip if it's a mention or hashtag
       if (anchor.classList.contains('mention') ||
@@ -229,28 +222,17 @@ export function StatusContent({ html, emojis = [], mentions = [], style, classNa
     return () => {
       container.removeEventListener('click', handleClick);
     };
-  }, [processedHtml, handleClick, ref]);
-
-  const handleSeeMore = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    toggle();
-  };
+  }, [processedHtml, handleClick]);
 
   return (
     <ContentContainer style={style} className={className}>
       <ContentWrapper
-        ref={ref}
-        $expanded={isExpanded}
-        $collapsible={collapsible}
+        ref={contentRef}
         dangerouslySetInnerHTML={{ __html: processedHtml }}
       />
-      {collapsible && isTruncated && !isExpanded && (
-        <SeeMoreLabel onClick={handleSeeMore}>... See more</SeeMoreLabel>
-      )}
     </ContentContainer>
   );
 }
-
 
 // Styled components
 const ContentContainer = styled.div`
@@ -260,11 +242,8 @@ const ContentContainer = styled.div`
   word-break: break-word;
 `;
 
-const ContentWrapper = styled.div<{ $expanded?: boolean; $collapsible?: boolean }>`
-  display: -webkit-box;
-  -webkit-line-clamp: ${props => (!props.$collapsible || props.$expanded) ? 'unset' : '6'};
-  -webkit-box-orient: vertical;
-  overflow: ${props => (!props.$collapsible || props.$expanded) ? 'visible' : 'hidden'};
+const ContentWrapper = styled.div`
+  display: block;
 
   p {
     font-size: inherit;
@@ -283,15 +262,3 @@ const ContentWrapper = styled.div<{ $expanded?: boolean; $collapsible?: boolean 
     text-decoration: underline !important;
   }
 `;
-
-const SeeMoreLabel = styled.span`
-  display: inline;
-  color: var(--text-2);
-  cursor: pointer;
-  font-weight: var(--font-weight-5);
-  
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
