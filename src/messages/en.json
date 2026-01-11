@@ -599,6 +599,12 @@
       "count": "{count} blocked {count, plural, =1 {account} other {accounts}}",
       "emptyTitle": "No blocked accounts",
       "emptyDesc": "When you block someone, they won't be able to see your posts or interact with you."
+    },
+    "logoutConfirm": {
+      "title": "Log out?",
+      "message": "Are you sure you want to log out?",
+      "cancel": "Cancel",
+      "logout": "Log out"
     }
   },
   "visibility": {

@@ -7,6 +7,10 @@ export const FiltersContainer = styled.div`
   margin: 0 auto;
   padding: var(--size-4) var(--size-2);
   overflow-anchor: none;
+
+  @media (max-width: 768px) {
+    padding-bottom: var(--app-bottom-nav-height);
+  }
 `;
 
 export const FiltersHeader = styled.div`

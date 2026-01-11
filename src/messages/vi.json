@@ -601,7 +601,13 @@
     "signOut": "Đăng xuất",
     "signingOut": "Đang đăng xuất...",
     "title": "Cài đặt",
-    "trending": "Xu hướng"
+    "trending": "Xu hướng",
+    "logoutConfirm": {
+      "title": "Đăng xuất?",
+      "message": "Bạn có chắc chắn muốn đăng xuất không?",
+      "cancel": "Hủy",
+      "logout": "Đăng xuất"
+    }
   },
   "statusDetail": {
     "boostedBy": {

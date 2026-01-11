@@ -601,7 +601,13 @@
     "signOut": "Cerrar sesión",
     "signingOut": "Cerrando sesión...",
     "title": "Configuración",
-    "trending": "Tendencia"
+    "trending": "Tendencia",
+    "logoutConfirm": {
+      "title": "¿Cerrar sesión?",
+      "message": "¿Estás seguro de que quieres cerrar sesión?",
+      "cancel": "Cancelar",
+      "logout": "Cerrar sesión"
+    }
   },
   "statusDetail": {
     "boostedBy": {

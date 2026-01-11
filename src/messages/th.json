@@ -601,7 +601,13 @@
     "signOut": "ออกจากระบบ",
     "signingOut": "กำลังออกจากระบบ...",
     "title": "การตั้งค่า",
-    "trending": "กำลังมาแรง"
+    "trending": "กำลังมาแรง",
+    "logoutConfirm": {
+      "title": "ออกจากระบบ?",
+      "message": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?",
+      "cancel": "ยกเลิก",
+      "logout": "ออกจากระบบ"
+    }
   },
   "statusDetail": {
     "boostedBy": {

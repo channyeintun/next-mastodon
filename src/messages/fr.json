@@ -601,7 +601,13 @@
     "signOut": "Se déconnecter",
     "signingOut": "Déconnexion...",
     "title": "Paramètres",
-    "trending": "Tendances"
+    "trending": "Tendances",
+    "logoutConfirm": {
+      "title": "Se déconnecter ?",
+      "message": "Êtes-vous sûr de vouloir vous déconnecter ?",
+      "cancel": "Annuler",
+      "logout": "Se déconnecter"
+    }
   },
   "statusDetail": {
     "boostedBy": {

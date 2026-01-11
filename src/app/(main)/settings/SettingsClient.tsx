@@ -11,6 +11,7 @@ import { useAuthStore } from '@/hooks/useStores';
 import { useQueryClient } from '@tanstack/react-query';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { WrapstodonModal } from '@/components/wrapstodon/WrapstodonModal';
+import { LogoutConfirmationModal } from '@/components/molecules/LogoutConfirmationModal';
 import { GiRingedPlanet } from 'react-icons/gi';
 import { Languages } from 'lucide-react';
 import Select from 'react-select';
@@ -78,12 +79,21 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
   const showWrapstodon = isCurrentYear && annualReportState?.state && annualReportState.state !== 'ineligible';
 
   const handleSignOut = async () => {
-    startTransition(async () => {
-      queryClient.clear();
-      authStore.signOut();
-      router.replace('/auth/signin');
-      router.refresh();
-    });
+    openModal(
+      <LogoutConfirmationModal
+        onClose={closeModal}
+        onConfirm={async () => {
+          startTransition(async () => {
+            queryClient.clear();
+            authStore.signOut();
+            router.replace('/auth/signin');
+            router.refresh();
+            closeModal();
+          });
+        }}
+        isPending={isPending}
+      />
+    );
   };
 
   const handleWrapstodonClick = () => {
@@ -152,7 +162,7 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
   }
 
   return (
-    <div style={{ maxWidth: '680px', margin: '0 auto', padding: 'var(--size-4) var(--size-2)' }}>
+    <div className="mobile-bottom-padding" style={{ maxWidth: '680px', margin: '0 auto', padding: 'var(--size-4) var(--size-2)' }}>
       {/* Header */}
       <div style={{
         display: 'flex',
@@ -174,13 +184,13 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
 
       {/* Account Info Card */}
       <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
-        <Link 
+        <Link
           href={`/@${currentAccount.acct}`}
           onClick={() => prefillAccountCache(queryClient, currentAccount)}
-          style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: 'var(--size-3)', 
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--size-3)',
             marginBottom: 'var(--size-4)',
             textDecoration: 'none',
             color: 'inherit'

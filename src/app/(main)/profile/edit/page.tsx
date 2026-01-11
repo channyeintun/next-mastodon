@@ -170,7 +170,7 @@ export default function ProfileEditPage() {
     const headerPreview = headerFile ? URL.createObjectURL(headerFile) : null;
 
     return (
-        <div style={{ maxWidth: '700px', margin: '0 auto', padding: 'var(--size-4)' }}>
+        <div className="mobile-bottom-padding" style={{ maxWidth: '700px', margin: '0 auto', padding: 'var(--size-4)' }}>
             {/* Image Cropper Modal */}
             {cropperImage && (
                 <ImageCropper

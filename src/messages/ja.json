@@ -601,7 +601,13 @@
     "signOut": "ログアウト",
     "signingOut": "ログアウト中...",
     "title": "設定",
-    "trending": "トレンド"
+    "trending": "トレンド",
+    "logoutConfirm": {
+      "title": "ログアウトしますか？",
+      "message": "本当にログアウトしますか？",
+      "cancel": "キャンセル",
+      "logout": "ログアウト"
+    }
   },
   "statusDetail": {
     "boostedBy": {

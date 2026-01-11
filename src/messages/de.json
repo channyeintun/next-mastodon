@@ -601,7 +601,13 @@
     "signOut": "Abmelden",
     "signingOut": "Abmeldung...",
     "title": "Einstellungen",
-    "trending": "Trends"
+    "trending": "Trends",
+    "logoutConfirm": {
+      "title": "Abmelden?",
+      "message": "Bist du sicher, dass du dich abmelden möchtest?",
+      "cancel": "Abbrechen",
+      "logout": "Abmelden"
+    }
   },
   "statusDetail": {
     "boostedBy": {

@@ -601,7 +601,13 @@
     "signOut": "登出",
     "signingOut": "正在登出...",
     "title": "设置",
-    "trending": "热门"
+    "trending": "热门",
+    "logoutConfirm": {
+      "title": "退出登录？",
+      "message": "您确定要退出登录吗？",
+      "cancel": "取消",
+      "logout": "退出登录"
+    }
   },
   "statusDetail": {
     "boostedBy": {

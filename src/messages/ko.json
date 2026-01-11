@@ -601,7 +601,13 @@
     "signOut": "로그아웃",
     "signingOut": "로그아웃 중...",
     "title": "설정",
-    "trending": "인기"
+    "trending": "인기",
+    "logoutConfirm": {
+      "title": "로그아웃하시겠습니까?",
+      "message": "정말로 로그아웃하시겠습니까?",
+      "cancel": "취소",
+      "logout": "로그아웃"
+    }
   },
   "statusDetail": {
     "boostedBy": {

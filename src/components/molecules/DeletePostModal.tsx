@@ -29,7 +29,7 @@ export function DeletePostModal({ postId, onClose, onSuccess }: DeletePostModalP
     };
 
     return (
-        <div className="dialog-content">
+        <div className="bottom-sheet-content">
             <Title>
                 {t('title')}
             </Title>
