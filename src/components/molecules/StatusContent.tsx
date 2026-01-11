@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { useEffect, useMemo, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Emoji, Mention } from '@/types/mastodon';
+import { shortenUrl } from '@/utils/url';
 
 interface StatusContentProps {
   html: string;
@@ -37,18 +38,41 @@ export function StatusContent({ html, emojis = [], mentions = [], style, classNa
   const router = useRouter();
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // Process HTML to replace emoji shortcodes with img tags
+  // Process HTML to replace emoji shortcodes and handle link shortening/styling
   const processedHtml = useMemo(() => {
-    if (!emojis || emojis.length === 0) {
-      return html;
+    let processed = html;
+
+    // 1. Replace :shortcode: with <img> tags (no inline styles)
+    if (emojis && emojis.length > 0) {
+      emojis.forEach(emoji => {
+        const shortcodePattern = new RegExp(`:${emoji.shortcode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}:`, 'g');
+        const imgTag = `<img src="${emoji.url}" alt=":${emoji.shortcode}:" title=":${emoji.shortcode}:" class="custom-emoji" />`;
+        processed = processed.replace(shortcodePattern, imgTag);
+      });
     }
 
-    // Replace :shortcode: with <img> tags
-    let processed = html;
-    emojis.forEach(emoji => {
-      const shortcodePattern = new RegExp(`:${emoji.shortcode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}:`, 'g');
-      const imgTag = `<img src="${emoji.url}" alt=":${emoji.shortcode}:" title=":${emoji.shortcode}:" class="custom-emoji" style="height: 1.2em; width: 1.2em; vertical-align: middle; object-fit: contain; display: inline-block; margin: 0 0.1em;" />`;
-      processed = processed.replace(shortcodePattern, imgTag);
+    // 2. Process links: Add status-link class and shorten regular URLs
+    // This regex matches <a> tags and captures attributes, href, and content
+    processed = processed.replace(/<a\s+([^>]*href="([^"]+)"[^>]*)>(.*?)<\/a>/gi, (match, attributes, href, content) => {
+      const isMention = attributes.includes('mention') || attributes.includes('u-url');
+      const isHashtag = attributes.includes('hashtag');
+      const isSpecial = isMention || isHashtag;
+
+      let newAttributes = attributes;
+      // Add status-link class if not present
+      if (!newAttributes.includes('status-link')) {
+        const classMatch = newAttributes.match(/class="([^"]*)"/);
+        if (classMatch) {
+          newAttributes = newAttributes.replace(/class="([^"]*)"/, `class="${classMatch[1]} status-link"`);
+        } else {
+          newAttributes += ' class="status-link"';
+        }
+      }
+
+      // Shorten URL if it's a regular link, otherwise keep content as is
+      const newContent = isSpecial ? content : shortenUrl(href);
+
+      return `<a ${newAttributes}>${newContent}</a>`;
     });
 
     return processed;
@@ -131,63 +155,12 @@ export function StatusContent({ html, emojis = [], mentions = [], style, classNa
     if (!contentRef.current) return;
 
     const container = contentRef.current;
-
-    // Add styling to mentions, hashtags, and regular links
-    const mentionLinks = container.querySelectorAll('a.mention, a.u-url.mention');
-    mentionLinks.forEach((link: Element) => {
-      const anchor = link as HTMLAnchorElement;
-      anchor.style.color = 'var(--status-link-color)';
-      anchor.style.fontWeight = 'var(--font-weight-6)';
-      anchor.style.textDecoration = 'none';
-      anchor.classList.add('status-link');
-    });
-
-    const hashtags = container.querySelectorAll('a.hashtag');
-    hashtags.forEach((link: Element) => {
-      const anchor = link as HTMLAnchorElement;
-      anchor.style.color = 'var(--status-link-color)';
-      anchor.style.fontWeight = 'var(--font-weight-6)';
-      anchor.style.textDecoration = 'none';
-      anchor.classList.add('status-link');
-    });
-
-    // Style custom emoji images
-    const customEmojis = container.querySelectorAll('img.custom-emoji, img[data-emoji]');
-    customEmojis.forEach((img: Element) => {
-      const emojiImg = img as HTMLImageElement;
-      emojiImg.style.height = '1.2em';
-      emojiImg.style.width = '1.2em';
-      emojiImg.style.verticalAlign = 'middle';
-      emojiImg.style.objectFit = 'contain';
-      emojiImg.style.display = 'inline-block';
-      emojiImg.style.margin = '0 0.1em';
-    });
-
-    // Style regular links (not mentions or hashtags)
-    const allLinks = container.querySelectorAll('a');
-    allLinks.forEach((link: Element) => {
-      const anchor = link as HTMLAnchorElement;
-      // Skip if it's a mention or hashtag
-      if (anchor.classList.contains('mention') ||
-        anchor.classList.contains('u-url') ||
-        anchor.classList.contains('hashtag')) {
-        return;
-      }
-      // Style regular external links
-      anchor.style.color = 'var(--status-link-color)';
-      anchor.style.textDecoration = 'none';
-      anchor.classList.add('status-link');
-
-      // Shorten long URLs for cleaner display
-      // anchor.textContent = shortenUrl(anchor.href);
-    });
-
     container.addEventListener('click', handleClick);
 
     return () => {
       container.removeEventListener('click', handleClick);
     };
-  }, [processedHtml, handleClick]);
+  }, [handleClick]);
 
   return (
     <ContentContainer style={style} className={className}>
@@ -222,8 +195,30 @@ const ContentWrapper = styled.div`
     margin-bottom: 0;
   }
 
-  /* Underline only on hover for all links */
+  /* Links styling */
+  a.status-link {
+    color: var(--status-link-color);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
   a.status-link:hover {
-    text-decoration: underline !important;
+    text-decoration: underline;
+  }
+
+  /* Mentions and hashtags have specific weight */
+  a.mention,
+  a.hashtag {
+    font-weight: var(--font-weight-6);
+  }
+
+  /* Custom emoji images */
+  img.custom-emoji {
+    height: 1.2em;
+    width: 1.2em;
+    vertical-align: middle;
+    object-fit: contain;
+    display: inline-block;
+    margin: 0 0.1em;
   }
 `;
