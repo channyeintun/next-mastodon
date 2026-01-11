@@ -99,7 +99,9 @@
     "skipToMain": "Zum Hauptinhalt springen",
     "verified": "Verifiziert",
     "viewAll": "Alle anzeigen",
-    "open": "Öffnen"
+    "open": "Öffnen",
+    "addMedia": "Medien hinzufügen",
+    "send": "Senden"
   },
   "composer": {
     "addContentWarning": "Inhaltswarnung hinzufügen",
@@ -183,7 +185,9 @@
     "noMessages": "Noch keine Nachrichten",
     "sendError": "Fehler beim Senden der Nachricht",
     "title": "Unterhaltung",
-    "typeMessage": "Nachricht schreiben..."
+    "typeMessage": "Nachricht schreiben...",
+    "cancel": "Abbrechen",
+    "delete": "Löschen"
   },
   "conversations": {
     "count": "{count, plural, =0 {Keine Unterhaltungen} =1 {1 Unterhaltung} other {# Unterhaltungen}}",

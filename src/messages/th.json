@@ -99,7 +99,9 @@
     "skipToMain": "ข้ามไปยังเนื้อหาหลัก",
     "verified": "ยืนยันแล้ว",
     "viewAll": "ดูทั้งหมด",
-    "open": "เปิด"
+    "open": "เปิด",
+    "addMedia": "เพิ่มสื่อ",
+    "send": "ส่ง"
   },
   "composer": {
     "addContentWarning": "เพิ่มคำเตือนเนื้อหา",
@@ -183,7 +185,9 @@
     "noMessages": "ยังไม่มีข้อความ",
     "sendError": "ส่งข้อความไม่สำเร็จ",
     "title": "การสนทนา",
-    "typeMessage": "พิมพ์ข้อความ..."
+    "typeMessage": "พิมพ์ข้อความ...",
+    "cancel": "ยกเลิก",
+    "delete": "ลบ"
   },
   "conversations": {
     "count": "{count, plural, =0 {ไม่มีการสนทนา} other {# การสนทนา}}",

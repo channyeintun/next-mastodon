@@ -12,6 +12,8 @@ import { markConversationAsRead } from '@/api/client'
 import { queryKeys } from '@/api/queryKeys'
 import { useConversationStore } from '@/hooks/useStores'
 import { useTranslations } from 'next-intl'
+import { useGlobalModal } from '@/contexts/GlobalModalContext'
+import { DeleteConversationModal } from './DeleteConversationModal'
 import { stripMentions } from '@/utils/conversationUtils'
 import { formatTimeAgo } from '@/utils/date'
 import type { Conversation } from '@/types/mastodon'
@@ -28,6 +30,7 @@ export function ConversationCard({ conversation, style }: ConversationCardProps)
   const conversationStore = useConversationStore()
   const deleteConversation = useDeleteConversation()
   const t = useTranslations('conversation')
+  const { openModal, closeModal } = useGlobalModal()
 
   const accountNames = conversation.accounts
     .map(acc => acc.display_name || acc.username)
@@ -84,20 +87,25 @@ export function ConversationCard({ conversation, style }: ConversationCardProps)
     router.push('/conversations/chat')
   }
 
-  const handleDelete = async (e: React.MouseEvent) => {
+  const handleDelete = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
-    if (!confirm(t('deleteConfirmFull'))) {
-      return
-    }
-
-    try {
-      await deleteConversation.mutateAsync(conversation.id)
-    } catch (error) {
-      console.error('Failed to delete conversation:', error)
-      alert(t('deleteError'))
-    }
+    openModal(
+      <DeleteConversationModal
+        onClose={closeModal}
+        onConfirm={async () => {
+          try {
+            await deleteConversation.mutateAsync(conversation.id)
+            closeModal()
+          } catch (error) {
+            console.error('Failed to delete conversation:', error)
+            alert(t('deleteError'))
+          }
+        }}
+        isPending={deleteConversation.isPending}
+      />
+    )
   }
 
   return (

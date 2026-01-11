@@ -99,7 +99,9 @@
     "skipToMain": "Aller au contenu principal",
     "verified": "Vérifié",
     "viewAll": "Tout afficher",
-    "open": "Ouvrir"
+    "open": "Ouvrir",
+    "addMedia": "Ajouter un média",
+    "send": "Envoyer"
   },
   "composer": {
     "addContentWarning": "Ajouter un avertissement",
@@ -183,7 +185,9 @@
     "noMessages": "Aucun message pour le moment",
     "sendError": "Échec d'envoi du message",
     "title": "Conversation",
-    "typeMessage": "Écrire un message..."
+    "typeMessage": "Écrire un message...",
+    "cancel": "Annuler",
+    "delete": "Supprimer"
   },
   "conversations": {
     "count": "{count, plural, =0 {Aucune conversation} =1 {1 conversation} other {# conversations}}",

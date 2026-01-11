@@ -95,7 +95,9 @@
     "next": "Next",
     "done": "Done",
     "backToTop": "Back to top",
-    "open": "Open"
+    "open": "Open",
+    "addMedia": "Add media",
+    "send": "Send"
   },
   "media": {
     "sensitive": "Click to view sensitive content"
@@ -370,7 +372,9 @@
     "deleteConfirmFull": "Are you sure you want to delete this conversation? This cannot be undone.",
     "deleteError": "Failed to delete conversation. Please try again.",
     "sendError": "Failed to send message",
-    "mediaOnly": "(Media only)"
+    "mediaOnly": "(Media only)",
+    "cancel": "Cancel",
+    "delete": "Delete"
   },
   "conversations": {
     "title": "Direct Messages",

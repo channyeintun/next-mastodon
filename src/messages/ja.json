@@ -99,7 +99,9 @@
     "skipToMain": "メインコンテンツにスキップ",
     "verified": "認証済み",
     "viewAll": "すべて表示",
-    "open": "開く"
+    "open": "開く",
+    "addMedia": "メディアを追加",
+    "send": "送信"
   },
   "composer": {
     "addContentWarning": "コンテンツ警告を追加",
@@ -183,7 +185,9 @@
     "noMessages": "メッセージはまだありません",
     "sendError": "メッセージの送信に失敗しました",
     "title": "会話",
-    "typeMessage": "メッセージを入力..."
+    "typeMessage": "メッセージを入力...",
+    "cancel": "キャンセル",
+    "delete": "削除"
   },
   "conversations": {
     "count": "{count, plural, =0 {会話なし} other {# 件の会話}}",

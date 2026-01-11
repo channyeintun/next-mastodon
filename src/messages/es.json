@@ -99,7 +99,9 @@
     "skipToMain": "Saltar al contenido principal",
     "verified": "Verificado",
     "viewAll": "Ver todo",
-    "open": "Abrir"
+    "open": "Abrir",
+    "addMedia": "Añadir multimedia",
+    "send": "Enviar"
   },
   "composer": {
     "addContentWarning": "Añadir advertencia de contenido",
@@ -183,7 +185,9 @@
     "noMessages": "Sin mensajes aún",
     "sendError": "Error al enviar el mensaje",
     "title": "Conversación",
-    "typeMessage": "Escribe un mensaje..."
+    "typeMessage": "Escribe un mensaje...",
+    "cancel": "Cancelar",
+    "delete": "Eliminar"
   },
   "conversations": {
     "count": "{count, plural, =0 {Sin conversaciones} =1 {1 conversación} other {# conversaciones}}",

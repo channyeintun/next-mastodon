@@ -99,7 +99,9 @@
     "skipToMain": "跳转到主要内容",
     "verified": "已验证",
     "viewAll": "查看全部",
-    "open": "打开"
+    "open": "打开",
+    "addMedia": "添加媒体",
+    "send": "发送"
   },
   "composer": {
     "addContentWarning": "添加内容警告",
@@ -183,7 +185,9 @@
     "noMessages": "暂无消息",
     "sendError": "发送消息失败",
     "title": "对话",
-    "typeMessage": "输入消息..."
+    "typeMessage": "输入消息...",
+    "cancel": "取消",
+    "delete": "删除"
   },
   "conversations": {
     "count": "{count, plural, =0 {暂无对话} other {# 条对话}}",

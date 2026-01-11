@@ -23,10 +23,12 @@ import {
 } from '@/components/atoms/ConversationStyles'
 import { MessageBubble } from '@/components/molecules/MessageBubble'
 import { ConversationLoading, ConversationError } from '@/components/molecules/ConversationStates'
+import { DeleteConversationModal } from '@/components/molecules/DeleteConversationModal'
 import { ImageCropper } from '@/components/molecules/ImageCropper'
 import { useConversationStream } from '@/hooks/useStreaming'
 import { useConversationStore } from '@/hooks/useStores'
 import { useMediaUpload } from '@/hooks/useMediaUpload'
+import { useGlobalModal } from '@/contexts/GlobalModalContext'
 import {
     getLastStatusId,
     buildMessageList,
@@ -42,6 +44,7 @@ function ConversationChatContent() {
     const conversationStore = useConversationStore()
     const t = useTranslations('conversation')
     const tCommon = useTranslations('common')
+    const { openModal, closeModal } = useGlobalModal()
 
     // Use cached conversation from store (set when clicking from conversation list)
     const conversation = conversationStore.cachedConversation
@@ -130,13 +133,25 @@ function ConversationChatContent() {
     // No need to manually clear - cleanup effect handles it on unmount
     const handleBack = () => router.back()
 
-    const handleDelete = async () => {
-        if (!id || !confirm(t('deleteConfirm'))) return
-        try {
-            await deleteConversation.mutateAsync(id)
-            conversationStore.clearConversation()
-            router.push('/conversations')
-        } catch { alert(t('deleteError')) }
+    const handleDelete = () => {
+        if (!id) return
+        openModal(
+            <DeleteConversationModal
+                onClose={closeModal}
+                onConfirm={async () => {
+                    try {
+                        await deleteConversation.mutateAsync(id)
+                        conversationStore.clearConversation()
+                        closeModal()
+                        router.push('/conversations')
+                    } catch (error) {
+                        console.error('Failed to delete conversation:', error)
+                        alert(t('deleteError'))
+                    }
+                }}
+                isPending={deleteConversation.isPending}
+            />
+        )
     }
 
     const handleSend = async () => {

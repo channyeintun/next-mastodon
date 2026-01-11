@@ -99,7 +99,9 @@
     "skipToMain": "메인 콘텐츠로 건너뛰기",
     "verified": "인증됨",
     "viewAll": "모두 보기",
-    "open": "열기"
+    "open": "열기",
+    "addMedia": "미디어 추가",
+    "send": "보내기"
   },
   "composer": {
     "addContentWarning": "콘텐츠 경고 추가",
@@ -183,7 +185,9 @@
     "noMessages": "메시지가 아직 없습니다",
     "sendError": "메시지 전송에 실패했습니다",
     "title": "대화",
-    "typeMessage": "메시지를 입력하세요..."
+    "typeMessage": "메시지를 입력하세요...",
+    "cancel": "취소",
+    "delete": "삭제"
   },
   "conversations": {
     "count": "{count, plural, =0 {대화 없음} other {#개의 대화}}",

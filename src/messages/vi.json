@@ -99,7 +99,9 @@
     "skipToMain": "Chuyển đến nội dung chính",
     "verified": "Đã xác minh",
     "viewAll": "Xem tất cả",
-    "open": "Mở"
+    "open": "Mở",
+    "addMedia": "Thêm đa phương tiện",
+    "send": "Gửi"
   },
   "composer": {
     "addContentWarning": "Thêm cảnh báo nội dung",
@@ -183,7 +185,9 @@
     "noMessages": "Chưa có tin nhắn nào",
     "sendError": "Gửi tin nhắn thất bại",
     "title": "Trò chuyện",
-    "typeMessage": "Nhập tin nhắn..."
+    "typeMessage": "Nhập tin nhắn...",
+    "cancel": "Hủy",
+    "delete": "Xóa"
   },
   "conversations": {
     "count": "{count, plural, =0 {Chưa có cuộc trò chuyện nào} other {# cuộc trò chuyện}}",
