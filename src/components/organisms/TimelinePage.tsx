@@ -102,7 +102,7 @@ export const TimelinePage = observer(() => {
     const estimateSize = useCallback((index: number) => {
         const item = mixedItems[index];
         if (item?.type === 'endIndicator') return 60;
-        if (item?.type === 'suggestions') return 300;
+        if (item?.type === 'suggestions') return 325;
         return 250;
     }, [mixedItems]);
 
