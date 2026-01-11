@@ -31,12 +31,20 @@ export function MediaModal({
 
   // Motion values for drag gesture
   const y = useMotionValue(0);
-  const opacity = useTransform(y, [0, 300], [1, 0]);
+  const opacity = useTransform(y, [-300, 0, 300], [0, 1, 0]);
 
   const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     if (info.offset.y > SWIPE_CLOSE_THRESHOLD) {
-      // Animate out and close
+      // Animate out (down) and close
       animate(y, window.innerHeight, {
+        type: 'tween',
+        duration: 0.2,
+        ease: 'easeOut',
+        onComplete: onClose,
+      });
+    } else if (info.offset.y < -SWIPE_CLOSE_THRESHOLD) {
+      // Animate out (up) and close
+      animate(y, -window.innerHeight, {
         type: 'tween',
         duration: 0.2,
         ease: 'easeOut',
@@ -84,7 +92,7 @@ export function MediaModal({
       className="media-modal"
       drag="y"
       dragConstraints={{ top: 0, bottom: 0 }}
-      dragElastic={{ top: 0, bottom: 0.5 }}
+      dragElastic={{ top: 0.5, bottom: 0.5 }}
       onDragEnd={handleDragEnd}
       style={{ y, opacity }}
     >
