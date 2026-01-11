@@ -21,7 +21,7 @@
     "@tanstack/react-form": "^1.27.7",
     "@tanstack/react-query": "^5.90.16",
     "@tanstack/react-query-devtools": "^5.91.2",
-    "@tanstack/react-virtual": "^3.13.16",
+    "@tanstack/react-virtual": "^3.13.18",
     "@tiptap/core": "3.12.1",
     "@tiptap/extension-mention": "3.12.1",
     "@tiptap/extension-placeholder": "3.12.1",
