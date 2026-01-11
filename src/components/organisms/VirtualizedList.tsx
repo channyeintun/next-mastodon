@@ -138,7 +138,7 @@ export function VirtualizedList<T>({
   const isMobile = useIsMobile();
 
   // Determine overscan: use prop if provided, otherwise conditional default
-  const overscan = overscanProp ?? (isMobile ? 1 : 5);
+  const overscan = overscanProp ?? (isMobile ? 2 : 5);
 
   // Get saved scroll state if available
   const savedState = scrollRestorationKey
