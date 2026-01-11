@@ -30,8 +30,6 @@ html {
   --surface-2: #252728;
   --poll-bar-bg: var(--blue-8);
   --poll-bar-bg-own: var(--blue-7);
-  --radius-round: 50%;
-  --radius-pill: 999px;
 }
 
 /* Light mode colors */

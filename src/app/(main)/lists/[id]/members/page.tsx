@@ -34,7 +34,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
 
     const following = flattenPages(followingPages?.pages);
     const availableToAdd = searchQuery
-        ? (searchResults?.accounts || []).filter((a) => !memberIds.has(a.id))
+        ? (searchResults?.data.accounts || []).filter((a) => !memberIds.has(a.id))
         : following.filter((a) => !memberIds.has(a.id));
 
     const handleAddMember = (accountId: string) => addMembersMutation.mutate({ listId, accountIds: [accountId] });

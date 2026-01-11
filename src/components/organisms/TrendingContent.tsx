@@ -129,9 +129,9 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
     const relationshipMap = new Map(relationships?.map(r => [r.id, r]));
 
     // Flatten and deduplicate using FP utilities
-    const uniqueStatuses = flattenAndUniqById(statusData?.pages);
-    const uniqueTags = flattenAndUniqByKey<Tag>('name')(tagsData?.pages);
-    const uniqueLinks = flattenAndUniqByKey<TrendingLink>('url')(linksData?.pages);
+    const uniqueStatuses = flattenAndUniqById(statusData?.pages.map(p => p.data));
+    const uniqueTags = flattenAndUniqByKey<Tag>('name')(tagsData?.pages.map(p => p.data));
+    const uniqueLinks = flattenAndUniqByKey<TrendingLink>('url')(linksData?.pages.map(p => p.data));
 
     return (
         <Container className={`full-height-container${authStore.isAuthenticated ? '' : ' guest'}`}>

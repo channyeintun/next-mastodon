@@ -79,9 +79,9 @@ export default function SearchPage() {
     isFetchingNextPage: isFetchingNextHashtags, isLoading: isLoadingHashtags, isError: isErrorHashtags,
   } = useInfiniteSearch({ q: query, type: 'hashtags', resolve: true }, { enabled: activeTab === 'hashtags' && query.trim().length > 0 });
 
-  const flattenedAccounts = accountsData?.pages.flatMap(page => page.accounts) || [];
-  const flattenedStatuses = statusesData?.pages.flatMap(page => page.statuses) || [];
-  const flattenedHashtags = hashtagsData?.pages.flatMap(page => page.hashtags) || [];
+  const flattenedAccounts = accountsData?.pages.flatMap(page => page.data.accounts) || [];
+  const flattenedStatuses = statusesData?.pages.flatMap(page => page.data.statuses) || [];
+  const flattenedHashtags = hashtagsData?.pages.flatMap(page => page.data.hashtags) || [];
 
   const hasQuery = query.trim().length > 0;
   const tabs: TabType[] = ['all', 'accounts', 'statuses', 'hashtags'];
@@ -177,7 +177,7 @@ export default function SearchPage() {
           <SearchContent
             activeTab={activeTab}
             query={query}
-            allResults={allSearchResults}
+            allResults={allSearchResults?.data}
             isLoadingAll={isLoadingAll}
             isErrorAll={isErrorAll}
             accounts={flattenedAccounts}

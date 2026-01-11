@@ -136,7 +136,7 @@ export const createMentionSuggestion = (): Omit<SuggestionOptions, 'editor'> => 
 
     try {
       const results = await search({ q: query, type: 'accounts', limit: 5 });
-      return results.accounts;
+      return results.data.accounts;
     } catch (error) {
       console.error('Failed to search accounts:', error);
       return [];

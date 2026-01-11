@@ -56,7 +56,7 @@ export function extractMaxId(url: string | undefined): string | undefined {
   if (!url) return undefined
   try {
     const urlObj = new URL(url)
-    return urlObj.searchParams.get('max_id') ?? undefined
+    return urlObj.searchParams.get('max_id') ?? urlObj.searchParams.get('offset') ?? undefined
   } catch {
     return undefined
   }

@@ -57,7 +57,7 @@ export default function NewConversationPage() {
         { q: debouncedQuery, type: 'accounts', limit: 20, resolve: true },
         { enabled: debouncedQuery.length > 0 && !selectedAccount }
     )
-    const accounts = searchResults?.accounts || []
+    const accounts = searchResults?.data.accounts || []
 
     const handleSelect = (account: Account) => {
         setSelectedAccount(account)

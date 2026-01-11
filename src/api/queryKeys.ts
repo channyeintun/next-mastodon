@@ -8,7 +8,6 @@ export const queryKeys = {
   timelines: {
     all: ['timelines'] as const,
     home: (params?: object) => ['timelines', 'home', params] as const,
-    public: (params?: object) => ['timelines', 'public', params] as const,
     hashtag: (tag: string, params?: object) =>
       ['timelines', 'hashtag', tag, params] as const,
   },
