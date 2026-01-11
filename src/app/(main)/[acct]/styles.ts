@@ -18,7 +18,7 @@ export const FixedBackButton = styled.div`
   position: fixed;
   top: var(--size-4);
   left: var(--size-4);
-  z-index: 5; /* Lower than sticky tabs (z-index: 10) so tabs cover it when sticky */
+  z-index: 20; /* Higher than sticky tabs (z-index: 10) so it stays visible */
 
   /* On desktop, account for sidebar and centered content */
   @media (min-width: 768px) {
