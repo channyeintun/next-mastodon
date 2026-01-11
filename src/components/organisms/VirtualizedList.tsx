@@ -166,7 +166,6 @@ export function VirtualizedList<T>({
 
   // Setup virtualizer with scroll restoration
   const virtualizer = useVirtualizer({
-    useFlushSync: false,
     count: items.length,
     getScrollElement: () => parentRef.current,
     estimateSize: estimateSizeCallback,

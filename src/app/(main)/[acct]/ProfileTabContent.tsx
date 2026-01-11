@@ -105,7 +105,6 @@ export function ProfileTabContent({
     }, [mixedItems]);
 
     const virtualizer = useWindowVirtualizer({
-        useFlushSync: false,
         count: mixedItems.length,
         estimateSize,
         getItemKey,
