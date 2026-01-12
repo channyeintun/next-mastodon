@@ -57,7 +57,6 @@
 
 ### 📱 **PWA Ready**
 - **Installable** — Add to home screen on any device
-- **Offline Support** — Cached emojis and data
 
 ---
 
