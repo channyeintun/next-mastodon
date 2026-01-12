@@ -1,6 +1,6 @@
 # Project: Mastodon (Next.js)
 
-A minimal, performant social media frontend for Mastodon built with Next.js 16 and modern React patterns.
+A performant social media frontend for Mastodon built with Next.js 16 and modern React patterns.
 
 ## Project Structure
 ```
