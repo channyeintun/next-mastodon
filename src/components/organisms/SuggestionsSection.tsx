@@ -117,7 +117,7 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
                 <Header>
                     <Title>{t('whoToFollow')}</Title>
                 </Header>
-                <ScrollContainer>
+                <ScrollContainer style={{ paddingBottom: 'var(--size-4)' }}>
                     <ScrollContent>
                         {Array.from({ length: 4 }).map((_, i) => (
                             <CardSkeleton key={i}>
