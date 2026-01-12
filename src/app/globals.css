@@ -1432,9 +1432,19 @@ dialog {
 
 /* Media modal dialog override */
 dialog:has(.media-modal) {
-  max-width: 95vw;
+  max-width: 100vw;
+  max-height: 100dvh;
+  width: 100vw;
+  height: 100dvh;
   background: transparent;
   box-shadow: none;
+}
+
+dialog:has(.media-modal)>div {
+  background: transparent !important;
+  border-radius: 0 !important;
+  width: 100%;
+  height: 100%;
 }
 
 /* Disable close transition for media modal (allows swipe-to-close to feel instant) */

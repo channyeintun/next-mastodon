@@ -179,9 +179,8 @@ export function MediaModal({
 // Styled components - use motion.div for the container
 const ModalContainer = styled(motion.div)`
   position: relative;
-  max-width: 100%;
+  width: 100vw;
   height: 100dvh;
-  max-height: 100dvh;
   display: flex;
   flex-direction: column;
   background: #252527;
@@ -243,9 +242,9 @@ const MediaContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  max-height: 100dvh;
   background: #252527;
   flex: 1;
+  min-height: 0; /* Allow flex item to shrink below content size */
 `;
 
 const MediaImage = styled.img`
@@ -295,6 +294,9 @@ const AltContainer = styled.div`
   bottom: var(--size-3);
   right: var(--size-3);
   z-index: 10;
+  max-width: calc(100% - var(--size-6));
+  display: flex;
+  justify-content: flex-end;
 `;
 
 const AltButton = styled.button<{ $active?: boolean }>`
@@ -320,12 +322,13 @@ const AltPopover = styled.div`
   position: absolute;
   bottom: calc(100% + var(--size-2));
   right: 0;
+  width: max-content;
   background: rgba(0, 0, 0, 0.9);
   color: white;
   padding: var(--size-3);
   border-radius: var(--radius-2);
   font-size: var(--font-size-1);
-  max-width: min(600px, 90vw);
+  max-width: min(800px, 90vw);
   max-height: 40vh;
   overflow-y: auto;
   white-space: pre-wrap;
