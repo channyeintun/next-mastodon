@@ -318,12 +318,16 @@ const HashIcon = styled(Hash)`
 
 const HashtagInfo = styled.div`
     flex: 1;
+    min-width: 0;
 `;
 
 const HashtagName = styled.div`
     font-size: var(--font-size-2);
     font-weight: var(--font-weight-6);
     color: var(--text-1);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const HashtagStats = styled.div`

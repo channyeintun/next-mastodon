@@ -1738,6 +1738,9 @@ dialog::backdrop {
   font-size: var(--font-size-2);
   font-weight: var(--font-weight-6);
   color: var(--blue-6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .trending-tag-stats {
