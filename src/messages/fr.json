@@ -169,6 +169,12 @@
     "visibilityDescription": "Contrôlez qui peut interagir avec cette publication. Vous pouvez également appliquer ces paramètres à toutes vos futures publications dans Préférences > Paramètres par défaut.",
     "visibilityInteraction": "Visibilité et interaction",
     "visibilityLabel": "Visibilité : {label}",
+    "saveDraft": {
+      "title": "Enregistrer ce post en tant que brouillon ?",
+      "message": "Si vous abandonnez maintenant, vous perdrez ce post.",
+      "discard": "Supprimer le brouillon",
+      "save": "Enregistrer le brouillon"
+    },
     "visibilityOptions": {
       "direct": "Direct",
       "directDesc": "Uniquement les personnes mentionnées",

@@ -313,7 +313,13 @@
       "editAlt": "Edit alt text"
     },
     "charCount": "{count} characters remaining",
-    "visibilityLabel": "Visibility: {label}"
+    "visibilityLabel": "Visibility: {label}",
+    "saveDraft": {
+      "title": "Save this post as a draft?",
+      "message": "If you discard now, you'll lose this post.",
+      "discard": "Delete draft",
+      "save": "Save as draft"
+    }
   },
   "explore": {
     "title": "Explore",

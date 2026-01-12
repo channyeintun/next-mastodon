@@ -3,7 +3,18 @@
 import styled from '@emotion/styled';
 import { X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, createContext, useState, useRef } from 'react';
+import { useGlobalModal } from '@/contexts/GlobalModalContext';
+
+export const ComposeModalContext = createContext<{
+  isDirty: boolean;
+  setIsDirty: (dirty: boolean) => void;
+  registerOnCloseHandler: (handler: (() => void) | null) => void;
+}>({
+  isDirty: false,
+  setIsDirty: () => { },
+  registerOnCloseHandler: () => { },
+});
 
 interface ComposeModalProps {
   children: React.ReactNode;
@@ -18,16 +29,28 @@ interface ComposeModalProps {
  */
 export function ComposeModal({ children }: ComposeModalProps) {
   const router = useRouter();
+  const [isDirty, setIsDirty] = useState(false);
+  const [registeredOnCloseHandler, setRegisteredOnCloseHandler] = useState<(() => void) | null>(null);
+  const { isOpen: isGlobalModalOpen } = useGlobalModal();
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const mouseDownTarget = useRef<EventTarget | null>(null);
 
   const handleClose = useCallback(() => {
-    router.back();
-  }, [router]);
+    if (isDirty && registeredOnCloseHandler) {
+      registeredOnCloseHandler();
+    } else {
+      router.back();
+    }
+  }, [router, isDirty, registeredOnCloseHandler]);
 
+  const registerOnCloseHandler = useCallback((handler: (() => void) | null) => {
+    setRegisteredOnCloseHandler(() => handler);
+  }, []);
 
   // Handle Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' && !isGlobalModalOpen) {
         handleClose();
       }
     };
@@ -46,24 +69,37 @@ export function ComposeModal({ children }: ComposeModalProps) {
     };
   }, []);
 
-  // Handle click outside modal
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
+  // Handle click outside modal (only if mouse both started and ended on overlay)
+  const handleMouseDown = (e: React.MouseEvent) => {
+    mouseDownTarget.current = e.target;
+  };
+
+  const handleMouseUp = (e: React.MouseEvent) => {
+    if (mouseDownTarget.current === e.currentTarget && e.target === e.currentTarget) {
       handleClose();
     }
   };
 
   return (
-    <ModalOverlay onClick={handleBackdropClick}>
-      <ModalContainer>
-        <CloseButton onClick={handleClose} aria-label="Close">
-          <X size={24} />
-        </CloseButton>
-        <ModalContent>{children}</ModalContent>
-      </ModalContainer>
-    </ModalOverlay>
+    <ComposeModalContext.Provider value={{ isDirty, setIsDirty, registerOnCloseHandler }}>
+      <ModalOverlay
+        ref={overlayRef}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+      >
+        <ModalContainer>
+          <CloseButton onClick={handleClose} aria-label="Close">
+            <X size={24} />
+          </CloseButton>
+          <ModalContent>
+            {children}
+          </ModalContent>
+        </ModalContainer>
+      </ModalOverlay>
+    </ComposeModalContext.Provider>
   );
 }
+
 
 const ModalOverlay = styled.div`
   position: fixed;

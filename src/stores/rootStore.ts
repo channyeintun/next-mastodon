@@ -5,6 +5,7 @@
 
 import { AuthStore, type AuthState } from './authStore'
 import { UserStore } from './userStore'
+import { DraftStore } from './draftStore'
 import type { AnnualReportState } from '@/types/mastodon'
 
 export interface RootStoreInitialState {
@@ -16,12 +17,14 @@ export interface RootStoreInitialState {
 export class RootStore {
   authStore: AuthStore
   userStore: UserStore
+  draftStore: DraftStore
   initialAnnualReportState?: AnnualReportState
   initialWrapstodonYear?: number
 
   constructor(initialState?: RootStoreInitialState) {
     this.authStore = new AuthStore(initialState?.auth)
     this.userStore = new UserStore()
+    this.draftStore = new DraftStore()
     this.initialAnnualReportState = initialState?.annualReportState
     this.initialWrapstodonYear = initialState?.wrapstodonYear
   }

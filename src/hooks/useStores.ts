@@ -26,6 +26,11 @@ export function useUserStore() {
   return userStore
 }
 
+export function useDraftStore() {
+  const { draftStore } = useStores()
+  return draftStore
+}
+
 export function useConversationStore() {
   return getConversationStore()
 }

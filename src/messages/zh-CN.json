@@ -164,6 +164,12 @@
     "visibilityDescription": "控制谁可以与此帖子互动。你也可以在 首选项 > 发布默认设置 中将设置应用于所有未来的帖子。",
     "visibilityInteraction": "可见性与交互",
     "visibilityLabel": "可见性：{label}",
+    "saveDraft": {
+      "title": "将此帖子保存为草稿？",
+      "message": "如果现在放弃，你将丢失此帖子。",
+      "discard": "删除草稿",
+      "save": "保存为草稿"
+    },
     "visibilityOptions": {
       "direct": "私信",
       "directDesc": "仅提及的用户",

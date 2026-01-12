@@ -164,6 +164,12 @@
     "visibilityDescription": "Kiểm soát ai có thể tương tác với bài đăng này. Bạn cũng có thể áp dụng cài đặt cho tất cả các bài đăng trong tương lai tại Cài đặt > Mặc định đăng bài.",
     "visibilityInteraction": "Hiển thị và tương tác",
     "visibilityLabel": "Chế độ hiển thị: {label}",
+    "saveDraft": {
+      "title": "Lưu bài đăng này dưới dạng bản nháp?",
+      "message": "Nếu bạn hủy bây giờ, bạn sẽ mất bài đăng này.",
+      "discard": "Xóa bản nháp",
+      "save": "Lưu làm bản nháp"
+    },
     "visibilityOptions": {
       "direct": "Trực tiếp",
       "directDesc": "Chỉ những người được nhắc tên",
