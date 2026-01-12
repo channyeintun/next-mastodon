@@ -164,6 +164,12 @@
     "visibilityDescription": "この投稿にやり取りできる人を制限します。「設定 > 投稿のデフォルト設定」から、将来のすべての投稿に適用することもできます。",
     "visibilityInteraction": "公開範囲とやり取り",
     "visibilityLabel": "公開範囲: {label}",
+    "saveDraft": {
+      "title": "この投稿を下書きとして保存しますか？",
+      "message": "今破棄すると、この投稿は失われます。",
+      "discard": "下書きを削除",
+      "save": "下書きとして保存"
+    },
     "visibilityOptions": {
       "direct": "ダイレクト",
       "directDesc": "指定したユーザーのみ",

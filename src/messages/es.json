@@ -164,6 +164,12 @@
     "visibilityDescription": "Controla quién puede interactuar con esta publicación. También puedes aplicar esta configuración a todas tus publicaciones futuras en Preferencias > Valores predeterminados de publicación.",
     "visibilityInteraction": "Visibilidad e interacción",
     "visibilityLabel": "Visibilidad: {label}",
+    "saveDraft": {
+      "title": "¿Guardar esta publicación como borrador?",
+      "message": "Si la descartas ahora, perderás esta publicación.",
+      "discard": "Eliminar borrador",
+      "save": "Guardar como borrador"
+    },
     "visibilityOptions": {
       "direct": "Directo",
       "directDesc": "Solo usuarios mencionados",

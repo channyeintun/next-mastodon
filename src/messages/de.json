@@ -164,6 +164,12 @@
     "visibilityDescription": "Steuere, wer mit diesem Beitrag interagieren kann. Du kannst diese Einstellungen auch für alle zukünftigen Beiträge unter Einstellungen > Beitragsstandards festlegen.",
     "visibilityInteraction": "Sichtbarkeit und Interaktion",
     "visibilityLabel": "Sichtbarkeit: {label}",
+    "saveDraft": {
+      "title": "Diesen Beitrag als Entwurf speichern?",
+      "message": "Wenn du jetzt abbrichst, geht dieser Beitrag verloren.",
+      "discard": "Entwurf löschen",
+      "save": "Als Entwurf speichern"
+    },
     "visibilityOptions": {
       "direct": "Direkt",
       "directDesc": "Nur für erwähnte Personen",

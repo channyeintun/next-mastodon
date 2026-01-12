@@ -50,6 +50,8 @@ export { TrendingTagCard, TrendingTagCardSkeleton } from './TrendingTagCard';
 export { UserCard } from './UserCard';
 export { UserCardSkeleton } from './UserCardSkeleton';
 export { VisibilitySettingsModal } from './VisibilitySettingsModal';
+export { ComposeModal, ComposeModalContext } from './ComposeModal';
 export { ReportModal } from './ReportModal';
 export { FeedVideoPlayer } from './FeedVideoPlayer';
 export { ModalVideoPlayer } from './ModalVideoPlayer';
+export { SaveDraftConfirmationModal } from './SaveDraftConfirmationModal';
