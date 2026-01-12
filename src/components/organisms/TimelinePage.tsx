@@ -50,10 +50,19 @@ export const TimelinePage = observer(() => {
     const t = useTranslations('timeline');
     const tCommon = useTranslations('common');
     const tAccount = useTranslations('account');
-    const { data: statusPages, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteHomeTimeline();
+    const {
+        data: statusPages,
+        isLoading,
+        isError,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        fetchPreviousPage,
+        isFetchingPreviousPage
+    } = useInfiniteHomeTimeline();
     const { data: user, isLoading: isLoadingUser } = useCurrentAccount();
     const queryClient = useQueryClient();
-    const { newPostsCount, showNewPosts } = useTimelineStream();
+    const { newPostsCount, clearPendingStatuses } = useTimelineStream();
 
     const listRef = useRef<HTMLDivElement>(null);
     const [scrollMargin, setScrollMargin] = useState(0);
@@ -150,6 +159,12 @@ export const TimelinePage = observer(() => {
 
     const handleScrollToTop = () => {
         window.scrollTo(0, 0);
+    };
+
+    const handleShowNewPosts = async () => {
+        await fetchPreviousPage();
+        clearPendingStatuses();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     // Pre-populate account cache before navigation
@@ -299,10 +314,10 @@ export const TimelinePage = observer(() => {
             </StickyHeaderContainer>
 
             {/* New Posts Pill */}
-            {newPostsCount > 0 && (
-                <NewPostsPill onClick={showNewPosts}>
+            {(newPostsCount > 0 || isFetchingPreviousPage) && (
+                <NewPostsPill onClick={handleShowNewPosts} disabled={isFetchingPreviousPage}>
                     <ArrowUp size={16} />
-                    {t('newPosts', { count: newPostsCount })}
+                    {isFetchingPreviousPage ? tCommon('loading') : t('newPosts', { count: newPostsCount })}
                 </NewPostsPill>
             )}
 

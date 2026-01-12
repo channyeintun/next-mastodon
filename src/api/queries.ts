@@ -83,12 +83,19 @@ import { setCookie } from '../utils/cookies'
 export const infiniteHomeTimelineOptions = () =>
   infiniteQueryOptions({
     queryKey: queryKeys.timelines.home(),
-    queryFn: ({ pageParam, signal }) => {
+    queryFn: ({ pageParam, signal, direction }) => {
       const params: TimelineParams = { limit: 10 }
-      if (pageParam) params.max_id = pageParam
+      if (pageParam) {
+        if (direction === 'backward') {
+          params.min_id = pageParam
+        } else {
+          params.max_id = pageParam
+        }
+      }
       return getHomeTimeline(params, signal)
     },
     getNextPageParam: (lastPage) => lastPage.nextMaxId,
+    getPreviousPageParam: (firstPage) => firstPage.prevMinId,
     initialPageParam: undefined as string | undefined,
   })
 

@@ -272,41 +272,13 @@ export function useTimelineStream() {
         return () => streamingStore.setOnTimelineUpdate(null)
     }, [streamingStore])
 
-    const showNewPosts = useCallback(() => {
-        if (pendingStatuses.length === 0) return
-
-        const queryKey = queryKeys.timelines.home()
-
-        queryClient.setQueryData<InfiniteData<PaginatedResponse<Status[]>>>(
-            queryKey,
-            (oldData) => {
-                if (!oldData?.pages) return oldData
-
-                // Create a new first page with pending statuses prepended
-                const firstPage = oldData.pages[0]
-                const newFirstPage = {
-                    ...firstPage,
-                    data: [...pendingStatuses, ...firstPage.data]
-                }
-
-                return {
-                    ...oldData,
-                    pages: [newFirstPage, ...oldData.pages.slice(1)]
-                }
-            }
-        )
-
-        // Clear pending statuses
+    const clearPendingStatuses = useCallback(() => {
         setPendingStatuses([])
-        
-        // Scroll to top
-        window.scrollTo(0, 0)
-        
-    }, [pendingStatuses, queryClient])
+    }, [])
 
-    return { 
+    return {
         status: streamingStore.status,
         newPostsCount: pendingStatuses.length,
-        showNewPosts
+        clearPendingStatuses
     }
 }

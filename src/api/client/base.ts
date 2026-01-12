@@ -5,7 +5,7 @@
 
 import axios, { type AxiosInstance } from 'axios'
 import { getRootStore } from '../../stores/rootStore'
-import { getNextMaxId } from '../parseLinkHeader'
+import { getNextMaxId, getPrevMinId } from '../parseLinkHeader'
 import { LOCALE_COOKIE_NAME, defaultLocale } from '@/i18n/config'
 
 /**
@@ -14,6 +14,7 @@ import { LOCALE_COOKIE_NAME, defaultLocale } from '@/i18n/config'
 export interface PaginatedResponse<T> {
     data: T
     nextMaxId?: string
+    prevMinId?: string
 }
 
 // Create axios instance with default base URL
@@ -101,5 +102,6 @@ export function wrapPaginatedResponse<T>(data: T, linkHeader?: string): Paginate
     return {
         data,
         nextMaxId: getNextMaxId(linkHeader),
+        prevMinId: getPrevMinId(linkHeader),
     }
 }

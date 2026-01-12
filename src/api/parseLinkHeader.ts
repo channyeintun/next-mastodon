@@ -83,3 +83,12 @@ export function getNextMaxId(linkHeader: string | null | undefined): string | un
   const nextLink = getNextLink(refs)
   return extractMaxId(nextLink)
 }
+
+/**
+ * Convenience function to get the previous min_id directly from a Link header
+ */
+export function getPrevMinId(linkHeader: string | null | undefined): string | undefined {
+  const refs = parseLinkHeader(linkHeader)
+  const prevLink = getPrevLink(refs)
+  return extractMinId(prevLink)
+}
