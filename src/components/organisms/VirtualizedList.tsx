@@ -118,7 +118,7 @@ export function VirtualizedList<T>({
   renderItem,
   getItemKey,
   estimateSize = 350,
-  overscan: overscanProp,
+  overscan,
   onLoadMore,
   isLoadingMore = false,
   hasMore = false,
@@ -134,9 +134,6 @@ export function VirtualizedList<T>({
   className,
 }: VirtualizedListProps<T>) {
   const parentRef = useRef<HTMLDivElement>(null);
-
-  // Determine overscan: use prop if provided, otherwise conditional default
-  const overscan = overscanProp ?? 5;
 
   // Get saved scroll state if available
   const savedState = scrollRestorationKey

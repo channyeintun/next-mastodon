@@ -108,7 +108,6 @@ export function ProfileTabContent({
         count: mixedItems.length,
         estimateSize,
         getItemKey,
-        overscan: 5,
         scrollMargin,
         initialOffset: cachedState?.offset,
         initialMeasurementsCache: cachedState?.measurementsCache,
