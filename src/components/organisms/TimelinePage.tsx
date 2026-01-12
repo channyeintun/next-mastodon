@@ -280,6 +280,7 @@ export const TimelinePage = observer(() => {
                             <Link
                                 href={`/@${user.acct}`}
                                 className="profile-pill profile-pill-static"
+                                prefetch
                                 onClick={handleProfileClick}
                             >
                                 <img
