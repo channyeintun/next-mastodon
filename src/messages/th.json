@@ -2,6 +2,11 @@
   "about": {
     "title": "เกี่ยวกับ"
   },
+  "status": {
+    "continued_thread": "เธรดต่อเนื่อง",
+    "replied_to": "ตอบกลับ <link>{name}</link>",
+    "replied_in_thread": "ตอบกลับในเธรด"
+  },
   "account": {
     "backToTimeline": "กลับสู่ไทม์ไลน์",
     "block": "บล็อก",

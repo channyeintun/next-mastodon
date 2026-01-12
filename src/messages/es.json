@@ -690,5 +690,10 @@
     "notAvailable": "Wrapstodon no disponible",
     "somethingWentWrong": "Algo salió mal",
     "title": "Wrapstodon"
+  },
+  "status": {
+    "continued_thread": "Hilo continuado",
+    "replied_to": "Respondió a <link>{name}</link>",
+    "replied_in_thread": "Respondió en el hilo"
   }
 }

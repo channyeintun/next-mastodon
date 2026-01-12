@@ -690,5 +690,10 @@
     "notAvailable": "Wrapstodonは利用できません",
     "somethingWentWrong": "エラーが発生しました",
     "title": "Wrapstodon"
+  },
+  "status": {
+    "continued_thread": "スレッドの続き",
+    "replied_to": "<link>{name}</link> さんへの返信",
+    "replied_in_thread": "スレッド内での返信"
   }
 }

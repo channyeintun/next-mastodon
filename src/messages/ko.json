@@ -690,5 +690,10 @@
     "notAvailable": "Wrapstodon을 사용할 수 없습니다",
     "somethingWentWrong": "문제가 발생했습니다",
     "title": "Wrapstodon"
+  },
+  "status": {
+    "continued_thread": "스레드 이어짐",
+    "replied_to": "<link>{name}</link> 님에게 답글 남김",
+    "replied_in_thread": "스레드에 답글 남김"
   }
 }

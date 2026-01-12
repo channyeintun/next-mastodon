@@ -5,6 +5,7 @@ import { Card, SensitiveContentButton } from '@/components/atoms';
 import {
   StatusEditHistory,
   ReblogIndicator,
+  StatusThreadLabel,
   PostHeader,
   PostActions,
   PostPoll,
@@ -236,6 +237,7 @@ export function PostCard({
     <Card as="article" padding="medium" style={cardStyle} onClick={handleCardClick} id={id} className="post-card">
       {/* Reblog indicator */}
       {isReblog && <ReblogIndicator account={status.account} />}
+      {!isReblog && <StatusThreadLabel status={displayStatus} />}
 
       {/* Post header and content */}
       <PostContent>

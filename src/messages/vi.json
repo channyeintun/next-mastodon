@@ -690,5 +690,10 @@
     "notAvailable": "Wrapstodon chưa sẵn sàng",
     "somethingWentWrong": "Đã xảy ra lỗi",
     "title": "Wrapstodon"
+  },
+  "status": {
+    "continued_thread": "Chuỗi bài viết tiếp tục",
+    "replied_to": "Đã trả lời <link>{name}</link>",
+    "replied_in_thread": "Đã trả lời trong chuỗi"
   }
 }

@@ -2,6 +2,11 @@
   "about": {
     "title": "À propos"
   },
+  "status": {
+    "continued_thread": "Fil de discussion continué",
+    "replied_to": "A répondu à <link>{name}</link>",
+    "replied_in_thread": "A répondu dans le fil"
+  },
   "account": {
     "backToTimeline": "Retour au fil",
     "block": "Bloquer",

@@ -1,6 +1,11 @@
 {
   "about": {
-    "title": "အကြောင်းအရာ"
+    "title": "အကြောင်း"
+  },
+  "status": {
+    "continued_thread": "အဆက်အစပ် သရက်ဒ်",
+    "replied_to": "<link>{name}</link> ထံ ပြန်လည်ဖြေကြားခဲ့သည်",
+    "replied_in_thread": "သရက်ဒ်တွင် ပြန်လည်ဖြေကြားခဲ့သည်"
   },
   "account": {
     "backToTimeline": "ပင်မစာမျက်နှာသို့ ပြန်သွားရန်",

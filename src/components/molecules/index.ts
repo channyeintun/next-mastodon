@@ -43,6 +43,7 @@ export { SearchHistory } from './SearchHistory';
 export { StatusContent } from './StatusContent';
 export { StatusEditHistory } from './StatusEditHistory';
 export { StatusStats } from './StatusStats';
+export { StatusThreadLabel } from './StatusThreadLabel';
 export { ThemeSelector } from './ThemeSelector';
 export { TranslateButton, useTranslation } from './TranslateButton';
 export { TrendingLinkCard, TrendingLinkCardSkeleton } from './TrendingLinkCard';
