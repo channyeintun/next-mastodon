@@ -172,6 +172,12 @@
       "discard": "Eliminar borrador",
       "save": "Guardar como borrador"
     },
+    "discardChanges": {
+      "title": "¿Descartar cambios?",
+      "message": "¿Estás seguro de que quieres descartar los cambios? Esto no se puede deshacer.",
+      "discard": "Descartar",
+      "cancel": "Seguir editando"
+    },
     "visibilityOptions": {
       "direct": "Directo",
       "directDesc": "Solo usuarios mencionados",

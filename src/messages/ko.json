@@ -172,6 +172,12 @@
       "discard": "임시 저장 삭제",
       "save": "임시 저장"
     },
+    "discardChanges": {
+      "title": "변경사항을 취소하시겠습니까？",
+      "message": "변경사항을 취소하시겠습니까？ 이 작업은 되돌릴 수 없습니다。",
+      "discard": "취소",
+      "cancel": "계속 편집하기"
+    },
     "visibilityOptions": {
       "direct": "다이렉트",
       "directDesc": "언급된 사용자만",

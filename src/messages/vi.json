@@ -172,6 +172,12 @@
       "discard": "Xóa bản nháp",
       "save": "Lưu làm bản nháp"
     },
+    "discardChanges": {
+      "title": "Hủy bỏ thay đổi?",
+      "message": "Bạn có chắc chắn muốn hủy bỏ các thay đổi không? Hành động này không thể hoàn tác.",
+      "discard": "Hủy bỏ",
+      "cancel": "Tiếp tục chỉnh sửa"
+    },
     "visibilityOptions": {
       "direct": "Trực tiếp",
       "directDesc": "Chỉ những người được nhắc tên",

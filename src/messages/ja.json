@@ -172,6 +172,12 @@
       "discard": "下書きを削除",
       "save": "下書きとして保存"
     },
+    "discardChanges": {
+      "title": "変更を破棄しますか？",
+      "message": "変更を破棄してもよろしいですか？この操作は取り消せません。",
+      "discard": "破棄",
+      "cancel": "編集を続ける"
+    },
     "visibilityOptions": {
       "direct": "ダイレクト",
       "directDesc": "指定したユーザーのみ",

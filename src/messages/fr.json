@@ -177,6 +177,12 @@
       "discard": "Supprimer le brouillon",
       "save": "Enregistrer le brouillon"
     },
+    "discardChanges": {
+      "title": "Abandonner les modifications ?",
+      "message": "Voulez-vous vraiment abandonner vos modifications ? Cette action est irréversible.",
+      "discard": "Abandonner",
+      "cancel": "Continuer l'édition"
+    },
     "visibilityOptions": {
       "direct": "Direct",
       "directDesc": "Uniquement les personnes mentionnées",
