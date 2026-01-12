@@ -66,7 +66,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
   // Only show skeleton if status is loading (not hydrated/cached)
   if (statusLoading) {
     return (
-      <Container>
+      <Container className="mobile-bottom-padding">
         <Header>
           <IconButton onClick={() => router.back()}>
             <ArrowLeft size={20} />
@@ -100,7 +100,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
   // Context may still be loading - show its own loading indicators
 
   return (
-    <Container>
+    <Container className="mobile-bottom-padding">
       {/* Sticky header */}
       <Header ref={headerRef}>
         <IconButton onClick={() => router.back()}>
