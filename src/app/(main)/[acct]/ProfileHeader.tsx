@@ -93,7 +93,7 @@ export function ProfileHeader({
                     <link itemProp="url" href={account.url} />
                 </NameSection>
                 <ProfileBio note={account.note} emojis={account.emojis} />
-                <ProfileStats acct={account.acct} postsCount={account.statuses_count} followingCount={account.following_count} followersCount={account.followers_count} />
+                <ProfileStats acct={account.acct} postsCount={account.statuses_count} followingCount={account.following_count} followersCount={account.followers_count} relationship={relationship} />
                 <MetaSection>
                     {account.created_at && (
                         <MetaItem>

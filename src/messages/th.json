@@ -24,6 +24,8 @@
       "noMoreFollowers": "ไม่มีผู้ติดตามเพิ่มเติม",
       "title": "ผู้ติดตาม"
     },
+    "mutual": "คุณติดตามกันและกัน",
+    "follows_you": "ติดตามคุณ",
     "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "กำลังติดตาม",
     "followingPage": {
@@ -385,7 +387,9 @@
     "noPosts": "ยังไม่มีโพสต์",
     "notFollowing": "ยังไม่ได้ติดตามใคร",
     "posts": "โพสต์",
-    "profileInfo": "ข้อมูลโปรไฟล์"
+    "profileInfo": "ข้อมูลโปรไฟล์",
+    "mutual": "คุณติดตามกันและกัน",
+    "follows_you": "ติดตามคุณ"
   },
   "profileEditor": {
     "bio": "ประวัติ",

@@ -19,6 +19,8 @@
       "noMoreFollowers": "더 이상 팔로워가 없습니다",
       "title": "팔로워"
     },
+    "mutual": "서로 팔로우",
+    "follows_you": "나를 팔로우",
     "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "팔로잉",
     "followingPage": {
@@ -380,7 +382,9 @@
     "noPosts": "게시물이 아직 없습니다",
     "notFollowing": "아직 팔로우하는 사람이 없습니다",
     "posts": "게시물",
-    "profileInfo": "프로필 정보"
+    "profileInfo": "프로필 정보",
+    "mutual": "서로 팔로우",
+    "follows_you": "나를 팔로우"
   },
   "profileEditor": {
     "bio": "소개",

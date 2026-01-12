@@ -116,6 +116,16 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
                 </StatCount>{' '}
                 {t('followers_count', { count: account.followers_count })}
               </div>
+              {relationship && (relationship.followed_by || (relationship.following && relationship.followed_by)) && (
+                <div style={{ color: 'var(--text-3)' }}>
+                  &middot;{' '}
+                  {relationship.following && relationship.followed_by ? (
+                    t('mutual')
+                  ) : (
+                    t('follows_you')
+                  )}
+                </div>
+              )}
               <div>
                 <StatCount>
                   {account.following_count.toLocaleString()}

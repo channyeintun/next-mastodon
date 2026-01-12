@@ -19,6 +19,8 @@
       "noMoreFollowers": "Không còn người theo dõi",
       "title": "Người theo dõi"
     },
+    "mutual": "Theo dõi nhau",
+    "follows_you": "Đang theo dõi bạn",
     "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "Đang theo dõi",
     "followingPage": {
@@ -380,7 +382,9 @@
     "noPosts": "Chưa có bài đăng nào",
     "notFollowing": "Chưa theo dõi ai",
     "posts": "Bài đăng",
-    "profileInfo": "Thông tin hồ sơ"
+    "profileInfo": "Thông tin hồ sơ",
+    "mutual": "Theo dõi nhau",
+    "follows_you": "Đang theo dõi bạn"
   },
   "profileEditor": {
     "bio": "Tiểu sử",

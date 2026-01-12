@@ -19,6 +19,8 @@
       "noMoreFollowers": "没有更多关注者了",
       "title": "关注者"
     },
+    "mutual": "你们互相关注",
+    "follows_you": "关注了你",
     "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "正在关注",
     "followingPage": {
@@ -380,7 +382,9 @@
     "noPosts": "暂无帖子",
     "notFollowing": "暂未关注任何人",
     "posts": "帖子",
-    "profileInfo": "个人资料信息"
+    "profileInfo": "个人资料信息",
+    "mutual": "你们互相关注",
+    "follows_you": "关注了你"
   },
   "profileEditor": {
     "bio": "个人简介",

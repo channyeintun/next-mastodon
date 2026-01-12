@@ -19,6 +19,8 @@
       "noMoreFollowers": "Keine weiteren Folgenden",
       "title": "Folgende"
     },
+    "follows_you": "Folgt dir",
+    "mutual": "Ihr folgt einander",
     "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "Folgt",
     "followingPage": {
@@ -380,7 +382,9 @@
     "noPosts": "Noch keine Beiträge",
     "notFollowing": "Folgt noch niemandem",
     "posts": "Beiträge",
-    "profileInfo": "Profilinformationen"
+    "profileInfo": "Profilinformationen",
+    "mutual": "Ihr folgt einander",
+    "follows_you": "Folgt dir"
   },
   "profileEditor": {
     "bio": "Bio",

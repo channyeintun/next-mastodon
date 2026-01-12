@@ -75,7 +75,9 @@
       "noMoreFollowers": "No more followers",
       "hiddenInfo": "This user has chosen to not make this information available",
       "noFollowersYet": "No followers yet"
-    }
+    },
+    "mutual": "You follow each other",
+    "follows_you": "Follows you"
   },
   "common": {
     "retry": "Retry",
@@ -221,7 +223,9 @@
     "notFollowing": "Not following anyone yet",
     "hiddenInfo": "This user has chosen to not make this information available",
     "profileInfo": "Profile information",
-    "extraFields": "Extra fields"
+    "extraFields": "Extra fields",
+    "mutual": "You follow each other",
+    "follows_you": "Follows you"
   },
   "actions": {
     "reply": "Reply",

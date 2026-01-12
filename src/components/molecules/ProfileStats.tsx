@@ -4,11 +4,14 @@ import styled from '@emotion/styled';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
+import type { Relationship } from '@/types';
+
 interface ProfileStatsProps {
   acct: string;
   postsCount: number;
   followingCount: number;
   followersCount: number;
+  relationship?: Relationship;
 }
 
 /**
@@ -19,6 +22,7 @@ export function ProfileStats({
   postsCount,
   followingCount,
   followersCount,
+  relationship,
 }: ProfileStatsProps) {
   const t = useTranslations('profile');
   return (
@@ -41,6 +45,16 @@ export function ProfileStats({
         </Count>{' '}
         <Label>{t('followers')}</Label>
       </StatsLink>
+      {relationship && (relationship.followed_by || (relationship.following && relationship.followed_by)) && (
+        <RelationshipLabel>
+          &middot;{' '}
+          {relationship.following && relationship.followed_by ? (
+            t('mutual')
+          ) : (
+            t('follows_you')
+          )}
+        </RelationshipLabel>
+      )}
     </Container>
   );
 }
@@ -75,4 +89,9 @@ const Label = styled.span`
   @media (max-width: 320px) {
     display: none;
   }
+`;
+
+const RelationshipLabel = styled.span`
+  color: var(--text-2);
+  font-weight: var(--font-weight-4);
 `;

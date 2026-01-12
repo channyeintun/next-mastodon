@@ -1,4 +1,4 @@
-export { AccountCard, AccountCardSkeleton } from './AccountCard';
+export { AccountCard, AccountCardSkeleton } from './AccountCard/index';
 export { AccountProfileSkeleton } from './AccountProfileSkeleton';
 export { AuthModalBridge } from './AuthModalBridge';
 export { ComposerToolbar } from './ComposerToolbar';

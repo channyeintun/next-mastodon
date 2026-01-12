@@ -19,6 +19,8 @@
       "noMoreFollowers": "これ以上のフォロワーはありません",
       "title": "フォロワー"
     },
+    "mutual": "相互フォロー中",
+    "follows_you": "フォローされています",
     "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "フォロー中",
     "followingPage": {
@@ -380,7 +382,9 @@
     "noPosts": "投稿はまだありません",
     "notFollowing": "まだ誰もフォローしていません",
     "posts": "投稿",
-    "profileInfo": "プロフィール情報"
+    "profileInfo": "プロフィール情報",
+    "mutual": "相互フォロー中",
+    "follows_you": "フォローされています"
   },
   "profileEditor": {
     "bio": "自己紹介",

@@ -20,10 +20,12 @@
     "follow_hint": "Follow some people to see their posts here.",
     "followersPage": {
       "hiddenInfo": "Cet utilisateur a choisi de masquer cette information",
-      "noFollowersYet": "Aucun abonné pour le moment",
+      "noFollowersYet": "Pas encore d'abonnés",
       "noMoreFollowers": "Plus aucun abonné",
       "title": "Abonnés"
     },
+    "mutual": "Vous vous suivez mutuellement",
+    "follows_you": "Vous suit",
     "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "Abonnements",
     "followingPage": {
@@ -385,7 +387,9 @@
     "noPosts": "Aucune publication",
     "notFollowing": "Aucun abonnement",
     "posts": "Publications",
-    "profileInfo": "Informations du profil"
+    "profileInfo": "Informations du profil",
+    "mutual": "Vous vous suivez mutuellement",
+    "follows_you": "Vous suit"
   },
   "profileEditor": {
     "bio": "Bio",
