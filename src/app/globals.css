@@ -330,6 +330,7 @@ input[type="radio"] {
   max-height: 400px;
   overflow-y: auto;
   padding: var(--size-3);
+  position: relative;
 }
 
 .tiptap-editor-compact .tiptap-editor-editable {
@@ -350,8 +351,9 @@ input[type="radio"] {
 .ProseMirror p.is-editor-empty:first-child::before {
   color: var(--gray-5);
   content: attr(data-placeholder);
-  float: left;
-  height: 0;
+  position: absolute;
+  top: var(--size-3);
+  left: var(--size-3);
   pointer-events: none;
 }
 
@@ -792,10 +794,15 @@ input[type="radio"] {
 .compose-editor-area .ProseMirror {
   min-height: 200px;
   /* Increased from 150px for better writing experience */
-  padding: var(--size-2) 0;
-  /* Remove horizontal padding for pure text feel */
+  padding: var(--size-3) 0;
+  /* Use vertical padding from tiptap-editor-editable */
   line-height: normal;
   outline: none;
+}
+
+.compose-editor-area .ProseMirror p.is-editor-empty:first-child::before {
+  top: var(--size-3);
+  left: 0;
 }
 
 
