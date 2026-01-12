@@ -212,7 +212,7 @@ export function ReportModal({ account, status, onClose }: ReportModalProps) {
     const stepRenderers = { category: renderCategoryStep, rules: renderRulesStep, statuses: renderStatusesStep, comment: renderCommentStep, thanks: renderThanksStep };
 
     return (
-        <Container>
+        <Container className="modal-medium">
             <Header>
                 <HeaderInfo>
                     <Avatar src={account.avatar} alt={account.display_name || account.username} size="medium" />

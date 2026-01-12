@@ -57,8 +57,6 @@ export function GlobalModalProvider({ children }: { children: ReactNode }) {
                 style={{
                     padding: 0,
                     border: 'none',
-                    maxWidth: '100vw',
-                    maxHeight: '100vh',
                 }}
             >
                 {/* Wrapper div to prevent backdrop click from closing when clicking content */}

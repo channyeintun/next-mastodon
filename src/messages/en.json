@@ -323,6 +323,12 @@
       "message": "If you discard now, you'll lose this post.",
       "discard": "Delete draft",
       "save": "Save as draft"
+    },
+    "discardChanges": {
+      "title": "Discard changes?",
+      "message": "Are you sure you want to discard your changes? This cannot be undone.",
+      "discard": "Discard",
+      "cancel": "Keep editing"
     }
   },
   "explore": {

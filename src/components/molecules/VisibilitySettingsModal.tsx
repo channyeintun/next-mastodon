@@ -168,7 +168,7 @@ export function VisibilitySettingsModal({
     const isQuoteDisabled = visibility === 'private' || visibility === 'direct' || isReply;
 
     return (
-        <Container>
+        <Container className="modal-medium">
             {/* Header */}
             <div className="dialog-header">
                 <HeaderTitle>
@@ -234,8 +234,6 @@ export function VisibilitySettingsModal({
 }
 
 const Container = styled.div`
-  width: 500px;
-  max-width: 90vw;
   overflow: visible;
 `;
 

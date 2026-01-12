@@ -84,6 +84,8 @@ export const ComposerPanel = observer(({
   const { openModal, closeModal } = useGlobalModal();
   const modalContext = useContext(ComposeModalContext);
   const editorRef = useRef<any>(null);
+  const initialTextRef = useRef<string | null>(null);
+  const hasInitializedTextRef = useRef(false);
 
   const [content, setContent] = useState(computedInitialContent);
   const [textContent, setTextContent] = useState('');
@@ -133,9 +135,13 @@ export const ComposerPanel = observer(({
     if (editMode && initialMedia.length > 0) setMedia(initialMedia);
   }, [editMode, initialMedia, setMedia]);
 
-  const isDirty = !editMode && (
-    textContent.trim().length > 0 || media.length > 0 || poll !== null ||
-    contentWarning.trim().length > 0 || showScheduleInput
+  const isDirty = (
+    (hasInitializedTextRef.current && textContent !== (initialTextRef.current ?? '')) ||
+    (!hasInitializedTextRef.current && !editMode && !isReply && textContent.trim().length > 0) ||
+    media.length !== (editMode ? initialMedia.length : 0) ||
+    poll !== null ||
+    (contentWarning !== initialSpoilerText) ||
+    showScheduleInput
   );
 
   const handleRestore = useCallback((draft: Draft) => {
@@ -280,7 +286,14 @@ export const ComposerPanel = observer(({
           content={content}
           placeholder={isReply ? t('replyPlaceholder') : t('placeholder')}
           emojis={customEmojis || []}
-          onUpdate={(html, text) => { setContent(html); setTextContent(text); }}
+          onUpdate={(html, text) => {
+            if (!hasInitializedTextRef.current) {
+              initialTextRef.current = text;
+              hasInitializedTextRef.current = true;
+            }
+            setContent(html);
+            setTextContent(text);
+          }}
           onEditorReady={(editor) => { editorRef.current = editor; }}
           mentionSuggestion={createMentionSuggestion()}
           onFilePaste={handleFilePaste}

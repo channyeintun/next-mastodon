@@ -1,10 +1,10 @@
 'use client';
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { useDraftStore } from './useStores';
-import { SaveDraftConfirmationModal } from '@/components/molecules';
+import { SaveDraftConfirmationModal, DiscardChangesModal } from '@/components/molecules';
 import { useNavigationBlocker } from './useNavigationBlocker';
 import type { Draft } from '@/stores/draftStore';
 
@@ -36,8 +36,14 @@ export function useComposerDraft({
     const draftStore = useDraftStore();
     const { openModal, closeModal } = useGlobalModal();
     const router = useRouter();
+    const [shouldSkipBlocker, setShouldSkipBlocker] = useState(false);
     const skipBlockerRef = useRef(false);
     const pendingNavigationRef = useRef<string | null>(null);
+
+    const skipBlocker = useCallback(() => {
+        skipBlockerRef.current = true;
+        setShouldSkipBlocker(true);
+    }, []);
 
     // Restore draft for NEW posts
     useEffect(() => {
@@ -52,59 +58,78 @@ export function useComposerDraft({
 
     const handleDiscardDraft = useCallback(() => {
         draftStore.clearDraft();
-        skipBlockerRef.current = true;
-    }, [draftStore]);
+        skipBlocker();
+    }, [draftStore, skipBlocker]);
 
     const handleBlockedNavigation = useCallback((url?: string) => {
         pendingNavigationRef.current = url || null;
+        const isNewPost = !editMode && !isReply;
+
         openModal(
-            <SaveDraftConfirmationModal
-                onSave={() => {
-                    handleSaveDraft();
-                    closeModal();
-                    if (pendingNavigationRef.current) {
-                        router.push(pendingNavigationRef.current);
-                    } else {
-                        router.back();
-                    }
-                }}
-                onDiscard={() => {
-                    handleDiscardDraft();
-                    closeModal();
-                    if (pendingNavigationRef.current) {
-                        router.push(pendingNavigationRef.current);
-                    } else {
-                        router.back();
-                    }
-                }}
-                onCancel={closeModal}
-            />
+            isNewPost ? (
+                <SaveDraftConfirmationModal
+                    onSave={() => {
+                        handleSaveDraft();
+                        closeModal();
+                        if (pendingNavigationRef.current) {
+                            router.push(pendingNavigationRef.current);
+                        } else {
+                            router.back();
+                        }
+                    }}
+                    onDiscard={() => {
+                        handleDiscardDraft();
+                        closeModal();
+                        if (pendingNavigationRef.current) {
+                            router.push(pendingNavigationRef.current);
+                        } else {
+                            router.back();
+                        }
+                    }}
+                    onCancel={closeModal}
+                />
+            ) : (
+                <DiscardChangesModal
+                    onDiscard={() => {
+                        skipBlocker();
+                        closeModal();
+                        if (pendingNavigationRef.current) {
+                            router.push(pendingNavigationRef.current);
+                        } else {
+                            router.back();
+                        }
+                    }}
+                    onCancel={closeModal}
+                />
+            )
         );
     }, [openModal, closeModal, router, handleSaveDraft, handleDiscardDraft]);
 
     useNavigationBlocker({
-        isDirty: isDirty && !skipBlockerRef.current,
+        isDirty: isDirty && !shouldSkipBlocker,
+        shouldSkipRef: skipBlockerRef,
         onBlockedNavigation: handleBlockedNavigation,
     });
+
+    const actualIsDirty = isDirty && !shouldSkipBlocker;
 
     const handleModalCloseRequest = useCallback(() => {
         handleBlockedNavigation();
     }, [handleBlockedNavigation]);
 
     useEffect(() => {
-        if (modalContext) {
-            modalContext.setIsDirty(isDirty && !skipBlockerRef.current);
-            modalContext.registerOnCloseHandler((isDirty && !skipBlockerRef.current) ? handleModalCloseRequest : null);
-        }
+        if (!modalContext) return;
+
+        modalContext.setIsDirty(actualIsDirty);
+        modalContext.registerOnCloseHandler(actualIsDirty ? handleModalCloseRequest : null);
+
         return () => {
-            if (modalContext) {
-                modalContext.registerOnCloseHandler(null);
-            }
+            modalContext.registerOnCloseHandler(null);
         };
-    }, [isDirty, modalContext, handleModalCloseRequest]);
+    }, [actualIsDirty, modalContext, handleModalCloseRequest]);
 
     return {
-        skipBlocker: () => { skipBlockerRef.current = true; },
+        skipBlocker,
         handleDiscardDraft,
     };
 }

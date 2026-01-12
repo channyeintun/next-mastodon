@@ -34,6 +34,13 @@ export function ComposeModal({ children }: ComposeModalProps) {
   const { isOpen: isGlobalModalOpen } = useGlobalModal();
   const overlayRef = useRef<HTMLDivElement>(null);
   const mouseDownTarget = useRef<EventTarget | null>(null);
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const handleClose = useCallback(() => {
     if (isDirty && registeredOnCloseHandler) {
@@ -57,7 +64,7 @@ export function ComposeModal({ children }: ComposeModalProps) {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleClose]);
+  }, [handleClose, isGlobalModalOpen]);
 
   // Lock body scroll when modal is open
   useEffect(() => {

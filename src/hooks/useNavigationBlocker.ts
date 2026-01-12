@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface UseNavigationBlockerProps {
     isDirty: boolean;
     onBlockedNavigation: (url?: string) => void;
+    shouldSkipRef?: React.RefObject<boolean>;
 }
 
 /**
@@ -14,12 +15,17 @@ interface UseNavigationBlockerProps {
  * 2. Back/Forward buttons (popstate)
  * 3. Clicking internal links (click interception)
  */
-export function useNavigationBlocker({ isDirty, onBlockedNavigation }: UseNavigationBlockerProps) {
+export function useNavigationBlocker({ isDirty, onBlockedNavigation, shouldSkipRef }: UseNavigationBlockerProps) {
+    const isDirtyRef = useRef(isDirty);
+
+    useEffect(() => {
+        isDirtyRef.current = isDirty;
+    }, [isDirty]);
 
     // 1. Handle browser refresh/close
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-            if (isDirty) {
+            if (isDirtyRef.current && !shouldSkipRef?.current) {
                 e.preventDefault();
                 e.returnValue = ''; // Standard way to show browser confirmation
                 return '';
@@ -28,13 +34,13 @@ export function useNavigationBlocker({ isDirty, onBlockedNavigation }: UseNaviga
 
         window.addEventListener('beforeunload', handleBeforeUnload);
         return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-    }, [isDirty]);
+    }, []);
 
     // 2. Handle internal link clicks
     useEffect(() => {
-        if (!isDirty) return;
-
         const handleAnchorClick = (e: MouseEvent) => {
+            if (!isDirtyRef.current || shouldSkipRef?.current) return;
+
             // Don't block if it's not a left click
             if (e.button !== 0) return;
 
@@ -59,13 +65,13 @@ export function useNavigationBlocker({ isDirty, onBlockedNavigation }: UseNaviga
         // Use capture to intercept before Next.js Link component handles it
         document.addEventListener('click', handleAnchorClick, true);
         return () => document.removeEventListener('click', handleAnchorClick, true);
-    }, [isDirty, onBlockedNavigation]);
+    }, [onBlockedNavigation]);
 
     // 3. Handle back/forward buttons
     useEffect(() => {
-        if (!isDirty) return;
-
         const handlePopState = (_e: PopStateEvent) => {
+            if (!isDirtyRef.current || shouldSkipRef?.current) return;
+
             // If dirty, push the state back so the user stays on the page
             // and show the confirmation modal
             window.history.pushState(null, '', window.location.href);
@@ -74,5 +80,5 @@ export function useNavigationBlocker({ isDirty, onBlockedNavigation }: UseNaviga
 
         window.addEventListener('popstate', handlePopState);
         return () => window.removeEventListener('popstate', handlePopState);
-    }, [isDirty, onBlockedNavigation]);
+    }, [onBlockedNavigation]);
 }

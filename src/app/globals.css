@@ -1537,6 +1537,42 @@ dialog::backdrop {
   }
 }
 
+/* Desktop styles for modals */
+@media (min-width: 769px) {
+  dialog {
+    border-radius: var(--radius-3);
+    box-shadow: var(--shadow-6);
+    border: none;
+    background: transparent;
+    padding: 0;
+  }
+
+  /* Default wrapper for content in dialogs on desktop */
+  dialog>div {
+    background: var(--surface-1);
+    border-radius: var(--radius-3);
+    overflow: hidden;
+  }
+
+  /* Target specific modal sizes */
+  .modal-small,
+  dialog:has(.bottom-sheet-content) {
+    max-width: 440px;
+    width: 90vw;
+  }
+
+  .modal-medium {
+    max-width: 600px;
+    width: 90vw;
+  }
+
+  /* Specific fix for bottom-sheet-content background on desktop */
+  .bottom-sheet-content {
+    background: var(--surface-2);
+    border-radius: var(--radius-3);
+  }
+}
+
 .dialog-header {
   display: flex;
   align-items: center;

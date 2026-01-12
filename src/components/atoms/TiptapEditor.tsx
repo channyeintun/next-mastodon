@@ -142,10 +142,8 @@ export function TiptapEditor({
     if (editor && onUpdate) {
       const html = editor.getHTML();
       const text = editor.getText({ blockSeparator: '\n' }).replace(/\u00A0/g, ' ');
-      // Only call if there's actual content
-      if (text.trim().length > 0) {
-        onUpdate(html, text);
-      }
+      // Establish baseline even if empty
+      onUpdate(html, text);
     }
     // Only run once when editor is first created, intentionally omitting onUpdate
   }, [editor]);
