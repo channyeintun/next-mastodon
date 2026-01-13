@@ -1578,11 +1578,6 @@ dialog::backdrop {
     width: 90vw;
   }
 
-  .modal-medium {
-    max-width: 600px;
-    width: 90vw;
-  }
-
   /* Specific fix for bottom-sheet-content background on desktop */
   .bottom-sheet-content {
     background: var(--surface-2);

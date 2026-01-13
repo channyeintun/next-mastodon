@@ -168,7 +168,7 @@ export function VisibilitySettingsModal({
     const isQuoteDisabled = visibility === 'private' || visibility === 'direct' || isReply;
 
     return (
-        <Container className="modal-medium">
+        <Container>
             {/* Header */}
             <div className="dialog-header">
                 <HeaderTitle>
