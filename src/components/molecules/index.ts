@@ -17,6 +17,7 @@ export { HandleExplainer } from './HandleExplainer';
 export { ImageCropper } from './ImageCropper';
 export { LanguageDropdown } from './LanguageDropdown';
 export { LinkPreview } from './LinkPreview';
+export const KeyboardShortcutsLegend = dynamic(() => import('./KeyboardShortcutsLegend').then(m => m.KeyboardShortcutsLegend), { ssr: false });
 export const ListItemSkeleton = dynamic(() => import('./ListItemSkeleton').then(m => m.ListItemSkeleton), { ssr: false });
 export { MediaGrid } from './MediaGrid';
 export const MediaGridSkeleton = dynamic(() => import('./MediaGridSkeleton').then(m => m.MediaGridSkeleton), { ssr: false });

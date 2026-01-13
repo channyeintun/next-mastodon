@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react';
 import { normalizeKey, isKeyboardEvent } from '@/utils/keyboardUtils';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
-import { KeyboardShortcutsLegend } from '@/components/molecules/KeyboardShortcutsLegend';
+import { KeyboardShortcutsLegend } from '@/components/molecules';
 import { useRouter } from 'next/navigation';
 import { useCurrentAccount } from '@/api';
 
