@@ -14,13 +14,14 @@ interface UserCardProps {
   account: Account;
   showFollowButton?: boolean;
   style?: CSSProperties;
+  isFocused?: boolean;
 }
 
 function stripHtmlTags(html: string): string {
   return html.replace(/<[^>]*>/g, '');
 }
 
-export function UserCard({ account, showFollowButton = true, style }: UserCardProps) {
+export function UserCard({ account, showFollowButton = true, style, isFocused }: UserCardProps) {
   const followMutation = useFollowAccount();
   const unfollowMutation = useUnfollowAccount();
   const { data: relationships } = useRelationships([account.id]);
@@ -48,7 +49,16 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
   };
 
   return (
-    <Card padding="medium" style={style}>
+    <Card
+      padding="medium"
+      style={{
+        ...style,
+        outline: isFocused ? '2px solid var(--blue-6)' : 'none',
+        outlineOffset: '-2px',
+        transition: 'outline 0.2s ease',
+      }}
+      className={isFocused ? 'is-focused' : ''}
+    >
       <StyledLink href={`/@${account.acct}`} onClick={handleProfileClick}>
         <ContentContainer>
           <Avatar

@@ -65,9 +65,11 @@ export function usePostActions(status: Status, onDeleteClick?: (postId: string) 
 
   // --- Event Handlers ---
 
-  const handleFavourite = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleFavourite = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (displayStatus.favourited) {
       unfavouriteMutation.mutate(displayStatus.id);
     } else {
@@ -75,15 +77,19 @@ export function usePostActions(status: Status, onDeleteClick?: (postId: string) 
     }
   };
 
-  const handleReblog = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.currentTarget.focus();
+  const handleReblog = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.currentTarget.focus();
+    }
   };
 
-  const confirmReblog = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const confirmReblog = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (displayStatus.reblogged) {
       unreblogMutation.mutate(displayStatus.id);
     } else {
@@ -91,15 +97,19 @@ export function usePostActions(status: Status, onDeleteClick?: (postId: string) 
     }
   };
 
-  const handleQuote = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleQuote = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     router.push(`/compose?quoted_status_id=${displayStatus.id}`, { scroll: false });
   };
 
-  const handleBookmark = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleBookmark = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (displayStatus.bookmarked) {
       unbookmarkMutation.mutate(displayStatus.id);
     } else {
@@ -142,9 +152,11 @@ export function usePostActions(status: Status, onDeleteClick?: (postId: string) 
     }
   };
 
-  const handleShare = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleShare = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
     const shareData = {
       title: `Post by ${displayStatus.account.display_name || displayStatus.account.username}`,
@@ -215,9 +227,11 @@ export function usePostActions(status: Status, onDeleteClick?: (postId: string) 
     }
   };
 
-  const handleReply = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleReply = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (window.location.pathname !== `/status/${displayStatus.id}`) {
       // Pre-populate status cache before navigation to avoid refetch
       queryClient.setQueryData(queryKeys.statuses.detail(displayStatus.id), displayStatus);

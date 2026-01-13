@@ -93,12 +93,14 @@ export default function QuotesPage({
             {/* Quotes List */}
             <VirtualizedList<Status>
                 items={quotes}
-                renderItem={(quoteStatus) => (
+                renderItem={(quoteStatus, _, isFocused) => (
                     <PostCard
                         status={quoteStatus}
+                        isFocused={isFocused}
                         style={{ marginBottom: 'var(--size-2)' }}
                     />
                 )}
+                onItemOpen={(quoteStatus) => router.push(`/status/${quoteStatus.id}`)}
                 getItemKey={(quoteStatus) => quoteStatus.id}
                 estimateSize={250}
                 onLoadMore={fetchNextPage}

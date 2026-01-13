@@ -9,6 +9,8 @@ import { EmptyState } from '@/components/atoms';
 import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
 import type { Status } from '@/types';
 import { useWindowScrollDirection } from '@/hooks/useScrollDirection';
+import { useTimelineHotkeys } from '@/hooks/useTimelineHotkeys';
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 // Scroll restoration cache - per tab
@@ -47,6 +49,7 @@ export function ProfileTabContent({
     // Scroll direction detection for scroll-to-top button
     const { showScrollTop, hideScrollTop } = useWindowScrollDirection();
     const t = useTranslations('account');
+    const router = useRouter();
 
     // Per-tab scroll cache key - includes acct for isolation
     const scrollCacheKey = `profile-${acct}-${tabKey}`;
@@ -131,6 +134,18 @@ export function ProfileTabContent({
         }
     }, [virtualItems, mixedItems.length, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+    // Keyboard navigation handlers
+    const { focusedIndex } = useTimelineHotkeys({
+        itemsCount: mixedItems.length,
+        virtualizer,
+        onOpen: (index: number) => {
+            const item = mixedItems[index];
+            if (item?.type === 'status') {
+                router.push(`/status/${item.data.id}`);
+            }
+        }
+    });
+
     // Cache scroll state on unmount
     useEffect(() => {
         return () => {
@@ -190,7 +205,11 @@ export function ProfileTabContent({
                                         transform: `translateY(${virtualRow.start - virtualizer.options.scrollMargin}px)`,
                                     }}
                                 >
-                                    <PostCard status={item.data} style={{ marginBottom: 'var(--size-3)' }} />
+                                    <PostCard
+                                        status={item.data}
+                                        isFocused={virtualRow.index === focusedIndex}
+                                        style={{ marginBottom: 'var(--size-3)' }}
+                                    />
                                 </VirtualItemWrapper>
                             );
                         })}

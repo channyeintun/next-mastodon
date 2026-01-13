@@ -76,7 +76,7 @@ export function TranslateButton({ status, onTranslated, onShowOriginal }: Transl
                     Translated from {translation.detected_source_language || status.language}
                     {translation.provider && ` · ${translation.provider}`}
                 </span>
-                <TranslateLink onClick={handleTranslate}>
+                <TranslateLink className="translate-button" onClick={handleTranslate}>
                     See original
                 </TranslateLink>
             </TranslationInfo>
@@ -84,7 +84,7 @@ export function TranslateButton({ status, onTranslated, onShowOriginal }: Transl
     }
 
     return (
-        <TranslateLink onClick={handleTranslate} disabled={translateMutation.isPending}>
+        <TranslateLink className="translate-button" onClick={handleTranslate} disabled={translateMutation.isPending}>
             {translateMutation.isPending ? 'Translating...' : 'See translation'}
         </TranslateLink>
     );

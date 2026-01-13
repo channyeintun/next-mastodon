@@ -19,6 +19,8 @@ import {
 import type { Status, Translation } from '@/types';
 import { usePostActions } from '@/hooks/usePostActions';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
+import { usePostCardHotkeys } from '@/hooks/usePostCardHotkeys';
+import { HiddenQuoteNotice } from './HiddenQuoteNotice';
 import { removeQuotePrefix } from '@/utils/fp';
 import { CSSProperties } from 'react';
 import { useTranslations } from 'next-intl';
@@ -38,9 +40,6 @@ import {
   TranslationContainer,
   BlurredBackground,
   QuoteUnavailable,
-  HiddenQuoteContainer,
-  HiddenQuoteText,
-  ShowAnywayButton,
 } from './postCardStyles';
 
 // Max nesting level for quoted posts (matching Mastodon's behavior)
@@ -61,57 +60,9 @@ interface PostCardProps {
   depth?: number;
   /** Wrapstodon mode: transparent bg with light text colors for dark gradient */
   wrapstodon?: boolean;
+  isFocused?: boolean;
 }
 
-// Hidden quote notice for blocked/muted quotes - allows user to reveal if desired
-function HiddenQuoteNotice({
-  quoteState,
-  quotedStatus,
-  depth
-}: {
-  quoteState: string;
-  quotedStatus: Status;
-  depth: number;
-}) {
-  const [showAnyway, setShowAnyway] = useState(false);
-
-  if (showAnyway) {
-    return (
-      <QuotedPostWrapper>
-        {depth < MAX_QUOTE_NESTING_LEVEL ? (
-          <PostCard
-            status={quotedStatus}
-            hideActions
-            depth={depth + 1}
-            style={{ boxShadow: 'inset 0 4px 8px -4px rgba(0, 0, 0, 0.15)' }}
-          />
-        ) : (
-          <NestedQuoteLink href={`/status/${quotedStatus.id}`}>
-            Quoted a post by @{quotedStatus.account.acct}
-          </NestedQuoteLink>
-        )}
-      </QuotedPostWrapper>
-    );
-  }
-
-  const getMessage = () => {
-    switch (quoteState) {
-      case 'blocked_account': return 'Quoted post from a blocked account';
-      case 'blocked_domain': return 'Quoted post from a blocked domain';
-      case 'muted_account': return 'Quoted post from a muted account';
-      default: return 'Quote hidden';
-    }
-  };
-
-  return (
-    <HiddenQuoteContainer>
-      <HiddenQuoteText>{getMessage()}</HiddenQuoteText>
-      <ShowAnywayButton onClick={() => setShowAnyway(true)}>
-        Show anyway
-      </ShowAnywayButton>
-    </HiddenQuoteContainer>
-  );
-}
 
 /**
  * Organism component for displaying a Mastodon status/post.
@@ -128,6 +79,7 @@ export function PostCard({
   id,
   depth = 0,
   wrapstodon = false,
+  isFocused = false,
 }: PostCardProps) {
   const { openModal, closeModal } = useGlobalModal();
   const t = useTranslations('statusDetail');
@@ -142,8 +94,8 @@ export function PostCard({
     );
   };
 
-  const handleMediaClick = (index: number) => (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click
+  const handleMediaClick = (index: number) => (e?: React.MouseEvent | KeyboardEvent) => {
+    e?.stopPropagation(); // Prevent card click
     openModal(
       <MediaModal
         mediaAttachments={displayStatus.media_attachments}
@@ -197,6 +149,22 @@ export function PostCard({
     handleBlockAccount,
   } = actions;
 
+  // Post-specific keyboard actions
+  usePostCardHotkeys({
+    isFocused,
+    handleReply,
+    handleFavourite,
+    handleReblog,
+    handleQuote,
+    displayStatus,
+    hasContentWarning: !!hasContentWarning,
+    toggleCWContent,
+    hasSensitiveMedia: !!hasSensitiveMedia,
+    toggleCWMedia,
+    handleMediaClick,
+    confirmReblog,
+  });
+
   // Remove "RE: [link]" from content when displaying quotes
   const contentToDisplay = displayStatus.quote?.quoted_status
     ? removeQuotePrefix(displayStatus.content)
@@ -234,7 +202,20 @@ export function PostCard({
   const singleMedia = displayStatus.media_attachments.length === 1 ? displayStatus.media_attachments[0] : null;
 
   return (
-    <Card as="article" padding="medium" style={cardStyle} onClick={handleCardClick} id={id} className="post-card">
+    <Card
+      as="article"
+      padding="medium"
+      style={{
+        ...cardStyle,
+        outline: isFocused ? '2px solid var(--blue-6)' : 'none',
+        outlineOffset: '-2px',
+        transition: 'outline 0.2s ease',
+      }}
+      onClick={handleCardClick}
+      id={id}
+      className={`post-card ${isFocused ? 'is-focused' : ''}`}
+      data-post-id={displayStatus.id}
+    >
       {/* Reblog indicator */}
       {isReblog && <ReblogIndicator account={status.account} />}
       {!isReblog && <StatusThreadLabel status={displayStatus} />}

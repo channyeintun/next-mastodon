@@ -138,13 +138,15 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
             ) : statuses.length > 0 ? (
                 <VirtualizedList<Status>
                     items={statuses}
-                    renderItem={(status) => (
+                    renderItem={(status, _, isFocused) => (
                         <PostCard
                             key={status.id}
                             status={status}
+                            isFocused={isFocused}
                             style={{ marginBottom: 'var(--size-3)' }}
                         />
                     )}
+                    onItemOpen={(status) => router.push(`/status/${status.id}`)}
                     getItemKey={(status) => status.id}
                     estimateSize={250}
                     onLoadMore={() => fetchNextPage()}

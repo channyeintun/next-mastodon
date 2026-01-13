@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { useRef, useEffect, useCallback, useMemo, type CSSProperties, type ReactNode } from 'react';
 import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
+import { useTimelineHotkeys } from '@/hooks/useTimelineHotkeys';
 
 interface VirtualizedListProps<T> {
   /**
@@ -14,7 +15,12 @@ interface VirtualizedListProps<T> {
   /**
    * Function to render each item
    */
-  renderItem: (item: T, index: number) => ReactNode;
+  renderItem: (item: T, index: number, isFocused?: boolean) => ReactNode;
+
+  /**
+   * Callback when an item is opened (e.g., via Enter key)
+   */
+  onItemOpen?: (item: T, index: number) => void;
 
   /**
    * Function to extract unique key from item
@@ -102,6 +108,11 @@ interface VirtualizedListProps<T> {
    * Additional class name for the container
    */
   className?: string;
+  /**
+   * Whether keyboard navigation is enabled for this list
+   * @default true
+   */
+  enabled?: boolean;
 }
 
 // Global cache for scroll restoration
@@ -132,6 +143,8 @@ export function VirtualizedList<T>({
   header,
   getMediaUrls,
   className,
+  onItemOpen,
+  enabled = true,
 }: VirtualizedListProps<T>) {
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -182,6 +195,19 @@ export function VirtualizedList<T>({
         });
       }
     },
+  });
+
+  const { focusedIndex } = useTimelineHotkeys({
+    itemsCount: items.length,
+    virtualizer,
+    onOpen: (index: number) => {
+      const item = items[index];
+      if (item && onItemOpen) {
+        onItemOpen(item, index);
+      }
+    },
+    autoScroll: true, // Internal virtualizer handles its own scroll
+    enabled,
   });
 
   const virtualItems = virtualizer.getVirtualItems();
@@ -266,7 +292,7 @@ export function VirtualizedList<T>({
                 className='virtualized-list-item'
                 $translateY={virtualItem.start}
               >
-                {renderItem(item, virtualItem.index)}
+                {renderItem(item, virtualItem.index, virtualItem.index === focusedIndex)}
               </VirtualItemWrapper>
             );
           })}

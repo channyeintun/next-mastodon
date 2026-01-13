@@ -24,6 +24,8 @@ import { Search, ArrowUp } from 'lucide-react';
 import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';
 import { useTimelineStream } from '@/hooks/useStreaming';
+import { useTimelineHotkeys } from '@/hooks/useTimelineHotkeys';
+import { useRouter } from 'next/navigation';
 
 // Scroll restoration cache
 interface ScrollState {
@@ -63,6 +65,7 @@ export const TimelinePage = observer(() => {
     const { data: user, isLoading: isLoadingUser } = useCurrentAccount();
     const queryClient = useQueryClient();
     const { newPostsCount, clearPendingStatuses } = useTimelineStream();
+    const router = useRouter();
 
     const listRef = useRef<HTMLDivElement>(null);
     const [scrollMargin, setScrollMargin] = useState(0);
@@ -157,15 +160,24 @@ export const TimelinePage = observer(() => {
         };
     }, [virtualizer]);
 
-    const handleScrollToTop = () => {
-        window.scrollTo(0, 0);
-    };
-
     const handleShowNewPosts = async () => {
         await fetchPreviousPage();
         clearPendingStatuses();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
+
+    // Keyboard navigation handlers
+    const { focusedIndex } = useTimelineHotkeys({
+        itemsCount: mixedItems.length,
+        virtualizer,
+        onOpen: (index: number) => {
+            const item = mixedItems[index];
+            if (item?.type === 'status') {
+                router.push(`/status/${item.data.id}`);
+            }
+        }
+    });
+
 
     // Pre-populate account cache before navigation
     const handleProfileClick = () => {
@@ -343,7 +355,11 @@ export const TimelinePage = observer(() => {
                                 ) : item.type === 'suggestions' ? (
                                     <SuggestionsSection />
                                 ) : (
-                                    <PostCard status={item.data} style={{ marginBottom: 'var(--size-3)' }} />
+                                    <PostCard
+                                        status={item.data}
+                                        style={{ marginBottom: 'var(--size-3)' }}
+                                        isFocused={virtualRow.index === focusedIndex}
+                                    />
                                 )}
                             </VirtualItemWrapper>
                         );
@@ -357,7 +373,7 @@ export const TimelinePage = observer(() => {
             </div>
 
             {/* Scroll to top button */}
-            <ScrollToTopButton onClick={handleScrollToTop} />
+            <ScrollToTopButton onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />
         </Container>
     );
 });

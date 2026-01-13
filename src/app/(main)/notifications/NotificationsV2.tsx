@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useMemo, useState } from 'react';
 import { Bell, Filter } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { BiExpandVertical, BiCollapseVertical } from 'react-icons/bi';
 import { IoCheckmarkDoneSharp } from 'react-icons/io5';
@@ -41,6 +42,7 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
     const t = useTranslations('notifications');
     const [activeTab, setActiveTab] = useState<NotificationTab>('all');
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const router = useRouter();
 
     const {
         data,
@@ -248,15 +250,26 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
             {!isLoading && !isError && (
                 <VirtualizedList<NotificationGroup>
                     items={allGroups}
-                    renderItem={(group) => (
+                    renderItem={(group, _, isFocused) => (
                         <GroupedNotificationCard
                             group={group}
                             accounts={accountsMap}
                             statuses={statusesMap}
                             style={{ marginBottom: 'var(--size-2)' }}
                             isNew={isGroupNew(group)}
+                            isFocused={isFocused}
                         />
                     )}
+                    onItemOpen={(group) => {
+                        const relatedStatus = group.status_id ? statusesMap.get(group.status_id) : undefined;
+                        const primaryAccount = group.sample_account_ids[0] ? accountsMap.get(group.sample_account_ids[0]) : undefined;
+
+                        if (relatedStatus) {
+                            router.push(`/status/${relatedStatus.id}`);
+                        } else if (primaryAccount) {
+                            router.push(`/@${primaryAccount.acct}`);
+                        }
+                    }}
                     getItemKey={(group) => group.most_recent_notification_id}
                     estimateSize={100}
                     onLoadMore={fetchNextPage}

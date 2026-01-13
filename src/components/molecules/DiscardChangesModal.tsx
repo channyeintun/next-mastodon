@@ -5,27 +5,27 @@ import { Button } from '@/components/atoms';
 import { useTranslations } from 'next-intl';
 
 interface DiscardChangesModalProps {
-    onDiscard: () => void;
-    onCancel: () => void;
+  onDiscard: () => void;
+  onCancel: () => void;
 }
 
 export function DiscardChangesModal({ onDiscard, onCancel }: DiscardChangesModalProps) {
-    const t = useTranslations('composer.discardChanges');
+  const t = useTranslations('composer.discardChanges');
 
-    return (
-        <div className="bottom-sheet-content">
-            <Title>{t('title')}</Title>
-            <Message>{t('message')}</Message>
-            <ButtonRow>
-                <Button variant="ghost" onMouseDown={onCancel}>
-                    {t('cancel')}
-                </Button>
-                <DiscardButton onMouseDown={onDiscard} autoFocus>
-                    {t('discard')}
-                </DiscardButton>
-            </ButtonRow>
-        </div>
-    );
+  return (
+    <div className="bottom-sheet-content">
+      <Title>{t('title')}</Title>
+      <Message>{t('message')}</Message>
+      <ButtonRow>
+        <Button variant="ghost" onClick={onCancel}>
+          {t('cancel')}
+        </Button>
+        <DiscardButton onClick={onDiscard} autoFocus>
+          {t('discard')}
+        </DiscardButton>
+      </ButtonRow>
+    </div>
+  );
 }
 
 const Title = styled.h2`

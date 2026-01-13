@@ -142,12 +142,14 @@ export default function BookmarksPage() {
       {/* Virtual scrolling container with scroll restoration */}
       <VirtualizedList<Status>
         items={uniqueStatuses}
-        renderItem={(status) => (
+        renderItem={(status, _, isFocused) => (
           <PostCard
             status={status}
+            isFocused={isFocused}
             style={{ marginBottom: 'var(--size-3)' }}
           />
         )}
+        onItemOpen={(status) => router.push(`/status/${status.id}`)}
         getItemKey={(status) => status.id}
         estimateSize={350}
         onLoadMore={() => fetchNextPage()}

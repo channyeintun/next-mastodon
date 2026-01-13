@@ -2,6 +2,7 @@
 
 import styled from '@emotion/styled';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Activity, type ReactNode } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Check, Info, X, Hash, Newspaper, FileText, LogIn, UserPlus } from 'lucide-react';
@@ -85,6 +86,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
 
     const authStore = useAuthStore();
     const queryClient = useQueryClient();
+    const router = useRouter();
 
     // Fetch data for all tabs
     const {
@@ -167,9 +169,10 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                     ) : (
                         <VirtualizedList<Status>
                             items={uniqueStatuses}
-                            renderItem={(status) => (
-                                <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
+                            renderItem={(status, _, isFocused) => (
+                                <PostCard status={status} isFocused={isFocused} style={{ marginBottom: 'var(--size-3)' }} />
                             )}
+                            onItemOpen={(status) => router.push(`/status/${status.id}`)}
                             getItemKey={(status) => status.id}
                             getMediaUrls={(status) => status.media_attachments?.map(a => a.preview_url || a.url).filter(Boolean) as string[] || []}
                             estimateSize={350}
@@ -209,6 +212,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             renderItem={(tag) => (
                                 <TrendingTagCard tag={tag} style={{ marginBottom: 'var(--size-2)' }} />
                             )}
+                            onItemOpen={(tag) => router.push(`/tags/${tag.name}`)}
                             getItemKey={(tag) => tag.name}
                             estimateSize={80}
                             onLoadMore={fetchNextTags}
@@ -247,6 +251,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             renderItem={(link) => (
                                 <TrendingLinkCard link={link} style={{ marginBottom: 'var(--size-2)' }} />
                             )}
+                            onItemOpen={(link) => window.open(link.url, '_blank')}
                             getItemKey={(link) => link.url}
                             getMediaUrls={(link) => link.image ? [link.image] : []}
                             estimateSize={120}

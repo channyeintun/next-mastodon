@@ -8,6 +8,8 @@ import { QueryProvider } from "@/components/providers/QueryProvider";
 import { StoreProvider } from "@/components/providers/StoreProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { VideoSyncProvider } from "@/components/providers/VideoSyncProvider";
+import { KeyboardShortcutsProvider } from "@/components/providers/KeyboardShortcutsProvider";
+import { GlobalModalProvider } from "@/contexts/GlobalModalContext";
 import SkipToMain from "@/components/atoms/SkipToMain";
 import { ServiceWorkerRegister } from "@/components/atoms/ServiceWorkerRegister";
 import { locales, defaultLocale, LOCALE_COOKIE_NAME, type Locale } from "@/i18n/config";
@@ -108,7 +110,11 @@ export default async function RootLayout({
             <NextIntlClientProvider messages={messages}>
               <SkipToMain />
               <VideoSyncProvider>
-                {children}
+                <GlobalModalProvider>
+                  <KeyboardShortcutsProvider>
+                    {children}
+                  </KeyboardShortcutsProvider>
+                </GlobalModalProvider>
               </VideoSyncProvider>
             </NextIntlClientProvider>
           </StoreProvider>

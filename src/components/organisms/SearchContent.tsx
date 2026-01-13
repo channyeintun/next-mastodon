@@ -7,6 +7,9 @@ import { PostCard } from '@/components/organisms';
 import { PostCardSkeleton, TrendingTagCardSkeleton, UserCard, UserCardSkeleton } from '@/components/molecules';
 import { Spinner, Card, EmptyState } from '@/components/atoms';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
+import { useTimelineHotkeys } from '@/hooks/useTimelineHotkeys';
+import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 import type { Account, Status, Tag, SearchResults } from '@/types';
 
 type TabType = 'all' | 'accounts' | 'statuses' | 'hashtags';
@@ -56,9 +59,15 @@ const ErrorState = () => (
     </ErrorContainer>
 );
 
-const HashtagCard = ({ tag }: { tag: Tag }) => (
-    <HashtagCardWrapper>
-        <Card>
+const HashtagCard = ({ tag, isFocused }: { tag: Tag; isFocused?: boolean }) => (
+    <HashtagCardWrapper className={isFocused ? 'is-focused' : ''}>
+        <Card
+            style={{
+                outline: isFocused ? '2px solid var(--blue-6)' : 'none',
+                outlineOffset: '-2px',
+                transition: 'outline 0.2s ease',
+            }}
+        >
             <HashtagContent>
                 <HashtagIcon>
                     <HashIcon size={20} />
@@ -102,6 +111,35 @@ export function SearchContent({
     hasNextHashtags,
     isFetchingNextHashtags,
 }: SearchContentProps) {
+    const router = useRouter();
+
+    // Flatten all results for the 'all' tab into a single navigable list
+    const allItems = useMemo(() => {
+        if (!allResults) return [];
+        return [
+            ...allResults.accounts.map(a => ({ type: 'account' as const, data: a })),
+            ...allResults.statuses.map(s => ({ type: 'status' as const, data: s })),
+            ...allResults.hashtags.map(h => ({ type: 'hashtag' as const, data: h })),
+        ];
+    }, [allResults]);
+
+    const handleOpenItem = (item: { type: 'status' | 'account' | 'hashtag'; data: any }) => {
+        if (item.type === 'status') {
+            router.push(`/status/${item.data.id}`);
+        } else if (item.type === 'account') {
+            router.push(`/@${item.data.acct}`);
+        } else if (item.type === 'hashtag') {
+            router.push(`/tags/${item.data.name}`);
+        }
+    };
+
+    const { focusedIndex } = useTimelineHotkeys({
+        itemsCount: allItems.length,
+        onOpen: (index) => handleOpenItem(allItems[index]),
+        autoScroll: true,
+        enabled: activeTab === 'all' && allItems.length > 0,
+    });
+
     return (
         <>
             {/* All Tab */}
@@ -123,8 +161,13 @@ export function SearchContent({
                                         Accounts ({allResults.accounts.length})
                                     </SectionTitle>
                                     <ResultList>
-                                        {allResults.accounts.map((account) => (
-                                            <UserCard key={account.id} account={account} />
+                                        {allResults.accounts.map((account, index) => (
+                                            <div key={account.id} data-index={index}>
+                                                <UserCard
+                                                    account={account}
+                                                    isFocused={focusedIndex === index}
+                                                />
+                                            </div>
                                         ))}
                                     </ResultList>
                                 </ResultSection>
@@ -136,9 +179,17 @@ export function SearchContent({
                                         Posts ({allResults.statuses.length})
                                     </SectionTitle>
                                     <ResultList>
-                                        {allResults.statuses.map((status) => (
-                                            <PostCard key={status.id} status={status} />
-                                        ))}
+                                        {allResults.statuses.map((status, index) => {
+                                            const globalIndex = allResults.accounts.length + index;
+                                            return (
+                                                <div key={status.id} data-index={globalIndex}>
+                                                    <PostCard
+                                                        status={status}
+                                                        isFocused={focusedIndex === globalIndex}
+                                                    />
+                                                </div>
+                                            );
+                                        })}
                                     </ResultList>
                                 </ResultSection>
                             )}
@@ -149,9 +200,17 @@ export function SearchContent({
                                         Hashtags ({allResults.hashtags.length})
                                     </SectionTitle>
                                     <ResultList>
-                                        {allResults.hashtags.map((tag) => (
-                                            <HashtagCard key={tag.name} tag={tag} />
-                                        ))}
+                                        {allResults.hashtags.map((tag, index) => {
+                                            const globalIndex = allResults.accounts.length + allResults.statuses.length + index;
+                                            return (
+                                                <div key={tag.name} data-index={globalIndex}>
+                                                    <HashtagCard
+                                                        tag={tag}
+                                                        isFocused={focusedIndex === globalIndex}
+                                                    />
+                                                </div>
+                                            );
+                                        })}
                                     </ResultList>
                                 </ResultSection>
                             )}
@@ -172,9 +231,10 @@ export function SearchContent({
                     ) : (
                         <VirtualizedList<Account>
                             items={accounts}
-                            renderItem={(account) => (
-                                <UserCard account={account} style={{ marginBottom: 'var(--size-3)' }} />
+                            renderItem={(account, _, isFocused) => (
+                                <UserCard account={account} isFocused={isFocused} style={{ marginBottom: 'var(--size-3)' }} />
                             )}
+                            onItemOpen={(account) => router.push(`/@${account.acct}`)}
                             getItemKey={(account) => account.id}
                             estimateSize={80}
                             style={{ height: '100%' }}
@@ -183,6 +243,7 @@ export function SearchContent({
                             hasMore={hasNextAccounts}
                             isLoadingMore={isFetchingNextAccounts}
                             loadingIndicator={<UserCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
+                            enabled={activeTab === 'accounts'}
                         />
                     )}
                 </TabContainer>
@@ -200,9 +261,10 @@ export function SearchContent({
                     ) : (
                         <VirtualizedList<Status>
                             items={statuses}
-                            renderItem={(status) => (
-                                <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
+                            renderItem={(status, _, isFocused) => (
+                                <PostCard status={status} isFocused={isFocused} style={{ marginBottom: 'var(--size-3)' }} />
                             )}
+                            onItemOpen={(status) => router.push(`/status/${status.id}`)}
                             getItemKey={(status) => status.id}
                             getMediaUrls={(status) => status.media_attachments?.map(a => a.preview_url || a.url).filter(Boolean) as string[] || []}
                             estimateSize={250}
@@ -212,6 +274,7 @@ export function SearchContent({
                             hasMore={hasNextStatuses}
                             isLoadingMore={isFetchingNextStatuses}
                             loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
+                            enabled={activeTab === 'statuses'}
                         />
                     )}
                 </TabContainer>
@@ -229,7 +292,8 @@ export function SearchContent({
                     ) : (
                         <VirtualizedList<Tag>
                             items={hashtags}
-                            renderItem={(tag) => <HashtagCard tag={tag} />}
+                            renderItem={(tag, _, isFocused) => <HashtagCard tag={tag} isFocused={isFocused} />}
+                            onItemOpen={(tag) => router.push(`/tags/${tag.name}`)}
                             getItemKey={(tag) => tag.name}
                             estimateSize={80}
                             style={{ height: '100%' }}
@@ -238,6 +302,7 @@ export function SearchContent({
                             hasMore={hasNextHashtags}
                             isLoadingMore={isFetchingNextHashtags}
                             loadingIndicator={<TrendingTagCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
+                            enabled={activeTab === 'hashtags'}
                         />
                     )}
                 </TabContainer>

@@ -45,6 +45,7 @@ interface GroupedNotificationCardProps {
     statuses: Map<string, Status>;
     isNew?: boolean;
     style?: React.CSSProperties;
+    isFocused?: boolean;
 }
 
 // Notification type configuration
@@ -140,7 +141,8 @@ export function GroupedNotificationCard({
     accounts,
     statuses,
     isNew,
-    style
+    style,
+    isFocused
 }: GroupedNotificationCardProps) {
     const router = useRouter();
     const dismissMutation = useDismissNotificationGroup();
@@ -233,7 +235,11 @@ export function GroupedNotificationCard({
 
     return (
         <div style={style}>
-            <CardComponent padding="medium" onClick={handleCardClick}>
+            <CardComponent
+                padding="medium"
+                onClick={handleCardClick}
+                className={isFocused ? 'is-focused' : ''}
+            >
                 <ContentWrapper>
                     {/* Notification type icon */}
                     <IconColumn>

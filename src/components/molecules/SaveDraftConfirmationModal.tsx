@@ -18,10 +18,10 @@ export function SaveDraftConfirmationModal({ onSave, onDiscard, onCancel: _onCan
       <Title>{t('title')}</Title>
       <Message>{t('message')}</Message>
       <ButtonRow>
-        <Button variant="ghost" onMouseDown={onDiscard}>
+        <Button variant="ghost" onClick={onDiscard}>
           {t('discard')}
         </Button>
-        <SaveButton onMouseDown={onSave} autoFocus>
+        <SaveButton onClick={onSave} autoFocus>
           {t('save')}
         </SaveButton>
       </ButtonRow>

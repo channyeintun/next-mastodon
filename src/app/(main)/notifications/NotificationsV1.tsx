@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Bell, Filter } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { BiExpandVertical, BiCollapseVertical } from 'react-icons/bi';
 import { IoCheckmarkDoneSharp } from 'react-icons/io5';
 import { TiDelete } from 'react-icons/ti';
@@ -53,6 +54,7 @@ interface NotificationsV1Props {
 export function NotificationsV1({ streamingStatus }: NotificationsV1Props) {
     const [activeTab, setActiveTab] = useState<NotificationTab>('all');
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const router = useRouter();
 
     const {
         data,
@@ -213,13 +215,21 @@ export function NotificationsV1({ streamingStatus }: NotificationsV1Props) {
             {!isLoading && !isError && (
                 <VirtualizedList<Notification>
                     items={allNotifications}
-                    renderItem={(notification) => (
+                    renderItem={(notification, _, isFocused) => (
                         <NotificationCard
                             notification={notification}
                             style={{ marginBottom: 'var(--size-2)' }}
                             isNew={isNotificationNew(notification.id)}
+                            isFocused={isFocused}
                         />
                     )}
+                    onItemOpen={(notification) => {
+                        if (notification.status) {
+                            router.push(`/status/${notification.status.id}`);
+                        } else {
+                            router.push(`/@${notification.account.acct}`);
+                        }
+                    }}
                     getItemKey={(notification) => notification.id}
                     estimateSize={100}
                     onLoadMore={fetchNextPage}

@@ -26,6 +26,7 @@ interface NotificationCardProps {
     onDismiss?: (id: string) => void;
     style?: React.CSSProperties;
     isNew?: boolean;
+    isFocused?: boolean;
 }
 
 // Notification type configuration
@@ -111,7 +112,7 @@ const NOTIFICATION_CONFIG: Record<NotificationType, {
     },
 };
 
-export function NotificationCard({ notification, onDismiss, style, isNew }: NotificationCardProps) {
+export function NotificationCard({ notification, onDismiss, style, isNew, isFocused }: NotificationCardProps) {
     const router = useRouter();
     const dismissMutation = useDismissNotification();
     const queryClient = useQueryClient();
@@ -156,7 +157,11 @@ export function NotificationCard({ notification, onDismiss, style, isNew }: Noti
 
     return (
         <div style={style}>
-            <CardComponent padding="medium" onClick={handleCardClick}>
+            <CardComponent
+                padding="medium"
+                onClick={handleCardClick}
+                className={isFocused ? 'is-focused' : ''}
+            >
                 <ContentWrapper>
                     {/* Notification type icon */}
                     <IconColumn>

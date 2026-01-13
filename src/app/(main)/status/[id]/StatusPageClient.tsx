@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import { SCROLL_ANCHOR_OFFSET } from '@/constants/layout';
 
 import styled from '@emotion/styled';
@@ -14,6 +14,7 @@ import { PostCard } from '@/components/organisms';
 import { PostCardSkeleton, StatusStats } from '@/components/molecules';
 import { Button, IconButton } from '@/components/atoms';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
+import { useTimelineHotkeys } from '@/hooks/useTimelineHotkeys';
 import { useTranslations } from 'next-intl';
 
 interface StatusPageClientProps {
@@ -62,6 +63,22 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
   });
 
   const handlePostDeleted = () => router.push('/');
+
+  const navigableStatuses = useMemo(() => {
+    if (!status) return [];
+    return [...ancestors, status, ...descendants];
+  }, [ancestors, status, descendants]);
+
+  const { focusedIndex } = useTimelineHotkeys({
+    itemsCount: navigableStatuses.length,
+    onOpen: (index: number) => {
+      const targetStatus = navigableStatuses[index];
+      if (targetStatus && targetStatus.id !== statusId) {
+        router.push(`/status/${targetStatus.id}`);
+      }
+    },
+    autoScroll: true,
+  });
 
   // Only show skeleton if status is loading (not hydrated/cached)
   if (statusLoading) {
@@ -115,9 +132,12 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
         <AncestorsContainer ref={ancestorsRef}>
           {ancestors.length > 0 && (
             <>
-              {ancestors.map((ancestor) => (
-                <div key={ancestor.id}>
-                  <PostCard status={ancestor} />
+              {ancestors.map((ancestor, index) => (
+                <div key={ancestor.id} data-index={index}>
+                  <PostCard
+                    status={ancestor}
+                    isFocused={focusedIndex === index}
+                  />
                   <ThreadLineContainer>
                     <ThreadLine />
                   </ThreadLineContainer>
@@ -128,12 +148,13 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
         </AncestorsContainer>
 
         {/* Main status (highlighted) - renders immediately from SSR/cache */}
-        <HighlightedPost ref={mainPostRef}>
+        <HighlightedPost ref={mainPostRef} data-index={ancestors.length}>
           <PostCard
             id="main-post"
             status={status}
             showEditHistory
             onDeleteSuccess={handlePostDeleted}
+            isFocused={focusedIndex === ancestors.length}
           />
           <StatusStatsWrapper>
             <StatusStats
@@ -166,16 +187,22 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
               <RepliesHeader>
                 {t('replies', { count: descendants.length })}
               </RepliesHeader>
-              {descendants.map((descendant, index) => (
-                <div key={descendant.id}>
-                  {index > 0 && (
-                    <ThreadLineContainer>
-                      <ThreadLineShort />
-                    </ThreadLineContainer>
-                  )}
-                  <PostCard status={descendant} />
-                </div>
-              ))}
+              {descendants.map((descendant, index) => {
+                const globalIndex = ancestors.length + 1 + index;
+                return (
+                  <div key={descendant.id} data-index={globalIndex}>
+                    {index > 0 && (
+                      <ThreadLineContainer>
+                        <ThreadLineShort />
+                      </ThreadLineContainer>
+                    )}
+                    <PostCard
+                      status={descendant}
+                      isFocused={focusedIndex === globalIndex}
+                    />
+                  </div>
+                );
+              })}
             </div>
           )}
         </ContentBelowMain>
