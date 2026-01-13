@@ -99,15 +99,10 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
                 )}
 
                 <div
+                    className="glass-pill"
                     style={{
-                        position: 'absolute',
-                        inset: 0,
-                        borderRadius: 28,
                         backdropFilter: isIOS ? 'blur(20px)' : `url(#${bgFilterId})`,
                         WebkitBackdropFilter: isIOS ? 'blur(20px)' : `url(#${bgFilterId})`,
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '0.5px solid rgba(255, 255, 255, 0.1)',
-                        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
                     }}
                 />
 
@@ -128,20 +123,14 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
                         }}
                     >
                         <div
+                            className="glass-thumb"
                             key={activeIndex} // Trigger animation on index change
                             style={{
                                 width: `calc(100% - ${PILL_PADDING * 2}px)`,
-                                height: '100%',
-                                margin: `0 auto`,
-                                borderRadius: 24,
                                 backdropFilter: isIOS ? 'blur(10px)' : `url(#${thumbFilterId})`,
                                 WebkitBackdropFilter: isIOS ? 'blur(10px)' : `url(#${thumbFilterId})`,
                                 background: isPressed ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.18)',
-                                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.15)',
-                                border: '0.5px solid rgba(255, 255, 255, 0.25)',
-                                transition: 'background 0.1s ease',
                                 transform: `scale(${pressScale}, ${pressScaleY})`,
-                                animation: 'wobble-stretch 0.5s ease-out',
                             }}
                         />
                     </div>

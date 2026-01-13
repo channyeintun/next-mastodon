@@ -3,6 +3,7 @@
  * Combines all MobX stores
  */
 
+import { makeAutoObservable } from 'mobx';
 import { AuthStore, type AuthState } from './authStore'
 import { UserStore } from './userStore'
 import { DraftStore } from './draftStore'
@@ -12,6 +13,7 @@ export interface RootStoreInitialState {
   auth?: Partial<AuthState>
   annualReportState?: AnnualReportState
   wrapstodonYear?: number
+  isMobile?: boolean
 }
 
 export class RootStore {
@@ -20,13 +22,16 @@ export class RootStore {
   draftStore: DraftStore
   initialAnnualReportState?: AnnualReportState
   initialWrapstodonYear?: number
+  isMobile?: boolean
 
   constructor(initialState?: RootStoreInitialState) {
+    makeAutoObservable(this);
     this.authStore = new AuthStore(initialState?.auth)
     this.userStore = new UserStore()
     this.draftStore = new DraftStore()
     this.initialAnnualReportState = initialState?.annualReportState
     this.initialWrapstodonYear = initialState?.wrapstodonYear
+    this.isMobile = initialState?.isMobile
   }
 
   // Helper method to reset all stores (e.g., on logout)

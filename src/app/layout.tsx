@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { preconnect } from "react-dom";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
@@ -13,20 +13,17 @@ import { GlobalModalProvider } from "@/contexts/GlobalModalContext";
 import SkipToMain from "@/components/atoms/SkipToMain";
 import { ServiceWorkerRegister } from "@/components/atoms/ServiceWorkerRegister";
 import { locales, defaultLocale, LOCALE_COOKIE_NAME, type Locale } from "@/i18n/config";
+import { isMobileDevice } from "@/utils/device";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"),
   title: "Next Mastodon",
   description: "Decentralized social media",
   openGraph: {
-    title: "Next Mastodon",
-    description: "Decentralized social media",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Next Mastodon",
-    description: "Decentralized social media",
   },
 };
 
@@ -46,6 +43,10 @@ export default async function RootLayout({
 }>) {
   // Read auth and UI cookies on server for hydration
   const cookieStore = await cookies();
+  const headerList = await headers();
+  const userAgent = headerList.get('user-agent') || '';
+  const isMobile = isMobileDevice(userAgent);
+
   const instanceURL = cookieStore.get('instanceURL')?.value ?? null;
 
   // Resource hints for performance - inspired by X (Twitter)
@@ -94,6 +95,7 @@ export default async function RootLayout({
     },
     annualReportState,
     wrapstodonYear,
+    isMobile,
   };
 
   return (

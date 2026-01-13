@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
 
 interface TextSkeletonProps {
@@ -11,14 +10,6 @@ interface TextSkeletonProps {
   /** Additional CSS class names */
   className?: string;
 }
-
-const Skeleton = styled.div<{ $width: string | number; $height: string | number }>`
-  width: ${props => typeof props.$width === 'number' ? `${props.$width}px` : props.$width};
-  height: ${props => typeof props.$height === 'number' ? `${props.$height}px` : props.$height};
-  background: var(--surface-3);
-  border-radius: var(--radius-1);
-  animation: var(--animation-blink);
-`;
 
 /**
  * TextSkeleton - A rectangular skeleton loader for text content
@@ -39,11 +30,13 @@ export const TextSkeleton = ({
   className = '',
 }: TextSkeletonProps) => {
   return (
-    <Skeleton
-      $width={width}
-      $height={height}
-      className={className}
-      style={style}
+    <div
+      className={`skeleton-text ${className}`}
+      style={{
+        width: typeof width === 'number' ? `${width}px` : width,
+        height: typeof height === 'number' ? `${height}px` : height,
+        ...style
+      }}
       aria-label="Loading..."
       role="status"
     />

@@ -1,188 +1,12 @@
 'use client';
 
-import styled from '@emotion/styled';
 import Link, { useLinkStatus } from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Home, PenSquare, Search, Settings, Github, Bell, List, TrendingUp, Mail } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import { useInstance, useUnreadNotificationCount, useNotificationMarker, useAnnualReportState } from '@/api';
-import { CircleSkeleton, TextSkeleton } from '@/components/atoms';
-
-import { GiRingedPlanet } from 'react-icons/gi';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { WrapstodonModal } from '@/components/wrapstodon/WrapstodonModal';
-import { useStores } from '@/hooks/useStores';
+import { GiRingedPlanet } from 'react-icons/gi';
+import React from 'react';
 
-
-import { LiquidGlassBottomNav } from './LiquidGlassBottomNav';
-
-interface NavigationProps {
-  isAuthenticated: boolean;
-  instanceURL?: string | null;
-}
-
-export default function Navigation({ isAuthenticated, instanceURL }: NavigationProps) {
-  const pathname = usePathname();
-  const t = useTranslations('nav');
-  const { data: instance, isLoading: isLoadingInstance } = useInstance();
-  const { data: unreadCount } = useUnreadNotificationCount();
-  const { initialAnnualReportState, initialWrapstodonYear } = useStores();
-
-  // Get Wrapstodon year from instance - the server tells us which year is available
-  // Use SSR initial year as fallback while instance is loading
-  const wrapstodonYear = instance?.wrapstodon ?? initialWrapstodonYear;
-
-  // Get current year to check if wrapstodon is for the current year
-  const currentYear = new Date().getFullYear();
-  const isCurrentYear = wrapstodonYear === currentYear;
-
-  // Check if Wrapstodon is available for the user (only if server has current year set)
-  const { data: annualReportState } = useAnnualReportState(wrapstodonYear ?? 0, {
-    enabled: isAuthenticated && !!wrapstodonYear && isCurrentYear,
-  });
-
-  // Use SSR initial state as fallback while loading
-  const effectiveState = annualReportState?.state ?? initialAnnualReportState;
-
-  // Show Wrapstodon link if server has current year and user is eligible, generating, or has available report
-  const showWrapstodon = isCurrentYear && effectiveState && effectiveState !== 'ineligible';
-
-  // Prefetch notification marker globally so it's available immediately when visiting notifications
-  useNotificationMarker();
-
-  // Desktop sidebar includes all links
-  const sidebarNavLinks = [
-    { href: '/', label: t('home'), icon: Home },
-    { href: '/explore', label: t('explore'), icon: TrendingUp },
-    { href: '/search', label: t('search'), icon: Search },
-    { href: '/compose', label: t('compose'), icon: PenSquare },
-    { href: '/conversations', label: t('messages'), icon: Mail },
-    { href: '/lists', label: t('lists'), icon: List },
-    { href: '/notifications', label: t('notifications'), icon: Bell, badge: unreadCount?.count },
-    { href: '/settings', label: t('settings'), icon: Settings },
-  ];
-
-  // Mobile bottom nav is simplified - explore accessible via Settings
-  const bottomNavLinks = [
-    { href: '/', label: t('home'), icon: Home },
-    { href: '/conversations', label: t('messages'), icon: Mail },
-    { href: '/compose', label: t('compose'), icon: PenSquare },
-    { href: '/notifications', label: t('notifications'), icon: Bell, badge: unreadCount?.count },
-    { href: '/settings', label: t('settings'), icon: Settings },
-  ];
-
-  return (
-    <>
-      {/* Desktop Sidebar Navigation */}
-      <nav className="navigation-sidebar" aria-label="Site navigation">
-        {/* Logo */}
-        <div className="navigation-sidebar-header">
-          <Link href="/" className="navigation-sidebar-instance">
-            {isLoadingInstance ? (
-              <>
-                <CircleSkeleton size="40px" />
-                <InstanceInfoSkeleton className="navigation-sidebar-instance-info">
-                  <TextSkeleton width={96} height={16} />
-                  <TextSkeleton width={64} height={12} />
-                </InstanceInfoSkeleton>
-              </>
-            ) : instance ? (
-              <>
-                {instance.icon?.[instance.icon.length - 1]?.src || instance.thumbnail?.url ? (
-                  <img
-                    src={instance.icon?.[instance.icon.length - 1]?.src || instance.thumbnail?.url}
-                    alt={instance.title}
-                    className="navigation-instance-icon"
-                  />
-                ) : (
-                  <div className="navigation-instance-placeholder">
-                    <span>
-                      {instance.title?.charAt(0) || 'M'}
-                    </span>
-                  </div>
-                )}
-                <div className="navigation-sidebar-instance-info">
-                  <span className="navigation-sidebar-instance-title text-truncate">{instance.title}</span>
-                  <span className="navigation-sidebar-instance-domain text-truncate">{instance.domain}</span>
-                </div>
-              </>
-            ) : (
-              <div className="flex flex-col">
-                <span className="font-bold text-xl">Mastodon</span>
-                {instanceURL && (
-                  <span className="text-xs text-muted-foreground">
-                    {instanceURL.replace('https://', '')}
-                  </span>
-                )}
-              </div>
-            )}
-          </Link>
-        </div>
-
-        {/* Navigation Links */}
-        {isAuthenticated && (
-          <nav className="navigation-sidebar-nav" aria-label="Main navigation">
-            {sidebarNavLinks.map((link) => {
-              const Icon = link.icon;
-              const isActive = pathname === link.href;
-
-              return (
-                <NavigationLink
-                  key={link.href}
-                  href={link.href}
-                  icon={Icon}
-                  label={link.label}
-                  isActive={isActive}
-                  variant="sidebar"
-                  badge={link.badge}
-                />
-              );
-            })}
-
-            {/* Wrapstodon - shown dynamically based on API state or SSR cookie */}
-            {showWrapstodon && wrapstodonYear && (
-              <WrapstodonButton
-                year={wrapstodonYear}
-                highlight={effectiveState === 'available'}
-                textBadge={effectiveState === 'available' ? 'New' : undefined}
-              />
-            )}
-          </nav>
-        )}
-
-        {/* User Info / Auth */}
-        <div className="navigation-sidebar-footer">
-          {!isAuthenticated && (
-            <Link href="/auth/signin" className="navigation-sidebar-signin">
-              Sign In
-            </Link>
-          )}
-
-          <a
-            href="https://github.com/channyeintun/mastodon-nextjs-frontend"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="navigation-sidebar-link"
-          >
-            <div className="navigation-link-icon">
-              <Github size={24} />
-            </div>
-            <span className="navigation-link-label">{t('sourceCode')}</span>
-          </a>
-
-
-        </div>
-      </nav>
-
-      {/* Mobile Bottom Navigation with Liquid Glass */}
-      {isAuthenticated && (
-        <LiquidGlassBottomNav bottomNavLinks={bottomNavLinks} pathname={pathname} />
-      )}
-    </>
-  );
-}
-
-interface NavigationLinkProps {
+export interface NavigationLinkProps {
   href: string;
   icon: React.ComponentType<{ size: number }>;
   label: string;
@@ -194,7 +18,6 @@ interface NavigationLinkProps {
 }
 
 export function NavigationLink({ href, icon: Icon, label, isActive, variant, badge, textBadge, highlight }: NavigationLinkProps) {
-
   const className = variant === 'sidebar'
     ? `navigation-sidebar-link ${isActive ? 'active' : ''} ${highlight ? 'highlight' : ''}`
     : `navigation-bottom-link ${isActive ? 'active' : ''}`;
@@ -203,92 +26,47 @@ export function NavigationLink({ href, icon: Icon, label, isActive, variant, bad
     <Link
       href={href}
       className={className}
-      aria-label={label}
+      aria-label={variant === 'bottom' ? label : undefined}
       aria-current={isActive ? 'page' : undefined}
       scroll={false}
     >
-      <IconWrapper className="navigation-link-icon">
+      <div className="navigation-link-icon">
         <Icon size={variant === 'sidebar' ? 24 : 22} />
         {badge !== undefined && badge > 0 && (
-          <Badge
+          <span
+            className="badge-count"
             aria-live="polite"
             aria-atomic="true"
             aria-label={`${badge > 99 ? '99+' : badge} unread notifications`}
           >
             {badge > 99 ? '99+' : badge}
-          </Badge>
+          </span>
         )}
-      </IconWrapper>
+      </div>
       {variant !== 'bottom' && <span className="navigation-link-label">{label}</span>}
-      {textBadge && <TextBadge>{textBadge}</TextBadge>}
+      {textBadge && <span className="badge-text">{textBadge}</span>}
       <LinkStatus />
     </Link>
   );
 }
 
-const LinkStatus = () => {
+export const LinkStatus = () => {
   const status = useLinkStatus();
-
+  if (!status.pending) return null;
   return (
-    <span className={`navigation-link-spinner ${status.pending ? 'pending' : ''}`} aria-label="Loading..." />
+    <span className="navigation-link-spinner pending" aria-label="Loading..." />
   );
 }
 
-// Styled components
-const InstanceInfoSkeleton = styled.div`
-  gap: 4px;
-`;
-
-const IconWrapper = styled.div`
-  position: relative;
-`;
-
-const Badge = styled.span`
-  position: absolute;
-  top: -4px;
-  right: -6px;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  font-size: 10px;
-  font-weight: bold;
-  color: white;
-  background: var(--red-6);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const TextBadge = styled.span`
-  position: absolute;
-  top: -4px;
-  right: -8px;
-  padding: 2px 5px;
-  font-size: 7px;
-  font-weight: 700;
-  color: white;
-  background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
-  border-radius: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  white-space: nowrap;
-`;
-
-// Wrapstodon button component that opens the modal
 interface WrapstodonButtonProps {
   year: number;
   highlight?: boolean;
   textBadge?: string;
 }
 
-function WrapstodonButton({ year, highlight, textBadge }: WrapstodonButtonProps) {
+export function WrapstodonButton({ year, highlight, textBadge }: WrapstodonButtonProps) {
   const { openModal, closeModal } = useGlobalModal();
-
-  const handleClick = () => {
-    openModal(<WrapstodonModal onClose={closeModal} />);
-  };
-
+  const handleClick = () => openModal(<WrapstodonModal onClose={closeModal} />);
   const className = `navigation-sidebar-link ${highlight ? 'highlight' : ''}`;
 
   return (
@@ -297,11 +75,11 @@ function WrapstodonButton({ year, highlight, textBadge }: WrapstodonButtonProps)
       className={className}
       aria-label={`Wrapstodon ${year}`}
     >
-      <IconWrapper className="navigation-link-icon">
+      <div className="navigation-link-icon">
         <GiRingedPlanet style={{ fontSize: 24, width: 24, height: 24, minWidth: 24, minHeight: 24, flexShrink: 0 }} />
-      </IconWrapper>
+      </div>
       <span className="navigation-link-label">Wrapstodon {year}</span>
-      {textBadge && <TextBadge>{textBadge}</TextBadge>}
+      {textBadge && <span className="badge-text">{textBadge}</span>}
     </button>
   );
 }

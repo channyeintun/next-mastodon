@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
 
 interface CircleSkeletonProps {
@@ -6,15 +5,9 @@ interface CircleSkeletonProps {
   size?: string;
   /** Additional inline styles */
   style?: CSSProperties;
+  /** Additional CSS class names */
+  className?: string;
 }
-
-const Skeleton = styled.div<{ $size: string }>`
-  width: ${props => props.$size};
-  height: ${props => props.$size};
-  border-radius: 50%;
-  background: var(--surface-3);
-  animation: var(--animation-blink);
-`;
 
 /**
  * CircleSkeleton - A circular skeleton loader
@@ -28,11 +21,15 @@ const Skeleton = styled.div<{ $size: string }>`
  * <CircleSkeleton size="48px" />
  * ```
  */
-export const CircleSkeleton = ({ size = 'var(--size-7)', style }: CircleSkeletonProps) => {
+export const CircleSkeleton = ({ size = 'var(--size-7)', style, className = '' }: CircleSkeletonProps) => {
   return (
-    <Skeleton
-      $size={size}
-      style={style}
+    <div
+      className={`skeleton-circle ${className}`}
+      style={{
+        width: size,
+        height: size,
+        ...style
+      }}
       aria-label="Loading..."
       role="status"
     />
