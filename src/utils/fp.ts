@@ -174,10 +174,11 @@ export const findStatusInArray = (statusId: string) => (statuses: Status[]): Sta
 /**
  * Find status in paginated data (InfiniteData pattern)
  * Returns the actual status (unwrapping reblog if needed)
+ * Handles both plain array pages and PaginatedResponse pages
  */
-export const findStatusInPages = (statusId: string) => (pages?: Status[][]): Status | undefined => {
+export const findStatusInPages = (statusId: string) => (pages?: (Status[] | { data: Status[] })[]): Status | undefined => {
   if (!pages) return undefined
-  const flattened = flatten(pages)
+  const flattened = flattenPages(pages)
   return findStatusInArray(statusId)(flattened)
 }
 

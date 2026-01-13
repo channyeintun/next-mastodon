@@ -116,7 +116,7 @@ function findStatusInCaches(
   if (detail) return detail
 
   // 2. Try trending statuses
-  const trendingData = queryClient.getQueryData<InfiniteData<Status[]>>(queryKeys.trends.statuses())
+  const trendingData = queryClient.getQueryData<InfiniteData<PaginatedResponse<Status[]>>>(queryKeys.trends.statuses())
   const foundInTrending = findStatusInPages(statusId)(trendingData?.pages)
   if (foundInTrending) return foundInTrending
 
@@ -129,13 +129,13 @@ function findStatusInCaches(
   })
 
   const foundInTimelines = findFirstNonNil(
-    timelines.map(([_, data]) => findStatusInPages(statusId)(data?.pages?.map(p => p.data)))
+    timelines.map(([_, data]) => findStatusInPages(statusId)(data?.pages))
   )
   if (foundInTimelines) return foundInTimelines
 
   // 4. Try bookmarks (now PaginatedResponse structure)
   const bookmarks = queryClient.getQueryData<InfiniteData<PaginatedResponse<Status[]>>>(queryKeys.bookmarks.all())
-  const foundInBookmarks = findStatusInPages(statusId)(bookmarks?.pages?.map(p => p.data))
+  const foundInBookmarks = findStatusInPages(statusId)(bookmarks?.pages)
   if (foundInBookmarks) return foundInBookmarks
 
   // 5. Try account statuses (now PaginatedResponse structure)
@@ -152,7 +152,7 @@ function findStatusInCaches(
     }
 
     // Regular account timeline (InfiniteData with PaginatedResponse)
-    const foundInAccount = findStatusInPages(statusId)(data?.pages?.map(p => p.data))
+    const foundInAccount = findStatusInPages(statusId)(data?.pages)
     if (foundInAccount) return foundInAccount
   }
 
@@ -216,22 +216,25 @@ function updateStatusInCaches(
     updateStatuses
   )
 
-  // Update trending statuses (still plain arrays)
-  queryClient.setQueriesData<InfiniteData<Status[]>>(
+  // Update trending statuses (now PaginatedResponse structure)
+  queryClient.setQueriesData<InfiniteData<PaginatedResponse<Status[]>>>(
     { queryKey: queryKeys.trends.statuses() },
     (old) => {
       if (!old?.pages) return old
       return {
         ...old,
-        pages: old.pages.map(page => page.map(status => updateStatusOrReblog(status, statusId, updateFn))),
+        pages: old.pages.map(page => ({
+          ...page,
+          data: page.data.map(status => updateStatusOrReblog(status, statusId, updateFn)),
+        })),
       }
     }
   )
 
   // Update search results - infinite search (Statuses, Accounts, Hashtags tabs)
   // Query key format: ['search', query, type, 'infinite']
-  // Data structure: InfiniteData<{ accounts, statuses, hashtags }>
-  queryClient.setQueriesData<InfiniteData<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>>(
+  // Data structure: InfiniteData<PaginatedResponse<{ accounts, statuses, hashtags }>>
+  queryClient.setQueriesData<InfiniteData<PaginatedResponse<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>>>(
     { queryKey: ['search'], predicate: (query) => query.queryKey.includes('infinite') },
     (old) => {
       if (!old?.pages) return old
@@ -239,9 +242,12 @@ function updateStatusInCaches(
         ...old,
         pages: old.pages.map((page) => ({
           ...page,
-          statuses: page.statuses.map((status) =>
-            updateStatusOrReblog(status, statusId, updateFn)
-          ),
+          data: {
+            ...page.data,
+            statuses: page.data.statuses.map((status) =>
+              updateStatusOrReblog(status, statusId, updateFn)
+            ),
+          },
         })),
       }
     }
@@ -249,16 +255,19 @@ function updateStatusInCaches(
 
   // Update search results - regular search (All tab)
   // Query key format: ['search', query, type]
-  // Data structure: { accounts, statuses, hashtags } (not paginated)
-  queryClient.setQueriesData<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>(
+  // Data structure: PaginatedResponse<{ accounts, statuses, hashtags }> (not paginated but wrapped)
+  queryClient.setQueriesData<PaginatedResponse<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>>(
     { queryKey: ['search'], predicate: (query) => !query.queryKey.includes('infinite') },
     (old) => {
-      if (!old?.statuses) return old
+      if (!old?.data?.statuses) return old
       return {
         ...old,
-        statuses: old.statuses.map((status) =>
-          updateStatusOrReblog(status, statusId, updateFn)
-        ),
+        data: {
+          ...old.data,
+          statuses: old.data.statuses.map((status) =>
+            updateStatusOrReblog(status, statusId, updateFn)
+          ),
+        },
       }
     }
   )
@@ -339,20 +348,23 @@ function removeStatusFromCaches(
     (statuses) => filterStatuses(statuses, statusId)
   )
 
-  // Remove from trending statuses (still plain arrays)
-  queryClient.setQueriesData<InfiniteData<Status[]>>(
+  // Remove from trending statuses (now PaginatedResponse structure)
+  queryClient.setQueriesData<InfiniteData<PaginatedResponse<Status[]>>>(
     { queryKey: queryKeys.trends.statuses() },
     (old) => {
       if (!old?.pages) return old
       return {
         ...old,
-        pages: old.pages.map(page => filterStatuses(page, statusId)),
+        pages: old.pages.map(page => ({
+          ...page,
+          data: filterStatuses(page.data, statusId),
+        })),
       }
     }
   )
 
   // Remove from search results - infinite search (Statuses, Accounts, Hashtags tabs)
-  queryClient.setQueriesData<InfiniteData<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>>(
+  queryClient.setQueriesData<InfiniteData<PaginatedResponse<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>>>(
     { queryKey: ['search'], predicate: (query) => query.queryKey.includes('infinite') },
     (old) => {
       if (!old?.pages) return old
@@ -360,24 +372,30 @@ function removeStatusFromCaches(
         ...old,
         pages: old.pages.map((page) => ({
           ...page,
-          statuses: page.statuses.filter((status) =>
-            status.id !== statusId && status.reblog?.id !== statusId
-          ),
+          data: {
+            ...page.data,
+            statuses: page.data.statuses.filter((status) =>
+              status.id !== statusId && status.reblog?.id !== statusId
+            ),
+          },
         })),
       }
     }
   )
 
   // Remove from search results - regular search (All tab)
-  queryClient.setQueriesData<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>(
+  queryClient.setQueriesData<PaginatedResponse<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>>(
     { queryKey: ['search'], predicate: (query) => !query.queryKey.includes('infinite') },
     (old) => {
-      if (!old?.statuses) return old
+      if (!old?.data?.statuses) return old
       return {
         ...old,
-        statuses: old.statuses.filter((status) =>
-          status.id !== statusId && status.reblog?.id !== statusId
-        ),
+        data: {
+          ...old.data,
+          statuses: old.data.statuses.filter((status) =>
+            status.id !== statusId && status.reblog?.id !== statusId
+          ),
+        },
       }
     }
   )
@@ -459,20 +477,23 @@ function updatePollInCaches(
     updateStatuses
   )
 
-  // Update trending statuses (still plain arrays)
-  queryClient.setQueriesData<InfiniteData<Status[]>>(
+  // Update trending statuses (now PaginatedResponse structure)
+  queryClient.setQueriesData<InfiniteData<PaginatedResponse<Status[]>>>(
     { queryKey: queryKeys.trends.statuses() },
     (old) => {
       if (!old?.pages) return old
       return {
         ...old,
-        pages: old.pages.map(page => page.map(updatePollInStatus)),
+        pages: old.pages.map(page => ({
+          ...page,
+          data: page.data.map(updatePollInStatus),
+        })),
       }
     }
   )
 
   // Update search results - infinite search (Statuses, Accounts, Hashtags tabs)
-  queryClient.setQueriesData<InfiniteData<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>>(
+  queryClient.setQueriesData<InfiniteData<PaginatedResponse<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>>>(
     { queryKey: ['search'], predicate: (query) => query.queryKey.includes('infinite') },
     (old) => {
       if (!old?.pages) return old
@@ -480,28 +501,34 @@ function updatePollInCaches(
         ...old,
         pages: old.pages.map((page) => ({
           ...page,
-          statuses: page.statuses.map((status) =>
-            status.poll?.id === pollId
-              ? { ...status, poll: updatedPoll }
-              : status
-          ),
+          data: {
+            ...page.data,
+            statuses: page.data.statuses.map((status) =>
+              status.poll?.id === pollId
+                ? { ...status, poll: updatedPoll }
+                : status
+            ),
+          },
         })),
       }
     }
   )
 
   // Update search results - regular search (All tab)
-  queryClient.setQueriesData<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>(
+  queryClient.setQueriesData<PaginatedResponse<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>>(
     { queryKey: ['search'], predicate: (query) => !query.queryKey.includes('infinite') },
     (old) => {
-      if (!old?.statuses) return old
+      if (!old?.data?.statuses) return old
       return {
         ...old,
-        statuses: old.statuses.map((status) =>
-          status.poll?.id === pollId
-            ? { ...status, poll: updatedPoll }
-            : status
-        ),
+        data: {
+          ...old.data,
+          statuses: old.data.statuses.map((status) =>
+            status.poll?.id === pollId
+              ? { ...status, poll: updatedPoll }
+              : status
+          ),
+        },
       }
     }
   )
