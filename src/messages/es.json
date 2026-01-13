@@ -157,6 +157,12 @@
       "save": "Guardar como borrador",
       "title": "¿Guardar esta publicación como borrador?"
     },
+    "discardChanges": {
+      "cancel": "Seguir editando",
+      "discard": "Descartar",
+      "message": "¿Estás seguro de que quieres descartar los cambios? Esto no se puede deshacer.",
+      "title": "¿Descartar cambios?"
+    },
     "schedule": "Programar",
     "scheduleHelp": "La publicación se publicará automáticamente en este momento.",
     "scheduleLabel": "Programar publicación",

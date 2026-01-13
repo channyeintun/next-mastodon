@@ -157,6 +157,12 @@
       "save": "下書きとして保存",
       "title": "この投稿を下書きとして保存しますか？"
     },
+    "discardChanges": {
+      "cancel": "編集を続ける",
+      "discard": "破棄",
+      "message": "変更を破棄してもよろしいですか？この操作は取り消せません。",
+      "title": "変更を破棄しますか？"
+    },
     "schedule": "予約",
     "scheduleHelp": "投稿はこの日時に自動的に公開されます。",
     "scheduleLabel": "投稿を予約",

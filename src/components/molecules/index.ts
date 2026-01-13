@@ -58,3 +58,4 @@ export { ReportModal } from './ReportModal';
 export { FeedVideoPlayer } from './FeedVideoPlayer';
 export { ModalVideoPlayer } from './ModalVideoPlayer';
 export { SaveDraftConfirmationModal } from './SaveDraftConfirmationModal';
+export { DiscardChangesModal } from './DiscardChangesModal';

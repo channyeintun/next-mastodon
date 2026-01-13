@@ -177,6 +177,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
                 mentionPrefix={status.account.acct}
                 inReplyToId={status.id}
                 isReply
+                disableUnsavedChanges
               />
             </ReplyComposerContainer>
           )}

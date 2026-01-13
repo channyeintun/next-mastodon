@@ -157,6 +157,12 @@
       "save": "Als Entwurf speichern",
       "title": "Diesen Beitrag als Entwurf speichern?"
     },
+    "discardChanges": {
+      "cancel": "Weiter bearbeiten",
+      "discard": "Verwerfen",
+      "message": "Bist du sicher, dass du deine Änderungen verwerfen möchtest? Dies kann nicht rückgängig gemacht werden.",
+      "title": "Änderungen verwerfen?"
+    },
     "schedule": "Planen",
     "scheduleHelp": "Der Beitrag wird automatisch zu diesem Zeitpunkt veröffentlicht.",
     "scheduleLabel": "Beitrag planen",

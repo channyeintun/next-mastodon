@@ -155,7 +155,13 @@
       "discard": "Xóa bản nháp",
       "message": "Nếu bạn hủy bây giờ, bạn sẽ mất bài đăng này.",
       "save": "Lưu làm bản nháp",
-      "title": "Lưu bài đăng này dưới dạng bản nháp?"
+      "title": "Lưu bài đăng này vào bản nháp?"
+    },
+    "discardChanges": {
+      "cancel": "Tiếp tục chỉnh sửa",
+      "discard": "Hủy bỏ",
+      "message": "Bạn có chắc chắn muốn hủy bỏ các thay đổi không? Hành động này không thể hoàn tác.",
+      "title": "Hủy bỏ thay đổi?"
     },
     "schedule": "Hẹn giờ",
     "scheduleHelp": "Bài đăng sẽ được tự động đăng vào thời gian này.",

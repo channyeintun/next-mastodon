@@ -157,6 +157,12 @@
       "save": "Enregistrer le brouillon",
       "title": "Enregistrer ce post en tant que brouillon ?"
     },
+    "discardChanges": {
+      "cancel": "Continuer l'édition",
+      "discard": "Abandonner",
+      "message": "Voulez-vous vraiment abandonner vos modifications ? Cette action est irréversible.",
+      "title": "Abandonner les modifications ?"
+    },
     "schedule": "Programmer",
     "scheduleHelp": "La publication sera automatiquement publiée à cette date.",
     "scheduleLabel": "Programmer la publication",

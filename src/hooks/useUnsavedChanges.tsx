@@ -64,6 +64,7 @@ export function useUnsavedChanges({
     const handleCancel = useCallback(() => {
         if (isDecisionMadeRef.current) return;
         setPendingNavigation(null);
+        propsRef.current.closeModal?.();
     }, []);
 
     const executeNavigation = useCallback((target: string) => {

@@ -155,7 +155,13 @@
       "discard": "删除草稿",
       "message": "如果现在放弃，你将丢失此帖子。",
       "save": "保存为草稿",
-      "title": "将此帖子保存为草稿？"
+      "title": "将该帖子保存为草稿？"
+    },
+    "discardChanges": {
+      "cancel": "继续编辑",
+      "discard": "丢弃",
+      "message": "你确定要丢弃更改吗？此操作无法撤销。",
+      "title": "丢弃更改？"
     },
     "schedule": "定时",
     "scheduleHelp": "帖子将在该时间自动发布。",
