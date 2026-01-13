@@ -19,8 +19,6 @@
       "noMoreFollowers": "没有更多关注者了",
       "title": "关注者"
     },
-    "mutual": "你们互相关注",
-    "follows_you": "关注了你",
     "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "正在关注",
     "followingPage": {
@@ -30,6 +28,7 @@
       "title": "Following"
     },
     "following_count": "{count, plural, other {# following}}",
+    "follows_you": "关注了你",
     "hiddenProfile": "此个人资料已被 {domain} 的管理员隐藏。",
     "joined": "{date} 加入",
     "loadMore": "加载更多",
@@ -43,6 +42,7 @@
       "twitterTitle": "{name} (@{acct})"
     },
     "mute": "静音",
+    "mutual": "你们互相关注",
     "notFound": "未找到个人资料",
     "pinned": "已置顶",
     "pinnedNav": {
@@ -84,6 +84,7 @@
     "unpin": "取消个人资料置顶"
   },
   "common": {
+    "addMedia": "添加媒体",
     "back": "返回",
     "backToTop": "返回顶部",
     "cancel": "取消",
@@ -93,17 +94,16 @@
     "dontShowAgain": "不再显示",
     "loading": "加载中...",
     "next": "下一步",
+    "open": "打开",
     "remove": "移除",
     "report": "举报",
     "retry": "重试",
     "save": "保存",
+    "send": "发送",
     "share": "分享",
     "skipToMain": "跳转到主要内容",
     "verified": "已验证",
-    "viewAll": "查看全部",
-    "open": "打开",
-    "addMedia": "添加媒体",
-    "send": "发送"
+    "viewAll": "查看全部"
   },
   "composer": {
     "addContentWarning": "添加内容警告",
@@ -114,6 +114,12 @@
     "charCount": "剩余 {count} 个字符",
     "cwLabel": "内容警告",
     "cwPlaceholder": "在此输入你的警告...",
+    "discardChanges": {
+      "cancel": "继续编辑",
+      "discard": "丢弃",
+      "message": "你确定要丢弃更改吗？此操作无法撤销。",
+      "title": "丢弃更改？"
+    },
     "duration": {
       "1d": "1 天",
       "1h": "1 小时",
@@ -151,6 +157,12 @@
     "replyPlaceholder": "发布你的回复",
     "replyTo": "Reply to @{acct}",
     "reschedule": "重新定时",
+    "saveDraft": {
+      "discard": "删除草稿",
+      "message": "如果现在放弃，你将丢失此帖子。",
+      "save": "保存为草稿",
+      "title": "将此帖子保存为草稿？"
+    },
     "schedule": "定时",
     "scheduleHelp": "帖子将在该时间自动发布。",
     "scheduleLabel": "定时发布",
@@ -166,18 +178,6 @@
     "visibilityDescription": "控制谁可以与此帖子互动。你也可以在 首选项 > 发布默认设置 中将设置应用于所有未来的帖子。",
     "visibilityInteraction": "可见性与交互",
     "visibilityLabel": "可见性：{label}",
-    "saveDraft": {
-      "title": "将此帖子保存为草稿？",
-      "message": "如果现在放弃，你将丢失此帖子。",
-      "discard": "删除草稿",
-      "save": "保存为草稿"
-    },
-    "discardChanges": {
-      "title": "丢弃更改？",
-      "message": "你确定要丢弃更改吗？此操作无法撤销。",
-      "discard": "丢弃",
-      "cancel": "继续编辑"
-    },
     "visibilityOptions": {
       "direct": "私信",
       "directDesc": "仅提及的用户",
@@ -191,6 +191,8 @@
     "whoCanQuote": "谁可以引用"
   },
   "conversation": {
+    "cancel": "取消",
+    "delete": "删除",
     "deleteConfirm": "删除此对话？",
     "deleteConfirmFull": "你确定要删除此对话吗？此操作无法撤销。",
     "deleteError": "删除对话失败。请重试。",
@@ -199,9 +201,7 @@
     "noMessages": "暂无消息",
     "sendError": "发送消息失败",
     "title": "对话",
-    "typeMessage": "输入消息...",
-    "cancel": "取消",
-    "delete": "删除"
+    "typeMessage": "输入消息..."
   },
   "conversations": {
     "count": "{count, plural, =0 {暂无对话} other {# 条对话}}",
@@ -238,8 +238,10 @@
   },
   "explore": {
     "failedNews": "加载热门新闻失败",
+    "failedSuggestions": "加载推荐失败",
     "failedTags": "加载热门话题失败",
     "failedTrending": "加载热门帖子失败",
+    "noSuggestions": "没有可用的推荐",
     "noTrendingNews": "目前没有热门新闻",
     "noTrendingPosts": "目前没有热门帖子",
     "noTrendingTags": "目前没有热门话题",
@@ -248,11 +250,9 @@
     "popularHint": "在此实例上很热门",
     "popularLabel": "热门推荐",
     "reachedEndNews": "你已看完全部热门新闻",
-    "signInToSeeSuggestions": "登录后查看推荐",
-    "failedSuggestions": "加载推荐失败",
-    "noSuggestions": "没有可用的推荐",
     "reachedEndPosts": "你已看完全部热门帖子",
     "reachedEndTags": "你已看完全部热门话题",
+    "signInToSeeSuggestions": "登录后查看推荐",
     "staffPickHint": "由团队精心挑选",
     "staffPickLabel": "编辑推荐",
     "tabs": {
@@ -270,6 +270,40 @@
     "rotateRight": "向右旋转 90°",
     "zoomIn": "放大",
     "zoomOut": "缩小"
+  },
+  "keyboardShortcuts": {
+    "general": {
+      "close": "Back / Close",
+      "newPost": "New post",
+      "showShortcuts": "Show shortcuts",
+      "title": "General"
+    },
+    "navigation": {
+      "goBookmarks": "Go to bookmarks",
+      "goExplore": "Go to explore",
+      "goHome": "Go to home",
+      "goNotifications": "Go to notifications",
+      "goProfile": "Go to profile",
+      "jumpTop": "Jump to top",
+      "nextPost": "Next post",
+      "prevPost": "Previous post",
+      "search": "Search",
+      "title": "Navigation"
+    },
+    "postActions": {
+      "boost": "Boost",
+      "favorite": "Favourite",
+      "mention": "Mention author",
+      "openMedia": "Open media attachments",
+      "openStatus": "Open status",
+      "quote": "Quote",
+      "reply": "Reply",
+      "title": "Post Actions",
+      "toggleHidden": "Toggle hidden content",
+      "toggleSensitive": "Toggle sensitive media",
+      "translate": "Translate post"
+    },
+    "title": "Keyboard Shortcuts"
   },
   "lists": {
     "count": "{count, plural, =0 {暂无列表} other {# 个列表}}",
@@ -355,24 +389,24 @@
       "goBack": "返回",
       "title": "已过滤通知"
     },
+    "title": "通知",
     "types": {
-      "mention": "<link>{name}</link> 提及了你",
-      "status": "<link>{name}</link> 发布了新帖子",
-      "reblog": "{count, plural, =1 {<link>{name}</link> 转发了你的帖子} other {<link>{name}</link> 和其他 {remainingCount} 人转发了你的帖子}}",
+      "admin_report": "<link>{name}</link> 提交了一份报告",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> 已注册} other {<link>{name}</link> 和其他 {remainingCount} 人已注册}}",
+      "annual_report": "你的年度报告已准备就绪",
+      "favourite": "{count, plural, =1 {<link>{name}</link> 收藏了你的帖子} other {<link>{name}</link> 和其他 {remainingCount} 人收藏了你的帖子}}",
       "follow": "{count, plural, =1 {<link>{name}</link> 关注了你} other {<link>{name}</link> 和其他 {remainingCount} 人关注了你}}",
       "follow_request": "{count, plural, =1 {<link>{name}</link> 请求关注你} other {<link>{name}</link> 和其他 {remainingCount} 人请求关注你}}",
-      "favourite": "{count, plural, =1 {<link>{name}</link> 收藏了你的帖子} other {<link>{name}</link> 和其他 {remainingCount} 人收藏了你的帖子}}",
+      "mention": "<link>{name}</link> 提及了你",
+      "moderation_warning": "站务人员对你的账号采取了行动",
       "poll": "你参与的投票已结束",
-      "update": "你转发的帖子已被编辑",
       "quote": "{count, plural, =1 {<link>{name}</link> 引用了你的帖子} other {<link>{name}</link> 和其他 {remainingCount} 人引用了你的帖子}}",
       "quoted_update": "你引用的帖子已被编辑",
-      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> 已注册} other {<link>{name}</link> 和其他 {remainingCount} 人已注册}}",
-      "admin_report": "<link>{name}</link> 提交了一份报告",
+      "reblog": "{count, plural, =1 {<link>{name}</link> 转发了你的帖子} other {<link>{name}</link> 和其他 {remainingCount} 人转发了你的帖子}}",
       "severed_relationships": "你的一些关注关系已断开",
-      "moderation_warning": "站务人员对你的账号采取了行动",
-      "annual_report": "你的年度报告已准备就绪"
-    },
-    "title": "通知"
+      "status": "<link>{name}</link> 发布了新帖子",
+      "update": "你转发的帖子已被编辑"
+    }
   },
   "poll": {
     "closed": "已关闭",
@@ -383,14 +417,14 @@
     "extraFields": "额外字段",
     "followers": "关注者",
     "following": "正在关注",
+    "follows_you": "关注了你",
     "hiddenInfo": "该用户选择不公开此信息",
+    "mutual": "你们互相关注",
     "noFollowers": "暂无关注者",
     "noPosts": "暂无帖子",
     "notFollowing": "暂未关注任何人",
     "posts": "帖子",
-    "profileInfo": "个人资料信息",
-    "mutual": "你们互相关注",
-    "follows_you": "关注了你"
+    "profileInfo": "个人资料信息"
   },
   "profileEditor": {
     "bio": "个人简介",
@@ -544,6 +578,12 @@
     "followRequests": "关注请求",
     "interfaceLanguage": "界面语言",
     "interfaceLanguageDesc": "更改应用程序界面语言",
+    "logoutConfirm": {
+      "cancel": "取消",
+      "logout": "退出登录",
+      "message": "您确定要退出登录吗？",
+      "title": "退出登录？"
+    },
     "moderation": "内容审核",
     "mutedAccounts": "已静音账号",
     "mutesPage": {
@@ -580,8 +620,6 @@
       "botAccountDesc": "此账户主要执行自动化操作",
       "discoverable": "向他人推荐账户",
       "discoverableDesc": "允许你的账户被发现",
-      "showScrollToTop": "显示返回顶部按钮",
-      "showScrollToTopDesc": "显示一个快速回到时间轮顶部的按钮",
       "hideCollections": "隐藏关注者和关注中",
       "hideCollectionsDesc": "在个人资料中隐藏你的关注者和关注的人",
       "indexable": "在搜索结果中包含公开帖子",
@@ -596,6 +634,8 @@
       "privacyDesc": "控制你的资料可见性和可搜索性",
       "quoteDisabled": "仅关注者和私密帖子不能被他人引用。",
       "saveChanges": "保存更改",
+      "showScrollToTop": "显示返回顶部按钮",
+      "showScrollToTopDesc": "显示一个快速回到时间轮顶部的按钮",
       "visibility": "可见性",
       "whoCanQuote": "谁可以引用"
     },
@@ -621,13 +661,12 @@
     "signOut": "登出",
     "signingOut": "正在登出...",
     "title": "设置",
-    "trending": "热门",
-    "logoutConfirm": {
-      "title": "退出登录？",
-      "message": "您确定要退出登录吗？",
-      "cancel": "取消",
-      "logout": "退出登录"
-    }
+    "trending": "热门"
+  },
+  "status": {
+    "continued_thread": "续写串",
+    "replied_in_thread": "在串内回复",
+    "replied_to": "回复了 <link>{name}</link>"
   },
   "statusDetail": {
     "boostedBy": {
@@ -677,10 +716,10 @@
   "timeline": {
     "empty": "你的时间线是空的",
     "error": "加载时间线时出错",
+    "newPosts": "{count, plural, other {# 条新帖子}}",
     "subtitle": "你的个人时间线",
     "title": "首页",
-    "trending": "热门",
-    "newPosts": "{count, plural, other {# 条新帖子}}"
+    "trending": "热门"
   },
   "toast": {
     "copiedToClipboard": "已复制到剪贴板",
@@ -706,10 +745,5 @@
     "notAvailable": "Wrapstodon 不可用",
     "somethingWentWrong": "出错了",
     "title": "Wrapstodon"
-  },
-  "status": {
-    "continued_thread": "续写串",
-    "replied_to": "回复了 <link>{name}</link>",
-    "replied_in_thread": "在串内回复"
   }
 }

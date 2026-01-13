@@ -19,8 +19,6 @@
       "noMoreFollowers": "Không còn người theo dõi",
       "title": "Người theo dõi"
     },
-    "mutual": "Theo dõi nhau",
-    "follows_you": "Đang theo dõi bạn",
     "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "Đang theo dõi",
     "followingPage": {
@@ -30,6 +28,7 @@
       "title": "Đang theo dõi"
     },
     "following_count": "{count, plural, other {# following}}",
+    "follows_you": "Đang theo dõi bạn",
     "hiddenProfile": "Hồ sơ này đã bị ẩn bởi quản trị viên của {domain}.",
     "joined": "Đã tham gia {date}",
     "loadMore": "Tải thêm",
@@ -43,6 +42,7 @@
       "twitterTitle": "{name} (@{acct})"
     },
     "mute": "Ẩn",
+    "mutual": "Theo dõi nhau",
     "notFound": "Không tìm thấy hồ sơ",
     "pinned": "Đã ghim",
     "pinnedNav": {
@@ -84,6 +84,7 @@
     "unpin": "Bỏ ghim khỏi hồ sơ"
   },
   "common": {
+    "addMedia": "Thêm đa phương tiện",
     "back": "Quay lại",
     "backToTop": "Lên đầu trang",
     "cancel": "Hủy",
@@ -93,17 +94,16 @@
     "dontShowAgain": "Không hiển thị lại",
     "loading": "Đang tải...",
     "next": "Tiếp theo",
+    "open": "Mở",
     "remove": "Gỡ bỏ",
     "report": "Báo cáo",
     "retry": "Thử lại",
     "save": "Lưu",
+    "send": "Gửi",
     "share": "Chia sẻ",
     "skipToMain": "Chuyển đến nội dung chính",
     "verified": "Đã xác minh",
-    "viewAll": "Xem tất cả",
-    "open": "Mở",
-    "addMedia": "Thêm đa phương tiện",
-    "send": "Gửi"
+    "viewAll": "Xem tất cả"
   },
   "composer": {
     "addContentWarning": "Thêm cảnh báo nội dung",
@@ -114,6 +114,12 @@
     "charCount": "còn {count} ký tự",
     "cwLabel": "Cảnh báo nội dung",
     "cwPlaceholder": "Viết cảnh báo của bạn ở đây...",
+    "discardChanges": {
+      "cancel": "Tiếp tục chỉnh sửa",
+      "discard": "Hủy bỏ",
+      "message": "Bạn có chắc chắn muốn hủy bỏ các thay đổi không? Hành động này không thể hoàn tác.",
+      "title": "Hủy bỏ thay đổi?"
+    },
     "duration": {
       "1d": "1 ngày",
       "1h": "1 giờ",
@@ -151,6 +157,12 @@
     "replyPlaceholder": "Viết câu trả lời của bạn",
     "replyTo": "Reply to @{acct}",
     "reschedule": "Đổi giờ",
+    "saveDraft": {
+      "discard": "Xóa bản nháp",
+      "message": "Nếu bạn hủy bây giờ, bạn sẽ mất bài đăng này.",
+      "save": "Lưu làm bản nháp",
+      "title": "Lưu bài đăng này dưới dạng bản nháp?"
+    },
     "schedule": "Hẹn giờ",
     "scheduleHelp": "Bài đăng sẽ được tự động đăng vào thời gian này.",
     "scheduleLabel": "Hẹn giờ đăng",
@@ -166,18 +178,6 @@
     "visibilityDescription": "Kiểm soát ai có thể tương tác với bài đăng này. Bạn cũng có thể áp dụng cài đặt cho tất cả các bài đăng trong tương lai tại Cài đặt > Mặc định đăng bài.",
     "visibilityInteraction": "Hiển thị và tương tác",
     "visibilityLabel": "Chế độ hiển thị: {label}",
-    "saveDraft": {
-      "title": "Lưu bài đăng này dưới dạng bản nháp?",
-      "message": "Nếu bạn hủy bây giờ, bạn sẽ mất bài đăng này.",
-      "discard": "Xóa bản nháp",
-      "save": "Lưu làm bản nháp"
-    },
-    "discardChanges": {
-      "title": "Hủy bỏ thay đổi?",
-      "message": "Bạn có chắc chắn muốn hủy bỏ các thay đổi không? Hành động này không thể hoàn tác.",
-      "discard": "Hủy bỏ",
-      "cancel": "Tiếp tục chỉnh sửa"
-    },
     "visibilityOptions": {
       "direct": "Trực tiếp",
       "directDesc": "Chỉ những người được nhắc tên",
@@ -191,6 +191,8 @@
     "whoCanQuote": "Ai có thể trích dẫn"
   },
   "conversation": {
+    "cancel": "Hủy",
+    "delete": "Xóa",
     "deleteConfirm": "Xóa cuộc trò chuyện này?",
     "deleteConfirmFull": "Bạn có chắc chắn muốn xóa cuộc trò chuyện này? Hành động này không thể hoàn tác.",
     "deleteError": "Không thể xóa cuộc trò chuyện. Vui lòng thử lại.",
@@ -199,9 +201,7 @@
     "noMessages": "Chưa có tin nhắn nào",
     "sendError": "Gửi tin nhắn thất bại",
     "title": "Trò chuyện",
-    "typeMessage": "Nhập tin nhắn...",
-    "cancel": "Hủy",
-    "delete": "Xóa"
+    "typeMessage": "Nhập tin nhắn..."
   },
   "conversations": {
     "count": "{count, plural, =0 {Chưa có cuộc trò chuyện nào} other {# cuộc trò chuyện}}",
@@ -238,8 +238,10 @@
   },
   "explore": {
     "failedNews": "Không thể tải tin tức xu hướng",
+    "failedSuggestions": "Không thể tải gợi ý",
     "failedTags": "Không thể tải thẻ xu hướng",
     "failedTrending": "Không thể tải bài đăng xu hướng",
+    "noSuggestions": "Không có gợi ý nào",
     "noTrendingNews": "Chưa có tin tức xu hướng nào",
     "noTrendingPosts": "Chưa có bài đăng xu hướng nào",
     "noTrendingTags": "Chưa có thẻ xu hướng nào",
@@ -248,11 +250,9 @@
     "popularHint": "Phổ biến trên máy chủ này",
     "popularLabel": "Gợi ý phổ biến",
     "reachedEndNews": "Bạn đã xem hết các tin tức xu hướng",
-    "signInToSeeSuggestions": "Đăng nhập để xem gợi ý",
-    "failedSuggestions": "Không thể tải gợi ý",
-    "noSuggestions": "Không có gợi ý nào",
     "reachedEndPosts": "Bạn đã xem hết các bài đăng xu hướng",
     "reachedEndTags": "Bạn đã xem hết các thẻ xu hướng",
+    "signInToSeeSuggestions": "Đăng nhập để xem gợi ý",
     "staffPickHint": "Được chọn bởi đội ngũ quản trị",
     "staffPickLabel": "Lựa chọn của đội ngũ",
     "tabs": {
@@ -270,6 +270,40 @@
     "rotateRight": "Xoay phải 90°",
     "zoomIn": "Phóng to",
     "zoomOut": "Thu nhỏ"
+  },
+  "keyboardShortcuts": {
+    "general": {
+      "close": "Back / Close",
+      "newPost": "New post",
+      "showShortcuts": "Show shortcuts",
+      "title": "General"
+    },
+    "navigation": {
+      "goBookmarks": "Go to bookmarks",
+      "goExplore": "Go to explore",
+      "goHome": "Go to home",
+      "goNotifications": "Go to notifications",
+      "goProfile": "Go to profile",
+      "jumpTop": "Jump to top",
+      "nextPost": "Next post",
+      "prevPost": "Previous post",
+      "search": "Search",
+      "title": "Navigation"
+    },
+    "postActions": {
+      "boost": "Boost",
+      "favorite": "Favourite",
+      "mention": "Mention author",
+      "openMedia": "Open media attachments",
+      "openStatus": "Open status",
+      "quote": "Quote",
+      "reply": "Reply",
+      "title": "Post Actions",
+      "toggleHidden": "Toggle hidden content",
+      "toggleSensitive": "Toggle sensitive media",
+      "translate": "Translate post"
+    },
+    "title": "Keyboard Shortcuts"
   },
   "lists": {
     "count": "{count, plural, =0 {Chưa có danh sách nào} other {# danh sách}}",
@@ -355,24 +389,24 @@
       "goBack": "Quay lại",
       "title": "Thông báo đã lọc"
     },
+    "title": "Thông báo",
     "types": {
-      "mention": "<link>{name}</link> đã nhắc đến bạn",
-      "status": "<link>{name}</link> đã đăng bài",
-      "reblog": "{count, plural, =1 {<link>{name}</link> đã thúc đẩy bài đăng của bạn} other {<link>{name}</link> và {remainingCount} người khác đã thúc đẩy bài đăng của bạn}}",
+      "admin_report": "<link>{name}</link> đã gửi một báo cáo",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> đã đăng ký} other {<link>{name}</link> và {remainingCount} người khác đã đăng ký}}",
+      "annual_report": "Báo cáo thường niên của bạn đã sẵn sàng",
+      "favourite": "{count, plural, =1 {<link>{name}</link> đã thích bài đăng của bạn} other {<link>{name}</link> và {remainingCount} người khác đã thích bài đăng của bạn}}",
       "follow": "{count, plural, =1 {<link>{name}</link> bắt đầu theo dõi bạn} other {<link>{name}</link> và {remainingCount} người khác bắt đầu theo dõi bạn}}",
       "follow_request": "{count, plural, =1 {<link>{name}</link> đã yêu cầu theo dõi bạn} other {<link>{name}</link> và {remainingCount} người khác đã yêu cầu theo dõi bạn}}",
-      "favourite": "{count, plural, =1 {<link>{name}</link> đã thích bài đăng của bạn} other {<link>{name}</link> và {remainingCount} người khác đã thích bài đăng của bạn}}",
+      "mention": "<link>{name}</link> đã nhắc đến bạn",
+      "moderation_warning": "Người điều hành đã thực hiện hành động đối với tài khoản của bạn",
       "poll": "Cuộc thăm dò ý kiến bạn đã tham gia đã kết thúc",
-      "update": "Một bài đăng bạn đã thúc đẩy đã được chỉnh sửa",
       "quote": "{count, plural, =1 {<link>{name}</link> đã trích dẫn bài đăng của bạn} other {<link>{name}</link> và {remainingCount} người khác đã trích dẫn bài đăng của bạn}}",
       "quoted_update": "Một bài đăng bạn đã trích dẫn đã được chỉnh sửa",
-      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> đã đăng ký} other {<link>{name}</link> và {remainingCount} người khác đã đăng ký}}",
-      "admin_report": "<link>{name}</link> đã gửi một báo cáo",
+      "reblog": "{count, plural, =1 {<link>{name}</link> đã thúc đẩy bài đăng của bạn} other {<link>{name}</link> và {remainingCount} người khác đã thúc đẩy bài đăng của bạn}}",
       "severed_relationships": "Một số mối quan hệ theo dõi của bạn đã bị cắt đứt",
-      "moderation_warning": "Người điều hành đã thực hiện hành động đối với tài khoản của bạn",
-      "annual_report": "Báo cáo thường niên của bạn đã sẵn sàng"
-    },
-    "title": "Thông báo"
+      "status": "<link>{name}</link> đã đăng bài",
+      "update": "Một bài đăng bạn đã thúc đẩy đã được chỉnh sửa"
+    }
   },
   "poll": {
     "closed": "Đã đóng",
@@ -383,14 +417,14 @@
     "extraFields": "Thông tin thêm",
     "followers": "Người theo dõi",
     "following": "Đang theo dõi",
+    "follows_you": "Đang theo dõi bạn",
     "hiddenInfo": "Người dùng này đã chọn không công khai thông tin này",
+    "mutual": "Theo dõi nhau",
     "noFollowers": "Chưa có người theo dõi nào",
     "noPosts": "Chưa có bài đăng nào",
     "notFollowing": "Chưa theo dõi ai",
     "posts": "Bài đăng",
-    "profileInfo": "Thông tin hồ sơ",
-    "mutual": "Theo dõi nhau",
-    "follows_you": "Đang theo dõi bạn"
+    "profileInfo": "Thông tin hồ sơ"
   },
   "profileEditor": {
     "bio": "Tiểu sử",
@@ -544,6 +578,12 @@
     "followRequests": "Yêu cầu theo dõi",
     "interfaceLanguage": "Ngôn ngữ giao diện",
     "interfaceLanguageDesc": "Thay đổi ngôn ngữ của ứng dụng",
+    "logoutConfirm": {
+      "cancel": "Hủy",
+      "logout": "Đăng xuất",
+      "message": "Bạn có chắc chắn muốn đăng xuất không?",
+      "title": "Đăng xuất?"
+    },
     "moderation": "Kiểm duyệt",
     "mutedAccounts": "Tài khoản đã ẩn",
     "mutesPage": {
@@ -580,8 +620,6 @@
       "botAccountDesc": "Tài khoản này chủ yếu thực hiện các hành động tự động",
       "discoverable": "Gợi ý tài khoản cho người khác",
       "discoverableDesc": "Cho phép tài khoản của bạn được khám phá",
-      "showScrollToTop": "Hiển thị nút cuộn lên đầu",
-      "showScrollToTopDesc": "Hiển thị một nút để nhanh chóng quay lại đầu dòng thời gian",
       "hideCollections": "Ẩn danh sách theo dõi và người theo dõi",
       "hideCollectionsDesc": "Ẩn thông tin về những người bạn theo dõi và những người theo dõi bạn",
       "indexable": "Bao gồm bài đăng công khai trong kết quả tìm kiếm",
@@ -596,6 +634,8 @@
       "privacyDesc": "Kiểm soát hiển thị và khả năng tìm thấy hồ sơ của bạn",
       "quoteDisabled": "Các bài đăng riêng tư và chỉ dành cho người theo dõi không thể bị trích dẫn.",
       "saveChanges": "Lưu thay đổi",
+      "showScrollToTop": "Hiển thị nút cuộn lên đầu",
+      "showScrollToTopDesc": "Hiển thị một nút để nhanh chóng quay lại đầu dòng thời gian",
       "visibility": "Hiển thị",
       "whoCanQuote": "Ai có thể trích dẫn"
     },
@@ -621,13 +661,12 @@
     "signOut": "Đăng xuất",
     "signingOut": "Đang đăng xuất...",
     "title": "Cài đặt",
-    "trending": "Xu hướng",
-    "logoutConfirm": {
-      "title": "Đăng xuất?",
-      "message": "Bạn có chắc chắn muốn đăng xuất không?",
-      "cancel": "Hủy",
-      "logout": "Đăng xuất"
-    }
+    "trending": "Xu hướng"
+  },
+  "status": {
+    "continued_thread": "Chuỗi bài viết tiếp tục",
+    "replied_in_thread": "Đã trả lời trong chuỗi",
+    "replied_to": "Đã trả lời <link>{name}</link>"
   },
   "statusDetail": {
     "boostedBy": {
@@ -677,10 +716,10 @@
   "timeline": {
     "empty": "Bảng tin của bạn đang trống",
     "error": "Lỗi khi tải bảng tin",
+    "newPosts": "{count, plural, other {# bài đăng mới}}",
     "subtitle": "Bảng tin cá nhân của bạn",
     "title": "Trang chủ",
-    "trending": "Xu hướng",
-    "newPosts": "{count, plural, other {# bài đăng mới}}"
+    "trending": "Xu hướng"
   },
   "toast": {
     "copiedToClipboard": "Đã sao chép vào bộ nhớ tạm",
@@ -706,10 +745,5 @@
     "notAvailable": "Wrapstodon chưa sẵn sàng",
     "somethingWentWrong": "Đã xảy ra lỗi",
     "title": "Wrapstodon"
-  },
-  "status": {
-    "continued_thread": "Chuỗi bài viết tiếp tục",
-    "replied_to": "Đã trả lời <link>{name}</link>",
-    "replied_in_thread": "Đã trả lời trong chuỗi"
   }
 }

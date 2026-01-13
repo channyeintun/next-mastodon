@@ -19,8 +19,6 @@
       "noMoreFollowers": "No hay más seguidores",
       "title": "Seguidores"
     },
-    "mutual": "Os seguís mutuamente",
-    "follows_you": "Te sigue",
     "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "Siguiendo",
     "followingPage": {
@@ -30,6 +28,7 @@
       "title": "Siguiendo"
     },
     "following_count": "{count, plural, other {# following}}",
+    "follows_you": "Te sigue",
     "hiddenProfile": "Este perfil ha sido ocultado por los moderadores de {domain}.",
     "joined": "Se unió el {date}",
     "loadMore": "Cargar más",
@@ -43,6 +42,7 @@
       "twitterTitle": "{name} (@{acct})"
     },
     "mute": "Silenciar",
+    "mutual": "Os seguís mutuamente",
     "notFound": "Perfil no encontrado",
     "pinned": "Fijado",
     "pinnedNav": {
@@ -84,6 +84,7 @@
     "unpin": "Desfijar del perfil"
   },
   "common": {
+    "addMedia": "Añadir multimedia",
     "back": "Atrás",
     "backToTop": "Volver arriba",
     "cancel": "Cancelar",
@@ -93,17 +94,16 @@
     "dontShowAgain": "No mostrar de nuevo",
     "loading": "Cargando...",
     "next": "Siguiente",
+    "open": "Abrir",
     "remove": "Quitar",
     "report": "Reportar",
     "retry": "Reintentar",
     "save": "Guardar",
+    "send": "Enviar",
     "share": "Compartir",
     "skipToMain": "Saltar al contenido principal",
     "verified": "Verificado",
-    "viewAll": "Ver todo",
-    "open": "Abrir",
-    "addMedia": "Añadir multimedia",
-    "send": "Enviar"
+    "viewAll": "Ver todo"
   },
   "composer": {
     "addContentWarning": "Añadir advertencia de contenido",
@@ -114,6 +114,12 @@
     "charCount": "{count} caracteres restantes",
     "cwLabel": "Advertencia de contenido",
     "cwPlaceholder": "Escribe tu advertencia aquí...",
+    "discardChanges": {
+      "cancel": "Seguir editando",
+      "discard": "Descartar",
+      "message": "¿Estás seguro de que quieres descartar los cambios? Esto no se puede deshacer.",
+      "title": "¿Descartar cambios?"
+    },
     "duration": {
       "1d": "1 día",
       "1h": "1 hora",
@@ -151,6 +157,12 @@
     "replyPlaceholder": "Publica tu respuesta",
     "replyTo": "Reply to @{acct}",
     "reschedule": "Reprogramar",
+    "saveDraft": {
+      "discard": "Eliminar borrador",
+      "message": "Si la descartas ahora, perderás esta publicación.",
+      "save": "Guardar como borrador",
+      "title": "¿Guardar esta publicación como borrador?"
+    },
     "schedule": "Programar",
     "scheduleHelp": "La publicación se publicará automáticamente en este momento.",
     "scheduleLabel": "Programar publicación",
@@ -166,18 +178,6 @@
     "visibilityDescription": "Controla quién puede interactuar con esta publicación. También puedes aplicar esta configuración a todas tus publicaciones futuras en Preferencias > Valores predeterminados de publicación.",
     "visibilityInteraction": "Visibilidad e interacción",
     "visibilityLabel": "Visibilidad: {label}",
-    "saveDraft": {
-      "title": "¿Guardar esta publicación como borrador?",
-      "message": "Si la descartas ahora, perderás esta publicación.",
-      "discard": "Eliminar borrador",
-      "save": "Guardar como borrador"
-    },
-    "discardChanges": {
-      "title": "¿Descartar cambios?",
-      "message": "¿Estás seguro de que quieres descartar los cambios? Esto no se puede deshacer.",
-      "discard": "Descartar",
-      "cancel": "Seguir editando"
-    },
     "visibilityOptions": {
       "direct": "Directo",
       "directDesc": "Solo usuarios mencionados",
@@ -191,6 +191,8 @@
     "whoCanQuote": "Quién puede citar"
   },
   "conversation": {
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
     "deleteConfirm": "¿Eliminar esta conversación?",
     "deleteConfirmFull": "¿Estás seguro de que quieres eliminar esta conversación? Esto no se puede deshacer.",
     "deleteError": "Error al eliminar la conversación. Inténtalo de nuevo.",
@@ -199,9 +201,7 @@
     "noMessages": "Sin mensajes aún",
     "sendError": "Error al enviar el mensaje",
     "title": "Conversación",
-    "typeMessage": "Escribe un mensaje...",
-    "cancel": "Cancelar",
-    "delete": "Eliminar"
+    "typeMessage": "Escribe un mensaje..."
   },
   "conversations": {
     "count": "{count, plural, =0 {Sin conversaciones} =1 {1 conversación} other {# conversaciones}}",
@@ -238,8 +238,10 @@
   },
   "explore": {
     "failedNews": "Error al cargar las noticias de tendencia",
+    "failedSuggestions": "Error al cargar sugerencias",
     "failedTags": "Error al cargar las etiquetas de tendencia",
     "failedTrending": "Error al cargar los posts de tendencia",
+    "noSuggestions": "No hay sugerencias disponibles",
     "noTrendingNews": "No hay noticias de tendencia en este momento",
     "noTrendingPosts": "No hay posts de tendencia en este momento",
     "noTrendingTags": "No hay etiquetas de tendencia en este momento",
@@ -248,11 +250,9 @@
     "popularHint": "Popular en esta instancia",
     "popularLabel": "Sugerencia popular",
     "reachedEndNews": "Has llegado al final de las noticias de tendencia",
-    "signInToSeeSuggestions": "Inicia sesión para ver sugerencias",
-    "failedSuggestions": "Error al cargar sugerencias",
-    "noSuggestions": "No hay sugerencias disponibles",
     "reachedEndPosts": "Has llegado al final de los posts de tendencia",
     "reachedEndTags": "Has llegado al final de las etiquetas de tendencia",
+    "signInToSeeSuggestions": "Inicia sesión para ver sugerencias",
     "staffPickHint": "Seleccionado a mano por el equipo",
     "staffPickLabel": "Selección del equipo",
     "tabs": {
@@ -270,6 +270,40 @@
     "rotateRight": "Rotar 90° a la derecha",
     "zoomIn": "Acercar",
     "zoomOut": "Alejar"
+  },
+  "keyboardShortcuts": {
+    "general": {
+      "close": "Back / Close",
+      "newPost": "New post",
+      "showShortcuts": "Show shortcuts",
+      "title": "General"
+    },
+    "navigation": {
+      "goBookmarks": "Go to bookmarks",
+      "goExplore": "Go to explore",
+      "goHome": "Go to home",
+      "goNotifications": "Go to notifications",
+      "goProfile": "Go to profile",
+      "jumpTop": "Jump to top",
+      "nextPost": "Next post",
+      "prevPost": "Previous post",
+      "search": "Search",
+      "title": "Navigation"
+    },
+    "postActions": {
+      "boost": "Boost",
+      "favorite": "Favourite",
+      "mention": "Mention author",
+      "openMedia": "Open media attachments",
+      "openStatus": "Open status",
+      "quote": "Quote",
+      "reply": "Reply",
+      "title": "Post Actions",
+      "toggleHidden": "Toggle hidden content",
+      "toggleSensitive": "Toggle sensitive media",
+      "translate": "Translate post"
+    },
+    "title": "Keyboard Shortcuts"
   },
   "lists": {
     "count": "{count, plural, =0 {Sin listas} =1 {1 lista} other {# listas}}",
@@ -355,24 +389,24 @@
       "goBack": "Volver",
       "title": "Notificaciones filtradas"
     },
+    "title": "Notificaciones",
     "types": {
-      "mention": "<link>{name}</link> te mencionó",
-      "status": "<link>{name}</link> publicó",
-      "reblog": "{count, plural, =1 {<link>{name}</link> impulsó tu publicación} other {<link>{name}</link> y {remainingCount} más impulsaron tu publicación}}",
+      "admin_report": "<link>{name}</link> envió un reporte",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> se registró} other {<link>{name}</link> y {remainingCount} más se registraron}}",
+      "annual_report": "Tu informe anual está listo",
+      "favourite": "{count, plural, =1 {<link>{name}</link> marcó como favorita tu publicación} other {<link>{name}</link> y {remainingCount} más marcaron como favorita tu publicación}}",
       "follow": "{count, plural, =1 {<link>{name}</link> te empezó a seguir} other {<link>{name}</link> y {remainingCount} más te empezaron a seguir}}",
       "follow_request": "{count, plural, =1 {<link>{name}</link> solicitó seguirte} other {<link>{name}</link> y {remainingCount} más solicitaron seguirte}}",
-      "favourite": "{count, plural, =1 {<link>{name}</link> marcó como favorita tu publicación} other {<link>{name}</link> y {remainingCount} más marcaron como favorita tu publicación}}",
+      "mention": "<link>{name}</link> te mencionó",
+      "moderation_warning": "Un moderador ha tomado medidas contra tu cuenta",
       "poll": "Una encuesta en la que votaste ha terminado",
-      "update": "Una publicación que impulsaste ha sido editada",
       "quote": "{count, plural, =1 {<link>{name}</link> citó tu publicación} other {<link>{name}</link> y {remainingCount} más citaron tu publicación}}",
       "quoted_update": "Una publicación que citaste ha sido editada",
-      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> se registró} other {<link>{name}</link> y {remainingCount} más se registraron}}",
-      "admin_report": "<link>{name}</link> envió un reporte",
+      "reblog": "{count, plural, =1 {<link>{name}</link> impulsó tu publicación} other {<link>{name}</link> y {remainingCount} más impulsaron tu publicación}}",
       "severed_relationships": "Algunas de tus relaciones de seguimiento se han roto",
-      "moderation_warning": "Un moderador ha tomado medidas contra tu cuenta",
-      "annual_report": "Tu informe anual está listo"
-    },
-    "title": "Notificaciones"
+      "status": "<link>{name}</link> publicó",
+      "update": "Una publicación que impulsaste ha sido editada"
+    }
   },
   "poll": {
     "closed": "Cerrada",
@@ -383,14 +417,14 @@
     "extraFields": "Campos adicionales",
     "followers": "Seguidores",
     "following": "Siguiendo",
+    "follows_you": "Te sigue",
     "hiddenInfo": "Este usuario ha elegido no hacer disponible esta información",
+    "mutual": "Os seguís mutuamente",
     "noFollowers": "Sin seguidores aún",
     "noPosts": "Sin publicaciones aún",
     "notFollowing": "No sigue a nadie aún",
     "posts": "Publicaciones",
-    "profileInfo": "Información del perfil",
-    "mutual": "Os seguís mutuamente",
-    "follows_you": "Te sigue"
+    "profileInfo": "Información del perfil"
   },
   "profileEditor": {
     "bio": "Biografía",
@@ -544,6 +578,12 @@
     "followRequests": "Solicitudes de seguimiento",
     "interfaceLanguage": "Idioma de la interfaz",
     "interfaceLanguageDesc": "Cambiar el idioma de la interfaz de la aplicación",
+    "logoutConfirm": {
+      "cancel": "Cancelar",
+      "logout": "Cerrar sesión",
+      "message": "¿Estás seguro de que quieres cerrar sesión?",
+      "title": "¿Cerrar sesión?"
+    },
     "moderation": "Moderación",
     "mutedAccounts": "Cuentas silenciadas",
     "mutesPage": {
@@ -580,8 +620,6 @@
       "botAccountDesc": "Esta cuenta realiza principalmente acciones automatizadas",
       "discoverable": "Sugerir cuenta a otros",
       "discoverableDesc": "Permitir que tu cuenta sea descubierta",
-      "showScrollToTop": "Mostrar botón volver arriba",
-      "showScrollToTopDesc": "Muestra un botón para volver rápidamente al inicio de la línea de tiempo",
       "hideCollections": "Ocultar seguidores y seguidos",
       "hideCollectionsDesc": "Oculta tus seguidores y a quién sigues de tu perfil",
       "indexable": "Incluir publicaciones públicas en los resultados de búsqueda",
@@ -596,6 +634,8 @@
       "privacyDesc": "Controla la visibilidad y descubribilidad de tu perfil",
       "quoteDisabled": "Las publicaciones para seguidores y las publicaciones privadas no pueden ser citadas por otros.",
       "saveChanges": "Guardar cambios",
+      "showScrollToTop": "Mostrar botón volver arriba",
+      "showScrollToTopDesc": "Muestra un botón para volver rápidamente al inicio de la línea de tiempo",
       "visibility": "Visibilidad",
       "whoCanQuote": "Quién puede citar"
     },
@@ -621,13 +661,12 @@
     "signOut": "Cerrar sesión",
     "signingOut": "Cerrando sesión...",
     "title": "Configuración",
-    "trending": "Tendencia",
-    "logoutConfirm": {
-      "title": "¿Cerrar sesión?",
-      "message": "¿Estás seguro de que quieres cerrar sesión?",
-      "cancel": "Cancelar",
-      "logout": "Cerrar sesión"
-    }
+    "trending": "Tendencia"
+  },
+  "status": {
+    "continued_thread": "Hilo continuado",
+    "replied_in_thread": "Respondió en el hilo",
+    "replied_to": "Respondió a <link>{name}</link>"
   },
   "statusDetail": {
     "boostedBy": {
@@ -677,10 +716,10 @@
   "timeline": {
     "empty": "Tu línea de tiempo está vacía",
     "error": "Error al cargar la línea de tiempo",
+    "newPosts": "{count, plural, =1 {# Nueva publicación} other {# Nuevas publicaciones}}",
     "subtitle": "Tu línea de tiempo personal",
     "title": "Inicio",
-    "trending": "Tendencias",
-    "newPosts": "{count, plural, =1 {# Nueva publicación} other {# Nuevas publicaciones}}"
+    "trending": "Tendencias"
   },
   "toast": {
     "copiedToClipboard": "Copiado al portapapeles",
@@ -706,10 +745,5 @@
     "notAvailable": "Wrapstodon no disponible",
     "somethingWentWrong": "Algo salió mal",
     "title": "Wrapstodon"
-  },
-  "status": {
-    "continued_thread": "Hilo continuado",
-    "replied_to": "Respondió a <link>{name}</link>",
-    "replied_in_thread": "Respondió en el hilo"
   }
 }

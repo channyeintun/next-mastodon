@@ -19,8 +19,6 @@
       "noMoreFollowers": "Keine weiteren Folgenden",
       "title": "Folgende"
     },
-    "follows_you": "Folgt dir",
-    "mutual": "Ihr folgt einander",
     "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "Folgt",
     "followingPage": {
@@ -30,6 +28,7 @@
       "title": "Folgt"
     },
     "following_count": "{count, plural, other {# following}}",
+    "follows_you": "Folgt dir",
     "hiddenProfile": "Dieses Profil wurde von den Moderatoren von {domain} verborgen.",
     "joined": "Beigetreten am {date}",
     "loadMore": "Mehr laden",
@@ -43,6 +42,7 @@
       "twitterTitle": "{name} (@{acct})"
     },
     "mute": "Stummschalten",
+    "mutual": "Ihr folgt einander",
     "notFound": "Profil nicht gefunden",
     "pinned": "Angeheftet",
     "pinnedNav": {
@@ -84,6 +84,7 @@
     "unpin": "Vom Profil lösen"
   },
   "common": {
+    "addMedia": "Medien hinzufügen",
     "back": "Zurück",
     "backToTop": "Nach oben",
     "cancel": "Abbrechen",
@@ -93,17 +94,16 @@
     "dontShowAgain": "Nicht mehr anzeigen",
     "loading": "Wird geladen...",
     "next": "Weiter",
+    "open": "Öffnen",
     "remove": "Entfernen",
     "report": "Melden",
     "retry": "Erneut versuchen",
     "save": "Speichern",
+    "send": "Senden",
     "share": "Teilen",
     "skipToMain": "Zum Hauptinhalt springen",
     "verified": "Verifiziert",
-    "viewAll": "Alle anzeigen",
-    "open": "Öffnen",
-    "addMedia": "Medien hinzufügen",
-    "send": "Senden"
+    "viewAll": "Alle anzeigen"
   },
   "composer": {
     "addContentWarning": "Inhaltswarnung hinzufügen",
@@ -114,6 +114,12 @@
     "charCount": "{count} Zeichen übrig",
     "cwLabel": "Inhaltswarnung",
     "cwPlaceholder": "Warnung hier schreiben...",
+    "discardChanges": {
+      "cancel": "Weiter bearbeiten",
+      "discard": "Verwerfen",
+      "message": "Bist du sicher, dass du deine Änderungen verwerfen möchtest? Dies kann nicht rückgängig gemacht werden.",
+      "title": "Änderungen verwerfen?"
+    },
     "duration": {
       "1d": "1 Tag",
       "1h": "1 Stunde",
@@ -151,6 +157,12 @@
     "replyPlaceholder": "Antwort verfassen",
     "replyTo": "Reply to @{acct}",
     "reschedule": "Umplanen",
+    "saveDraft": {
+      "discard": "Entwurf löschen",
+      "message": "Wenn du jetzt abbrichst, geht dieser Beitrag verloren.",
+      "save": "Als Entwurf speichern",
+      "title": "Diesen Beitrag als Entwurf speichern?"
+    },
     "schedule": "Planen",
     "scheduleHelp": "Der Beitrag wird automatisch zu diesem Zeitpunkt veröffentlicht.",
     "scheduleLabel": "Beitrag planen",
@@ -166,18 +178,6 @@
     "visibilityDescription": "Steuere, wer mit diesem Beitrag interagieren kann. Du kannst diese Einstellungen auch für alle zukünftigen Beiträge unter Einstellungen > Beitragsstandards festlegen.",
     "visibilityInteraction": "Sichtbarkeit und Interaktion",
     "visibilityLabel": "Sichtbarkeit: {label}",
-    "saveDraft": {
-      "title": "Diesen Beitrag als Entwurf speichern?",
-      "message": "Wenn du jetzt abbrichst, geht dieser Beitrag verloren.",
-      "discard": "Entwurf löschen",
-      "save": "Als Entwurf speichern"
-    },
-    "discardChanges": {
-      "title": "Änderungen verwerfen?",
-      "message": "Bist du sicher, dass du deine Änderungen verwerfen möchtest? Dies kann nicht rückgängig gemacht werden.",
-      "discard": "Verwerfen",
-      "cancel": "Weiter bearbeiten"
-    },
     "visibilityOptions": {
       "direct": "Direkt",
       "directDesc": "Nur für erwähnte Personen",
@@ -191,6 +191,8 @@
     "whoCanQuote": "Wer darf zitieren"
   },
   "conversation": {
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
     "deleteConfirm": "Diese Unterhaltung löschen?",
     "deleteConfirmFull": "Bist du sicher, dass du diese Unterhaltung löschen möchtest? Dies kann nicht rückgängig gemacht werden.",
     "deleteError": "Fehler beim Löschen der Unterhaltung. Bitte versuche es erneut.",
@@ -199,9 +201,7 @@
     "noMessages": "Noch keine Nachrichten",
     "sendError": "Fehler beim Senden der Nachricht",
     "title": "Unterhaltung",
-    "typeMessage": "Nachricht schreiben...",
-    "cancel": "Abbrechen",
-    "delete": "Löschen"
+    "typeMessage": "Nachricht schreiben..."
   },
   "conversations": {
     "count": "{count, plural, =0 {Keine Unterhaltungen} =1 {1 Unterhaltung} other {# Unterhaltungen}}",
@@ -238,8 +238,10 @@
   },
   "explore": {
     "failedNews": "Trend-Nachrichten konnten nicht geladen werden",
+    "failedSuggestions": "Vorschläge konnten nicht geladen werden",
     "failedTags": "Trend-Tags konnten nicht geladen werden",
     "failedTrending": "Trend-Beiträge konnten nicht geladen werden",
+    "noSuggestions": "Keine Vorschläge verfügbar",
     "noTrendingNews": "Momentan keine Trend-Nachrichten",
     "noTrendingPosts": "Momentan keine Trend-Beiträge",
     "noTrendingTags": "Momentan keine Trend-Tags",
@@ -248,11 +250,9 @@
     "popularHint": "Beliebt auf dieser Instanz",
     "popularLabel": "Beliebter Vorschlag",
     "reachedEndNews": "Du hast das Ende der Trend-Nachrichten erreicht",
-    "signInToSeeSuggestions": "Anmelden, um Vorschläge zu sehen",
-    "failedSuggestions": "Vorschläge konnten nicht geladen werden",
-    "noSuggestions": "Keine Vorschläge verfügbar",
     "reachedEndPosts": "Du hast das Ende der Trend-Beiträge erreicht",
     "reachedEndTags": "Du hast das Ende der Trend-Tags erreicht",
+    "signInToSeeSuggestions": "Anmelden, um Vorschläge zu sehen",
     "staffPickHint": "Handverlesen vom Team",
     "staffPickLabel": "Auswahl des Teams",
     "tabs": {
@@ -270,6 +270,40 @@
     "rotateRight": "90° nach rechts drehen",
     "zoomIn": "Vergrößern",
     "zoomOut": "Verkleinern"
+  },
+  "keyboardShortcuts": {
+    "general": {
+      "close": "Back / Close",
+      "newPost": "New post",
+      "showShortcuts": "Show shortcuts",
+      "title": "General"
+    },
+    "navigation": {
+      "goBookmarks": "Go to bookmarks",
+      "goExplore": "Go to explore",
+      "goHome": "Go to home",
+      "goNotifications": "Go to notifications",
+      "goProfile": "Go to profile",
+      "jumpTop": "Jump to top",
+      "nextPost": "Next post",
+      "prevPost": "Previous post",
+      "search": "Search",
+      "title": "Navigation"
+    },
+    "postActions": {
+      "boost": "Boost",
+      "favorite": "Favourite",
+      "mention": "Mention author",
+      "openMedia": "Open media attachments",
+      "openStatus": "Open status",
+      "quote": "Quote",
+      "reply": "Reply",
+      "title": "Post Actions",
+      "toggleHidden": "Toggle hidden content",
+      "toggleSensitive": "Toggle sensitive media",
+      "translate": "Translate post"
+    },
+    "title": "Keyboard Shortcuts"
   },
   "lists": {
     "count": "{count, plural, =0 {Keine Listen} =1 {1 Liste} other {# Listen}}",
@@ -355,24 +389,24 @@
       "goBack": "Zurück",
       "title": "Gefilterte Benachrichtigungen"
     },
+    "title": "Benachrichtigungen",
     "types": {
-      "mention": "<link>{name}</link> hat dich erwähnt",
-      "status": "<link>{name}</link> hat gepostet",
-      "reblog": "{count, plural, =1 {<link>{name}</link> hat deinen Beitrag geteilt} other {<link>{name}</link> und {remainingCount} weitere haben deinen Beitrag geteilt}}",
+      "admin_report": "<link>{name}</link> hat eine Meldung eingereicht",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> hat sich registriert} other {<link>{name}</link> und {remainingCount} weitere haben sich registriert}}",
+      "annual_report": "Dein Jahresbericht ist fertig",
+      "favourite": "{count, plural, =1 {<link>{name}</link> hat deinen Beitrag favorisiert} other {<link>{name}</link> und {remainingCount} weitere haben deinen Beitrag favorisiert}}",
       "follow": "{count, plural, =1 {<link>{name}</link> folgt dir jetzt} other {<link>{name}</link> und {remainingCount} weitere folgen dir jetzt}}",
       "follow_request": "{count, plural, =1 {<link>{name}</link> möchte dir folgen} other {<link>{name}</link> und {remainingCount} weitere möchten dir folgen}}",
-      "favourite": "{count, plural, =1 {<link>{name}</link> hat deinen Beitrag favorisiert} other {<link>{name}</link> und {remainingCount} weitere haben deinen Beitrag favorisiert}}",
+      "mention": "<link>{name}</link> hat dich erwähnt",
+      "moderation_warning": "Ein Moderator hat Maßnahmen gegen dein Konto ergriffen",
       "poll": "Eine Umfrage, an der du teilgenommen hast, ist beendet",
-      "update": "Ein Beitrag, den du geteilt hast, wurde bearbeitet",
       "quote": "{count, plural, =1 {<link>{name}</link> hat deinen Beitrag zitiert} other {<link>{name}</link> und {remainingCount} weitere haben deinen Beitrag zitiert}}",
       "quoted_update": "Ein Beitrag, den du zitiert hast, wurde bearbeitet",
-      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> hat sich registriert} other {<link>{name}</link> und {remainingCount} weitere haben sich registriert}}",
-      "admin_report": "<link>{name}</link> hat eine Meldung eingereicht",
+      "reblog": "{count, plural, =1 {<link>{name}</link> hat deinen Beitrag geteilt} other {<link>{name}</link> und {remainingCount} weitere haben deinen Beitrag geteilt}}",
       "severed_relationships": "Einige deiner Follow-Beziehungen wurden getrennt",
-      "moderation_warning": "Ein Moderator hat Maßnahmen gegen dein Konto ergriffen",
-      "annual_report": "Dein Jahresbericht ist fertig"
-    },
-    "title": "Benachrichtigungen"
+      "status": "<link>{name}</link> hat gepostet",
+      "update": "Ein Beitrag, den du geteilt hast, wurde bearbeitet"
+    }
   },
   "poll": {
     "closed": "Geschlossen",
@@ -383,14 +417,14 @@
     "extraFields": "Zusätzliche Felder",
     "followers": "Follower",
     "following": "Folgt",
+    "follows_you": "Folgt dir",
     "hiddenInfo": "Diese Person hat diese Information verborgen",
+    "mutual": "Ihr folgt einander",
     "noFollowers": "Noch keine Follower",
     "noPosts": "Noch keine Beiträge",
     "notFollowing": "Folgt noch niemandem",
     "posts": "Beiträge",
-    "profileInfo": "Profilinformationen",
-    "mutual": "Ihr folgt einander",
-    "follows_you": "Folgt dir"
+    "profileInfo": "Profilinformationen"
   },
   "profileEditor": {
     "bio": "Bio",
@@ -544,6 +578,12 @@
     "followRequests": "Folgeanfragen",
     "interfaceLanguage": "Oberflächensprache",
     "interfaceLanguageDesc": "Ändere die Sprache der Anwendungsoberfläche",
+    "logoutConfirm": {
+      "cancel": "Abbrechen",
+      "logout": "Abmelden",
+      "message": "Bist du sicher, dass du dich abmelden möchtest?",
+      "title": "Abmelden?"
+    },
     "moderation": "Moderation",
     "mutedAccounts": "Stummgeschaltete Konten",
     "mutesPage": {
@@ -593,9 +633,9 @@
       "privacy": "Privatsphäre",
       "privacyDesc": "Steuere deine Profilsichtbarkeit und Entdeckbarkeit",
       "quoteDisabled": "Beiträge nur für Follower und private Beiträge können nicht von anderen zitiert werden.",
+      "saveChanges": "Änderungen speichern",
       "showScrollToTop": "Nach-oben-Schaltfläche anzeigen",
       "showScrollToTopDesc": "Zeigt eine Schaltfläche an, um schnell zum Anfang der Timeline zu springen",
-      "saveChanges": "Änderungen speichern",
       "visibility": "Sichtbarkeit",
       "whoCanQuote": "Wer darf zitieren"
     },
@@ -621,13 +661,12 @@
     "signOut": "Abmelden",
     "signingOut": "Abmeldung...",
     "title": "Einstellungen",
-    "trending": "Trends",
-    "logoutConfirm": {
-      "title": "Abmelden?",
-      "message": "Bist du sicher, dass du dich abmelden möchtest?",
-      "cancel": "Abbrechen",
-      "logout": "Abmelden"
-    }
+    "trending": "Trends"
+  },
+  "status": {
+    "continued_thread": "Thread fortgesetzt",
+    "replied_in_thread": "Im Thread geantwortet",
+    "replied_to": "Geantwortet auf <link>{name}</link>"
   },
   "statusDetail": {
     "boostedBy": {
@@ -677,10 +716,10 @@
   "timeline": {
     "empty": "Deine Zeitleiste ist leer",
     "error": "Fehler beim Laden der Zeitleiste",
+    "newPosts": "{count, plural, =1 {# Neuer Beitrag} other {# Neue Beiträge}}",
     "subtitle": "Deine persönliche Zeitleiste",
     "title": "Startseite",
-    "trending": "Trends",
-    "newPosts": "{count, plural, =1 {# Neuer Beitrag} other {# Neue Beiträge}}"
+    "trending": "Trends"
   },
   "toast": {
     "copiedToClipboard": "In Zwischenablage kopiert",
@@ -706,10 +745,5 @@
     "notAvailable": "Wrapstodon nicht verfügbar",
     "somethingWentWrong": "Etwas ist schiefgelaufen",
     "title": "Wrapstodon"
-  },
-  "status": {
-    "continued_thread": "Thread fortgesetzt",
-    "replied_to": "Geantwortet auf <link>{name}</link>",
-    "replied_in_thread": "Im Thread geantwortet"
   }
 }

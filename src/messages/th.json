@@ -2,11 +2,6 @@
   "about": {
     "title": "เกี่ยวกับ"
   },
-  "status": {
-    "continued_thread": "เธรดต่อเนื่อง",
-    "replied_to": "ตอบกลับ <link>{name}</link>",
-    "replied_in_thread": "ตอบกลับในเธรด"
-  },
   "account": {
     "backToTimeline": "กลับสู่ไทม์ไลน์",
     "block": "บล็อก",
@@ -24,8 +19,6 @@
       "noMoreFollowers": "ไม่มีผู้ติดตามเพิ่มเติม",
       "title": "ผู้ติดตาม"
     },
-    "mutual": "คุณติดตามกันและกัน",
-    "follows_you": "ติดตามคุณ",
     "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "กำลังติดตาม",
     "followingPage": {
@@ -35,6 +28,7 @@
       "title": "กำลังติดตาม"
     },
     "following_count": "{count, plural, other {# following}}",
+    "follows_you": "ติดตามคุณ",
     "hiddenProfile": "โปรไฟล์นี้ถูกซ่อนโดยผู้ดูแลของ {domain}",
     "joined": "เข้าร่วมเมื่อ {date}",
     "loadMore": "โหลดเพิ่มเติม",
@@ -48,6 +42,7 @@
       "twitterTitle": "{name} (@{acct})"
     },
     "mute": "ซ่อน",
+    "mutual": "คุณติดตามกันและกัน",
     "notFound": "ไม่พบโปรไฟล์",
     "pinned": "ปักหมุด",
     "pinnedNav": {
@@ -89,6 +84,7 @@
     "unpin": "เลิกปักหมุดจากโปรไฟล์"
   },
   "common": {
+    "addMedia": "เพิ่มสื่อ",
     "back": "กลับ",
     "backToTop": "กลับไปด้านบน",
     "cancel": "ยกเลิก",
@@ -98,17 +94,16 @@
     "dontShowAgain": "ไม่ต้องแสดงอีก",
     "loading": "กำลังโหลด...",
     "next": "ถัดไป",
+    "open": "เปิด",
     "remove": "นำออก",
     "report": "รายงาน",
     "retry": "ลองใหม่",
     "save": "บันทึก",
+    "send": "ส่ง",
     "share": "แชร์",
     "skipToMain": "ข้ามไปยังเนื้อหาหลัก",
     "verified": "ยืนยันแล้ว",
-    "viewAll": "ดูทั้งหมด",
-    "open": "เปิด",
-    "addMedia": "เพิ่มสื่อ",
-    "send": "ส่ง"
+    "viewAll": "ดูทั้งหมด"
   },
   "composer": {
     "addContentWarning": "เพิ่มคำเตือนเนื้อหา",
@@ -119,6 +114,12 @@
     "charCount": "เหลืออีก {count} อักขระ",
     "cwLabel": "คำเตือนเนื้อหา",
     "cwPlaceholder": "เขียนคำเตือนของคุณที่นี่...",
+    "discardChanges": {
+      "cancel": "แก้ไขต่อ",
+      "discard": "ละทิ้ง",
+      "message": "คุณแน่ใจหรือไม่ว่าต้องการละทิ้งการเปลี่ยนแปลง? การดำเนินการนี้ไม่สามารถย้อนคืนได้",
+      "title": "ละทิ้งการเปลี่ยนแปลง?"
+    },
     "duration": {
       "1d": "1 วัน",
       "1h": "1 ชั่วโมง",
@@ -156,6 +157,12 @@
     "replyPlaceholder": "เขียนการตอบกลับของคุณ",
     "replyTo": "Reply to @{acct}",
     "reschedule": "ตั้งเวลาใหม่",
+    "saveDraft": {
+      "discard": "ลบแบบร่าง",
+      "message": "หากคุณละทิ้งตอนนี้ คุณจะสูญเสียโพสต์นี้",
+      "save": "บันทึกเป็นแบบร่าง",
+      "title": "บันทึกโพสต์นี้เป็นแบบร่างหรือไม่?"
+    },
     "schedule": "ตั้งเวลา",
     "scheduleHelp": "โพสต์จะถูกเผยแพร่โดยอัตโนมัติตามเวลานี้",
     "scheduleLabel": "ตั้งเวลาโพสต์",
@@ -171,18 +178,6 @@
     "visibilityDescription": "ควบคุมว่าใครสามารถโต้ตอบกับโพสต์นี้ได้ คุณยังสามารถใช้การตั้งค่ากับโพสต์ในอนาคตทั้งหมดได้โดยไปที่ การตั้งค่า > ค่าเริ่มต้นการโพสต์",
     "visibilityInteraction": "ความเป็นส่วนตัวและการโต้ตอบ",
     "visibilityLabel": "ความเป็นส่วนตัว: {label}",
-    "saveDraft": {
-      "title": "บันทึกโพสต์นี้เป็นแบบร่างหรือไม่?",
-      "message": "หากคุณละทิ้งตอนนี้ คุณจะสูญเสียโพสต์นี้",
-      "discard": "ลบแบบร่าง",
-      "save": "บันทึกเป็นแบบร่าง"
-    },
-    "discardChanges": {
-      "title": "ละทิ้งการเปลี่ยนแปลง?",
-      "message": "คุณแน่ใจหรือไม่ว่าต้องการละทิ้งการเปลี่ยนแปลง? การดำเนินการนี้ไม่สามารถย้อนคืนได้",
-      "discard": "ละทิ้ง",
-      "cancel": "แก้ไขต่อ"
-    },
     "visibilityOptions": {
       "direct": "ส่วนตัว",
       "directDesc": "เฉพาะผู้ที่ถูกกล่าวถึงเท่านั้น",
@@ -196,6 +191,8 @@
     "whoCanQuote": "ใครสามารถอ้างอิงได้"
   },
   "conversation": {
+    "cancel": "ยกเลิก",
+    "delete": "ลบ",
     "deleteConfirm": "ลบการสนทนานี้?",
     "deleteConfirmFull": "คุณแน่ใจหรือไม่ว่าต้องการลบการสนทนานี้? การดำเนินการนี้ไม่สามารถย้อนคืนได้",
     "deleteError": "ลบการสนทนาไม่สำเร็จ โปรดลองอีกครั้ง",
@@ -204,9 +201,7 @@
     "noMessages": "ยังไม่มีข้อความ",
     "sendError": "ส่งข้อความไม่สำเร็จ",
     "title": "การสนทนา",
-    "typeMessage": "พิมพ์ข้อความ...",
-    "cancel": "ยกเลิก",
-    "delete": "ลบ"
+    "typeMessage": "พิมพ์ข้อความ..."
   },
   "conversations": {
     "count": "{count, plural, =0 {ไม่มีการสนทนา} other {# การสนทนา}}",
@@ -243,8 +238,10 @@
   },
   "explore": {
     "failedNews": "โหลดข่าวที่กำลังมาแรงไม่สำเร็จ",
+    "failedSuggestions": "โหลดคำแนะนำไม่สำเร็จ",
     "failedTags": "โหลดแท็กที่กำลังมาแรงไม่สำเร็จ",
     "failedTrending": "โหลดโพสต์ที่กำลังมาแรงไม่สำเร็จ",
+    "noSuggestions": "ไม่มีคำแนะนำในขณะนี้",
     "noTrendingNews": "ไม่มีข่าวที่กำลังมาแรงในขณะนี้",
     "noTrendingPosts": "ไม่มีโพสต์ที่กำลังมาแรงในขณะนี้",
     "noTrendingTags": "ไม่มีแท็กที่กำลังมาแรงในขณะนี้",
@@ -253,11 +250,9 @@
     "popularHint": "ยอดนิยมในอินสแตนซ์นี้",
     "popularLabel": "คำแนะนำยอดนิยม",
     "reachedEndNews": "คุณมาถึงจุดสิ้นสุดของข่าวที่กำลังมาแรงแล้ว",
-    "signInToSeeSuggestions": "เข้าสู่ระบบเพื่อดูคำแนะนำ",
-    "failedSuggestions": "โหลดคำแนะนำไม่สำเร็จ",
-    "noSuggestions": "ไม่มีคำแนะนำในขณะนี้",
     "reachedEndPosts": "คุณมาถึงจุดสิ้นสุดของโพสต์ที่กำลังมาแรงแล้ว",
     "reachedEndTags": "คุณมาถึงจุดสิ้นสุดของแท็กที่กำลังมาแรงแล้ว",
+    "signInToSeeSuggestions": "เข้าสู่ระบบเพื่อดูคำแนะนำ",
     "staffPickHint": "คัดสรรโดยทีมงาน",
     "staffPickLabel": "ทีมงานแนะนำ",
     "tabs": {
@@ -275,6 +270,40 @@
     "rotateRight": "หมุนขวา 90°",
     "zoomIn": "ขยาย",
     "zoomOut": "ย่อ"
+  },
+  "keyboardShortcuts": {
+    "general": {
+      "close": "Back / Close",
+      "newPost": "New post",
+      "showShortcuts": "Show shortcuts",
+      "title": "General"
+    },
+    "navigation": {
+      "goBookmarks": "Go to bookmarks",
+      "goExplore": "Go to explore",
+      "goHome": "Go to home",
+      "goNotifications": "Go to notifications",
+      "goProfile": "Go to profile",
+      "jumpTop": "Jump to top",
+      "nextPost": "Next post",
+      "prevPost": "Previous post",
+      "search": "Search",
+      "title": "Navigation"
+    },
+    "postActions": {
+      "boost": "Boost",
+      "favorite": "Favourite",
+      "mention": "Mention author",
+      "openMedia": "Open media attachments",
+      "openStatus": "Open status",
+      "quote": "Quote",
+      "reply": "Reply",
+      "title": "Post Actions",
+      "toggleHidden": "Toggle hidden content",
+      "toggleSensitive": "Toggle sensitive media",
+      "translate": "Translate post"
+    },
+    "title": "Keyboard Shortcuts"
   },
   "lists": {
     "count": "{count, plural, =0 {ไม่มีรายการ} other {# รายการ}}",
@@ -360,24 +389,24 @@
       "goBack": "กลับ",
       "title": "การแจ้งเตือนที่ถูกกรอง"
     },
+    "title": "การแจ้งเตือน",
     "types": {
-      "mention": "<link>{name}</link> กล่าวถึงคุณ",
-      "status": "<link>{name}</link> โพสต์แล้ว",
-      "reblog": "{count, plural, =1 {<link>{name}</link> บูสต์โพสต์ของคุณ} other {<link>{name}</link> และอีก {remainingCount} คนบูสต์โพสต์ของคุณ}}",
+      "admin_report": "<link>{name}</link> ส่งรายงานแล้ว",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> ลงชื่อเข้าใช้แล้ว} other {<link>{name}</link> และอีก {remainingCount} คนลงชื่อเข้าใช้แล้ว}}",
+      "annual_report": "รายงานประจำปีของคุณพร้อมแล้ว",
+      "favourite": "{count, plural, =1 {<link>{name}</link> ชื่นชอบโพสต์ของคุณ} other {<link>{name}</link> และอีก {remainingCount} คนชื่นชอบโพสต์ของคุณ}}",
       "follow": "{count, plural, =1 {<link>{name}</link> ติดตามคุณ} other {<link>{name}</link> และอีก {remainingCount} คนติดตามคุณ}}",
       "follow_request": "{count, plural, =1 {<link>{name}</link> ขอติดตามคุณ} other {<link>{name}</link> และอีก {remainingCount} คนขอติดตามคุณ}}",
-      "favourite": "{count, plural, =1 {<link>{name}</link> ชื่นชอบโพสต์ของคุณ} other {<link>{name}</link> และอีก {remainingCount} คนชื่นชอบโพสต์ของคุณ}}",
+      "mention": "<link>{name}</link> กล่าวถึงคุณ",
+      "moderation_warning": "ผู้ดูแลระบบได้ดำเนินการกับบัญชีของคุณ",
       "poll": "การโหวตที่คุณเข้าร่วมสิ้นสุดลงแล้ว",
-      "update": "โพสต์ที่คุณบูสต์ได้รับการแก้ไข",
       "quote": "{count, plural, =1 {<link>{name}</link> อ้างอิงโพสต์ของคุณ} other {<link>{name}</link> และอีก {remainingCount} คนอ้างอิงโพสต์ของคุณ}}",
       "quoted_update": "โพสต์ที่คุณอ้างอิงได้รับการแก้ไข",
-      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> ลงชื่อเข้าใช้แล้ว} other {<link>{name}</link> และอีก {remainingCount} คนลงชื่อเข้าใช้แล้ว}}",
-      "admin_report": "<link>{name}</link> ส่งรายงานแล้ว",
+      "reblog": "{count, plural, =1 {<link>{name}</link> บูสต์โพสต์ของคุณ} other {<link>{name}</link> และอีก {remainingCount} คนบูสต์โพสต์ของคุณ}}",
       "severed_relationships": "ความสัมพันธ์ในการติดตามบางส่วนของคุณขาดสะบั้นลง",
-      "moderation_warning": "ผู้ดูแลระบบได้ดำเนินการกับบัญชีของคุณ",
-      "annual_report": "รายงานประจำปีของคุณพร้อมแล้ว"
-    },
-    "title": "การแจ้งเตือน"
+      "status": "<link>{name}</link> โพสต์แล้ว",
+      "update": "โพสต์ที่คุณบูสต์ได้รับการแก้ไข"
+    }
   },
   "poll": {
     "closed": "ปิดแล้ว",
@@ -388,14 +417,14 @@
     "extraFields": "ฟิลด์เพิ่มเติม",
     "followers": "ผู้ติดตาม",
     "following": "กำลังติดตาม",
+    "follows_you": "ติดตามคุณ",
     "hiddenInfo": "ผู้ใช้นี้เลือกที่จะไม่เปิดเผยข้อมูลนี้",
+    "mutual": "คุณติดตามกันและกัน",
     "noFollowers": "ยังไม่มีผู้ติดตาม",
     "noPosts": "ยังไม่มีโพสต์",
     "notFollowing": "ยังไม่ได้ติดตามใคร",
     "posts": "โพสต์",
-    "profileInfo": "ข้อมูลโปรไฟล์",
-    "mutual": "คุณติดตามกันและกัน",
-    "follows_you": "ติดตามคุณ"
+    "profileInfo": "ข้อมูลโปรไฟล์"
   },
   "profileEditor": {
     "bio": "ประวัติ",
@@ -549,6 +578,12 @@
     "followRequests": "คำขอติดตาม",
     "interfaceLanguage": "ภาษาของส่วนติดต่อผู้ใช้",
     "interfaceLanguageDesc": "เปลี่ยนภาษาของแอปพลิเคชัน",
+    "logoutConfirm": {
+      "cancel": "ยกเลิก",
+      "logout": "ออกจากระบบ",
+      "message": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?",
+      "title": "ออกจากระบบ?"
+    },
     "moderation": "การควบคุมเนื้อหา",
     "mutedAccounts": "บัญชีที่ซ่อน",
     "mutesPage": {
@@ -585,8 +620,6 @@
       "botAccountDesc": "บัญชีนี้ดำเนินการอัตโนมัติเป็นหลัก",
       "discoverable": "แนะนำบัญชีให้ผู้อื่น",
       "discoverableDesc": "อนุญาตให้บัญชีของคุณถูกค้นพบได้",
-      "showScrollToTop": "แสดงปุ่มกลับขึ้นด้านบน",
-      "showScrollToTopDesc": "แสดงปุ่มเพื่อเลื่อนกลับไปด้านบนของไทม์ไลน์อย่างรวดเร็ว",
       "hideCollections": "ซ่อนผู้ติดตามและการติดตาม",
       "hideCollectionsDesc": "ซ่อนรายชื่อผู้ติดตามและคนที่คุณติดตามจากโปรไฟล์ของคุณ",
       "indexable": "รวมโพสต์สาธารณะในผลการค้นหา",
@@ -601,6 +634,8 @@
       "privacyDesc": "ควบคุมความเป็นส่วนตัวและการค้นพบโปรไฟล์ของคุณ",
       "quoteDisabled": "โพสต์สำหรับผู้ติดตามเท่านั้นและโพสต์ส่วนตัวไม่สามารถอ้างอิงโดยผู้อื่นได้",
       "saveChanges": "บันทึกการเปลี่ยนแปลง",
+      "showScrollToTop": "แสดงปุ่มกลับขึ้นด้านบน",
+      "showScrollToTopDesc": "แสดงปุ่มเพื่อเลื่อนกลับไปด้านบนของไทม์ไลน์อย่างรวดเร็ว",
       "visibility": "ความเป็นส่วนตัว",
       "whoCanQuote": "ใครสามารถอ้างอิงได้"
     },
@@ -626,13 +661,12 @@
     "signOut": "ออกจากระบบ",
     "signingOut": "กำลังออกจากระบบ...",
     "title": "การตั้งค่า",
-    "trending": "กำลังมาแรง",
-    "logoutConfirm": {
-      "title": "ออกจากระบบ?",
-      "message": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?",
-      "cancel": "ยกเลิก",
-      "logout": "ออกจากระบบ"
-    }
+    "trending": "กำลังมาแรง"
+  },
+  "status": {
+    "continued_thread": "เธรดต่อเนื่อง",
+    "replied_in_thread": "ตอบกลับในเธรด",
+    "replied_to": "ตอบกลับ <link>{name}</link>"
   },
   "statusDetail": {
     "boostedBy": {
@@ -682,10 +716,10 @@
   "timeline": {
     "empty": "ไทม์ไลน์ของคุณว่างเปล่า",
     "error": "เกิดข้อผิดพลาดในการโหลดไทม์ไลน์",
+    "newPosts": "{count, plural, other {# โพสต์ใหม่}}",
     "subtitle": "ไทม์ไลน์ส่วนตัวของคุณ",
     "title": "หน้าแรก",
-    "trending": "กำลังมาแรง",
-    "newPosts": "{count, plural, other {# โพสต์ใหม่}}"
+    "trending": "กำลังมาแรง"
   },
   "toast": {
     "copiedToClipboard": "คัดลอกไปยังคลิปบอร์ดแล้ว",

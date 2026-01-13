@@ -2,6 +2,7 @@
 
 import React from 'react';
 import styled from '@emotion/styled';
+import { useTranslations } from 'next-intl';
 
 interface ShortcutGroup {
     title: string;
@@ -9,50 +10,51 @@ interface ShortcutGroup {
 }
 
 export function KeyboardShortcutsLegend() {
+    const t = useTranslations('keyboardShortcuts');
 
     const groups: ShortcutGroup[] = [
         {
-            title: 'Navigation',
+            title: t('navigation.title'),
             shortcuts: [
-                { keys: ['j'], description: 'Next post' },
-                { keys: ['k'], description: 'Previous post' },
-                { keys: ['0'], description: 'Jump to top' },
-                { keys: ['g', 'h'], description: 'Go to home' },
-                { keys: ['g', 'n'], description: 'Go to notifications' },
-                { keys: ['g', 'l'], description: 'Go to explore' },
-                { keys: ['g', 'f'], description: 'Go to bookmarks' },
-                { keys: ['g', 'p'], description: 'Go to profile' },
-                { keys: ['/'], description: 'Search' },
+                { keys: ['j'], description: t('navigation.nextPost') },
+                { keys: ['k'], description: t('navigation.prevPost') },
+                { keys: ['0'], description: t('navigation.jumpTop') },
+                { keys: ['g', 'h'], description: t('navigation.goHome') },
+                { keys: ['g', 'n'], description: t('navigation.goNotifications') },
+                { keys: ['g', 'l'], description: t('navigation.goExplore') },
+                { keys: ['g', 'f'], description: t('navigation.goBookmarks') },
+                { keys: ['g', 'p'], description: t('navigation.goProfile') },
+                { keys: ['/'], description: t('navigation.search') },
             ],
         },
         {
-            title: 'Post Actions',
+            title: t('postActions.title'),
             shortcuts: [
-                { keys: ['r'], description: 'Reply' },
-                { keys: ['f'], description: 'Favorite' },
-                { keys: ['b'], description: 'Boost' },
-                { keys: ['q'], description: 'Quote' },
-                { keys: ['m'], description: 'Mention author' },
-                { keys: ['x'], description: 'Toggle hidden content' },
-                { keys: ['h'], description: 'Toggle sensitive media' },
-                { keys: ['e'], description: 'Open media attachments' },
-                { keys: ['t'], description: 'Translate post' },
-                { keys: ['enter', 'o'], description: 'Open status' },
+                { keys: ['r'], description: t('postActions.reply') },
+                { keys: ['f'], description: t('postActions.favorite') },
+                { keys: ['b'], description: t('postActions.boost') },
+                { keys: ['q'], description: t('postActions.quote') },
+                { keys: ['m'], description: t('postActions.mention') },
+                { keys: ['x'], description: t('postActions.toggleHidden') },
+                { keys: ['h'], description: t('postActions.toggleSensitive') },
+                { keys: ['e'], description: t('postActions.openMedia') },
+                { keys: ['t'], description: t('postActions.translate') },
+                { keys: ['enter', 'o'], description: t('postActions.openStatus') },
             ],
         },
         {
-            title: 'General',
+            title: t('general.title'),
             shortcuts: [
-                { keys: ['n'], description: 'New post' },
-                { keys: ['?'], description: 'Show shortcuts' },
-                { keys: ['esc'], description: 'Back / Close' },
+                { keys: ['n'], description: t('general.newPost') },
+                { keys: ['?'], description: t('general.showShortcuts') },
+                { keys: ['esc'], description: t('general.close') },
             ],
         },
     ];
 
     return (
         <Container className="bottom-sheet-content">
-            <Title>Keyboard Shortcuts</Title>
+            <Title>{t('title')}</Title>
             <Grid>
                 {groups.map((group) => (
                     <Group key={group.title}>

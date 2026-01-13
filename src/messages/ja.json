@@ -19,8 +19,6 @@
       "noMoreFollowers": "これ以上のフォロワーはありません",
       "title": "フォロワー"
     },
-    "mutual": "相互フォロー中",
-    "follows_you": "フォローされています",
     "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "フォロー中",
     "followingPage": {
@@ -30,6 +28,7 @@
       "title": "フォロー中"
     },
     "following_count": "{count, plural, other {# following}}",
+    "follows_you": "フォローされています",
     "hiddenProfile": "このプロフィールは {domain} のモデレーターによって非表示にされています。",
     "joined": "{date}に登録",
     "loadMore": "さらに読み込む",
@@ -43,6 +42,7 @@
       "twitterTitle": "{name} (@{acct})"
     },
     "mute": "ミュート",
+    "mutual": "相互フォロー中",
     "notFound": "プロフィールが見つかりませんでした",
     "pinned": "固定済み",
     "pinnedNav": {
@@ -84,6 +84,7 @@
     "unpin": "プロフィールの固定を解除"
   },
   "common": {
+    "addMedia": "メディアを追加",
     "back": "戻る",
     "backToTop": "トップに戻る",
     "cancel": "キャンセル",
@@ -93,17 +94,16 @@
     "dontShowAgain": "今後表示しない",
     "loading": "読み込み中...",
     "next": "次へ",
+    "open": "開く",
     "remove": "削除",
     "report": "報告",
     "retry": "再試行",
     "save": "保存",
+    "send": "送信",
     "share": "共有",
     "skipToMain": "メインコンテンツにスキップ",
     "verified": "認証済み",
-    "viewAll": "すべて表示",
-    "open": "開く",
-    "addMedia": "メディアを追加",
-    "send": "送信"
+    "viewAll": "すべて表示"
   },
   "composer": {
     "addContentWarning": "コンテンツ警告を追加",
@@ -114,6 +114,12 @@
     "charCount": "残り{count}文字",
     "cwLabel": "コンテンツ警告",
     "cwPlaceholder": "警告内容を入力...",
+    "discardChanges": {
+      "cancel": "編集を続ける",
+      "discard": "破棄",
+      "message": "変更を破棄してもよろしいですか？この操作は取り消せません。",
+      "title": "変更を破棄しますか？"
+    },
     "duration": {
       "1d": "1日",
       "1h": "1時間",
@@ -151,6 +157,12 @@
     "replyPlaceholder": "返信を投稿",
     "replyTo": "Reply to @{acct}",
     "reschedule": "予約変更",
+    "saveDraft": {
+      "discard": "下書きを削除",
+      "message": "今破棄すると、この投稿は失われます。",
+      "save": "下書きとして保存",
+      "title": "この投稿を下書きとして保存しますか？"
+    },
     "schedule": "予約",
     "scheduleHelp": "投稿はこの日時に自動的に公開されます。",
     "scheduleLabel": "投稿を予約",
@@ -166,18 +178,6 @@
     "visibilityDescription": "この投稿にやり取りできる人を制限します。「設定 > 投稿のデフォルト設定」から、将来のすべての投稿に適用することもできます。",
     "visibilityInteraction": "公開範囲とやり取り",
     "visibilityLabel": "公開範囲: {label}",
-    "saveDraft": {
-      "title": "この投稿を下書きとして保存しますか？",
-      "message": "今破棄すると、この投稿は失われます。",
-      "discard": "下書きを削除",
-      "save": "下書きとして保存"
-    },
-    "discardChanges": {
-      "title": "変更を破棄しますか？",
-      "message": "変更を破棄してもよろしいですか？この操作は取り消せません。",
-      "discard": "破棄",
-      "cancel": "編集を続ける"
-    },
     "visibilityOptions": {
       "direct": "ダイレクト",
       "directDesc": "指定したユーザーのみ",
@@ -191,6 +191,8 @@
     "whoCanQuote": "引用できる人"
   },
   "conversation": {
+    "cancel": "キャンセル",
+    "delete": "削除",
     "deleteConfirm": "この会話を削除しますか？",
     "deleteConfirmFull": "本当にこの会話を削除しますか？この操作は取り消せません。",
     "deleteError": "会話の削除に失敗しました。もう一度お試しください。",
@@ -199,9 +201,7 @@
     "noMessages": "メッセージはまだありません",
     "sendError": "メッセージの送信に失敗しました",
     "title": "会話",
-    "typeMessage": "メッセージを入力...",
-    "cancel": "キャンセル",
-    "delete": "削除"
+    "typeMessage": "メッセージを入力..."
   },
   "conversations": {
     "count": "{count, plural, =0 {会話なし} other {# 件の会話}}",
@@ -238,8 +238,10 @@
   },
   "explore": {
     "failedNews": "トレンドニュースの読み込みに失敗しました",
+    "failedSuggestions": "おすすめの読み込みに失敗しました",
     "failedTags": "トレンドタグの読み込みに失敗しました",
     "failedTrending": "トレンド投稿の読み込みに失敗しました",
+    "noSuggestions": "表示できるおすすめはありません",
     "noTrendingNews": "現在トレンドのニュースはありません",
     "noTrendingPosts": "現在トレンドの投稿はありません",
     "noTrendingTags": "現在トレンドのタグはありません",
@@ -248,11 +250,9 @@
     "popularHint": "このインスタンスで人気",
     "popularLabel": "人気のおすすめ",
     "reachedEndNews": "トレンドニュースの最後に達しました",
-    "signInToSeeSuggestions": "おすすめを表示するにはログインしてください",
-    "failedSuggestions": "おすすめの読み込みに失敗しました",
-    "noSuggestions": "表示できるおすすめはありません",
     "reachedEndPosts": "トレンド投稿の最後に達しました",
     "reachedEndTags": "トレンドタグの最後に達しました",
+    "signInToSeeSuggestions": "おすすめを表示するにはログインしてください",
     "staffPickHint": "チームによる厳選",
     "staffPickLabel": "スタッフのおすすめ",
     "tabs": {
@@ -270,6 +270,40 @@
     "rotateRight": "右に90°回転",
     "zoomIn": "拡大",
     "zoomOut": "縮小"
+  },
+  "keyboardShortcuts": {
+    "general": {
+      "close": "Back / Close",
+      "newPost": "New post",
+      "showShortcuts": "Show shortcuts",
+      "title": "General"
+    },
+    "navigation": {
+      "goBookmarks": "Go to bookmarks",
+      "goExplore": "Go to explore",
+      "goHome": "Go to home",
+      "goNotifications": "Go to notifications",
+      "goProfile": "Go to profile",
+      "jumpTop": "Jump to top",
+      "nextPost": "Next post",
+      "prevPost": "Previous post",
+      "search": "Search",
+      "title": "Navigation"
+    },
+    "postActions": {
+      "boost": "Boost",
+      "favorite": "Favourite",
+      "mention": "Mention author",
+      "openMedia": "Open media attachments",
+      "openStatus": "Open status",
+      "quote": "Quote",
+      "reply": "Reply",
+      "title": "Post Actions",
+      "toggleHidden": "Toggle hidden content",
+      "toggleSensitive": "Toggle sensitive media",
+      "translate": "Translate post"
+    },
+    "title": "Keyboard Shortcuts"
   },
   "lists": {
     "count": "{count, plural, =0 {リストなし} other {# 個のリスト}}",
@@ -355,24 +389,24 @@
       "goBack": "戻る",
       "title": "フィルタリングされた通知"
     },
+    "title": "通知",
     "types": {
-      "mention": "<link>{name}</link> さんがあなたをメンションしました",
-      "status": "<link>{name}</link> さんが投稿しました",
-      "reblog": "{count, plural, =1 {<link>{name}</link> さんがあなたの投稿をブーストしました} other {<link>{name}</link> さんと他 {remainingCount} 人があなたの投稿をブーストしました}}",
+      "admin_report": "<link>{name}</link> さんから通報がありました",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> さんが登録しました} other {<link>{name}</link> さんと他 {remainingCount} 人が登録しました}}",
+      "annual_report": "年間レポートが完成しました",
+      "favourite": "{count, plural, =1 {<link>{name}</link> さんがあなたの投稿をお気に入りに登録しました} other {<link>{name}</link> さんと他 {remainingCount} 人があなたの投稿をお気に入りに登録しました}}",
       "follow": "{count, plural, =1 {<link>{name}</link> さんにフォローされました} other {<link>{name}</link> さんと他 {remainingCount} 人にフォローされました}}",
       "follow_request": "{count, plural, =1 {<link>{name}</link> さんからフォローリクエストが届きました} other {<link>{name}</link> さんと他 {remainingCount} 人からフォローリクエストが届きました}}",
-      "favourite": "{count, plural, =1 {<link>{name}</link> さんがあなたの投稿をお気に入りに登録しました} other {<link>{name}</link> さんと他 {remainingCount} 人があなたの投稿をお気に入りに登録しました}}",
+      "mention": "<link>{name}</link> さんがあなたをメンションしました",
+      "moderation_warning": "モデレーターがあなたのアカウントに対して措置を講じました",
       "poll": "投票したアンケートが終了しました",
-      "update": "ブーストした投稿が編集されました",
       "quote": "{count, plural, =1 {<link>{name}</link> さんがあなたの投稿を引用しました} other {<link>{name}</link> さんと他 {remainingCount} 人があなたの投稿を引用しました}}",
       "quoted_update": "引用した投稿が編集されました",
-      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> さんが登録しました} other {<link>{name}</link> さんと他 {remainingCount} 人が登録しました}}",
-      "admin_report": "<link>{name}</link> さんから通報がありました",
+      "reblog": "{count, plural, =1 {<link>{name}</link> さんがあなたの投稿をブーストしました} other {<link>{name}</link> さんと他 {remainingCount} 人があなたの投稿をブーストしました}}",
       "severed_relationships": "フォロー関係の一部が切断されました",
-      "moderation_warning": "モデレーターがあなたのアカウントに対して措置を講じました",
-      "annual_report": "年間レポートが完成しました"
-    },
-    "title": "通知"
+      "status": "<link>{name}</link> さんが投稿しました",
+      "update": "ブーストした投稿が編集されました"
+    }
   },
   "poll": {
     "closed": "終了",
@@ -383,14 +417,14 @@
     "extraFields": "追加フィールド",
     "followers": "フォロワー",
     "following": "フォロー中",
+    "follows_you": "フォローされています",
     "hiddenInfo": "このユーザーはこの情報を非公開にしています",
+    "mutual": "相互フォロー中",
     "noFollowers": "フォロワーはまだいません",
     "noPosts": "投稿はまだありません",
     "notFollowing": "まだ誰もフォローしていません",
     "posts": "投稿",
-    "profileInfo": "プロフィール情報",
-    "mutual": "相互フォロー中",
-    "follows_you": "フォローされています"
+    "profileInfo": "プロフィール情報"
   },
   "profileEditor": {
     "bio": "自己紹介",
@@ -544,6 +578,12 @@
     "followRequests": "フォローリクエスト",
     "interfaceLanguage": "言語",
     "interfaceLanguageDesc": "アプリケーションの表示言語を変更します",
+    "logoutConfirm": {
+      "cancel": "キャンセル",
+      "logout": "ログアウト",
+      "message": "本当にログアウトしますか？",
+      "title": "ログアウトしますか？"
+    },
     "moderation": "モデレーション",
     "mutedAccounts": "ミュートしたユーザー",
     "mutesPage": {
@@ -580,8 +620,6 @@
       "botAccountDesc": "このアカウントは主に自動化されたアクションを実行します",
       "discoverable": "他の人にアカウントをおすすめ",
       "discoverableDesc": "アカウントを発見可能にします",
-      "showScrollToTop": "トップに戻るボタンを表示",
-      "showScrollToTopDesc": "タイムラインのトップに素早く戻るためのボタンを表示します",
       "hideCollections": "フォロワー一覧とフォロー一覧を非公開にする",
       "hideCollectionsDesc": "プロフィールからフォロワーとフォローしている人を隠します",
       "indexable": "公開投稿を検索結果に含める",
@@ -596,6 +634,8 @@
       "privacyDesc": "プロフィールの公開範囲と検索性を制御します",
       "quoteDisabled": "フォロワー限定または非公開の投稿は、他人が引用することはできません。",
       "saveChanges": "変更を保存",
+      "showScrollToTop": "トップに戻るボタンを表示",
+      "showScrollToTopDesc": "タイムラインのトップに素早く戻るためのボタンを表示します",
       "visibility": "公開範囲",
       "whoCanQuote": "引用できる人"
     },
@@ -621,13 +661,12 @@
     "signOut": "ログアウト",
     "signingOut": "ログアウト中...",
     "title": "設定",
-    "trending": "トレンド",
-    "logoutConfirm": {
-      "title": "ログアウトしますか？",
-      "message": "本当にログアウトしますか？",
-      "cancel": "キャンセル",
-      "logout": "ログアウト"
-    }
+    "trending": "トレンド"
+  },
+  "status": {
+    "continued_thread": "スレッドの続き",
+    "replied_in_thread": "スレッド内での返信",
+    "replied_to": "<link>{name}</link> さんへの返信"
   },
   "statusDetail": {
     "boostedBy": {
@@ -677,10 +716,10 @@
   "timeline": {
     "empty": "タイムラインは空です",
     "error": "タイムラインの読み込みエラー",
+    "newPosts": "{count, plural, other {# 件の新着投稿}}",
     "subtitle": "あなたのタイムライン",
     "title": "ホーム",
-    "trending": "トレンド",
-    "newPosts": "{count, plural, other {# 件の新着投稿}}"
+    "trending": "トレンド"
   },
   "toast": {
     "copiedToClipboard": "クリップボードにコピーしました",
@@ -706,10 +745,5 @@
     "notAvailable": "Wrapstodonは利用できません",
     "somethingWentWrong": "エラーが発生しました",
     "title": "Wrapstodon"
-  },
-  "status": {
-    "continued_thread": "スレッドの続き",
-    "replied_to": "<link>{name}</link> さんへの返信",
-    "replied_in_thread": "スレッド内での返信"
   }
 }

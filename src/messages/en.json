@@ -366,6 +366,40 @@
     "flipHorizontal": "Flip Horizontal",
     "flipVertical": "Flip Vertical"
   },
+  "keyboardShortcuts": {
+    "title": "Keyboard Shortcuts",
+    "navigation": {
+      "title": "Navigation",
+      "nextPost": "Next post",
+      "prevPost": "Previous post",
+      "jumpTop": "Jump to top",
+      "goHome": "Go to home",
+      "goNotifications": "Go to notifications",
+      "goExplore": "Go to explore",
+      "goBookmarks": "Go to bookmarks",
+      "goProfile": "Go to profile",
+      "search": "Search"
+    },
+    "postActions": {
+      "title": "Post Actions",
+      "reply": "Reply",
+      "favorite": "Favourite",
+      "boost": "Boost",
+      "quote": "Quote",
+      "mention": "Mention author",
+      "toggleHidden": "Toggle hidden content",
+      "toggleSensitive": "Toggle sensitive media",
+      "openMedia": "Open media attachments",
+      "translate": "Translate post",
+      "openStatus": "Open status"
+    },
+    "general": {
+      "title": "General",
+      "newPost": "New post",
+      "showShortcuts": "Show shortcuts",
+      "close": "Back / Close"
+    }
+  },
   "suggestions": {
     "whoToFollow": "Who to follow",
     "dismissSuggestions": "Dismiss suggestions",

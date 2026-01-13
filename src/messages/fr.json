@@ -2,11 +2,6 @@
   "about": {
     "title": "À propos"
   },
-  "status": {
-    "continued_thread": "Fil de discussion continué",
-    "replied_to": "A répondu à <link>{name}</link>",
-    "replied_in_thread": "A répondu dans le fil"
-  },
   "account": {
     "backToTimeline": "Retour au fil",
     "block": "Bloquer",
@@ -24,8 +19,6 @@
       "noMoreFollowers": "Plus aucun abonné",
       "title": "Abonnés"
     },
-    "mutual": "Vous vous suivez mutuellement",
-    "follows_you": "Vous suit",
     "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "Abonnements",
     "followingPage": {
@@ -35,6 +28,7 @@
       "title": "Abonnements"
     },
     "following_count": "{count, plural, other {# following}}",
+    "follows_you": "Vous suit",
     "hiddenProfile": "Ce profil a été masqué par les modérateurs de {domain}.",
     "joined": "A rejoint le {date}",
     "loadMore": "Charger plus",
@@ -48,6 +42,7 @@
       "twitterTitle": "{name} (@{acct})"
     },
     "mute": "Masquer",
+    "mutual": "Vous vous suivez mutuellement",
     "notFound": "Profil non trouvé",
     "pinned": "Épinglé",
     "pinnedNav": {
@@ -89,6 +84,7 @@
     "unpin": "Désépingler du profil"
   },
   "common": {
+    "addMedia": "Ajouter un média",
     "back": "Retour",
     "backToTop": "Retour en haut",
     "cancel": "Annuler",
@@ -98,17 +94,16 @@
     "dontShowAgain": "Ne plus afficher",
     "loading": "Chargement...",
     "next": "Suivant",
+    "open": "Ouvrir",
     "remove": "Retirer",
     "report": "Signaler",
     "retry": "Réessayer",
     "save": "Enregistrer",
+    "send": "Envoyer",
     "share": "Partager",
     "skipToMain": "Aller au contenu principal",
     "verified": "Vérifié",
-    "viewAll": "Tout afficher",
-    "open": "Ouvrir",
-    "addMedia": "Ajouter un média",
-    "send": "Envoyer"
+    "viewAll": "Tout afficher"
   },
   "composer": {
     "addContentWarning": "Ajouter un avertissement",
@@ -119,6 +114,12 @@
     "charCount": "{count} caractères restants",
     "cwLabel": "Avertissement de contenu",
     "cwPlaceholder": "Écrivez votre avertissement ici...",
+    "discardChanges": {
+      "cancel": "Continuer l'édition",
+      "discard": "Abandonner",
+      "message": "Voulez-vous vraiment abandonner vos modifications ? Cette action est irréversible.",
+      "title": "Abandonner les modifications ?"
+    },
     "duration": {
       "1d": "1 jour",
       "1h": "1 heure",
@@ -156,6 +157,12 @@
     "replyPlaceholder": "Publiez votre réponse",
     "replyTo": "Reply to @{acct}",
     "reschedule": "Reprogrammer",
+    "saveDraft": {
+      "discard": "Supprimer le brouillon",
+      "message": "Si vous abandonnez maintenant, vous perdrez ce post.",
+      "save": "Enregistrer le brouillon",
+      "title": "Enregistrer ce post en tant que brouillon ?"
+    },
     "schedule": "Programmer",
     "scheduleHelp": "La publication sera automatiquement publiée à cette date.",
     "scheduleLabel": "Programmer la publication",
@@ -171,18 +178,6 @@
     "visibilityDescription": "Contrôlez qui peut interagir avec cette publication. Vous pouvez également appliquer ces paramètres à toutes vos futures publications dans Préférences > Paramètres par défaut.",
     "visibilityInteraction": "Visibilité et interaction",
     "visibilityLabel": "Visibilité : {label}",
-    "saveDraft": {
-      "title": "Enregistrer ce post en tant que brouillon ?",
-      "message": "Si vous abandonnez maintenant, vous perdrez ce post.",
-      "discard": "Supprimer le brouillon",
-      "save": "Enregistrer le brouillon"
-    },
-    "discardChanges": {
-      "title": "Abandonner les modifications ?",
-      "message": "Voulez-vous vraiment abandonner vos modifications ? Cette action est irréversible.",
-      "discard": "Abandonner",
-      "cancel": "Continuer l'édition"
-    },
     "visibilityOptions": {
       "direct": "Direct",
       "directDesc": "Uniquement les personnes mentionnées",
@@ -196,6 +191,8 @@
     "whoCanQuote": "Qui peut citer"
   },
   "conversation": {
+    "cancel": "Annuler",
+    "delete": "Supprimer",
     "deleteConfirm": "Supprimer cette conversation ?",
     "deleteConfirmFull": "Êtes-vous sûr de vouloir supprimer cette conversation ? Cette action est irréversible.",
     "deleteError": "Échec de suppression de la conversation. Veuillez réessayer.",
@@ -204,9 +201,7 @@
     "noMessages": "Aucun message pour le moment",
     "sendError": "Échec d'envoi du message",
     "title": "Conversation",
-    "typeMessage": "Écrire un message...",
-    "cancel": "Annuler",
-    "delete": "Supprimer"
+    "typeMessage": "Écrire un message..."
   },
   "conversations": {
     "count": "{count, plural, =0 {Aucune conversation} =1 {1 conversation} other {# conversations}}",
@@ -243,8 +238,10 @@
   },
   "explore": {
     "failedNews": "Échec du chargement des actualités tendance",
+    "failedSuggestions": "Échec du chargement des suggestions",
     "failedTags": "Échec du chargement des tags tendance",
     "failedTrending": "Échec du chargement des posts tendance",
+    "noSuggestions": "Aucune suggestion disponible",
     "noTrendingNews": "Pas d'actualités tendance pour le moment",
     "noTrendingPosts": "Pas de posts tendance pour le moment",
     "noTrendingTags": "Pas de tags tendance pour le moment",
@@ -253,11 +250,9 @@
     "popularHint": "Populaire sur cette instance",
     "popularLabel": "Suggestion populaire",
     "reachedEndNews": "Vous avez atteint la fin des actualités tendance",
-    "signInToSeeSuggestions": "Connectez-vous pour voir les suggestions",
-    "failedSuggestions": "Échec du chargement des suggestions",
-    "noSuggestions": "Aucune suggestion disponible",
     "reachedEndPosts": "Vous avez atteint la fin des posts tendance",
     "reachedEndTags": "Vous avez atteint la fin des tags tendance",
+    "signInToSeeSuggestions": "Connectez-vous pour voir les suggestions",
     "staffPickHint": "Sélectionné à la main par l'équipe",
     "staffPickLabel": "Sélection de l'équipe",
     "tabs": {
@@ -275,6 +270,40 @@
     "rotateRight": "Rotation 90° droite",
     "zoomIn": "Zoom avant",
     "zoomOut": "Zoom arrière"
+  },
+  "keyboardShortcuts": {
+    "general": {
+      "close": "Back / Close",
+      "newPost": "New post",
+      "showShortcuts": "Show shortcuts",
+      "title": "General"
+    },
+    "navigation": {
+      "goBookmarks": "Go to bookmarks",
+      "goExplore": "Go to explore",
+      "goHome": "Go to home",
+      "goNotifications": "Go to notifications",
+      "goProfile": "Go to profile",
+      "jumpTop": "Jump to top",
+      "nextPost": "Next post",
+      "prevPost": "Previous post",
+      "search": "Search",
+      "title": "Navigation"
+    },
+    "postActions": {
+      "boost": "Boost",
+      "favorite": "Favourite",
+      "mention": "Mention author",
+      "openMedia": "Open media attachments",
+      "openStatus": "Open status",
+      "quote": "Quote",
+      "reply": "Reply",
+      "title": "Post Actions",
+      "toggleHidden": "Toggle hidden content",
+      "toggleSensitive": "Toggle sensitive media",
+      "translate": "Translate post"
+    },
+    "title": "Keyboard Shortcuts"
   },
   "lists": {
     "count": "{count, plural, =0 {Aucune liste} =1 {1 liste} other {# listes}}",
@@ -360,24 +389,24 @@
       "goBack": "Retour",
       "title": "Notifications filtrées"
     },
+    "title": "Notifications",
     "types": {
-      "mention": "<link>{name}</link> vous a mentionné",
-      "status": "<link>{name}</link> a publié",
-      "reblog": "{count, plural, =1 {<link>{name}</link> a boosté votre publication} other {<link>{name}</link> et {remainingCount} autres ont boosté votre publication}}",
+      "admin_report": "<link>{name}</link> a envoyé un signalement",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> s'est inscrit} other {<link>{name}</link> et {remainingCount} autres se sont inscrits}}",
+      "annual_report": "Votre rapport annuel est prêt",
+      "favourite": "{count, plural, =1 {<link>{name}</link> a ajouté votre publication à ses favoris} other {<link>{name}</link> et {remainingCount} autres ont ajouté votre publication à leurs favoris}}",
       "follow": "{count, plural, =1 {<link>{name}</link> vous suit} other {<link>{name}</link> et {remainingCount} autres vous suivent}}",
       "follow_request": "{count, plural, =1 {<link>{name}</link> a demandé à vous suivre} other {<link>{name}</link> et {remainingCount} autres ont demandé à vous suivre}}",
-      "favourite": "{count, plural, =1 {<link>{name}</link> a ajouté votre publication à ses favoris} other {<link>{name}</link> et {remainingCount} autres ont ajouté votre publication à leurs favoris}}",
+      "mention": "<link>{name}</link> vous a mentionné",
+      "moderation_warning": "Un modérateur a pris des mesures concernant votre compte",
       "poll": "Un sondage auquel vous avez participé est terminé",
-      "update": "Une publication que vous avez boostée a été modifiée",
       "quote": "{count, plural, =1 {<link>{name}</link> a cité votre publication} other {<link>{name}</link> et {remainingCount} autres ont cité votre publication}}",
       "quoted_update": "Une publication que vous avez citée a été modifiée",
-      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> s'est inscrit} other {<link>{name}</link> et {remainingCount} autres se sont inscrits}}",
-      "admin_report": "<link>{name}</link> a envoyé un signalement",
+      "reblog": "{count, plural, =1 {<link>{name}</link> a boosté votre publication} other {<link>{name}</link> et {remainingCount} autres ont boosté votre publication}}",
       "severed_relationships": "Certaines de vos relations d'abonnement ont été rompues",
-      "moderation_warning": "Un modérateur a pris des mesures concernant votre compte",
-      "annual_report": "Votre rapport annuel est prêt"
-    },
-    "title": "Notifications"
+      "status": "<link>{name}</link> a publié",
+      "update": "Une publication que vous avez boostée a été modifiée"
+    }
   },
   "poll": {
     "closed": "Fermé",
@@ -388,14 +417,14 @@
     "extraFields": "Champs supplémentaires",
     "followers": "Abonnés",
     "following": "Abonnements",
+    "follows_you": "Vous suit",
     "hiddenInfo": "Cet utilisateur a choisi de ne pas rendre cette information disponible",
+    "mutual": "Vous vous suivez mutuellement",
     "noFollowers": "Aucun abonné",
     "noPosts": "Aucune publication",
     "notFollowing": "Aucun abonnement",
     "posts": "Publications",
-    "profileInfo": "Informations du profil",
-    "mutual": "Vous vous suivez mutuellement",
-    "follows_you": "Vous suit"
+    "profileInfo": "Informations du profil"
   },
   "profileEditor": {
     "bio": "Bio",
@@ -549,6 +578,12 @@
     "followRequests": "Demandes d'abonnement",
     "interfaceLanguage": "Langue de l'interface",
     "interfaceLanguageDesc": "Changer la langue de l'interface de l'application",
+    "logoutConfirm": {
+      "cancel": "Annuler",
+      "logout": "Se déconnecter",
+      "message": "Êtes-vous sûr de vouloir vous déconnecter ?",
+      "title": "Se déconnecter ?"
+    },
     "moderation": "Modération",
     "mutedAccounts": "Comptes masqués",
     "mutesPage": {
@@ -585,8 +620,6 @@
       "botAccountDesc": "Ce compte effectue principalement des actions automatisées",
       "discoverable": "Suggérer le compte aux autres",
       "discoverableDesc": "Permettre à votre compte d'être découvert",
-      "showScrollToTop": "Afficher le bouton retour en haut",
-      "showScrollToTopDesc": "Afficher un bouton pour revenir rapidement en haut du fil",
       "hideCollections": "Masquer les abonnés et abonnements",
       "hideCollectionsDesc": "Masquer vos abonnés et vos abonnements sur votre profil",
       "indexable": "Inclure les publications publiques dans les résultats de recherche",
@@ -601,6 +634,8 @@
       "privacyDesc": "Contrôlez la visibilité et la découvrabilité d'un profil",
       "quoteDisabled": "Les publications privées ou réservées aux abonnés ne peuvent pas être citées.",
       "saveChanges": "Enregistrer les modifications",
+      "showScrollToTop": "Afficher le bouton retour en haut",
+      "showScrollToTopDesc": "Afficher un bouton pour revenir rapidement en haut du fil",
       "visibility": "Visibilité",
       "whoCanQuote": "Qui peut citer"
     },
@@ -626,13 +661,12 @@
     "signOut": "Se déconnecter",
     "signingOut": "Déconnexion...",
     "title": "Paramètres",
-    "trending": "Tendances",
-    "logoutConfirm": {
-      "title": "Se déconnecter ?",
-      "message": "Êtes-vous sûr de vouloir vous déconnecter ?",
-      "cancel": "Annuler",
-      "logout": "Se déconnecter"
-    }
+    "trending": "Tendances"
+  },
+  "status": {
+    "continued_thread": "Fil de discussion continué",
+    "replied_in_thread": "A répondu dans le fil",
+    "replied_to": "A répondu à <link>{name}</link>"
   },
   "statusDetail": {
     "boostedBy": {
@@ -682,10 +716,10 @@
   "timeline": {
     "empty": "Votre fil est vide",
     "error": "Erreur de chargement du fil",
+    "newPosts": "{count, plural, =1 {# Nouveau post} other {# Nouveaux posts}}",
     "subtitle": "Votre fil personnel",
     "title": "Accueil",
-    "trending": "Tendances",
-    "newPosts": "{count, plural, =1 {# Nouveau post} other {# Nouveaux posts}}"
+    "trending": "Tendances"
   },
   "toast": {
     "copiedToClipboard": "Copié dans le presse-papiers",

@@ -19,8 +19,6 @@
       "noMoreFollowers": "더 이상 팔로워가 없습니다",
       "title": "팔로워"
     },
-    "mutual": "서로 팔로우",
-    "follows_you": "나를 팔로우",
     "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "팔로잉",
     "followingPage": {
@@ -30,6 +28,7 @@
       "title": "팔로잉"
     },
     "following_count": "{count, plural, other {# following}}",
+    "follows_you": "나를 팔로우",
     "hiddenProfile": "이 프로필은 {domain}의 중재자에 의해 숨겨졌습니다.",
     "joined": "{date} 가입",
     "loadMore": "더 보기",
@@ -43,6 +42,7 @@
       "twitterTitle": "{name} (@{acct})"
     },
     "mute": "음소거",
+    "mutual": "서로 팔로우",
     "notFound": "프로필을 찾을 수 없습니다",
     "pinned": "고정됨",
     "pinnedNav": {
@@ -84,6 +84,7 @@
     "unpin": "프로필에서 고정 해제"
   },
   "common": {
+    "addMedia": "미디어 추가",
     "back": "뒤로",
     "backToTop": "맨 위로",
     "cancel": "취소",
@@ -93,17 +94,16 @@
     "dontShowAgain": "다시 표시 안 함",
     "loading": "로딩 중...",
     "next": "다음",
+    "open": "열기",
     "remove": "제거",
     "report": "신고",
     "retry": "다시 시도",
     "save": "저장",
+    "send": "보내기",
     "share": "공유",
     "skipToMain": "메인 콘텐츠로 건너뛰기",
     "verified": "인증됨",
-    "viewAll": "모두 보기",
-    "open": "열기",
-    "addMedia": "미디어 추가",
-    "send": "보내기"
+    "viewAll": "모두 보기"
   },
   "composer": {
     "addContentWarning": "콘텐츠 경고 추가",
@@ -114,6 +114,12 @@
     "charCount": "{count}자 남음",
     "cwLabel": "콘텐츠 경고",
     "cwPlaceholder": "여기에 경고 내용을 작성하세요...",
+    "discardChanges": {
+      "cancel": "계속 편집하기",
+      "discard": "취소",
+      "message": "변경사항을 취소하시겠습니까？ 이 작업은 되돌릴 수 없습니다。",
+      "title": "변경사항을 취소하시겠습니까？"
+    },
     "duration": {
       "1d": "1일",
       "1h": "1시간",
@@ -151,6 +157,12 @@
     "replyPlaceholder": "답글을 작성하세요",
     "replyTo": "Reply to @{acct}",
     "reschedule": "예약 수정",
+    "saveDraft": {
+      "discard": "임시 저장 삭제",
+      "message": "지금 취소하면 게시물이 삭제됩니다.",
+      "save": "임시 저장",
+      "title": "이 게시물을 임시 저장하시겠습니까?"
+    },
     "schedule": "예약",
     "scheduleHelp": "게시물은 이 시간에 자동으로 게시됩니다.",
     "scheduleLabel": "게시물 예약",
@@ -166,18 +178,6 @@
     "visibilityDescription": "이 게시물과 상호작용할 수 있는 사람을 제어합니다. 환경설정 > 기본 게시 설정에서 모든 향후 게시물에 적용할 수도 있습니다.",
     "visibilityInteraction": "공개 범위 및 상호작용",
     "visibilityLabel": "공개 범위: {label}",
-    "saveDraft": {
-      "title": "이 게시물을 임시 저장하시겠습니까?",
-      "message": "지금 취소하면 게시물이 삭제됩니다.",
-      "discard": "임시 저장 삭제",
-      "save": "임시 저장"
-    },
-    "discardChanges": {
-      "title": "변경사항을 취소하시겠습니까？",
-      "message": "변경사항을 취소하시겠습니까？ 이 작업은 되돌릴 수 없습니다。",
-      "discard": "취소",
-      "cancel": "계속 편집하기"
-    },
     "visibilityOptions": {
       "direct": "다이렉트",
       "directDesc": "언급된 사용자만",
@@ -191,6 +191,8 @@
     "whoCanQuote": "인용 가능한 사람"
   },
   "conversation": {
+    "cancel": "취소",
+    "delete": "삭제",
     "deleteConfirm": "이 대화를 삭제할까요?",
     "deleteConfirmFull": "정말로 이 대화를 삭제하시겠습니까? 삭제된 대화는 복구할 수 없습니다.",
     "deleteError": "대화 삭제에 실패했습니다. 다시 시도해 주세요.",
@@ -199,9 +201,7 @@
     "noMessages": "메시지가 아직 없습니다",
     "sendError": "메시지 전송에 실패했습니다",
     "title": "대화",
-    "typeMessage": "메시지를 입력하세요...",
-    "cancel": "취소",
-    "delete": "삭제"
+    "typeMessage": "메시지를 입력하세요..."
   },
   "conversations": {
     "count": "{count, plural, =0 {대화 없음} other {#개의 대화}}",
@@ -238,8 +238,10 @@
   },
   "explore": {
     "failedNews": "인기 뉴스 로드 실패",
+    "failedSuggestions": "추천 로드 실패",
     "failedTags": "인기 태그 로드 실패",
     "failedTrending": "인기 게시물 로드 실패",
+    "noSuggestions": "제공할 추천이 없습니다",
     "noTrendingNews": "현재 인기 뉴스가 없습니다",
     "noTrendingPosts": "현재 인기 게시물이 없습니다",
     "noTrendingTags": "현재 인기 태그가 없습니다",
@@ -248,11 +250,9 @@
     "popularHint": "이 인스턴스에서 인기 있는 추천",
     "popularLabel": "인기 추천",
     "reachedEndNews": "인기 뉴스의 끝에 도달했습니다",
-    "signInToSeeSuggestions": "추천을 보려면 로그인하세요",
-    "failedSuggestions": "추천 로드 실패",
-    "noSuggestions": "제공할 추천이 없습니다",
     "reachedEndPosts": "인기 게시물의 끝에 도달했습니다",
     "reachedEndTags": "인기 태그의 끝에 도달했습니다",
+    "signInToSeeSuggestions": "추천을 보려면 로그인하세요",
     "staffPickHint": "팀이 직접 선정한 추천",
     "staffPickLabel": "스태프 추천",
     "tabs": {
@@ -270,6 +270,40 @@
     "rotateRight": "오른쪽으로 90° 회전",
     "zoomIn": "확대",
     "zoomOut": "축소"
+  },
+  "keyboardShortcuts": {
+    "general": {
+      "close": "Back / Close",
+      "newPost": "New post",
+      "showShortcuts": "Show shortcuts",
+      "title": "General"
+    },
+    "navigation": {
+      "goBookmarks": "Go to bookmarks",
+      "goExplore": "Go to explore",
+      "goHome": "Go to home",
+      "goNotifications": "Go to notifications",
+      "goProfile": "Go to profile",
+      "jumpTop": "Jump to top",
+      "nextPost": "Next post",
+      "prevPost": "Previous post",
+      "search": "Search",
+      "title": "Navigation"
+    },
+    "postActions": {
+      "boost": "Boost",
+      "favorite": "Favourite",
+      "mention": "Mention author",
+      "openMedia": "Open media attachments",
+      "openStatus": "Open status",
+      "quote": "Quote",
+      "reply": "Reply",
+      "title": "Post Actions",
+      "toggleHidden": "Toggle hidden content",
+      "toggleSensitive": "Toggle sensitive media",
+      "translate": "Translate post"
+    },
+    "title": "Keyboard Shortcuts"
   },
   "lists": {
     "count": "{count, plural, =0 {리스트 없음} other {#개의 리스트}}",
@@ -355,24 +389,24 @@
       "goBack": "뒤로 가기",
       "title": "필터링된 알림"
     },
+    "title": "알림",
     "types": {
-      "mention": "<link>{name}</link> 님이 당신을 언급했습니다",
-      "status": "<link>{name}</link> 님이 게시물을 올렸습니다",
-      "reblog": "{count, plural, =1 {<link>{name}</link> 님이 당신의 게시물을 부스트했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신의 게시물을 부스트했습니다}}",
+      "admin_report": "<link>{name}</link> 님이 신고를 제출했습니다",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> 님이 가입했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 가입했습니다}}",
+      "annual_report": "연간 리포트가 준비되었습니다",
+      "favourite": "{count, plural, =1 {<link>{name}</link> 님이 당신의 게시물을 즐겨찾기에 추가했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신의 게시물을 즐겨찾기에 추가했습니다}}",
       "follow": "{count, plural, =1 {<link>{name}</link> 님이 당신을 팔로우했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신을 팔로우했습니다}}",
       "follow_request": "{count, plural, =1 {<link>{name}</link> 님이 팔로우 요청을 보냈습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 팔로우 요청을 보냈습니다}}",
-      "favourite": "{count, plural, =1 {<link>{name}</link> 님이 당신의 게시물을 즐겨찾기에 추가했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신의 게시물을 즐겨찾기에 추가했습니다}}",
+      "mention": "<link>{name}</link> 님이 당신을 언급했습니다",
+      "moderation_warning": "중재자가 당신의 계정에 조치를 취했습니다",
       "poll": "참여한 투표가 종료되었습니다",
-      "update": "부스트한 게시물이 수정되었습니다",
       "quote": "{count, plural, =1 {<link>{name}</link> 님이 당신의 게시물을 인용했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신의 게시물을 인용했습니다}}",
       "quoted_update": "인용한 게시물이 수정되었습니다",
-      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> 님이 가입했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 가입했습니다}}",
-      "admin_report": "<link>{name}</link> 님이 신고를 제출했습니다",
+      "reblog": "{count, plural, =1 {<link>{name}</link> 님이 당신의 게시물을 부스트했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신의 게시물을 부스트했습니다}}",
       "severed_relationships": "일부 팔로우 관계가 끊어졌습니다",
-      "moderation_warning": "중재자가 당신의 계정에 조치를 취했습니다",
-      "annual_report": "연간 리포트가 준비되었습니다"
-    },
-    "title": "알림"
+      "status": "<link>{name}</link> 님이 게시물을 올렸습니다",
+      "update": "부스트한 게시물이 수정되었습니다"
+    }
   },
   "poll": {
     "closed": "종료됨",
@@ -383,14 +417,14 @@
     "extraFields": "추가 필드",
     "followers": "팔로워",
     "following": "팔로잉",
+    "follows_you": "나를 팔로우",
     "hiddenInfo": "이 사용자는 이 정보를 비공개로 설정했습니다",
+    "mutual": "서로 팔로우",
     "noFollowers": "팔로워가 아직 없습니다",
     "noPosts": "게시물이 아직 없습니다",
     "notFollowing": "아직 팔로우하는 사람이 없습니다",
     "posts": "게시물",
-    "profileInfo": "프로필 정보",
-    "mutual": "서로 팔로우",
-    "follows_you": "나를 팔로우"
+    "profileInfo": "프로필 정보"
   },
   "profileEditor": {
     "bio": "소개",
@@ -544,6 +578,12 @@
     "followRequests": "팔로우 요청",
     "interfaceLanguage": "인터페이스 언어",
     "interfaceLanguageDesc": "애플리케이션 인터페이스 언어를 변경합니다",
+    "logoutConfirm": {
+      "cancel": "취소",
+      "logout": "로그아웃",
+      "message": "정말로 로그아웃하시겠습니까?",
+      "title": "로그아웃하시겠습니까?"
+    },
     "moderation": "중재",
     "mutedAccounts": "음소거된 계정",
     "mutesPage": {
@@ -580,8 +620,6 @@
       "botAccountDesc": "이 계정은 주로 자동화된 작업을 수행합니다",
       "discoverable": "다른 사람에게 계정 추천",
       "discoverableDesc": "계정이 발견될 수 있도록 허용",
-      "showScrollToTop": "맨 위로 이동 버튼 표시",
-      "showScrollToTopDesc": "타임라인 맨 위로 빠르게 이동할 수 있는 버튼을 표시합니다",
       "hideCollections": "팔로워 및 팔로잉 숨기기",
       "hideCollectionsDesc": "프로필에서 팔로워와 팔로잉 목록을 숨깁니다",
       "indexable": "검색 결과에 공개 게시물 포함",
@@ -596,6 +634,8 @@
       "privacyDesc": "프로필 공개 범위 및 검색 가능성을 제어합니다",
       "quoteDisabled": "팔로워 전용 및 비공개 게시물은 다른 사람이 인용할 수 없습니다.",
       "saveChanges": "변경사항 저장",
+      "showScrollToTop": "맨 위로 이동 버튼 표시",
+      "showScrollToTopDesc": "타임라인 맨 위로 빠르게 이동할 수 있는 버튼을 표시합니다",
       "visibility": "공개 범위",
       "whoCanQuote": "인용 가능한 사람"
     },
@@ -621,13 +661,12 @@
     "signOut": "로그아웃",
     "signingOut": "로그아웃 중...",
     "title": "설정",
-    "trending": "인기",
-    "logoutConfirm": {
-      "title": "로그아웃하시겠습니까?",
-      "message": "정말로 로그아웃하시겠습니까?",
-      "cancel": "취소",
-      "logout": "로그아웃"
-    }
+    "trending": "인기"
+  },
+  "status": {
+    "continued_thread": "스레드 이어짐",
+    "replied_in_thread": "스레드에 답글 남김",
+    "replied_to": "<link>{name}</link> 님에게 답글 남김"
   },
   "statusDetail": {
     "boostedBy": {
@@ -677,10 +716,10 @@
   "timeline": {
     "empty": "타임라인이 비어 있습니다",
     "error": "타임라인 로드 오류",
+    "newPosts": "{count, plural, other {#개의 새 게시물}}",
     "subtitle": "개인 타임라인",
     "title": "홈",
-    "trending": "인기",
-    "newPosts": "{count, plural, other {#개의 새 게시물}}"
+    "trending": "인기"
   },
   "toast": {
     "copiedToClipboard": "클립보드에 복사되었습니다",
@@ -706,10 +745,5 @@
     "notAvailable": "Wrapstodon을 사용할 수 없습니다",
     "somethingWentWrong": "문제가 발생했습니다",
     "title": "Wrapstodon"
-  },
-  "status": {
-    "continued_thread": "스레드 이어짐",
-    "replied_to": "<link>{name}</link> 님에게 답글 남김",
-    "replied_in_thread": "스레드에 답글 남김"
   }
 }
