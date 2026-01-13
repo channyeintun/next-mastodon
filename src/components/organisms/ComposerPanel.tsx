@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback, useContext } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrentAccount, useCustomEmojis, useStatus, usePreferences, useScheduledStatus, useCreateStatus, useUpdateStatus, useDeleteScheduledStatus } from '@/api';
 import { PostCard } from '@/components/organisms';
-import { MediaUpload, PollComposer, VisibilitySettingsModal, ComposerToolbar, ComposeModalContext, type MediaUploadHandle } from '@/components/molecules';
+import { MediaUpload, PollComposer, VisibilitySettingsModal, ComposerToolbar, type MediaUploadHandle } from '@/components/molecules';
 import type { PollData } from '@/components/molecules/PollComposer';
 import type { Visibility, QuoteVisibility } from '@/components/molecules/VisibilitySettingsModal';
 import { ContentWarningInput, ScheduleInput } from '@/components/atoms';
@@ -14,7 +14,6 @@ import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { length as unicodeLength } from 'stringz';
 import { countableText } from '@/utils/counter';
 import { useMediaUpload } from '@/hooks/useMediaUpload';
-import { useComposerDraft } from '@/hooks/useComposerDraft';
 import { observer } from 'mobx-react-lite';
 import { Globe, X } from 'lucide-react';
 import { toLocalISOString, parseDate } from '@/utils/date';
@@ -34,7 +33,6 @@ import {
 } from './ComposerPanelStyles';
 import { MAX_CHAR_COUNT, getVisibilityOptions } from './ComposerConstants';
 import { ComposerHeader } from './ComposerHeader';
-import type { Draft } from '@/stores/draftStore';
 
 interface ComposerPanelProps {
   editMode?: boolean;
@@ -82,10 +80,7 @@ export const ComposerPanel = observer(({
   const updateStatusMutation = useUpdateStatus();
   const deleteScheduledStatusMutation = useDeleteScheduledStatus();
   const { openModal, closeModal } = useGlobalModal();
-  const modalContext = useContext(ComposeModalContext);
   const editorRef = useRef<any>(null);
-  const initialTextRef = useRef<string | null>(null);
-  const hasInitializedTextRef = useRef(false);
 
   const [content, setContent] = useState(computedInitialContent);
   const [textContent, setTextContent] = useState('');
@@ -135,38 +130,6 @@ export const ComposerPanel = observer(({
     if (editMode && initialMedia.length > 0) setMedia(initialMedia);
   }, [editMode, initialMedia, setMedia]);
 
-  const isDirty = (
-    (hasInitializedTextRef.current && textContent !== (initialTextRef.current ?? '')) ||
-    (!hasInitializedTextRef.current && !editMode && !isReply && textContent.trim().length > 0) ||
-    media.length !== (editMode ? initialMedia.length : 0) ||
-    poll !== null ||
-    (contentWarning !== initialSpoilerText) ||
-    showScheduleInput
-  );
-
-  const handleRestore = useCallback((draft: Draft) => {
-    setContent(draft.content);
-    setContentWarning(draft.spoilerText);
-    setShowCWInput(!!draft.spoilerText);
-    setSensitive(draft.sensitive);
-    setVisibility(draft.visibility);
-    setLanguage(draft.language);
-    setMedia(draft.media);
-    setPoll(draft.poll);
-    if (draft.scheduledAt) {
-      setScheduledAt(draft.scheduledAt);
-      setShowScheduleInput(true);
-    }
-  }, [setMedia]);
-
-  const { skipBlocker } = useComposerDraft({
-    editMode, isReply, quotedStatusId, scheduledStatusId, mentionPrefix,
-    initialContent, isDirty, modalContext, onRestore: handleRestore,
-    draftData: {
-      content, spoilerText: contentWarning, visibility, sensitive,
-      media, poll, language, scheduledAt,
-    }
-  });
 
   const charCount = unicodeLength(countableText(textContent));
   const isOverLimit = charCount > MAX_CHAR_COUNT;
@@ -242,7 +205,6 @@ export const ComposerPanel = observer(({
     if (showScheduleInput && scheduledAt) params.scheduled_at = new Date(scheduledAt).toISOString();
 
     try {
-      skipBlocker();
       if (editMode && statusId) {
         await updateStatusMutation.mutateAsync({ id: statusId, params });
         router.back();
@@ -286,14 +248,7 @@ export const ComposerPanel = observer(({
           content={content}
           placeholder={isReply ? t('replyPlaceholder') : t('placeholder')}
           emojis={customEmojis || []}
-          onUpdate={(html, text) => {
-            if (!hasInitializedTextRef.current) {
-              initialTextRef.current = text;
-              hasInitializedTextRef.current = true;
-            }
-            setContent(html);
-            setTextContent(text);
-          }}
+          onUpdate={(html, text) => { setContent(html); setTextContent(text); }}
           onEditorReady={(editor) => { editorRef.current = editor; }}
           mentionSuggestion={createMentionSuggestion()}
           onFilePaste={handleFilePaste}

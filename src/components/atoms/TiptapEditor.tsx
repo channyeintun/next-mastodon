@@ -37,7 +37,7 @@ interface TiptapEditorProps {
  * - Hashtag and custom emoji support
  * - File paste/drop support for media uploads
  */
-// eslint-disable-next-line max-lines-per-function
+ 
 export function TiptapEditor({
   content = '',
   placeholder = "What's on your mind?",

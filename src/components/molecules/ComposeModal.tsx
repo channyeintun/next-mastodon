@@ -3,18 +3,8 @@
 import styled from '@emotion/styled';
 import { X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useCallback, createContext, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
-
-export const ComposeModalContext = createContext<{
-  isDirty: boolean;
-  setIsDirty: (dirty: boolean) => void;
-  registerOnCloseHandler: (handler: (() => void) | null) => void;
-}>({
-  isDirty: false,
-  setIsDirty: () => { },
-  registerOnCloseHandler: () => { },
-});
 
 interface ComposeModalProps {
   children: React.ReactNode;
@@ -29,35 +19,21 @@ interface ComposeModalProps {
  */
 export function ComposeModal({ children }: ComposeModalProps) {
   const router = useRouter();
-  const [isDirty, setIsDirty] = useState(false);
-  const [registeredOnCloseHandler, setRegisteredOnCloseHandler] = useState<(() => void) | null>(null);
   const { isOpen: isGlobalModalOpen } = useGlobalModal();
   const overlayRef = useRef<HTMLDivElement>(null);
   const mouseDownTarget = useRef<EventTarget | null>(null);
-
-  const handleClose = useCallback(() => {
-    if (isDirty && registeredOnCloseHandler) {
-      registeredOnCloseHandler();
-    } else {
-      router.back();
-    }
-  }, [router, isDirty, registeredOnCloseHandler]);
-
-  const registerOnCloseHandler = useCallback((handler: (() => void) | null) => {
-    setRegisteredOnCloseHandler(() => handler);
-  }, []);
 
   // Handle Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && !isGlobalModalOpen) {
-        handleClose();
+        router.back();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleClose, isGlobalModalOpen]);
+  }, [isGlobalModalOpen]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -76,27 +52,25 @@ export function ComposeModal({ children }: ComposeModalProps) {
 
   const handleMouseUp = (e: React.MouseEvent) => {
     if (mouseDownTarget.current === e.currentTarget && e.target === e.currentTarget) {
-      handleClose();
+      router.back();
     }
   };
 
   return (
-    <ComposeModalContext.Provider value={{ isDirty, setIsDirty, registerOnCloseHandler }}>
-      <ModalOverlay
-        ref={overlayRef}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-      >
-        <ModalContainer>
-          <CloseButton onClick={handleClose} aria-label="Close">
-            <X size={24} />
-          </CloseButton>
-          <ModalContent>
-            {children}
-          </ModalContent>
-        </ModalContainer>
-      </ModalOverlay>
-    </ComposeModalContext.Provider>
+    <ModalOverlay
+      ref={overlayRef}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+    >
+      <ModalContainer>
+        <CloseButton onClick={() => router.back()} aria-label="Close">
+          <X size={24} />
+        </CloseButton>
+        <ModalContent>
+          {children}
+        </ModalContent>
+      </ModalContainer>
+    </ModalOverlay>
   );
 }
 
