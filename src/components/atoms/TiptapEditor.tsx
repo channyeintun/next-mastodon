@@ -56,26 +56,18 @@ export function TiptapEditor({
   // Memoize extensions to avoid recreation on every render
   const extensions = useMemo(() => [
     StarterKit.configure({
-      // Disable built-in code block for cleaner output
       codeBlock: false,
-      // Disable automatic list conversion (- and space → bullet list)
       bulletList: false,
       orderedList: false,
       listItem: false,
     }),
-    Placeholder.configure({
-      placeholder,
-    }),
+    Placeholder.configure({ placeholder }),
     MentionWithClick.configure({
-      HTMLAttributes: {
-        class: 'mention',
-      },
+      HTMLAttributes: { class: 'mention' },
       ...(mentionSuggestion && { suggestion: mentionSuggestion }),
     }),
     Hashtag,
-    CustomEmoji.configure({
-      emojis,
-    }),
+    CustomEmoji.configure({ emojis }),
     FilePasteHandler.configure({
       onFilePaste,
       onUrlPaste,
@@ -84,46 +76,30 @@ export function TiptapEditor({
     }),
   ] as Extensions, [placeholder, mentionSuggestion, emojis, onFilePaste, onUrlPaste, maxFiles]);
 
+  const editorProps = useMemo(() => ({
+    attributes: {
+      class: 'tiptap-editor-editable',
+      style: 'outline: none;',
+      ...(ariaLabel ? { 'aria-label': ariaLabel } : {}),
+    },
+    transformPastedText(text: string) {
+      return text.replace(/ {2,}/g, (match) => ' ' + '\u00A0'.repeat(match.length - 1));
+    },
+    transformPastedHTML(html: string) {
+      return html.replace(/ {2,}/g, (match) => ' ' + '&#160;'.repeat(match.length - 1));
+    },
+  }), [ariaLabel]);
+
   const editor = useEditor({
     immediatelyRender: false,
     extensions,
     content,
     editable: true,
-    // Preserve whitespace when parsing content
-    parseOptions: {
-      preserveWhitespace: 'full',
-    },
-    editorProps: {
-      attributes: {
-        class: 'tiptap-editor-editable',
-        style: 'outline: none;',
-        ...(ariaLabel ? { 'aria-label': ariaLabel } : {}),
-      },
-      // Preserve multiple consecutive spaces when pasting plain text
-      // HTML normally collapses multiple spaces into one
-      // We convert runs of spaces to: first space regular, rest non-breaking
-      transformPastedText(text) {
-        // Replace runs of 2+ spaces: keep first space, convert rest to nbsp
-        return text.replace(/ {2,}/g, (match) => {
-          return ' ' + '\u00A0'.repeat(match.length - 1);
-        });
-      },
-      // Preserve multiple consecutive spaces when pasting HTML content
-      // Convert regular spaces to non-breaking spaces to prevent collapse
-      transformPastedHTML(html) {
-        // Replace runs of 2+ spaces in text content with nbsp equivalents
-        // Use &#160; (HTML entity for nbsp) instead of &nbsp; for compatibility
-        return html.replace(/ {2,}/g, (match) => {
-          return ' ' + '&#160;'.repeat(match.length - 1);
-        });
-      },
-    },
+    parseOptions: { preserveWhitespace: 'full' },
+    editorProps,
     onUpdate: ({ editor }) => {
       if (onUpdate) {
         const html = editor.getHTML();
-        // Use single newline as block separator (default is double newline)
-        // This matches Mastodon's expected format for status text
-        // Also convert non-breaking spaces back to regular spaces for the API
         const text = editor.getText({ blockSeparator: '\n' }).replace(/\u00A0/g, ' ');
         onUpdate(html, text);
       }
