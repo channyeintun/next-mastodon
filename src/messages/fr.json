@@ -273,37 +273,37 @@
   },
   "keyboardShortcuts": {
     "general": {
-      "close": "Back / Close",
-      "newPost": "New post",
-      "showShortcuts": "Show shortcuts",
-      "title": "General"
+      "close": "Retour / Fermer",
+      "newPost": "Nouveau post",
+      "showShortcuts": "Afficher les raccourcis",
+      "title": "Général"
     },
     "navigation": {
-      "goBookmarks": "Go to bookmarks",
-      "goExplore": "Go to explore",
-      "goHome": "Go to home",
-      "goNotifications": "Go to notifications",
-      "goProfile": "Go to profile",
-      "jumpTop": "Jump to top",
-      "nextPost": "Next post",
-      "prevPost": "Previous post",
-      "search": "Search",
+      "goBookmarks": "Aller aux marque-pages",
+      "goExplore": "Aller à l'exploration",
+      "goHome": "Aller à l'accueil",
+      "goNotifications": "Aller aux notifications",
+      "goProfile": "Aller au profil",
+      "jumpTop": "Haut de page",
+      "nextPost": "Post suivant",
+      "prevPost": "Post précédent",
+      "search": "Rechercher",
       "title": "Navigation"
     },
     "postActions": {
-      "boost": "Boost",
-      "favorite": "Favourite",
-      "mention": "Mention author",
-      "openMedia": "Open media attachments",
-      "openStatus": "Open status",
-      "quote": "Quote",
-      "reply": "Reply",
-      "title": "Post Actions",
-      "toggleHidden": "Toggle hidden content",
-      "toggleSensitive": "Toggle sensitive media",
-      "translate": "Translate post"
+      "boost": "Booster",
+      "favorite": "Favori",
+      "mention": "Mentionner l'auteur",
+      "openMedia": "Ouvrir les médias",
+      "openStatus": "Ouvrir le post",
+      "quote": "Citer",
+      "reply": "Répondre",
+      "title": "Actions sur les posts",
+      "toggleHidden": "Basculer le contenu masqué",
+      "toggleSensitive": "Basculer le contenu sensible",
+      "translate": "Traduire le post"
     },
-    "title": "Keyboard Shortcuts"
+    "title": "Raccourcis clavier"
   },
   "lists": {
     "count": "{count, plural, =0 {Aucune liste} =1 {1 liste} other {# listes}}",

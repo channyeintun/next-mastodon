@@ -273,37 +273,37 @@
   },
   "keyboardShortcuts": {
     "general": {
-      "close": "Back / Close",
-      "newPost": "New post",
-      "showShortcuts": "Show shortcuts",
-      "title": "General"
+      "close": "뒤로 / 닫기",
+      "newPost": "새 게시물",
+      "showShortcuts": "단축키 표시",
+      "title": "일반"
     },
     "navigation": {
-      "goBookmarks": "Go to bookmarks",
-      "goExplore": "Go to explore",
-      "goHome": "Go to home",
-      "goNotifications": "Go to notifications",
-      "goProfile": "Go to profile",
-      "jumpTop": "Jump to top",
-      "nextPost": "Next post",
-      "prevPost": "Previous post",
-      "search": "Search",
-      "title": "Navigation"
+      "goBookmarks": "북마크로 이동",
+      "goExplore": "탐색으로 이동",
+      "goHome": "홈으로 이동",
+      "goNotifications": "알림으로 이동",
+      "goProfile": "프로필로 이동",
+      "jumpTop": "맨 위로 이동",
+      "nextPost": "다음 게시물",
+      "prevPost": "이전 게시물",
+      "search": "검색",
+      "title": "탐색"
     },
     "postActions": {
-      "boost": "Boost",
-      "favorite": "Favourite",
-      "mention": "Mention author",
-      "openMedia": "Open media attachments",
-      "openStatus": "Open status",
-      "quote": "Quote",
-      "reply": "Reply",
-      "title": "Post Actions",
-      "toggleHidden": "Toggle hidden content",
-      "toggleSensitive": "Toggle sensitive media",
-      "translate": "Translate post"
+      "boost": "부스트",
+      "favorite": "즐겨찾기",
+      "mention": "작성자 언급",
+      "openMedia": "미디어 열기",
+      "openStatus": "게시물 열기",
+      "quote": "인용",
+      "reply": "답글",
+      "title": "게시물 작업",
+      "toggleHidden": "숨겨진 내용 표시/숨기기",
+      "toggleSensitive": "민감한 미디어 표시/숨기기",
+      "translate": "게시물 번역"
     },
-    "title": "Keyboard Shortcuts"
+    "title": "키보드 단축키"
   },
   "lists": {
     "count": "{count, plural, =0 {리스트 없음} other {#개의 리스트}}",

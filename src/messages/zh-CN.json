@@ -273,37 +273,37 @@
   },
   "keyboardShortcuts": {
     "general": {
-      "close": "Back / Close",
-      "newPost": "New post",
-      "showShortcuts": "Show shortcuts",
-      "title": "General"
+      "close": "返回 / 关闭",
+      "newPost": "新帖子",
+      "showShortcuts": "显示快捷键",
+      "title": "常规"
     },
     "navigation": {
-      "goBookmarks": "Go to bookmarks",
-      "goExplore": "Go to explore",
-      "goHome": "Go to home",
-      "goNotifications": "Go to notifications",
-      "goProfile": "Go to profile",
-      "jumpTop": "Jump to top",
-      "nextPost": "Next post",
-      "prevPost": "Previous post",
-      "search": "Search",
-      "title": "Navigation"
+      "goBookmarks": "前往书签",
+      "goExplore": "前往探索",
+      "goHome": "前往主页",
+      "goNotifications": "前往通知",
+      "goProfile": "前往个人资料",
+      "jumpTop": "跳至顶部",
+      "nextPost": "下一条帖子",
+      "prevPost": "上一条帖子",
+      "search": "搜索",
+      "title": "导航"
     },
     "postActions": {
-      "boost": "Boost",
-      "favorite": "Favourite",
-      "mention": "Mention author",
-      "openMedia": "Open media attachments",
-      "openStatus": "Open status",
-      "quote": "Quote",
-      "reply": "Reply",
-      "title": "Post Actions",
-      "toggleHidden": "Toggle hidden content",
-      "toggleSensitive": "Toggle sensitive media",
-      "translate": "Translate post"
+      "boost": "转发",
+      "favorite": "收藏",
+      "mention": "提及作者",
+      "openMedia": "打开媒体附件",
+      "openStatus": "打开帖子",
+      "quote": "引用",
+      "reply": "回复",
+      "title": "帖子操作",
+      "toggleHidden": "切换隐藏内容",
+      "toggleSensitive": "切换敏感媒体",
+      "translate": "翻译帖子"
     },
-    "title": "Keyboard Shortcuts"
+    "title": "键盘快捷键"
   },
   "lists": {
     "count": "{count, plural, =0 {暂无列表} other {# 个列表}}",

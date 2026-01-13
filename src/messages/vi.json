@@ -273,37 +273,37 @@
   },
   "keyboardShortcuts": {
     "general": {
-      "close": "Back / Close",
-      "newPost": "New post",
-      "showShortcuts": "Show shortcuts",
-      "title": "General"
+      "close": "Quay lại / Đóng",
+      "newPost": "Bài đăng mới",
+      "showShortcuts": "Hiển thị phím tắt",
+      "title": "Chung"
     },
     "navigation": {
-      "goBookmarks": "Go to bookmarks",
-      "goExplore": "Go to explore",
-      "goHome": "Go to home",
-      "goNotifications": "Go to notifications",
-      "goProfile": "Go to profile",
-      "jumpTop": "Jump to top",
-      "nextPost": "Next post",
-      "prevPost": "Previous post",
-      "search": "Search",
-      "title": "Navigation"
+      "goBookmarks": "Đến dấu trang",
+      "goExplore": "Đến khám phá",
+      "goHome": "Về trang chủ",
+      "goNotifications": "Đến thông báo",
+      "goProfile": "Đến hồ sơ",
+      "jumpTop": "Lên đầu trang",
+      "nextPost": "Bài đăng tiếp theo",
+      "prevPost": "Bài đăng trước",
+      "search": "Tìm kiếm",
+      "title": "Điều hướng"
     },
     "postActions": {
-      "boost": "Boost",
-      "favorite": "Favourite",
-      "mention": "Mention author",
-      "openMedia": "Open media attachments",
-      "openStatus": "Open status",
-      "quote": "Quote",
-      "reply": "Reply",
-      "title": "Post Actions",
-      "toggleHidden": "Toggle hidden content",
-      "toggleSensitive": "Toggle sensitive media",
-      "translate": "Translate post"
+      "boost": "Đẩy bài",
+      "favorite": "Yêu thích",
+      "mention": "Nhắc đến tác giả",
+      "openMedia": "Mở tệp đính kèm",
+      "openStatus": "Mở bài đăng",
+      "quote": "Trích dẫn",
+      "reply": "Trả lời",
+      "title": "Hành động bài đăng",
+      "toggleHidden": "Bật/tắt nội dung ẩn",
+      "toggleSensitive": "Bật/tắt nội dung nhạy cảm",
+      "translate": "Dịch bài đăng"
     },
-    "title": "Keyboard Shortcuts"
+    "title": "Phím tắt"
   },
   "lists": {
     "count": "{count, plural, =0 {Chưa có danh sách nào} other {# danh sách}}",

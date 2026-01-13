@@ -273,37 +273,37 @@
   },
   "keyboardShortcuts": {
     "general": {
-      "close": "Back / Close",
-      "newPost": "New post",
-      "showShortcuts": "Show shortcuts",
-      "title": "General"
+      "close": "戻る / 閉じる",
+      "newPost": "新規投稿",
+      "showShortcuts": "ショートカットを表示",
+      "title": "一般"
     },
     "navigation": {
-      "goBookmarks": "Go to bookmarks",
-      "goExplore": "Go to explore",
-      "goHome": "Go to home",
-      "goNotifications": "Go to notifications",
-      "goProfile": "Go to profile",
-      "jumpTop": "Jump to top",
-      "nextPost": "Next post",
-      "prevPost": "Previous post",
-      "search": "Search",
-      "title": "Navigation"
+      "goBookmarks": "ブックマークへ移動",
+      "goExplore": "検索へ移動",
+      "goHome": "ホームへ移動",
+      "goNotifications": "通知へ移動",
+      "goProfile": "プロフィールへ移動",
+      "jumpTop": "トップへ移動",
+      "nextPost": "次の投稿",
+      "prevPost": "前の投稿",
+      "search": "検索",
+      "title": "ナビゲーション"
     },
     "postActions": {
-      "boost": "Boost",
-      "favorite": "Favourite",
-      "mention": "Mention author",
-      "openMedia": "Open media attachments",
-      "openStatus": "Open status",
-      "quote": "Quote",
-      "reply": "Reply",
-      "title": "Post Actions",
-      "toggleHidden": "Toggle hidden content",
-      "toggleSensitive": "Toggle sensitive media",
-      "translate": "Translate post"
+      "boost": "ブースト",
+      "favorite": "お気に入り",
+      "mention": "著者をメンション",
+      "openMedia": "メディアを開く",
+      "openStatus": "投稿を開く",
+      "quote": "引用",
+      "reply": "返信",
+      "title": "投稿アクション",
+      "toggleHidden": "隠された内容の表示/非表示",
+      "toggleSensitive": "閲覧注意メディアの表示/非表示",
+      "translate": "投稿を翻訳"
     },
-    "title": "Keyboard Shortcuts"
+    "title": "キーボードショートカット"
   },
   "lists": {
     "count": "{count, plural, =0 {リストなし} other {# 個のリスト}}",

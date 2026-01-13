@@ -273,37 +273,37 @@
   },
   "keyboardShortcuts": {
     "general": {
-      "close": "Back / Close",
-      "newPost": "New post",
-      "showShortcuts": "Show shortcuts",
+      "close": "Atrás / Cerrar",
+      "newPost": "Nueva publicación",
+      "showShortcuts": "Mostrar atajos",
       "title": "General"
     },
     "navigation": {
-      "goBookmarks": "Go to bookmarks",
-      "goExplore": "Go to explore",
-      "goHome": "Go to home",
-      "goNotifications": "Go to notifications",
-      "goProfile": "Go to profile",
-      "jumpTop": "Jump to top",
-      "nextPost": "Next post",
-      "prevPost": "Previous post",
-      "search": "Search",
-      "title": "Navigation"
+      "goBookmarks": "Ir a marcadores",
+      "goExplore": "Ir a explorar",
+      "goHome": "Ir a inicio",
+      "goNotifications": "Ir a notificaciones",
+      "goProfile": "Ir al perfil",
+      "jumpTop": "Ir arriba",
+      "nextPost": "Siguiente publicación",
+      "prevPost": "Publicación anterior",
+      "search": "Buscar",
+      "title": "Navegación"
     },
     "postActions": {
-      "boost": "Boost",
-      "favorite": "Favourite",
-      "mention": "Mention author",
-      "openMedia": "Open media attachments",
-      "openStatus": "Open status",
-      "quote": "Quote",
-      "reply": "Reply",
-      "title": "Post Actions",
-      "toggleHidden": "Toggle hidden content",
-      "toggleSensitive": "Toggle sensitive media",
-      "translate": "Translate post"
+      "boost": "Impulsar",
+      "favorite": "Favorito",
+      "mention": "Mencionar autor",
+      "openMedia": "Abrir archivos multimedia",
+      "openStatus": "Abrir publicación",
+      "quote": "Citar",
+      "reply": "Responder",
+      "title": "Acciones de publicación",
+      "toggleHidden": "Alternar contenido oculto",
+      "toggleSensitive": "Alternar contenido sensible",
+      "translate": "Traducir publicación"
     },
-    "title": "Keyboard Shortcuts"
+    "title": "Atajos de teclado"
   },
   "lists": {
     "count": "{count, plural, =0 {Sin listas} =1 {1 lista} other {# listas}}",

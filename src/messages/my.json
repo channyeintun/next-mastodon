@@ -273,37 +273,37 @@
   },
   "keyboardShortcuts": {
     "general": {
-      "close": "Back / Close",
-      "newPost": "New post",
-      "showShortcuts": "Show shortcuts",
-      "title": "General"
+      "close": "နောက်သို့ / ပိတ်ရန်",
+      "newPost": "ပို့စ်အသစ်",
+      "showShortcuts": "ဖြတ်လမ်းများ ပြရန်",
+      "title": "အထွေထွေ"
     },
     "navigation": {
-      "goBookmarks": "Go to bookmarks",
-      "goExplore": "Go to explore",
-      "goHome": "Go to home",
-      "goNotifications": "Go to notifications",
-      "goProfile": "Go to profile",
-      "jumpTop": "Jump to top",
-      "nextPost": "Next post",
-      "prevPost": "Previous post",
-      "search": "Search",
-      "title": "Navigation"
+      "goBookmarks": "မှတ်သားထားသည်များသို့ သွားရန်",
+      "goExplore": "လေ့လာစူးစမ်းရန်သို့ သွားရန်",
+      "goHome": "ပင်မသို့ သွားရန်",
+      "goNotifications": "အကြောင်းကြားစာများသို့ သွားရန်",
+      "goProfile": "ပရိုဖိုင်သို့ သွားရန်",
+      "jumpTop": "ထိပ်ဆုံးသို့ သွားရန်",
+      "nextPost": "နောက် ပို့စ်",
+      "prevPost": "ယခင် ပို့စ်",
+      "search": "ရှာဖွေရန်",
+      "title": "လမ်းညွှန်"
     },
     "postActions": {
-      "boost": "Boost",
-      "favorite": "Favourite",
-      "mention": "Mention author",
-      "openMedia": "Open media attachments",
-      "openStatus": "Open status",
-      "quote": "Quote",
-      "reply": "Reply",
-      "title": "Post Actions",
-      "toggleHidden": "Toggle hidden content",
-      "toggleSensitive": "Toggle sensitive media",
-      "translate": "Translate post"
+      "boost": "မြှင့်တင်ရန်",
+      "favorite": "အကြိုက်ဆုံး",
+      "mention": "စာရေးသူကို ဖော်ပြရန်",
+      "openMedia": "မီဒီယာ ဖိုင်များကို ဖွင့်ရန်",
+      "openStatus": "ပို့စ်ကို ဖွင့်ရန်",
+      "quote": "ကိုးကားရန်",
+      "reply": "ပြန်စာရေးရန်",
+      "title": "ပို့စ် လုပ်ဆောင်ချက်များ",
+      "toggleHidden": "ဝှက်ထားသော အကြောင်းအရာကို ပြရန်/ဝှက်ရန်",
+      "toggleSensitive": "ထိရှလွယ်သော မီဒီယာကို ပြရန်/ဝှက်ရန်",
+      "translate": "ပို့စ်ကို ဘာသာပြန်ရန်"
     },
-    "title": "Keyboard Shortcuts"
+    "title": "ကီးဘုတ် ဖြတ်လမ်းများ"
   },
   "lists": {
     "count": "{count, plural, =0 {စာရင်းမရှိပါ} other {စာရင်း # ခု}}",

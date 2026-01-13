@@ -273,37 +273,37 @@
   },
   "keyboardShortcuts": {
     "general": {
-      "close": "Back / Close",
-      "newPost": "New post",
-      "showShortcuts": "Show shortcuts",
-      "title": "General"
+      "close": "Zurück / Schließen",
+      "newPost": "Neuer Beitrag",
+      "showShortcuts": "Kürzel anzeigen",
+      "title": "Allgemein"
     },
     "navigation": {
-      "goBookmarks": "Go to bookmarks",
-      "goExplore": "Go to explore",
-      "goHome": "Go to home",
-      "goNotifications": "Go to notifications",
-      "goProfile": "Go to profile",
-      "jumpTop": "Jump to top",
-      "nextPost": "Next post",
-      "prevPost": "Previous post",
-      "search": "Search",
+      "goBookmarks": "Zu den Lesezeichen",
+      "goExplore": "Zu Entdecken",
+      "goHome": "Zur Startseite",
+      "goNotifications": "Zu den Benachrichtigungen",
+      "goProfile": "Zum Profil",
+      "jumpTop": "Nach oben springen",
+      "nextPost": "Nächster Beitrag",
+      "prevPost": "Vorheriger Beitrag",
+      "search": "Suche",
       "title": "Navigation"
     },
     "postActions": {
-      "boost": "Boost",
-      "favorite": "Favourite",
-      "mention": "Mention author",
-      "openMedia": "Open media attachments",
-      "openStatus": "Open status",
-      "quote": "Quote",
-      "reply": "Reply",
-      "title": "Post Actions",
-      "toggleHidden": "Toggle hidden content",
-      "toggleSensitive": "Toggle sensitive media",
-      "translate": "Translate post"
+      "boost": "Teilen",
+      "favorite": "Favorisieren",
+      "mention": "Autor erwähnen",
+      "openMedia": "Medienanhänge öffnen",
+      "openStatus": "Beitrag öffnen",
+      "quote": "Zitieren",
+      "reply": "Antworten",
+      "title": "Beitragsaktionen",
+      "toggleHidden": "Verborgenen Inhalt umschalten",
+      "toggleSensitive": "Sensible Medien umschalten",
+      "translate": "Beitrag übersetzen"
     },
-    "title": "Keyboard Shortcuts"
+    "title": "Tastaturkürzel"
   },
   "lists": {
     "count": "{count, plural, =0 {Keine Listen} =1 {1 Liste} other {# Listen}}",

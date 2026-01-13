@@ -273,37 +273,37 @@
   },
   "keyboardShortcuts": {
     "general": {
-      "close": "Back / Close",
-      "newPost": "New post",
-      "showShortcuts": "Show shortcuts",
-      "title": "General"
+      "close": "ย้อนกลับ / ปิด",
+      "newPost": "โพสต์ใหม่",
+      "showShortcuts": "แสดงทางลัด",
+      "title": "ทั่วไป"
     },
     "navigation": {
-      "goBookmarks": "Go to bookmarks",
-      "goExplore": "Go to explore",
-      "goHome": "Go to home",
-      "goNotifications": "Go to notifications",
-      "goProfile": "Go to profile",
-      "jumpTop": "Jump to top",
-      "nextPost": "Next post",
-      "prevPost": "Previous post",
-      "search": "Search",
-      "title": "Navigation"
+      "goBookmarks": "ไปที่บุ๊กมาร์ก",
+      "goExplore": "ไปที่สำรวจ",
+      "goHome": "ไปที่หน้าแรก",
+      "goNotifications": "ไปที่การแจ้งเตือน",
+      "goProfile": "ไปที่โปรไฟล์",
+      "jumpTop": "ไปที่ด้านบน",
+      "nextPost": "โพสต์ถัดไป",
+      "prevPost": "โพสต์ก่อนหน้า",
+      "search": "ค้นหา",
+      "title": "การนำทาง"
     },
     "postActions": {
-      "boost": "Boost",
-      "favorite": "Favourite",
-      "mention": "Mention author",
-      "openMedia": "Open media attachments",
-      "openStatus": "Open status",
-      "quote": "Quote",
-      "reply": "Reply",
-      "title": "Post Actions",
-      "toggleHidden": "Toggle hidden content",
-      "toggleSensitive": "Toggle sensitive media",
-      "translate": "Translate post"
+      "boost": "ดันโพสต์",
+      "favorite": "ชื่นชอบ",
+      "mention": "กล่าวถึงผู้เขียน",
+      "openMedia": "เปิดไฟล์แนบสื่อ",
+      "openStatus": "เปิดโพสต์",
+      "quote": "อ้างอิง",
+      "reply": "ตอบกลับ",
+      "title": "การดำเนินการกับโพสต์",
+      "toggleHidden": "สลับเนื้อหาที่ซ่อนอยู่",
+      "toggleSensitive": "สลับสื่อที่มีความละเอียดอ่อน",
+      "translate": "แปลโพสต์"
     },
-    "title": "Keyboard Shortcuts"
+    "title": "แป้นพิมพ์ลัด"
   },
   "lists": {
     "count": "{count, plural, =0 {ไม่มีรายการ} other {# รายการ}}",
