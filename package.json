@@ -7,7 +7,7 @@
     "dev": "bun --bun next dev -p 9003 --inspect",
     "build": "bun --bun next build",
     "start": "bun --bun next start -p 9003",
-    "lint": "eslint .",
+    "lint": "tsc --noEmit && eslint .",
     "lint:css": "eslint --ext .css .",
     "lint:locales": "node scripts/verify-locales.mjs",
     "lint:fix": "eslint --fix ."
