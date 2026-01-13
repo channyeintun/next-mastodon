@@ -58,6 +58,12 @@
 ### 📱 **PWA Ready**
 - **Installable** — Add to home screen on any device
 
+### ⌨️ **Keyboard Navigation**
+- **Vim-style Navigation** — Move between posts with `j`/`k`
+- **Post Actions** — Like (`f`), Boost (`b`), Reply (`r`), or Quote (`q`) instantly
+- **Quick Navigation** — Jump to Home (`g` then `h`), Notifications (`g` then `n`), Explore (`g` then `l`), or Profile (`g` then `p`)
+- **Help Modal** — Press `?` anytime to see the full list of shortcuts
+
 ---
 
 ## 🚀 Quick Start
