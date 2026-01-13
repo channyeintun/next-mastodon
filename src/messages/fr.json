@@ -114,12 +114,6 @@
     "charCount": "{count} caractères restants",
     "cwLabel": "Avertissement de contenu",
     "cwPlaceholder": "Écrivez votre avertissement ici...",
-    "discardChanges": {
-      "cancel": "Continuer l'édition",
-      "discard": "Abandonner",
-      "message": "Voulez-vous vraiment abandonner vos modifications ? Cette action est irréversible.",
-      "title": "Abandonner les modifications ?"
-    },
     "duration": {
       "1d": "1 jour",
       "1h": "1 heure",

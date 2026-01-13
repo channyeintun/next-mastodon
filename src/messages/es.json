@@ -114,12 +114,6 @@
     "charCount": "{count} caracteres restantes",
     "cwLabel": "Advertencia de contenido",
     "cwPlaceholder": "Escribe tu advertencia aquí...",
-    "discardChanges": {
-      "cancel": "Seguir editando",
-      "discard": "Descartar",
-      "message": "¿Estás seguro de que quieres descartar los cambios? Esto no se puede deshacer.",
-      "title": "¿Descartar cambios?"
-    },
     "duration": {
       "1d": "1 día",
       "1h": "1 hora",

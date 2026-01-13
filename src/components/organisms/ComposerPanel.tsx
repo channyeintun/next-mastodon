@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrentAccount, useCustomEmojis, useStatus, usePreferences, useScheduledStatus, useCreateStatus, useUpdateStatus, useDeleteScheduledStatus } from '@/api';
 import { PostCard } from '@/components/organisms';
-import { MediaUpload, PollComposer, VisibilitySettingsModal, ComposerToolbar, type MediaUploadHandle } from '@/components/molecules';
+import { MediaUpload, PollComposer, VisibilitySettingsModal, ComposerToolbar, SaveDraftConfirmationModal, type MediaUploadHandle } from '@/components/molecules';
 import type { PollData } from '@/components/molecules/PollComposer';
 import type { Visibility, QuoteVisibility } from '@/components/molecules/VisibilitySettingsModal';
 import { ContentWarningInput, ScheduleInput } from '@/components/atoms';
@@ -14,6 +14,8 @@ import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { length as unicodeLength } from 'stringz';
 import { countableText } from '@/utils/counter';
 import { useMediaUpload } from '@/hooks/useMediaUpload';
+import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
+import { useDraftStore } from '@/hooks/useStores';
 import { observer } from 'mobx-react-lite';
 import { Globe, X } from 'lucide-react';
 import { toLocalISOString, parseDate } from '@/utils/date';
@@ -132,6 +134,30 @@ export const ComposerPanel = observer(({
 
 
   const charCount = unicodeLength(countableText(textContent));
+
+  const draftStore = useDraftStore();
+
+  const handleSaveDraft = useCallback(() => {
+    draftStore.setDraft({
+      content,
+      spoilerText: contentWarning,
+      visibility,
+      sensitive,
+      media,
+      poll,
+      language,
+      scheduledAt,
+    });
+  }, [content, contentWarning, visibility, sensitive, media, poll, language, scheduledAt, draftStore]);
+
+  useUnsavedChanges({
+    hasUnsavedChanges: !editMode && (charCount > 0 || media.length > 0 || poll !== null),
+    onSaveDraft: handleSaveDraft,
+    openModal,
+    closeModal,
+    SaveModalComponent: SaveDraftConfirmationModal,
+  });
+
   const isOverLimit = charCount > MAX_CHAR_COUNT;
   const isPending = editMode ? updateStatusMutation.isPending : createStatusMutation.isPending;
   const canPost = charCount > 0 && !isOverLimit && !isPending && (media.length > 0 || poll !== null || textContent.trim().length > 0);

@@ -114,12 +114,6 @@
     "charCount": "{count} Zeichen übrig",
     "cwLabel": "Inhaltswarnung",
     "cwPlaceholder": "Warnung hier schreiben...",
-    "discardChanges": {
-      "cancel": "Weiter bearbeiten",
-      "discard": "Verwerfen",
-      "message": "Bist du sicher, dass du deine Änderungen verwerfen möchtest? Dies kann nicht rückgängig gemacht werden.",
-      "title": "Änderungen verwerfen?"
-    },
     "duration": {
       "1d": "1 Tag",
       "1h": "1 Stunde",

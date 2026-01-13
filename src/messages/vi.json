@@ -114,12 +114,6 @@
     "charCount": "còn {count} ký tự",
     "cwLabel": "Cảnh báo nội dung",
     "cwPlaceholder": "Viết cảnh báo của bạn ở đây...",
-    "discardChanges": {
-      "cancel": "Tiếp tục chỉnh sửa",
-      "discard": "Hủy bỏ",
-      "message": "Bạn có chắc chắn muốn hủy bỏ các thay đổi không? Hành động này không thể hoàn tác.",
-      "title": "Hủy bỏ thay đổi?"
-    },
     "duration": {
       "1d": "1 ngày",
       "1h": "1 giờ",

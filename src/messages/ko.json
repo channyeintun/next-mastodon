@@ -114,12 +114,6 @@
     "charCount": "{count}자 남음",
     "cwLabel": "콘텐츠 경고",
     "cwPlaceholder": "여기에 경고 내용을 작성하세요...",
-    "discardChanges": {
-      "cancel": "계속 편집하기",
-      "discard": "취소",
-      "message": "변경사항을 취소하시겠습니까？ 이 작업은 되돌릴 수 없습니다。",
-      "title": "변경사항을 취소하시겠습니까？"
-    },
     "duration": {
       "1d": "1일",
       "1h": "1시간",
