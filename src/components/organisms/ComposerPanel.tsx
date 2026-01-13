@@ -294,7 +294,7 @@ export const ComposerPanel = observer(({
         </InputsContainer>
       )}
 
-      <div className="compose-editor-area">
+      <div className={`compose-editor-area ${isReply ? "tiptap-editor-compact" : ""}`}>
         <TiptapEditor
           className={isReply ? "tiptap-editor-compact" : ""}
           content={content}

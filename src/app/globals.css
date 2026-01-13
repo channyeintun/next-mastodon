@@ -404,12 +404,16 @@ input[type="radio"] {
   min-height: 120px;
   max-height: 400px;
   overflow-y: auto;
-  padding: var(--size-3);
+  padding: 0;
+  /* Remove padding from contenteditable */
   position: relative;
 }
 
-.tiptap-editor-compact .tiptap-editor-editable {
-  min-height: 60px;
+.tiptap-editor-body {
+  padding: var(--size-3);
+}
+
+.tiptap-editor-compact .tiptap-editor-body {
   padding: var(--size-2) 0;
 }
 
@@ -418,17 +422,16 @@ input[type="radio"] {
 }
 
 /* Tiptap placeholder
-   The editor may render a `.ProseMirror` (default) or use a class on the
-   contentEditable node. Cover the common cases so the placeholder pseudo
-   element appears regardless of the wrapper class ordering. */
+   Positioned absolute at 0,0 relative to the paragraph.
+   This works perfectly across all browsers since the editor itself has 0 padding. */
 .tiptap-editor-editable p.is-editor-empty:first-child::before,
 .tiptap .tiptap-editor-editable p.is-editor-empty:first-child::before,
 .ProseMirror p.is-editor-empty:first-child::before {
   color: var(--gray-5);
   content: attr(data-placeholder);
   position: absolute;
-  top: var(--size-3);
-  left: var(--size-3);
+  top: 0;
+  left: 0;
   pointer-events: none;
 }
 
@@ -862,23 +865,18 @@ input[type="radio"] {
   position: relative;
   background: transparent;
   border-radius: var(--radius-2);
-  /* Removed border for cleaner look */
 }
 
 /* Customizing Tiptap to look more native/clean */
 .compose-editor-area .ProseMirror {
   min-height: 200px;
-  /* Increased from 150px for better writing experience */
-  padding: var(--size-3) 0;
-  /* Use vertical padding from tiptap-editor-editable */
+  padding: 0;
+  /* Remove padding from contenteditable */
   line-height: normal;
   outline: none;
 }
 
-.compose-editor-area .ProseMirror p.is-editor-empty:first-child::before {
-  top: var(--size-3);
-  left: 0;
-}
+/* Placeholder alignment handled by base absolute style at top: 0; left: 0 */
 
 
 .compose-editor-area .ProseMirror p {
@@ -889,9 +887,8 @@ input[type="radio"] {
 .compose-editor-area .tiptap-editor-compact .ProseMirror,
 .compose-editor-area .tiptap-editor-compact .tiptap-editor-editable {
   min-height: 60px !important;
-  /* Force override of the 200px rule above */
-  padding: var(--size-2) 0;
 }
+
 
 .compose-editor-area .ProseMirror p.is-editor-empty:first-child::before {
   color: var(--gray-5);

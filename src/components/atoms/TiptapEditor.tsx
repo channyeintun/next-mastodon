@@ -37,7 +37,7 @@ interface TiptapEditorProps {
  * - Hashtag and custom emoji support
  * - File paste/drop support for media uploads
  */
- 
+
 export function TiptapEditor({
   content = '',
   placeholder = "What's on your mind?",
@@ -161,7 +161,9 @@ export function TiptapEditor({
 
   return (
     <div className={className} style={style}>
-      <EditorContent editor={editor} />
+      <div className="tiptap-editor-body">
+        <EditorContent editor={editor} />
+      </div>
     </div>
   );
 }
