@@ -27,7 +27,6 @@ export function useNavigationBlocker({ isDirty, onBlockedNavigation, shouldSkipR
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
             if (isDirtyRef.current && !shouldSkipRef?.current) {
                 e.preventDefault();
-                e.returnValue = ''; // Standard way to show browser confirmation
                 return '';
             }
         };
