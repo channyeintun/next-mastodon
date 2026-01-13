@@ -7,6 +7,7 @@ const COOKIE_NAME = 'settings_scroll_to_top';
 const COOKIE_OPTIONS: CookieOptions = {
     expires: 365, // 1 year
     sameSite: 'lax',
+    domain: '.mastodon.website',
 };
 
 /**

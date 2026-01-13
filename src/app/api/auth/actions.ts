@@ -15,6 +15,7 @@ export async function storeClientSecret(clientSecret: string) {
         sameSite: 'lax',
         path: '/',
         maxAge: 60 * 60 * 24 * 365, // 1 year
+        domain: '.mastodon.website',
     })
 }
 
@@ -30,6 +31,7 @@ export async function storeInstanceURL(instanceURL: string) {
         sameSite: 'lax',
         path: '/',
         maxAge: 60 * 60 * 24 * 365, // 1 year
+        domain: '.mastodon.website',
     })
 }
 
@@ -45,5 +47,6 @@ export async function storeClientId(clientId: string) {
         sameSite: 'lax',
         path: '/',
         maxAge: 60 * 60 * 24 * 365, // 1 year
+        domain: '.mastodon.website',
     })
 }

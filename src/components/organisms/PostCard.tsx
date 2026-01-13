@@ -346,8 +346,19 @@ export function PostCard({
                                 loading="eager"
                                 width={media.meta?.original?.width}
                                 height={media.meta?.original?.height}
-                                style={isSingleMedia ? { aspectRatio: `${aspectRatio}` } : undefined}
                               />
+                            )}
+                            {media.type === 'image' && (media.url || media.preview_url) && displayStatus.tags?.some((tag: any) => tag.name.toLowerCase() === 'scrimba') && (
+                              <div
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  window.open(`http://localhost:5173/?scrimUrl=${encodeURIComponent(media.url || media.preview_url || '')}`, '_blank');
+                                }}
+                                className="absolute top-2 left-2 z-10 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+                              >
+                                <span className="text-xs">🎬</span>
+                                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider">Play Tutorial</span>
+                              </div>
                             )}
                             {isGifv && media.url && (
                               <FeedVideoPlayer

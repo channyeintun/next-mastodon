@@ -74,6 +74,7 @@ const themeOptions: ThemeOption[] = [
 const COOKIE_OPTIONS: CookieOptions = {
     expires: 365, // 1 year
     sameSite: 'lax',
+    domain: '.mastodon.website',
 };
 
 function getActiveTheme(theme: Theme): 'light' | 'dark' {

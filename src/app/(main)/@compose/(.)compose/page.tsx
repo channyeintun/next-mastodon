@@ -26,6 +26,7 @@ export default function ComposeInterceptPage() {
     const mention = searchParams.get('mention') || undefined;
     const text = searchParams.get('text') || undefined;
     const editStatusId = searchParams.get('edit_status_id') || undefined;
+    const mediaIds = searchParams.get('media_ids')?.split(',') || [];
 
     // Fetch status and source when editing
     const { data: editStatus, isLoading: isLoadingStatus, error: statusError } = useStatus(editStatusId || '');
@@ -46,8 +47,15 @@ export default function ComposeInterceptPage() {
                 ? `<p>${text.split('\n').join('</p><p>')}</p>`
                 : undefined;
 
+    // Create initial media objects from IDs if provided
+    const initialMedia = isEditMode
+        ? editStatus?.media_attachments
+        : mediaIds.length > 0
+            ? mediaIds.map(id => ({ id, type: 'image', url: '', preview_url: '' }))
+            : undefined;
+
     // Create a unique key that changes when params change to force remount
-    const composerKey = [quotedStatusId, scheduledStatusId, visibility, mention, text, editStatusId].filter(Boolean).join('-') || 'default';
+    const composerKey = [quotedStatusId, scheduledStatusId, visibility, mention, text, editStatusId, ...mediaIds].filter(Boolean).join('-') || 'default';
 
     // Determine title
     const getTitle = () => {
@@ -93,7 +101,7 @@ export default function ComposeInterceptPage() {
                         initialContent={initialContent}
                         initialSpoilerText={isEditMode ? (editSource?.spoiler_text || editStatus?.spoiler_text) : undefined}
                         initialSensitive={isEditMode ? editStatus?.sensitive : undefined}
-                        initialMedia={isEditMode ? editStatus?.media_attachments : undefined}
+                        initialMedia={initialMedia}
                     />
                 )}
             </ComposeModal>

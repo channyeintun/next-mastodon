@@ -21,6 +21,7 @@ export interface AuthState {
 const COOKIE_OPTIONS: CookieOptions = {
   expires: 365, // 1 year (in days)
   sameSite: 'lax',
+  domain: '.mastodon.website',
 }
 
 export class AuthStore {

@@ -1321,13 +1321,15 @@ export function useAnnualReportState(year: number, options?: { enabled?: boolean
   useEffect(() => {
     if (query.data?.state && year > 0) {
       setCookie('annualReportState', query.data.state, {
-        expires: 7, // 7 days
+        expires: 365,
         sameSite: 'lax',
+        domain: '.mastodon.website',
       })
       // Also store the year so Navigation can render during SSR
       setCookie('wrapstodonYear', String(year), {
-        expires: 7, // 7 days
+        expires: 365,
         sameSite: 'lax',
+        domain: '.mastodon.website',
       })
     }
   }, [query.data?.state, year])

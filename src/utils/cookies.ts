@@ -13,6 +13,8 @@ export interface CookieOptions {
     sameSite?: 'strict' | 'lax' | 'none';
     /** Cookie path */
     path?: string;
+    /** Cookie domain for subdomain sharing */
+    domain?: string;
     // Note: CookieStore only works in secure contexts (HTTPS), so cookies are automatically secure
 }
 
@@ -65,6 +67,7 @@ export async function setCookie(
             expires,
             sameSite: options.sameSite ?? 'lax',
             path: options.path ?? '/',
+            domain: options.domain,
         });
     } catch (error) {
         console.error(`Error setting cookie "${name}":`, error);
