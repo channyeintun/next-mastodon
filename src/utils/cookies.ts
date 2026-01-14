@@ -64,29 +64,78 @@ export async function setCookie(
     value: string,
     options: CookieOptions = {}
 ): Promise<void> {
-    if (typeof window === 'undefined' || !('cookieStore' in window)) {
+    if (typeof window === 'undefined') {
         return;
     }
 
+    const isSecureContext = window.location.protocol === 'https:';
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+    // Try CookieStore API first, but only in secure contexts or localhost if supported
+    // Note: CookieStore always sets 'Secure' flag which might fail on plain HTTP localhost in some browsers
+    if ('cookieStore' in window && (isSecureContext || isLocalhost)) {
+        try {
+            // Calculate expires as a timestamp (milliseconds) if it's a number (days)
+            let expires: number | undefined;
+            if (typeof options.expires === 'number') {
+                expires = Date.now() + options.expires * 24 * 60 * 60 * 1000;
+            } else if (options.expires instanceof Date) {
+                expires = options.expires.getTime();
+            }
+
+            const setOptions: any = {
+                name,
+                value,
+                expires,
+                sameSite: options.sameSite ?? 'lax',
+                path: options.path ?? '/',
+            };
+
+            // Only include domain if explicitly provided and not empty
+            if (options.domain) {
+                setOptions.domain = options.domain;
+            }
+
+            await (window as any).cookieStore.set(setOptions);
+            return;
+        } catch (error) {
+            console.error(`Error setting cookie "${name}" with CookieStore:`, error);
+            // Fall through to document.cookie if CookieStore fails
+        }
+    }
+
+    // Fallback to traditional document.cookie
     try {
-        // Calculate expires as a timestamp (milliseconds) if it's a number (days)
-        let expires: number | undefined;
-        if (typeof options.expires === 'number') {
-            expires = Date.now() + options.expires * 24 * 60 * 60 * 1000;
-        } else if (options.expires instanceof Date) {
-            expires = options.expires.getTime();
+        let cookieString = `${name}=${encodeURIComponent(value)}`;
+
+        if (options.expires) {
+            let expiresDate: Date;
+            if (typeof options.expires === 'number') {
+                expiresDate = new Date();
+                expiresDate.setDate(expiresDate.getDate() + options.expires);
+            } else {
+                expiresDate = options.expires;
+            }
+            cookieString += `; expires=${expiresDate.toUTCString()}`;
         }
 
-        await window.cookieStore.set({
-            name,
-            value,
-            expires,
-            sameSite: options.sameSite ?? 'lax',
-            path: options.path ?? '/',
-            domain: options.domain,
-        });
+        cookieString += `; path=${options.path ?? '/'}`;
+
+        if (options.domain) {
+            cookieString += `; domain=${options.domain}`;
+        }
+
+        const sameSite = options.sameSite ?? 'lax';
+        cookieString += `; samesite=${sameSite}`;
+
+        // Only add secure flag if on HTTPS or explicitly requested
+        if (options.sameSite === 'none' || isSecureContext) {
+            cookieString += '; secure';
+        }
+
+        document.cookie = cookieString;
     } catch (error) {
-        console.error(`Error setting cookie "${name}":`, error);
+        console.error(`Error setting cookie "${name}" with document.cookie:`, error);
     }
 }
 

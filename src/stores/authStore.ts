@@ -18,11 +18,11 @@ export interface AuthState {
   showAuthModal: boolean
 }
 
-const COOKIE_OPTIONS: CookieOptions = {
+const getCookieOptions = (): CookieOptions => ({
   expires: 365, // 1 year (in days)
   sameSite: 'lax',
   domain: getCookieDomain(),
-}
+})
 
 export class AuthStore {
   instanceURL: string | null = null
@@ -83,7 +83,7 @@ export class AuthStore {
   setAccessToken(token: string) {
     this.accessToken = token
     if (typeof window !== 'undefined') {
-      setCookie('accessToken', token, COOKIE_OPTIONS)
+      setCookie('accessToken', token, getCookieOptions())
     }
   }
 

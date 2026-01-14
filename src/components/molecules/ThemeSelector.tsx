@@ -71,11 +71,11 @@ const themeOptions: ThemeOption[] = [
     },
 ];
 
-const COOKIE_OPTIONS: CookieOptions = {
+const getCookieOptions = (): CookieOptions => ({
     expires: 365, // 1 year
     sameSite: 'lax',
     domain: getCookieDomain(),
-};
+});
 
 function getActiveTheme(theme: Theme): 'light' | 'dark' {
     if (theme === 'auto') {
@@ -113,7 +113,7 @@ export function ThemeSelector({ initialTheme = 'auto' }: ThemeSelectorProps) {
         if (theme === 'auto') {
             await deleteCookie('theme');
         } else {
-            await setCookie('theme', theme, COOKIE_OPTIONS);
+            await setCookie('theme', theme, getCookieOptions());
         }
 
         // Update DOM immediately

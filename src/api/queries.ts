@@ -73,11 +73,11 @@ import { useEffect } from 'react'
 import { idbQueryPersister } from '../lib/idbPersister'
 import { setCookie, getCookieDomain, type CookieOptions } from '../utils/cookies'
 
-const COOKIE_OPTIONS: CookieOptions = {
+const getCookieOptions = (): CookieOptions => ({
   expires: 365, // 1 year
   sameSite: 'lax',
   domain: getCookieDomain(),
-};
+});
 
 
 
@@ -1326,9 +1326,9 @@ export function useAnnualReportState(year: number, options?: { enabled?: boolean
   // Sync state and year to cookies for SSR
   useEffect(() => {
     if (query.data?.state && year > 0) {
-      setCookie('annualReportState', query.data.state, COOKIE_OPTIONS)
+      setCookie('annualReportState', query.data.state, getCookieOptions())
       // Also store the year so Navigation can render during SSR
-      setCookie('wrapstodonYear', String(year), COOKIE_OPTIONS)
+      setCookie('wrapstodonYear', String(year), getCookieOptions())
     }
   }, [query.data?.state, year])
 
