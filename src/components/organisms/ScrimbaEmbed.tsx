@@ -86,7 +86,7 @@ export function ScrimbaEmbed({
                             const targetUrl = firstImage?.url || displayStatus.media_attachments[0]?.url || '';
                             return (
                                 <ScrimbaIframe
-                                    src={`https://scrim.mastodon.website/?showImportExport=false&scrimUrl=${encodeURIComponent(targetUrl)}`}
+                                    src={`https://scrim.mastodon.website/?readOnly=true&scrimUrl=${encodeURIComponent(targetUrl)}`}
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowFullScreen
                                 />
