@@ -58,13 +58,11 @@ export const TimelinePage = observer(() => {
         isError,
         fetchNextPage,
         hasNextPage,
-        isFetchingNextPage,
-        fetchPreviousPage,
-        isFetchingPreviousPage
+        isFetchingNextPage
     } = useInfiniteHomeTimeline();
     const { data: user, isLoading: isLoadingUser } = useCurrentAccount();
     const queryClient = useQueryClient();
-    const { newPostsCount, clearPendingStatuses } = useTimelineStream();
+    const { newPostsCount, showNewPosts } = useTimelineStream();
     const router = useRouter();
 
     const listRef = useRef<HTMLDivElement>(null);
@@ -160,11 +158,6 @@ export const TimelinePage = observer(() => {
         };
     }, [virtualizer]);
 
-    const handleShowNewPosts = async () => {
-        await fetchPreviousPage();
-        clearPendingStatuses();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
 
     // Keyboard navigation handlers
     const { focusedIndex } = useTimelineHotkeys({
@@ -326,10 +319,10 @@ export const TimelinePage = observer(() => {
             </StickyHeaderContainer>
 
             {/* New Posts Pill */}
-            {(newPostsCount > 0 || isFetchingPreviousPage) && (
-                <NewPostsPill onClick={handleShowNewPosts} disabled={isFetchingPreviousPage}>
+            {newPostsCount > 0 && (
+                <NewPostsPill onClick={showNewPosts}>
                     <ArrowUp size={16} />
-                    {isFetchingPreviousPage ? tCommon('loading') : t('newPosts', { count: newPostsCount })}
+                    {t('newPosts', { count: newPostsCount })}
                 </NewPostsPill>
             )}
 
