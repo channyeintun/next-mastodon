@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrentAccount, useCustomEmojis, useStatus, usePreferences, useScheduledStatus, useCreateStatus, useUpdateStatus, useDeleteScheduledStatus } from '@/api';
 import { PostCard } from '@/components/organisms';
-import { MediaUpload, PollComposer, VisibilitySettingsModal, ComposerToolbar, SaveDraftConfirmationModal, DiscardChangesModal, type MediaUploadHandle } from '@/components/molecules';
+import { MediaUpload, PollComposer, VisibilitySettingsModal, ComposerToolbar, type MediaUploadHandle } from '@/components/molecules';
 import type { PollData } from '@/components/molecules/PollComposer';
 import type { Visibility, QuoteVisibility } from '@/components/molecules/VisibilitySettingsModal';
 import { ContentWarningInput, ScheduleInput } from '@/components/atoms';
@@ -14,8 +14,6 @@ import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { length as unicodeLength } from 'stringz';
 import { countableText } from '@/utils/counter';
 import { useMediaUpload } from '@/hooks/useMediaUpload';
-import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
-import { useDraftStore } from '@/hooks/useStores';
 import { observer } from 'mobx-react-lite';
 import { Globe, X } from 'lucide-react';
 import { toLocalISOString, parseDate } from '@/utils/date';
@@ -65,7 +63,6 @@ export const ComposerPanel = observer(({
   quotedStatusId,
   scheduledStatusId,
   mentionPrefix,
-  disableUnsavedChanges = false,
 }: ComposerPanelProps) => {
   const t = useTranslations('composer');
   const tCommon = useTranslations('common');
@@ -140,53 +137,6 @@ export const ComposerPanel = observer(({
 
 
   const charCount = unicodeLength(countableText(textContent));
-
-  const draftStore = useDraftStore();
-
-  const handleSaveDraft = useCallback(() => {
-    draftStore.setDraft({
-      content,
-      spoilerText: contentWarning,
-      visibility,
-      sensitive,
-      media,
-      poll,
-      language,
-      scheduledAt,
-    });
-  }, [content, contentWarning, visibility, sensitive, media, poll, language, scheduledAt, draftStore]);
-
-  const hasChanges = useCallback(() => {
-    if (editMode) {
-      // Compare content (normalized <br> to \n for comparison if needed, but Tiptap uses html)
-      // Actually, initialContent is passed as text or html.
-      // Let's compare simplified content.
-      const contentChanged = content !== computedInitialContent;
-      const warningChanged = contentWarning !== initialSpoilerText;
-      const visibilityChanged = visibility !== initialVisibility;
-      const sensitiveChanged = sensitive !== initialSensitive;
-
-      // Media comparison - simplified by checking length for now, 
-      // or if initialMedia was provided and current media is different.
-      const initialMediaIds = initialMedia.map(m => m.id).sort().join(',');
-      const currentMediaIds = media.map(m => m.id).sort().join(',');
-      const mediaChanged = initialMediaIds !== currentMediaIds;
-
-      return contentChanged || warningChanged || visibilityChanged || sensitiveChanged || mediaChanged || poll !== null;
-    }
-    return charCount > 0 || media.length > 0 || poll !== null;
-  }, [
-    editMode, content, computedInitialContent, contentWarning, initialSpoilerText,
-    visibility, initialVisibility, sensitive, initialSensitive, media, initialMedia, poll, charCount
-  ]);
-
-  useUnsavedChanges({
-    hasUnsavedChanges: !disableUnsavedChanges && !isReply && hasChanges(),
-    onSaveDraft: editMode ? undefined : handleSaveDraft,
-    openModal,
-    closeModal,
-    SaveModalComponent: editMode ? DiscardChangesModal : SaveDraftConfirmationModal,
-  });
 
   const isOverLimit = charCount > MAX_CHAR_COUNT;
   const isPending = editMode ? updateStatusMutation.isPending : createStatusMutation.isPending;
