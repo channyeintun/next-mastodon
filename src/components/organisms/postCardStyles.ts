@@ -228,6 +228,41 @@ export const ScrimbaOverlay = styled.div`
   }
 `;
 
+export const ScrimbaIframeContainer = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background: black;
+`;
+
+export const ScrimbaIframe = styled.iframe`
+  width: 100%;
+  height: 100%;
+  border: none;
+`;
+
+export const CloseScrimbaButton = styled.button`
+  position: absolute;
+  top: var(--size-3);
+  right: var(--size-3);
+  z-index: 60;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: var(--size-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
+  }
+`;
+
 
 
 

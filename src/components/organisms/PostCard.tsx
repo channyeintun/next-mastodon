@@ -16,7 +16,7 @@ import {
   ReportModal,
   FeedVideoPlayer,
 } from '@/components/molecules';
-import { Play } from 'lucide-react';
+import { Play, X } from 'lucide-react';
 import type { Status, Translation } from '@/types';
 import { usePostActions } from '@/hooks/usePostActions';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
@@ -43,6 +43,9 @@ import {
   QuoteUnavailable,
   ScrimbaPlayButton,
   ScrimbaOverlay,
+  ScrimbaIframeContainer,
+  ScrimbaIframe,
+  CloseScrimbaButton,
 } from './postCardStyles';
 
 // Max nesting level for quoted posts (matching Mastodon's behavior)
@@ -86,6 +89,7 @@ export function PostCard({
 }: PostCardProps) {
   const { openModal, closeModal } = useGlobalModal();
   const t = useTranslations('statusDetail');
+  const [showScrimbaIframe, setShowScrimbaIframe] = useState(false);
 
   const handleDeleteClick = (postId: string) => {
     openModal(
@@ -371,13 +375,11 @@ export function PostCard({
 
               {/* Scrimba Play Tutorial Overlay (Outer level) */}
               {(displayStatus.tags?.some((tag: any) => tag.name.toLowerCase() === 'scrimba') ||
-                displayStatus.content.toLowerCase().includes('#scrimba')) && (
+                displayStatus.content.toLowerCase().includes('#scrimba')) && !showScrimbaIframe && (
                   <ScrimbaOverlay
                     onClick={(e) => {
                       e.stopPropagation();
-                      const firstImage = displayStatus.media_attachments.find((m: any) => m.type === 'image');
-                      const targetUrl = firstImage?.url || displayStatus.media_attachments[0]?.url || '';
-                      window.open(`https://scrim.mastodon.website/?scrimUrl=${encodeURIComponent(targetUrl)}`, '_blank');
+                      setShowScrimbaIframe(true);
                     }}
                   >
                     <ScrimbaPlayButton aria-label="Play Scrimba Tutorial">
@@ -385,6 +387,32 @@ export function PostCard({
                     </ScrimbaPlayButton>
                   </ScrimbaOverlay>
                 )}
+
+              {/* Scrimba Iframe Container */}
+              {showScrimbaIframe && (
+                <ScrimbaIframeContainer onClick={(e) => e.stopPropagation()}>
+                  <CloseScrimbaButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowScrimbaIframe(false);
+                    }}
+                    aria-label="Close Scrimba Tutorial"
+                  >
+                    <X size={20} />
+                  </CloseScrimbaButton>
+                  {(() => {
+                    const firstImage = displayStatus.media_attachments.find((m: any) => m.type === 'image');
+                    const targetUrl = firstImage?.url || displayStatus.media_attachments[0]?.url || '';
+                    return (
+                      <ScrimbaIframe
+                        src={`https://scrim.mastodon.website/?scrimUrl=${encodeURIComponent(targetUrl)}`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    );
+                  })()}
+                </ScrimbaIframeContainer>
+              )}
 
               {/* Sensitive content overlay */}
               {hasSensitiveMedia && !showCWMedia && (
