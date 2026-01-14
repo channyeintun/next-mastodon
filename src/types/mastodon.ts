@@ -25,6 +25,7 @@ export interface Status {
   language: string | null
   emojis: Emoji[]
   mentions: Mention[]
+  tags: Tag[]
 
   // Visibility
   visibility: 'public' | 'unlisted' | 'private' | 'direct'
