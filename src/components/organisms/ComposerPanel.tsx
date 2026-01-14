@@ -85,6 +85,7 @@ export const ComposerPanel = observer(({
   const deleteScheduledStatusMutation = useDeleteScheduledStatus();
   const { openModal, closeModal } = useGlobalModal();
   const editorRef = useRef<any>(null);
+  const hasInitializedMedia = useRef(false);
 
   const [content, setContent] = useState(computedInitialContent);
   const [textContent, setTextContent] = useState('');
@@ -131,8 +132,11 @@ export const ComposerPanel = observer(({
   } = useMediaUpload();
 
   useEffect(() => {
-    if (editMode && initialMedia.length > 0) setMedia(initialMedia);
-  }, [editMode, initialMedia, setMedia]);
+    if (!hasInitializedMedia.current && initialMedia.length > 0) {
+      setMedia(initialMedia);
+      hasInitializedMedia.current = true;
+    }
+  }, [initialMedia, setMedia]);
 
 
   const charCount = unicodeLength(countableText(textContent));
@@ -326,7 +330,7 @@ export const ComposerPanel = observer(({
               {isUploadingMedia && <CompactUploadingIndicator><Spinner /></CompactUploadingIndicator>}
             </CompactMediaPreviewContainer>
           )}
-          <MediaUpload ref={mediaUploadRef} media={[]} onMediaAdd={handleMediaAdd} onMediaRemove={handleMediaRemove} onAltTextChange={handleAltTextChange} isUploading={false} />
+          <MediaUpload ref={mediaUploadRef} media={media} onMediaAdd={handleMediaAdd} onMediaRemove={handleMediaRemove} onAltTextChange={handleAltTextChange} isUploading={isUploadingMedia} />
         </>
       ) : (
         <MediaUpload ref={mediaUploadRef} media={media} onMediaAdd={handleMediaAdd} onMediaRemove={handleMediaRemove} onAltTextChange={handleAltTextChange} isUploading={isUploadingMedia} />
