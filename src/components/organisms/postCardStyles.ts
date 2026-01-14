@@ -263,6 +263,23 @@ export const CloseScrimbaButton = styled.button`
   }
 `;
 
+export const ScrimbaOverlayWrapper = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  pointer-events: auto;
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.15);
+  }
+`;
+
 
 
 

@@ -16,15 +16,15 @@ import {
   ReportModal,
   FeedVideoPlayer,
 } from '@/components/molecules';
-import { Play, X } from 'lucide-react';
 import type { Status, Translation } from '@/types';
 import { usePostActions } from '@/hooks/usePostActions';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { usePostCardHotkeys } from '@/hooks/usePostCardHotkeys';
-import { HiddenQuoteNotice } from './HiddenQuoteNotice';
 import { removeQuotePrefix } from '@/utils/fp';
 import { CSSProperties } from 'react';
 import { useTranslations } from 'next-intl';
+import { ScrimbaEmbed } from './ScrimbaEmbed';
+import { QuotedStatusSection } from './QuotedStatusSection';
 import {
   PostContent,
   StyledStatusContent,
@@ -36,20 +36,9 @@ import {
   MediaImage,
   SensitiveOverlay,
   StyledLinkPreview,
-  QuotedPostWrapper,
-  NestedQuoteLink,
   TranslationContainer,
   BlurredBackground,
-  QuoteUnavailable,
-  ScrimbaPlayButton,
-  ScrimbaOverlay,
-  ScrimbaIframeContainer,
-  ScrimbaIframe,
-  CloseScrimbaButton,
 } from './postCardStyles';
-
-// Max nesting level for quoted posts (matching Mastodon's behavior)
-const MAX_QUOTE_NESTING_LEVEL = 1;
 
 interface PostCardProps {
   status: Status;
@@ -373,46 +362,12 @@ export function PostCard({
                 })}
               </MediaGrid>
 
-              {/* Scrimba Play Tutorial Overlay (Outer level) */}
-              {(displayStatus.tags?.some((tag: any) => tag.name.toLowerCase() === 'scrimba') ||
-                displayStatus.content.toLowerCase().includes('#scrimba')) && !showScrimbaIframe && (
-                  <ScrimbaOverlay
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowScrimbaIframe(true);
-                    }}
-                  >
-                    <ScrimbaPlayButton aria-label="Play Scrimba Tutorial">
-                      <Play size={24} fill="currentColor" strokeWidth={2} />
-                    </ScrimbaPlayButton>
-                  </ScrimbaOverlay>
-                )}
-
-              {/* Scrimba Iframe Container */}
-              {showScrimbaIframe && (
-                <ScrimbaIframeContainer onClick={(e) => e.stopPropagation()}>
-                  <CloseScrimbaButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowScrimbaIframe(false);
-                    }}
-                    aria-label="Close Scrimba Tutorial"
-                  >
-                    <X size={20} />
-                  </CloseScrimbaButton>
-                  {(() => {
-                    const firstImage = displayStatus.media_attachments.find((m: any) => m.type === 'image');
-                    const targetUrl = firstImage?.url || displayStatus.media_attachments[0]?.url || '';
-                    return (
-                      <ScrimbaIframe
-                        src={`https://scrim.mastodon.website/?scrimUrl=${encodeURIComponent(targetUrl)}`}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    );
-                  })()}
-                </ScrimbaIframeContainer>
-              )}
+              {/* Scrimba Play Tutorial Overlay */}
+              <ScrimbaEmbed
+                displayStatus={displayStatus}
+                showScrimbaIframe={showScrimbaIframe}
+                setShowScrimbaIframe={setShowScrimbaIframe}
+              />
 
               {/* Sensitive content overlay */}
               {hasSensitiveMedia && !showCWMedia && (
@@ -432,50 +387,13 @@ export function PostCard({
           )}
 
         {/* Quoted status */}
-        {(!hasContentWarning || showCWContent) &&
-          displayStatus.quote &&
-          displayStatus.quote.quoted_status &&
-          (() => {
-            const quoteState = displayStatus.quote.state;
-
-            // Show quote normally for accepted state
-            if (quoteState === 'accepted') {
-              return (
-                <QuotedPostWrapper>
-                  {depth < MAX_QUOTE_NESTING_LEVEL ? (
-                    <PostCard
-                      status={displayStatus.quote.quoted_status}
-                      hideActions
-                      depth={depth + 1}
-                      style={{ boxShadow: 'inset 0 4px 8px -4px rgba(0, 0, 0, 0.15)' }}
-                    />
-                  ) : (
-                    <NestedQuoteLink href={`/status/${displayStatus.quote.quoted_status.id}`}>
-                      {t('quotedBy', { acct: displayStatus.quote.quoted_status.account.acct })}
-                    </NestedQuoteLink>
-                  )}
-                </QuotedPostWrapper>
-              );
-            }
-
-            // Show hidden quote notice for blocked/muted/unauthorized states
-            if (['blocked_account', 'blocked_domain', 'muted_account'].includes(quoteState)) {
-              return (
-                <HiddenQuoteNotice quoteState={quoteState} quotedStatus={displayStatus.quote.quoted_status} depth={depth} />
-              );
-            }
-
-            // Show unavailable message for deleted/unauthorized
-            if (quoteState === 'deleted' || quoteState === 'unauthorized') {
-              return (
-                <QuoteUnavailable>
-                  {quoteState === 'deleted' ? 'Quoted post was deleted' : 'Quote not available'}
-                </QuoteUnavailable>
-              );
-            }
-
-            return null;
-          })()}
+        <QuotedStatusSection
+          displayStatus={displayStatus}
+          depth={depth}
+          t={t}
+          showCWContent={showCWContent}
+          hasContentWarning={!!hasContentWarning}
+        />
 
         {/* Poll */}
         {(!hasContentWarning || showCWContent) && displayStatus.poll && (
