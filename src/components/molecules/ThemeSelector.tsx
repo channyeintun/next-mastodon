@@ -111,7 +111,7 @@ export function ThemeSelector({ initialTheme = 'auto' }: ThemeSelectorProps) {
         // Save to cookie - only store explicit choices (light/dark)
         // For 'auto', remove the cookie so undefined = auto
         if (theme === 'auto') {
-            await deleteCookie('theme');
+            await deleteCookie('theme', getCookieOptions());
         } else {
             await setCookie('theme', theme, getCookieOptions());
         }

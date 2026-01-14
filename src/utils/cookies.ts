@@ -142,16 +142,46 @@ export async function setCookie(
 /**
  * Delete a cookie by name
  * @param name - Cookie name to delete
+ * @param options - Optional path and domain (must match values used when setting the cookie)
  */
-export async function deleteCookie(name: string): Promise<void> {
-    if (typeof window === 'undefined' || !('cookieStore' in window)) {
+export async function deleteCookie(
+    name: string,
+    options: { path?: string; domain?: string } = {}
+): Promise<void> {
+    if (typeof window === 'undefined') {
         return;
     }
 
+    const deleteOptions: any = {
+        name,
+        path: options.path ?? '/',  // Must match the path used when setting
+    };
+
+    // Only include domain if explicitly provided
+    if (options.domain) {
+        deleteOptions.domain = options.domain;
+    }
+
+    // Try CookieStore API first
+    if ('cookieStore' in window) {
+        try {
+            await window.cookieStore.delete(deleteOptions);
+            return;
+        } catch (error) {
+            console.error(`Error deleting cookie "${name}" with CookieStore:`, error);
+            // Fall through to document.cookie fallback
+        }
+    }
+
+    // Fallback to document.cookie by setting expired date
     try {
-        await window.cookieStore.delete(name);
+        let cookieString = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=${deleteOptions.path}`;
+        if (options.domain) {
+            cookieString += `; domain=${options.domain}`;
+        }
+        document.cookie = cookieString;
     } catch (error) {
-        console.error(`Error deleting cookie "${name}":`, error);
+        console.error(`Error deleting cookie "${name}" with document.cookie:`, error);
     }
 }
 
