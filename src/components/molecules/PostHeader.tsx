@@ -139,7 +139,7 @@ export function PostHeader({
                                 {isOwnPost && (visibility === 'public' || visibility === 'unlisted') && onPin && (
                                     <button
                                         className="options-menu-item"
-                                        onClick={(e) => {
+                                        onMouseDown={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
                                             onPin();
@@ -154,7 +154,7 @@ export function PostHeader({
                                 {onMute && (
                                     <button
                                         className="options-menu-item"
-                                        onClick={(e) => {
+                                        onMouseDown={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
                                             onMute();
@@ -168,7 +168,7 @@ export function PostHeader({
                                 {onBookmark && (
                                     <button
                                         className="options-menu-item"
-                                        onClick={(e) => {
+                                        onMouseDown={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
                                             onBookmark(e);
@@ -182,7 +182,7 @@ export function PostHeader({
                                 {onShare && (
                                     <button
                                         className="options-menu-item"
-                                        onClick={(e) => {
+                                        onMouseDown={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
                                             onShare(e);
@@ -196,7 +196,7 @@ export function PostHeader({
                                 {onOpenPlayground && (
                                     <button
                                         className="options-menu-item"
-                                        onClick={(e) => {
+                                        onMouseDown={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
                                             onOpenPlayground();
@@ -212,7 +212,7 @@ export function PostHeader({
                                 {isOwnPost && onEdit && (
                                     <button
                                         className="options-menu-item"
-                                        onClick={(e) => {
+                                        onMouseDown={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
                                             onEdit();
@@ -242,7 +242,7 @@ export function PostHeader({
                                 {!isOwnPost && onBlock && (
                                     <button
                                         className="options-menu-item danger"
-                                        onClick={(e) => {
+                                        onMouseDown={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
                                             onBlock();
