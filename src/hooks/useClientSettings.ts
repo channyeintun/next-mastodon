@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getCookie, setCookie, type CookieOptions } from '../utils/cookies';
+import { getCookie, setCookie, getCookieDomain, type CookieOptions } from '../utils/cookies';
 
 const COOKIE_NAME = 'settings_scroll_to_top';
 const COOKIE_OPTIONS: CookieOptions = {
     expires: 365, // 1 year
     sameSite: 'lax',
-    domain: '.mastodon.website',
+    domain: getCookieDomain(),
 };
 
 /**

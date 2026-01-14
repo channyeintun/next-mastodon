@@ -7,7 +7,7 @@
  */
 
 import { makeAutoObservable } from 'mobx'
-import { getCookie, setCookie, clearAllCookies, type CookieOptions } from '../utils/cookies'
+import { getCookie, setCookie, clearAllCookies, getCookieDomain, type CookieOptions } from '../utils/cookies'
 import { clearIdb } from '../lib/idbPersister'
 
 export interface AuthState {
@@ -21,7 +21,7 @@ export interface AuthState {
 const COOKIE_OPTIONS: CookieOptions = {
   expires: 365, // 1 year (in days)
   sameSite: 'lax',
-  domain: '.mastodon.website',
+  domain: getCookieDomain(),
 }
 
 export class AuthStore {

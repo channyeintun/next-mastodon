@@ -3,7 +3,7 @@
 import styled from '@emotion/styled';
 import { useState, useEffect } from 'react';
 import { Sun, Moon, Monitor } from 'lucide-react';
-import { setCookie, deleteCookie, getCookie, type CookieOptions } from '../../utils/cookies';
+import { setCookie, deleteCookie, getCookie, getCookieDomain, type CookieOptions } from '../../utils/cookies';
 
 type Theme = 'light' | 'dark' | 'auto';
 
@@ -74,7 +74,7 @@ const themeOptions: ThemeOption[] = [
 const COOKIE_OPTIONS: CookieOptions = {
     expires: 365, // 1 year
     sameSite: 'lax',
-    domain: '.mastodon.website',
+    domain: getCookieDomain(),
 };
 
 function getActiveTheme(theme: Theme): 'light' | 'dark' {

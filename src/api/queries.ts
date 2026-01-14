@@ -71,7 +71,13 @@ import type { TimelineParams, SearchParams, NotificationParams, GroupedNotificat
 import { useAuthStore } from '../hooks/useStores'
 import { useEffect } from 'react'
 import { idbQueryPersister } from '../lib/idbPersister'
-import { setCookie } from '../utils/cookies'
+import { setCookie, getCookieDomain, type CookieOptions } from '../utils/cookies'
+
+const COOKIE_OPTIONS: CookieOptions = {
+  expires: 365, // 1 year
+  sameSite: 'lax',
+  domain: getCookieDomain(),
+};
 
 
 
@@ -1320,17 +1326,9 @@ export function useAnnualReportState(year: number, options?: { enabled?: boolean
   // Sync state and year to cookies for SSR
   useEffect(() => {
     if (query.data?.state && year > 0) {
-      setCookie('annualReportState', query.data.state, {
-        expires: 365,
-        sameSite: 'lax',
-        domain: '.mastodon.website',
-      })
+      setCookie('annualReportState', query.data.state, COOKIE_OPTIONS)
       // Also store the year so Navigation can render during SSR
-      setCookie('wrapstodonYear', String(year), {
-        expires: 365,
-        sameSite: 'lax',
-        domain: '.mastodon.website',
-      })
+      setCookie('wrapstodonYear', String(year), COOKIE_OPTIONS)
     }
   }, [query.data?.state, year])
 
