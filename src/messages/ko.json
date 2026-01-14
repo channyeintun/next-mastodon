@@ -107,6 +107,7 @@
   },
   "composer": {
     "addContentWarning": "콘텐츠 경고 추가",
+    "createTutorial": "튜토리얼 만들기",
     "addEmoji": "이모지 추가",
     "addMedia": "미디어 추가",
     "addOption": "옵션 추가",

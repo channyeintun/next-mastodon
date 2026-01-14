@@ -107,6 +107,7 @@
   },
   "composer": {
     "addContentWarning": "添加内容警告",
+    "createTutorial": "创建教程",
     "addEmoji": "添加表情",
     "addMedia": "添加媒体",
     "addOption": "添加选项",

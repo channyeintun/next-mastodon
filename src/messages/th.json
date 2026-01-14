@@ -107,6 +107,7 @@
   },
   "composer": {
     "addContentWarning": "เพิ่มคำเตือนเนื้อหา",
+    "createTutorial": "สร้างบทเรียน",
     "addEmoji": "เพิ่มอิโมจิ",
     "addMedia": "เพิ่มสื่อ",
     "addOption": "เพิ่มตัวเลือก",

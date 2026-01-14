@@ -107,6 +107,7 @@
   },
   "composer": {
     "addContentWarning": "Inhaltswarnung hinzufügen",
+    "createTutorial": "Tutorial erstellen",
     "addEmoji": "Emoji hinzufügen",
     "addMedia": "Medien hinzufügen",
     "addOption": "Option hinzufügen",

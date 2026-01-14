@@ -107,6 +107,7 @@
   },
   "composer": {
     "addContentWarning": "コンテンツ警告を追加",
+    "createTutorial": "チュートリアルを作成",
     "addEmoji": "絵文字を追加",
     "addMedia": "メディアを追加",
     "addOption": "選択肢を追加",

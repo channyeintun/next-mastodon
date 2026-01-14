@@ -107,6 +107,7 @@
   },
   "composer": {
     "addContentWarning": "Thêm cảnh báo nội dung",
+    "createTutorial": "Tạo hướng dẫn",
     "addEmoji": "Thêm biểu tượng",
     "addMedia": "Thêm đa phương tiện",
     "addOption": "Thêm lựa chọn",

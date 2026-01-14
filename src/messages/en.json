@@ -255,6 +255,7 @@
     "addMedia": "Add media",
     "addPoll": "Add poll",
     "addContentWarning": "Add content warning",
+    "createTutorial": "Create tutorial",
     "schedulePost": "Schedule post",
     "removePoll": "Remove poll",
     "removeOption": "Remove option",

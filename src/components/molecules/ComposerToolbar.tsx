@@ -2,7 +2,7 @@
 
 import styled from '@emotion/styled';
 import { type ReactNode, Activity } from 'react';
-import { Smile, Image as ImageIcon, BarChart2, Clock } from 'lucide-react';
+import { Smile, Image as ImageIcon, BarChart2, Clock, Code } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
@@ -33,6 +33,7 @@ interface ComposerToolbarProps {
     onScheduleToggle: () => void;
     onVisibilityClick?: () => void;
     onSubmit: () => void;
+    onCodeClick: () => void;
     // Emoji picker slot
     emojiPicker: ReactNode;
 }
@@ -62,6 +63,7 @@ export function ComposerToolbar({
     onScheduleToggle,
     onVisibilityClick,
     onSubmit,
+    onCodeClick,
     emojiPicker,
 }: ComposerToolbarProps) {
     const remainingChars = maxCharCount - charCount;
@@ -147,6 +149,17 @@ export function ComposerToolbar({
                             <VisibilityIcon size={18} />
                         </button>
                     )}
+
+                    {/* Code (Tutorial) Button */}
+                    <button
+                        className="compose-tool-btn"
+                        type="button"
+                        onClick={onCodeClick}
+                        title={t('createTutorial')}
+                        aria-label={t('createTutorial')}
+                    >
+                        <Code size={18} />
+                    </button>
                 </div>
 
                 <ActionRow className="compose-action-row">
