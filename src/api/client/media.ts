@@ -31,3 +31,8 @@ export async function updateMedia(id: string, description: string): Promise<Medi
     })
     return data
 }
+
+export async function getMediaAttachment(id: string): Promise<MediaAttachment> {
+    const { data } = await api.get<MediaAttachment>(`/api/v1/media/${id}`)
+    return data
+}

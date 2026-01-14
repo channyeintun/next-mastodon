@@ -114,7 +114,7 @@ export { search } from './search'
 export { getTrendingStatuses, getTrendingTags, getTrendingLinks } from './trends'
 
 // Media
-export { uploadMedia, updateMedia } from './media'
+export { uploadMedia, updateMedia, getMediaAttachment } from './media'
 
 // Polls
 export { getPoll, votePoll } from './polls'

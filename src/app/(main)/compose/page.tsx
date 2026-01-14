@@ -7,7 +7,7 @@ import AuthGuard from '@/components/organisms/AuthGuard';
 import { useSearchParams } from 'next/navigation';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
 import { IconButton } from '@/components/atoms/IconButton';
-import { useStatus, useStatusSource } from '@/api';
+import { useStatus, useStatusSource, useMediaAttachments } from '@/api';
 import type { Visibility } from '@/components/molecules/VisibilitySettingsModal';
 
 /**
@@ -30,8 +30,11 @@ export default function ComposePage() {
   const { data: editStatus, isLoading: isLoadingStatus, error: statusError } = useStatus(editStatusId || '');
   const { data: editSource, isLoading: isLoadingSource, error: sourceError } = useStatusSource(editStatusId || '');
 
+  // Fetch media attachments for cases like sharing from Scrimba
+  const { data: attachments, isLoading: isLoadingMedia } = useMediaAttachments(mediaIds);
+
   const isEditMode = !!editStatusId;
-  const isLoading = isEditMode && (isLoadingStatus || isLoadingSource);
+  const isLoading = (isEditMode && (isLoadingStatus || isLoadingSource)) || isLoadingMedia;
   const error = isEditMode && (statusError || sourceError);
 
   // Create initial content with mention or text if provided (for new posts)
@@ -48,8 +51,8 @@ export default function ComposePage() {
   // Create initial media objects from IDs if provided
   const initialMedia = isEditMode
     ? editStatus?.media_attachments
-    : mediaIds.length > 0
-      ? mediaIds.map(id => ({ id, type: 'image', url: '', preview_url: '' }))
+    : attachments.length > 0
+      ? attachments
       : undefined;
 
   // Create a unique key that changes when params change to force remount

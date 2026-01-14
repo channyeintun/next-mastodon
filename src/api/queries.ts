@@ -65,6 +65,7 @@ import {
   getTrendingStatuses,
   getTrendingTags,
   getTrendingLinks,
+  getMediaAttachment,
 } from './client'
 import { queryKeys } from './queryKeys'
 import type { TimelineParams, SearchParams, NotificationParams, GroupedNotificationParams, ConversationParams, NotificationRequestParams, NotificationType, Account } from '../types/mastodon'
@@ -404,6 +405,14 @@ export const instanceOptions = () =>
     queryKey: queryKeys.instance.default,
     queryFn: ({ signal }) => getInstance(signal),
     staleTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
+  })
+
+// Media Options
+export const mediaAttachmentOptions = (id: string) =>
+  queryOptions({
+    queryKey: ['media', id] as const,
+    queryFn: () => getMediaAttachment(id),
+    staleTime: Infinity, // Media attachments don't change
   })
 
 // Notification Options
@@ -1355,6 +1364,20 @@ export const suggestionsOptions = (params?: { limit?: number }) =>
     queryFn: ({ signal }) => getSuggestions(params, signal),
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   })
+// Media
+export function useMediaAttachments(ids: string[]) {
+  return useQueries({
+    queries: ids.map(id => ({
+      ...mediaAttachmentOptions(id),
+      enabled: !!id,
+    })),
+    combine: (results) => ({
+      data: results.map(r => r.data).filter(Boolean),
+      isLoading: results.some(r => r.isLoading),
+      isError: results.some(r => r.isError),
+    }),
+  })
+}
 
 // Suggestions Hook
 export function useSuggestions(params?: { limit?: number }) {
