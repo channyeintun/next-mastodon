@@ -48,8 +48,8 @@ export const MediaItemWrapper = styled.div<{ $singleMedia?: boolean; $isVideo?: 
   max-width: 100%;
   min-width: ${props => props.$singleMedia ? 'min(440px, 100%)' : 'auto'};
   width: ${props => props.$singleMedia ?
-        (props.$isVideo ? '100%' : (props.$aspectRatio ? `min(100%, calc(${props.$aspectRatio} * 550px))` : '100%')) :
-        'auto'};
+    (props.$isVideo ? '100%' : (props.$aspectRatio ? `min(100%, calc(${props.$aspectRatio} * 550px))` : '100%')) :
+    'auto'};
   
   ${props => props.$total === 3 && props.$index === 0 && `
     grid-row: span 2;
@@ -71,8 +71,10 @@ export const MediaItem = styled.div<{ $clickable?: boolean; $singleMedia?: boole
 `;
 
 export const MediaItemInner = styled.div<{ $singleMedia?: boolean }>`
+  position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 `;
 
 export const MediaImage = styled.img<{ $singleMedia?: boolean }>`
@@ -184,3 +186,48 @@ export const ShowAnywayButton = styled.button`
     text-decoration: underline;
   }
 `;
+
+export const ScrimbaPlayButton = styled.div`
+  background: rgba(37, 99, 235, 0.8);
+  color: white;
+  padding: var(--size-3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  user-select: none;
+  opacity: 0.8;
+
+  &:hover {
+    background: #2563eb;
+    transform: scale(1.1);
+    opacity: 1;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+`;
+
+export const ScrimbaOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  pointer-events: auto;
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.15);
+  }
+`;
+
+
+
+

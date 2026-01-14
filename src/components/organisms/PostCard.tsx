@@ -16,6 +16,7 @@ import {
   ReportModal,
   FeedVideoPlayer,
 } from '@/components/molecules';
+import { Play } from 'lucide-react';
 import type { Status, Translation } from '@/types';
 import { usePostActions } from '@/hooks/usePostActions';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
@@ -40,6 +41,8 @@ import {
   TranslationContainer,
   BlurredBackground,
   QuoteUnavailable,
+  ScrimbaPlayButton,
+  ScrimbaOverlay,
 } from './postCardStyles';
 
 // Max nesting level for quoted posts (matching Mastodon's behavior)
@@ -348,18 +351,6 @@ export function PostCard({
                                 height={media.meta?.original?.height}
                               />
                             )}
-                            {media.type === 'image' && (media.url || media.preview_url) && displayStatus.tags?.some((tag: any) => tag.name.toLowerCase() === 'scrimba') && (
-                              <div
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  window.open(`http://localhost:5173/?scrimUrl=${encodeURIComponent(media.url || media.preview_url || '')}`, '_blank');
-                                }}
-                                className="absolute top-2 left-2 z-10 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg transition-transform hover:scale-105 active:scale-95 cursor-pointer"
-                              >
-                                <span className="text-xs">🎬</span>
-                                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider">Play Tutorial</span>
-                              </div>
-                            )}
                             {isGifv && media.url && (
                               <FeedVideoPlayer
                                 src={media.url}
@@ -377,6 +368,23 @@ export function PostCard({
                   );
                 })}
               </MediaGrid>
+
+              {/* Scrimba Play Tutorial Overlay (Outer level) */}
+              {(displayStatus.tags?.some((tag: any) => tag.name.toLowerCase() === 'scrimba') ||
+                displayStatus.content.toLowerCase().includes('#scrimba')) && (
+                  <ScrimbaOverlay
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const firstImage = displayStatus.media_attachments.find((m: any) => m.type === 'image');
+                      const targetUrl = firstImage?.url || displayStatus.media_attachments[0]?.url || '';
+                      window.open(`https://scrim.mastodon.website/?scrimUrl=${encodeURIComponent(targetUrl)}`, '_blank');
+                    }}
+                  >
+                    <ScrimbaPlayButton aria-label="Play Scrimba Tutorial">
+                      <Play size={24} fill="currentColor" strokeWidth={2} />
+                    </ScrimbaPlayButton>
+                  </ScrimbaOverlay>
+                )}
 
               {/* Sensitive content overlay */}
               {hasSensitiveMedia && !showCWMedia && (
