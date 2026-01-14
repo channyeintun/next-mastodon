@@ -79,6 +79,7 @@ export function PostCard({
   const { openModal, closeModal } = useGlobalModal();
   const t = useTranslations('statusDetail');
   const [showScrimbaIframe, setShowScrimbaIframe] = useState(false);
+  const [scrimbaHeight, setScrimbaHeight] = useState<number | undefined>(undefined);
 
   const handleDeleteClick = (postId: string) => {
     openModal(
@@ -144,6 +145,20 @@ export function PostCard({
     toggleCWMedia,
     handleBlockAccount,
   } = actions;
+
+  // Check if this is a Scrimba post and get the playground URL
+  const isScrimba = displayStatus.tags?.some((tag: any) => tag.name.toLowerCase() === 'scrimba') ||
+    displayStatus.content.toLowerCase().includes('#scrimba');
+
+  const getScrimbaPlaygroundUrl = () => {
+    const firstImage = displayStatus.media_attachments.find((m: any) => m.type === 'image');
+    const targetUrl = firstImage?.url || displayStatus.media_attachments[0]?.url || '';
+    return `https://scrim.mastodon.website/?scrimUrl=${encodeURIComponent(targetUrl)}`;
+  };
+
+  const handleOpenPlayground = isScrimba ? () => {
+    window.open(getScrimbaPlaygroundUrl(), '_blank', 'noopener,noreferrer');
+  } : undefined;
 
   // Post-specific keyboard actions
   usePostCardHotkeys({
@@ -247,6 +262,7 @@ export function PostCard({
           onBookmark={!hideOptions ? handleBookmark : undefined}
           onShare={!hideOptions ? handleShare : undefined}
           onBlock={!hideOptions && !isOwnPost ? handleBlockAccount : undefined}
+          onOpenPlayground={!hideOptions ? handleOpenPlayground : undefined}
           bookmarked={displayStatus.bookmarked}
         />
 
@@ -287,6 +303,7 @@ export function PostCard({
             <MediaContainer
               onClick={singleMedia ? handleMediaClick(0) : undefined}
               $clickable={!!singleMedia}
+              $scrimbaHeight={showScrimbaIframe ? scrimbaHeight : undefined}
             >
               {/* Dynamic Blurred Background for single media */}
               {singleMedia && (
@@ -367,6 +384,7 @@ export function PostCard({
                 displayStatus={displayStatus}
                 showScrimbaIframe={showScrimbaIframe}
                 setShowScrimbaIframe={setShowScrimbaIframe}
+                onScaledHeightChange={setScrimbaHeight}
               />
 
               {/* Sensitive content overlay */}

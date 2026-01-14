@@ -10,16 +10,16 @@ export const StyledStatusContent = styled(StatusContent)`
   margin-top: var(--size-3);
 `;
 
-export const MediaContainer = styled.div<{ $clickable?: boolean }>`
+export const MediaContainer = styled.div<{ $clickable?: boolean; $scrimbaHeight?: number }>`
   margin-top: var(--size-3);
   margin-inline: calc(-1 * var(--size-4));
   position: relative;
   overflow: hidden;
   background: #252527;
-  max-height: 550px;
+  ${props => props.$scrimbaHeight ? `height: ${props.$scrimbaHeight}px;` : 'max-height: 550px;'}
   display: flex;
   justify-content: center;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, height 0.3s ease;
   cursor: ${props => props.$clickable ? 'pointer' : 'default'};
 
   ${props => props.$clickable && `
@@ -230,14 +230,24 @@ export const ScrimbaOverlay = styled.div`
 
 export const ScrimbaIframeContainer = styled.div`
   position: absolute;
-  inset: 0;
-  z-index: 50;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
   background: black;
+  overflow: hidden;
+`;
+
+export const ScrimbaIframeWrapper = styled.div<{ $scale: number; $scaledHeight: number }>`
+  width: 1440px;
+  height: 900px;
+  transform: scale(${props => props.$scale});
+  transform-origin: top left;
 `;
 
 export const ScrimbaIframe = styled.iframe`
-  width: 100%;
-  height: 100%;
+  width: 1440px;
+  height: 900px;
   border: none;
 `;
 
@@ -245,7 +255,7 @@ export const CloseScrimbaButton = styled.button`
   position: absolute;
   top: var(--size-3);
   right: var(--size-3);
-  z-index: 60;
+  z-index: 20;
   background: rgba(0, 0, 0, 0.5);
   color: white;
   border: none;

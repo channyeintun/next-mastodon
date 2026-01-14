@@ -18,6 +18,7 @@ import {
     Bookmark,
     Share,
     UserX,
+    ExternalLink,
 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
@@ -44,6 +45,7 @@ interface PostHeaderProps {
     onBookmark?: (e: React.MouseEvent) => void;
     onShare?: (e: React.MouseEvent) => void;
     onBlock?: () => void;
+    onOpenPlayground?: () => void;
     bookmarked?: boolean;
 }
 
@@ -74,6 +76,7 @@ export function PostHeader({
     onBookmark,
     onShare,
     onBlock,
+    onOpenPlayground,
     bookmarked = false,
 }: PostHeaderProps) {
     const queryClient = useQueryClient();
@@ -187,6 +190,20 @@ export function PostHeader({
                                     >
                                         <Share size={16} />
                                         <span>{tCommon('share')}</span>
+                                    </button>
+                                )}
+
+                                {onOpenPlayground && (
+                                    <button
+                                        className="options-menu-item"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            onOpenPlayground();
+                                        }}
+                                    >
+                                        <ExternalLink size={16} />
+                                        <span>{tActions('openInPlayground')}</span>
                                     </button>
                                 )}
 
