@@ -189,18 +189,36 @@ export async function deleteCookie(
  * Clear all cookies
  */
 export async function clearAllCookies(): Promise<void> {
-    if (typeof window === 'undefined' || !('cookieStore' in window)) {
+    if (typeof window === 'undefined') {
         return;
     }
 
+    // Try CookieStore API first
+    if ('cookieStore' in window) {
+        try {
+            const cookies = await window.cookieStore.getAll();
+            await Promise.all(
+                cookies
+                    .filter((c): c is typeof c & { name: string } => !!c.name)
+                    .map(c => window.cookieStore.delete({ name: c.name, path: '/' }))
+            );
+            return;
+        } catch (error) {
+            console.error('Error clearing cookies with CookieStore:', error);
+            // Fall through to document.cookie fallback
+        }
+    }
+
+    // Fallback to document.cookie
     try {
-        const cookies = await window.cookieStore.getAll();
-        await Promise.all(
-            cookies
-                .filter((c): c is typeof c & { name: string } => !!c.name)
-                .map(c => window.cookieStore.delete(c.name))
-        );
+        const cookies = document.cookie.split(';');
+        for (const cookie of cookies) {
+            const name = cookie.split('=')[0].trim();
+            if (name) {
+                document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+            }
+        }
     } catch (error) {
-        console.error('Error clearing cookies:', error);
+        console.error('Error clearing cookies with document.cookie:', error);
     }
 }
