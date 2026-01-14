@@ -10,13 +10,13 @@ export const StyledStatusContent = styled(StatusContent)`
   margin-top: var(--size-3);
 `;
 
-export const MediaContainer = styled.div<{ $clickable?: boolean; $scrimbaHeight?: number }>`
+export const MediaContainer = styled.div<{ $clickable?: boolean; $nextEditorHeight?: number }>`
   margin-top: var(--size-3);
   margin-inline: calc(-1 * var(--size-4));
   position: relative;
   overflow: hidden;
   background: #252527;
-  ${props => props.$scrimbaHeight ? `height: ${props.$scrimbaHeight}px;` : 'max-height: 550px;'}
+  ${props => props.$nextEditorHeight ? `height: ${props.$nextEditorHeight}px;` : 'max-height: 550px;'}
   display: flex;
   justify-content: center;
   transition: background-color 0.3s ease, height 0.3s ease;
@@ -187,7 +187,7 @@ export const ShowAnywayButton = styled.button`
   }
 `;
 
-export const ScrimbaPlayButton = styled.div`
+export const NextEditorPlayButton = styled.div`
   background: rgba(37, 99, 235, 0.8);
   color: white;
   padding: var(--size-3);
@@ -211,7 +211,7 @@ export const ScrimbaPlayButton = styled.div`
   }
 `;
 
-export const ScrimbaOverlay = styled.div`
+export const NextEditorOverlay = styled.div`
   position: absolute;
   inset: 0;
   z-index: 40;
@@ -228,7 +228,7 @@ export const ScrimbaOverlay = styled.div`
   }
 `;
 
-export const ScrimbaIframeContainer = styled.div`
+export const NextEditorIframeContainer = styled.div`
   position: absolute;
   top: 0;
   left: 0;
@@ -238,20 +238,20 @@ export const ScrimbaIframeContainer = styled.div`
   overflow: hidden;
 `;
 
-export const ScrimbaIframeWrapper = styled.div<{ $scale: number; $scaledHeight: number }>`
+export const NextEditorIframeWrapper = styled.div<{ $scale: number; $scaledHeight: number }>`
   width: 1440px;
   height: 900px;
   transform: scale(${props => props.$scale});
   transform-origin: top left;
 `;
 
-export const ScrimbaIframe = styled.iframe`
+export const NextEditorIframe = styled.iframe`
   width: 1440px;
   height: 900px;
   border: none;
 `;
 
-export const CloseScrimbaButton = styled.button`
+export const CloseNextEditorButton = styled.button`
   position: absolute;
   top: var(--size-3);
   right: var(--size-3);
@@ -273,7 +273,7 @@ export const CloseScrimbaButton = styled.button`
   }
 `;
 
-export const ScrimbaOverlayWrapper = styled.div`
+export const NextEditorOverlayWrapper = styled.div`
   position: absolute;
   inset: 0;
   z-index: 40;

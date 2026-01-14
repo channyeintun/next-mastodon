@@ -30,7 +30,7 @@ export default function ComposePage() {
   const { data: editStatus, isLoading: isLoadingStatus, error: statusError } = useStatus(editStatusId || '');
   const { data: editSource, isLoading: isLoadingSource, error: sourceError } = useStatusSource(editStatusId || '');
 
-  // Fetch media attachments for cases like sharing from Scrimba
+  // Fetch media attachments for cases like sharing from Next Editor
   const { data: attachments, isLoading: isLoadingMedia } = useMediaAttachments(mediaIds);
 
   const isEditMode = !!editStatusId;

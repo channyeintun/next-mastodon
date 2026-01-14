@@ -23,7 +23,7 @@ import { usePostCardHotkeys } from '@/hooks/usePostCardHotkeys';
 import { removeQuotePrefix } from '@/utils/fp';
 import { CSSProperties } from 'react';
 import { useTranslations } from 'next-intl';
-import { ScrimbaEmbed } from './ScrimbaEmbed';
+import { NextEditorEmbed } from './NextEditorEmbed';
 import { QuotedStatusSection } from './QuotedStatusSection';
 import {
   PostContent,
@@ -78,8 +78,8 @@ export function PostCard({
 }: PostCardProps) {
   const { openModal, closeModal } = useGlobalModal();
   const t = useTranslations('statusDetail');
-  const [showScrimbaIframe, setShowScrimbaIframe] = useState(false);
-  const [scrimbaHeight, setScrimbaHeight] = useState<number | undefined>(undefined);
+  const [showNextEditorIframe, setShowNextEditorIframe] = useState(false);
+  const [nextEditorHeight, setNextEditorHeight] = useState<number | undefined>(undefined);
 
   const handleDeleteClick = (postId: string) => {
     openModal(
@@ -146,18 +146,18 @@ export function PostCard({
     handleBlockAccount,
   } = actions;
 
-  // Check if this is a Scrimba post and get the playground URL
-  const isScrimba = displayStatus.tags?.some((tag: any) => tag.name.toLowerCase() === 'scrimba') ||
-    displayStatus.content.toLowerCase().includes('#scrimba');
+  // Check if this is a Next Editor post and get the playground URL
+  const isNextEditor = displayStatus.tags?.some((tag: any) => tag.name.toLowerCase() === 'nexteditor') ||
+    displayStatus.content.toLowerCase().includes('#nexteditor');
 
-  const getScrimbaPlaygroundUrl = () => {
+  const getNextEditorPlaygroundUrl = () => {
     const firstImage = displayStatus.media_attachments.find((m: any) => m.type === 'image');
     const targetUrl = firstImage?.url || displayStatus.media_attachments[0]?.url || '';
-    return `https://scrim.mastodon.website/?scrimUrl=${encodeURIComponent(targetUrl)}`;
+    return `https://code.mastodon.website/?url=${encodeURIComponent(targetUrl)}`;
   };
 
-  const handleOpenPlayground = isScrimba ? () => {
-    window.open(getScrimbaPlaygroundUrl(), '_blank', 'noopener,noreferrer');
+  const handleOpenPlayground = isNextEditor ? () => {
+    window.open(getNextEditorPlaygroundUrl(), '_blank', 'noopener,noreferrer');
   } : undefined;
 
   // Post-specific keyboard actions
@@ -303,7 +303,7 @@ export function PostCard({
             <MediaContainer
               onClick={singleMedia ? handleMediaClick(0) : undefined}
               $clickable={!!singleMedia}
-              $scrimbaHeight={showScrimbaIframe ? scrimbaHeight : undefined}
+              $nextEditorHeight={showNextEditorIframe ? nextEditorHeight : undefined}
             >
               {/* Dynamic Blurred Background for single media */}
               {singleMedia && (
@@ -379,12 +379,12 @@ export function PostCard({
                 })}
               </MediaGrid>
 
-              {/* Scrimba Play Tutorial Overlay */}
-              <ScrimbaEmbed
+              {/* Next Editor Play Tutorial Overlay */}
+              <NextEditorEmbed
                 displayStatus={displayStatus}
-                showScrimbaIframe={showScrimbaIframe}
-                setShowScrimbaIframe={setShowScrimbaIframe}
-                onScaledHeightChange={setScrimbaHeight}
+                showNextEditorIframe={showNextEditorIframe}
+                setShowNextEditorIframe={setShowNextEditorIframe}
+                onScaledHeightChange={setNextEditorHeight}
               />
 
               {/* Sensitive content overlay */}

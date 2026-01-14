@@ -225,7 +225,7 @@ export const ComposerPanel = observer(({
   };
 
   const handleCodeClick = () => {
-    window.open('https://scrim.mastodon.website', '_blank');
+    window.open('https://code.mastodon.website', '_blank');
   };
 
   const submitLabel = editMode ? t('update') : (showScheduleInput && scheduledAt ? (scheduledStatusId ? t('reschedule') : t('schedule')) : (isReply ? t('reply') : t('publish')));

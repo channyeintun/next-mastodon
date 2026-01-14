@@ -4,42 +4,42 @@ import { useRef, useState, useEffect } from 'react';
 import { Play } from 'lucide-react';
 import type { Status } from '@/types';
 import {
-    ScrimbaPlayButton,
-    ScrimbaOverlayWrapper as ScrimbaOverlay,
-    ScrimbaIframeContainer,
-    ScrimbaIframeWrapper,
-    ScrimbaIframe,
+    NextEditorPlayButton,
+    NextEditorOverlayWrapper as NextEditorOverlay,
+    NextEditorIframeContainer,
+    NextEditorIframeWrapper,
+    NextEditorIframe,
 } from './postCardStyles';
 
-interface ScrimbaEmbedProps {
+interface NextEditorEmbedProps {
     displayStatus: Status;
-    showScrimbaIframe: boolean;
-    setShowScrimbaIframe: (show: boolean) => void;
+    showNextEditorIframe: boolean;
+    setShowNextEditorIframe: (show: boolean) => void;
     onScaledHeightChange?: (height: number) => void;
 }
 
 /**
- * Sub-component for rendering the Scrimba overlay and iframe
+ * Sub-component for rendering the Next Editor overlay and iframe
  */
 // Fixed MacBook Pro viewport dimensions for the iframe
 const IFRAME_WIDTH = 1440;
 const IFRAME_HEIGHT = 900;
 
-export function ScrimbaEmbed({
+export function NextEditorEmbed({
     displayStatus,
-    showScrimbaIframe,
-    setShowScrimbaIframe,
+    showNextEditorIframe,
+    setShowNextEditorIframe,
     onScaledHeightChange,
-}: ScrimbaEmbedProps) {
+}: NextEditorEmbedProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [scale, setScale] = useState(1);
 
-    const isScrimba = displayStatus.tags?.some((tag: any) => tag.name.toLowerCase() === 'scrimba') ||
-        displayStatus.content.toLowerCase().includes('#scrimba');
+    const isNextEditor = displayStatus.tags?.some((tag: any) => tag.name.toLowerCase() === 'nexteditor') ||
+        displayStatus.content.toLowerCase().includes('#nexteditor');
 
     // Calculate scale based on container width
     useEffect(() => {
-        if (!showScrimbaIframe || !containerRef.current) return;
+        if (!showNextEditorIframe || !containerRef.current) return;
 
         const calculateScale = () => {
             if (containerRef.current) {
@@ -56,44 +56,44 @@ export function ScrimbaEmbed({
         resizeObserver.observe(containerRef.current);
 
         return () => resizeObserver.disconnect();
-    }, [showScrimbaIframe, onScaledHeightChange]);
+    }, [showNextEditorIframe, onScaledHeightChange]);
 
-    if (!isScrimba) return null;
+    if (!isNextEditor) return null;
 
     return (
         <>
-            {!showScrimbaIframe && (
-                <ScrimbaOverlay
+            {!showNextEditorIframe && (
+                <NextEditorOverlay
                     onClick={(e) => {
                         e.stopPropagation();
-                        setShowScrimbaIframe(true);
+                        setShowNextEditorIframe(true);
                     }}
                 >
-                    <ScrimbaPlayButton aria-label="Play Scrimba Tutorial">
+                    <NextEditorPlayButton aria-label="Play Next Editor Tutorial">
                         <Play size={24} fill="currentColor" strokeWidth={2} />
-                    </ScrimbaPlayButton>
-                </ScrimbaOverlay>
+                    </NextEditorPlayButton>
+                </NextEditorOverlay>
             )}
 
-            {showScrimbaIframe && (
-                <ScrimbaIframeContainer
+            {showNextEditorIframe && (
+                <NextEditorIframeContainer
                     ref={containerRef}
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <ScrimbaIframeWrapper $scale={scale} $scaledHeight={IFRAME_HEIGHT * scale}>
+                    <NextEditorIframeWrapper $scale={scale} $scaledHeight={IFRAME_HEIGHT * scale}>
                         {(() => {
                             const firstImage = displayStatus.media_attachments.find((m: any) => m.type === 'image');
                             const targetUrl = firstImage?.url || displayStatus.media_attachments[0]?.url || '';
                             return (
-                                <ScrimbaIframe
-                                    src={`https://scrim.mastodon.website/?readOnly=true&scrimUrl=${encodeURIComponent(targetUrl)}`}
+                                <NextEditorIframe
+                                    src={`https://code.mastodon.website/?readOnly=true&url=${encodeURIComponent(targetUrl)}`}
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowFullScreen
                                 />
                             );
                         })()}
-                    </ScrimbaIframeWrapper>
-                </ScrimbaIframeContainer>
+                    </NextEditorIframeWrapper>
+                </NextEditorIframeContainer>
             )}
         </>
     );
