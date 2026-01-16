@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
-import { preconnect } from "react-dom";
+import { preconnect, prefetchDNS } from "react-dom";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import "./globals.css";
@@ -49,7 +49,7 @@ export default async function RootLayout({
 
   const instanceURL = cookieStore.get('instanceURL')?.value ?? null;
 
-  // Resource hints for performance - inspired by X (Twitter)
+  // Resource hints for performance
   if (instanceURL) {
     const url = new URL(instanceURL);
     // Preconnect for API
@@ -63,6 +63,8 @@ export default async function RootLayout({
     // DNS prefetch as a fallback for browsers that don't support preconnect
     // OR for secondary domains that might be used for media
   }
+
+   prefetchDNS('https://code.mastodon.website');
 
   const accessToken = cookieStore.get('accessToken')?.value ?? null;
   const clientId = cookieStore.get('clientId')?.value ?? null;
