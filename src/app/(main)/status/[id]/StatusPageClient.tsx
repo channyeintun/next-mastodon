@@ -220,10 +220,6 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
 const Container = styled.div`
   max-width: 680px;
   margin: 0 auto;
-
-  @media (max-width: 680px) {
-    padding-inline: var(--size-4);
-  }
 `;
 
 const Header = styled.div`
@@ -237,10 +233,6 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   gap: var(--size-3);
-
-  @media (max-width: 680px) {
-    margin-inline: calc(-1 * var(--size-4));
-  }
 `;
 
 const Title = styled.h1`
@@ -253,23 +245,15 @@ const HighlightedPost = styled.div`
   scroll-margin-top: ${SCROLL_ANCHOR_OFFSET}px;
   /* Make this the preferred anchor for native scroll anchoring */
   overflow-anchor: auto;
-
-  @media (max-width: 680px) {
-    margin-inline: calc(-1 * var(--size-4));
-  }
 `;
 
 /* Exclude ancestors from being scroll anchors - main post should be the anchor */
 const AncestorsContainer = styled.div`
   overflow-anchor: none;
-
-  @media (max-width: 680px) {
-    margin-inline: calc(-1 * var(--size-4));
-  }
 `;
 
 const StatusStatsWrapper = styled.div`
-  padding: 0 var(--size-4);
+  padding: 0 var(--size-3);
 `;
 
 const RepliesHeader = styled.h2`
@@ -304,7 +288,7 @@ const ReplyComposerContainer = styled.div`
   border: 1px solid var(--surface-3);
   border-radius: var(--radius-3);
   background: var(--surface-2);
-  padding: var(--size-4);
+  padding: var(--size-3);
 `;
 
 const ErrorContainer = styled.div`
