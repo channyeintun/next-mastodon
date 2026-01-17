@@ -36,7 +36,7 @@ export default function AboutPage() {
             {isLoading ? <TextSkeleton width={200} height={28} /> : <ServerTitle>{instance?.domain}</ServerTitle>}
           </SectionHeader>
           <ServerDescription>
-            Decentralized social media powered by{' '}
+            Decentralized social network powered by{' '}
             <a href="https://joinmastodon.org" target="_blank" rel="noopener noreferrer">Mastodon</a>
           </ServerDescription>
         </Section>

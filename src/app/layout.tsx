@@ -18,7 +18,7 @@ import { isMobileDevice } from "@/utils/device";
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"),
   title: "Next Mastodon",
-  description: "Decentralized social media",
+  description: "Decentralized social network",
   openGraph: {
     type: "website",
   },
