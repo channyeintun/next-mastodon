@@ -14,6 +14,7 @@ import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { length as unicodeLength } from 'stringz';
 import { countableText } from '@/utils/counter';
 import { useMediaUpload } from '@/hooks/useMediaUpload';
+import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
 import { observer } from 'mobx-react-lite';
 import { Globe, X } from 'lucide-react';
 import { toLocalISOString, parseDate } from '@/utils/date';
@@ -157,17 +158,7 @@ export const ComposerPanel = observer(({
     (contentWarning.trim() !== initialSpoilerText.trim())
   );
 
-  useEffect(() => {
-    if (!isDirty) return;
-
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      e.returnValue = true;
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [isDirty]);
+  useUnsavedChanges(isDirty);
 
   const handleOpenVisibilitySettings = () => {
     openModal(
