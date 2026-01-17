@@ -72,6 +72,7 @@ export const ComposerPanel = observer(({
   const computedInitialContent = mentionPrefix
     ? `<span data-type="mention" class="mention" data-id="${mentionPrefix}" data-label="${mentionPrefix}">@${mentionPrefix}</span>&nbsp;${initialContent}`
     : initialContent;
+
   const router = useRouter();
   const { data: currentAccount } = useCurrentAccount();
   const { data: customEmojis } = useCustomEmojis();
@@ -85,7 +86,9 @@ export const ComposerPanel = observer(({
   const hasInitializedMedia = useRef(false);
 
   const [content, setContent] = useState(computedInitialContent);
-  const [textContent, setTextContent] = useState('');
+  const [textContent, setTextContent] = useState(() =>
+    computedInitialContent.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim()
+  );
   const [scheduledAt, setScheduledAt] = useState<string>('');
   const [showScheduleInput, setShowScheduleInput] = useState(false);
   const [hasInitializedFromPreferences, setHasInitializedFromPreferences] = useState(false);
@@ -129,8 +132,10 @@ export const ComposerPanel = observer(({
   } = useMediaUpload();
 
   useEffect(() => {
-    if (!hasInitializedMedia.current && initialMedia.length > 0) {
-      setMedia(initialMedia);
+    if (!hasInitializedMedia.current) {
+      if (initialMedia.length > 0) {
+        setMedia(initialMedia);
+      }
       hasInitializedMedia.current = true;
     }
   }, [initialMedia, setMedia]);
@@ -144,6 +149,25 @@ export const ComposerPanel = observer(({
 
   const currentVisibility = visibilityOptions.find((v) => v.value === visibility);
   const VisibilityIcon = currentVisibility?.icon ?? Globe;
+
+  const isDirty = (
+    (textContent.trim() !== computedInitialContent.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim()) ||
+    (hasInitializedMedia.current && media.length !== initialMedia.length) ||
+    poll !== null ||
+    (contentWarning.trim() !== initialSpoilerText.trim())
+  );
+
+  useEffect(() => {
+    if (!isDirty) return;
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = true;
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isDirty]);
 
   const handleOpenVisibilitySettings = () => {
     openModal(
