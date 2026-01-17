@@ -67,7 +67,7 @@ export default function ComposePage() {
 
   return (
     <AuthGuard>
-      <div className="compose-page-container">
+      <div className="compose-page-container mobile-bottom-padding">
         <div className="compose-card">
           <div className="compose-header">
             <IconButton onClick={() => router.back()}>

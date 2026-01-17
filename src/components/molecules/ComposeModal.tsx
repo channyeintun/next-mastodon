@@ -66,7 +66,7 @@ export function ComposeModal({ children }: ComposeModalProps) {
         <CloseButton onClick={() => router.back()} aria-label="Close">
           <X size={24} />
         </CloseButton>
-        <ModalContent>
+        <ModalContent className="mobile-bottom-padding">
           {children}
         </ModalContent>
       </ModalContainer>
