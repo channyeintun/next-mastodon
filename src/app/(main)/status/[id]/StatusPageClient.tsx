@@ -253,7 +253,11 @@ const AncestorsContainer = styled.div`
 `;
 
 const StatusStatsWrapper = styled.div`
-  padding: 0 var(--size-3);
+  padding: 0 var(--size-4);
+
+  @media (976px >= width >= 768px) {
+    margin-inline: var(--size-4);
+  }
 `;
 
 const RepliesHeader = styled.h2`
@@ -261,6 +265,10 @@ const RepliesHeader = styled.h2`
   font-weight: var(--font-weight-6);
   margin-bottom: var(--size-4);
   color: var(--text-2);
+
+  @media (976px >= width >= 768px) {
+    margin-inline: var(--size-4);
+  }
 `;
 
 const ThreadLineContainer = styled.div`
@@ -288,7 +296,11 @@ const ReplyComposerContainer = styled.div`
   border: 1px solid var(--surface-3);
   border-radius: var(--radius-3);
   background: var(--surface-2);
-  padding: var(--size-3);
+  padding: var(--size-4);
+
+  @media (976px >= width >= 768px) {
+    margin-inline: var(--size-4);
+  }
 `;
 
 const ErrorContainer = styled.div`
