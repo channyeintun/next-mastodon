@@ -23,7 +23,6 @@ import { usePostCardHotkeys } from '@/hooks/usePostCardHotkeys';
 import { removeQuotePrefix } from '@/utils/fp';
 import { CSSProperties } from 'react';
 import { useTranslations } from 'next-intl';
-import { NextEditorEmbed } from './NextEditorEmbed';
 import { QuotedStatusSection } from './QuotedStatusSection';
 import {
   PostContent,
@@ -78,8 +77,6 @@ export function PostCard({
 }: PostCardProps) {
   const { openModal, closeModal } = useGlobalModal();
   const t = useTranslations('statusDetail');
-  const [showNextEditorIframe, setShowNextEditorIframe] = useState(false);
-  const [nextEditorHeight, setNextEditorHeight] = useState<number | undefined>(undefined);
 
   const handleDeleteClick = (postId: string) => {
     openModal(
@@ -145,20 +142,6 @@ export function PostCard({
     toggleCWMedia,
     handleBlockAccount,
   } = actions;
-
-  // Check if this is a Next Editor post and get the playground URL
-  const isNextEditor = displayStatus.tags?.some((tag: any) => tag.name.toLowerCase() === 'nexteditor') ||
-    displayStatus.content.toLowerCase().includes('#nexteditor');
-
-  const getNextEditorPlaygroundUrl = () => {
-    const firstImage = displayStatus.media_attachments.find((m: any) => m.type === 'image');
-    const targetUrl = firstImage?.url || displayStatus.media_attachments[0]?.url || '';
-    return `https://code.mastodon.website/?url=${encodeURIComponent(targetUrl)}`;
-  };
-
-  const handleOpenPlayground = isNextEditor ? () => {
-    window.open(getNextEditorPlaygroundUrl(), '_blank', 'noopener,noreferrer');
-  } : undefined;
 
   // Post-specific keyboard actions
   usePostCardHotkeys({
@@ -262,7 +245,6 @@ export function PostCard({
           onBookmark={!hideOptions ? handleBookmark : undefined}
           onShare={!hideOptions ? handleShare : undefined}
           onBlock={!hideOptions && !isOwnPost ? handleBlockAccount : undefined}
-          onOpenPlayground={!hideOptions ? handleOpenPlayground : undefined}
           bookmarked={displayStatus.bookmarked}
         />
 
@@ -303,7 +285,6 @@ export function PostCard({
             <MediaContainer
               onClick={singleMedia ? handleMediaClick(0) : undefined}
               $clickable={!!singleMedia}
-              $nextEditorHeight={showNextEditorIframe ? nextEditorHeight : undefined}
             >
               {/* Dynamic Blurred Background for single media */}
               {singleMedia && (
@@ -378,14 +359,6 @@ export function PostCard({
                   );
                 })}
               </MediaGrid>
-
-              {/* Next Editor Play Tutorial Overlay */}
-              <NextEditorEmbed
-                displayStatus={displayStatus}
-                showNextEditorIframe={showNextEditorIframe}
-                setShowNextEditorIframe={setShowNextEditorIframe}
-                onScaledHeightChange={setNextEditorHeight}
-              />
 
               {/* Sensitive content overlay */}
               {hasSensitiveMedia && !showCWMedia && (

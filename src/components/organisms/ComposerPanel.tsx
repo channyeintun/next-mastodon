@@ -239,9 +239,6 @@ export const ComposerPanel = observer(({
     } catch (error) { console.error(`Failed to ${editMode ? 'update' : 'create'} post:`, error); }
   };
 
-  const handleCodeClick = () => {
-    window.open('https://code.mastodon.website', '_blank');
-  };
 
   const submitLabel = editMode ? t('update') : (showScheduleInput && scheduledAt ? (scheduledStatusId ? t('reschedule') : t('schedule')) : (isReply ? t('reply') : t('publish')));
 
@@ -317,7 +314,6 @@ export const ComposerPanel = observer(({
         onPollClick={() => setPoll({ options: ['', ''], expiresIn: 86400, multiple: false })}
         onCWToggle={() => setShowCWInput(!showCWInput)} onScheduleToggle={() => setShowScheduleInput(!showScheduleInput)}
         onVisibilityClick={handleOpenVisibilitySettings} onSubmit={handlePost}
-        onCodeClick={handleCodeClick}
         emojiPicker={<EmojiPicker onEmojiSelect={handleEmojiSelect} onClose={() => setShowEmojiPicker(false)} />}
       />
 

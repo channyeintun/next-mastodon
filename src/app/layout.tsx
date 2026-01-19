@@ -64,7 +64,7 @@ export default async function RootLayout({
     // OR for secondary domains that might be used for media
   }
 
-   prefetchDNS('https://code.mastodon.website');
+
 
   const accessToken = cookieStore.get('accessToken')?.value ?? null;
   const clientId = cookieStore.get('clientId')?.value ?? null;

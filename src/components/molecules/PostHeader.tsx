@@ -45,7 +45,6 @@ interface PostHeaderProps {
     onBookmark?: (e: React.MouseEvent) => void;
     onShare?: (e: React.MouseEvent) => void;
     onBlock?: () => void;
-    onOpenPlayground?: () => void;
     bookmarked?: boolean;
 }
 
@@ -76,7 +75,6 @@ export function PostHeader({
     onBookmark,
     onShare,
     onBlock,
-    onOpenPlayground,
     bookmarked = false,
 }: PostHeaderProps) {
     const queryClient = useQueryClient();
@@ -193,19 +191,6 @@ export function PostHeader({
                                     </button>
                                 )}
 
-                                {onOpenPlayground && (
-                                    <button
-                                        className="options-menu-item"
-                                        onMouseDown={(e) => {
-                                            e.preventDefault();
-                                            e.stopPropagation();
-                                            onOpenPlayground();
-                                        }}
-                                    >
-                                        <ExternalLink size={16} />
-                                        <span>{tActions('openInPlayground')}</span>
-                                    </button>
-                                )}
 
                                 {isOwnPost && (onEdit || onDelete) && <MenuDivider />}
 
