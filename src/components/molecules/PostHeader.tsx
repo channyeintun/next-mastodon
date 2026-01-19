@@ -18,7 +18,6 @@ import {
     Bookmark,
     Share,
     UserX,
-    ExternalLink,
 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
