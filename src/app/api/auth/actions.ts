@@ -65,3 +65,25 @@ export async function storeClientId(clientId: string) {
         domain,
     })
 }
+
+/**
+ * Clear all auth cookies server-side.
+ * This is needed because clientSecret is httpOnly and can't be cleared from the client.
+ * Also ensures the correct domain is used when deleting cookies on production.
+ */
+export async function clearAuthCookies() {
+    const cookieStore = await cookies()
+    const domain = await getServerCookieDomain()
+
+    const cookieNames = ['instanceURL', 'clientId', 'clientSecret', 'accessToken']
+    for (const name of cookieNames) {
+        cookieStore.set(name, '', {
+            httpOnly: name === 'clientSecret',
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/',
+            maxAge: 0,
+            domain,
+        })
+    }
+}

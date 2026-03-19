@@ -8,6 +8,7 @@
 
 import { makeAutoObservable } from 'mobx'
 import { getCookie, setCookie, clearAllCookies, getCookieDomain, type CookieOptions } from '../utils/cookies'
+import { clearAuthCookies } from '../app/api/auth/actions'
 import { clearIdb } from '../lib/idbPersister'
 
 export interface AuthState {
@@ -108,8 +109,11 @@ export class AuthStore {
       localStorage.clear()
       sessionStorage.clear()
       clearIdb()
-      // Fire-and-forget: clear all cookies
+      // Clear cookies client-side (non-httpOnly) and server-side (httpOnly + correct domain)
       clearAllCookies()
+      clearAuthCookies().catch((error) => {
+        console.error('Failed to clear auth cookies server-side:', error)
+      })
     }
   }
 

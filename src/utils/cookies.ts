@@ -193,6 +193,8 @@ export async function clearAllCookies(): Promise<void> {
         return;
     }
 
+    const domain = getCookieDomain();
+
     // Try CookieStore API first
     if ('cookieStore' in window) {
         try {
@@ -200,7 +202,16 @@ export async function clearAllCookies(): Promise<void> {
             await Promise.all(
                 cookies
                     .filter((c): c is typeof c & { name: string } => !!c.name)
-                    .map(c => window.cookieStore.delete({ name: c.name, path: '/' }))
+                    .map(c => {
+                        const deleteOptions: { name: string; path: string; domain?: string } = {
+                            name: c.name,
+                            path: '/',
+                        };
+                        if (domain) {
+                            deleteOptions.domain = domain;
+                        }
+                        return window.cookieStore.delete(deleteOptions);
+                    })
             );
             return;
         } catch (error) {
@@ -215,7 +226,11 @@ export async function clearAllCookies(): Promise<void> {
         for (const cookie of cookies) {
             const name = cookie.split('=')[0].trim();
             if (name) {
-                document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+                let cookieString = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+                if (domain) {
+                    cookieString += `; domain=${domain}`;
+                }
+                document.cookie = cookieString;
             }
         }
     } catch (error) {
