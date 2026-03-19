@@ -590,7 +590,11 @@ export const notificationMarkerOptions = () =>
 // ============================================================================
 
 export function useInfiniteHomeTimeline() {
-  return useInfiniteQuery(infiniteHomeTimelineOptions())
+  const authStore = useAuthStore()
+  return useInfiniteQuery({
+    ...infiniteHomeTimelineOptions(),
+    enabled: authStore.isAuthenticated,
+  })
 }
 
 export function useInfiniteHashtagTimeline(hashtag: string) {

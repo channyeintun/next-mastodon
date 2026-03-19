@@ -86,7 +86,7 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
           startTransition(async () => {
             queryClient.clear();
             authStore.signOut();
-            router.replace('/auth/signin');
+            router.replace('/explore');
             router.refresh();
             closeModal();
           });
