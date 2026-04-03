@@ -9,8 +9,9 @@ import { Spinner, Card, EmptyState } from '@/components/atoms';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { useTimelineHotkeys } from '@/hooks/useTimelineHotkeys';
 import { useRouter } from 'next/navigation';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import type { Account, Status, Tag, SearchResults } from '@/types';
+import { precomputeStatusHeights, getStatusHeight } from '@/lib/pretext';
 
 type TabType = 'all' | 'accounts' | 'statuses' | 'hashtags';
 
@@ -132,6 +133,12 @@ export function SearchContent({
             router.push(`/tags/${item.data.name}`);
         }
     };
+
+    useEffect(() => {
+        if (statuses.length > 0) {
+            precomputeStatusHeights(statuses);
+        }
+    }, [statuses]);
 
     const { focusedIndex } = useTimelineHotkeys({
         itemsCount: allItems.length,
@@ -267,6 +274,7 @@ export function SearchContent({
                             onItemOpen={(status) => router.push(`/status/${status.id}`)}
                             getItemKey={(status) => status.id}
                             getMediaUrls={(status) => status.media_attachments?.map(a => a.preview_url || a.url).filter(Boolean) as string[] || []}
+                            getItemHeight={getStatusHeight}
                             estimateSize={250}
                             style={{ height: '100%' }}
                             scrollRestorationKey={`search-statuses-${query}`}

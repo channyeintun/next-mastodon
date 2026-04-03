@@ -3,7 +3,7 @@
 import styled from '@emotion/styled';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Activity, type ReactNode } from 'react';
+import { Activity, useMemo, type ReactNode } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Check, Info, X, Hash, Newspaper, FileText, LogIn, UserPlus } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -23,6 +23,7 @@ type TrendingTab = 'posts' | 'tags' | 'links' | 'people';
 const VALID_TABS = ['posts', 'tags', 'links', 'people'] as const;
 
 import { useTranslations } from 'next-intl';
+import { precomputeStatusHeights, getStatusHeight } from '@/lib/pretext';
 
 // Get localized source label based on suggestion source
 const getSourceLabel = (sources: string[], t: any): { label: string; hint: string } | null => {
@@ -131,7 +132,11 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
     const relationshipMap = new Map(relationships?.map(r => [r.id, r]));
 
     // Flatten and deduplicate using FP utilities
-    const uniqueStatuses = flattenAndUniqById(statusData?.pages.map(p => p.data));
+    const uniqueStatuses = useMemo(() => {
+        const statuses = flattenAndUniqById(statusData?.pages.map(p => p.data));
+        if (statuses.length > 0) precomputeStatusHeights(statuses);
+        return statuses;
+    }, [statusData?.pages]);
     const uniqueTags = flattenAndUniqByKey<Tag>('name')(tagsData?.pages.map(p => p.data));
     const uniqueLinks = flattenAndUniqByKey<TrendingLink>('url')(linksData?.pages.map(p => p.data));
 
@@ -175,6 +180,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             onItemOpen={(status) => router.push(`/status/${status.id}`)}
                             getItemKey={(status) => status.id}
                             getMediaUrls={(status) => status.media_attachments?.map(a => a.preview_url || a.url).filter(Boolean) as string[] || []}
+                            getItemHeight={getStatusHeight}
                             estimateSize={350}
                             onLoadMore={fetchNextPage}
                             isLoadingMore={isFetchingNextPage}

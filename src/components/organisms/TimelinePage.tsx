@@ -7,6 +7,7 @@ import { useRef, useEffect, useLayoutEffect, useState, useMemo, useCallback } fr
 import { useWindowVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 import { useQueryClient } from '@tanstack/react-query';
 import { useInfiniteHomeTimeline, useCurrentAccount, prefillAccountCache } from '@/api';
+import { precomputeStatusHeights, getStatusHeight } from '@/lib/pretext';
 import { PostCard } from './PostCard';
 import { SuggestionsSection } from './SuggestionsSection';
 import { PostCardSkeletonList, PostCardSkeleton, ProfilePillSkeleton } from '@/components/molecules';
@@ -68,7 +69,13 @@ export const TimelinePage = observer(() => {
     const listRef = useRef<HTMLDivElement>(null);
     const [scrollMargin, setScrollMargin] = useState(0);
 
-    const uniqueStatuses = useMemo(() => flattenAndUniqById(statusPages?.pages), [statusPages?.pages]);
+    const uniqueStatuses = useMemo(() => {
+        const statuses = flattenAndUniqById(statusPages?.pages);
+        // Pre-compute text heights via canvas — ~0.04ms per new status, skips already-prepared ones.
+        // Must run before the virtualizer reads estimateSize.
+        if (statuses.length > 0) precomputeStatusHeights(statuses);
+        return statuses;
+    }, [statusPages?.pages]);
 
     // Get cached state on initial render
     const [cachedState] = useState(() => scrollStateCache.get(SCROLL_CACHE_KEY));
@@ -110,6 +117,7 @@ export const TimelinePage = observer(() => {
         const item = mixedItems[index];
         if (item?.type === 'endIndicator') return 60;
         if (item?.type === 'suggestions') return 325;
+        if (item?.type === 'status') return getStatusHeight(item.data);
         return 250;
     }, [mixedItems]);
 

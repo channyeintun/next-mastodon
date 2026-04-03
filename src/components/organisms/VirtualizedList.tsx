@@ -113,6 +113,13 @@ interface VirtualizedListProps<T> {
    * @default true
    */
   enabled?: boolean;
+
+  /**
+   * Optional function to compute precise item height using pretext.
+   * When provided, overrides the flat `estimateSize` value for each item.
+   * Receives the item and returns a pixel height.
+   */
+  getItemHeight?: (item: T) => number;
 }
 
 // Global cache for scroll restoration
@@ -145,6 +152,7 @@ export function VirtualizedList<T>({
   className,
   onItemOpen,
   enabled = true,
+  getItemHeight,
 }: VirtualizedListProps<T>) {
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -154,7 +162,17 @@ export function VirtualizedList<T>({
     : undefined;
 
   // Memoize properties passed to component to avoid virtualizer re-initialization
-  const estimateSizeCallback = useCallback(() => estimateSize, [estimateSize]);
+  const estimateSizeCallback = useCallback(
+    (index: number) => {
+      if (getItemHeight) {
+        const item = itemsRef.current[index];
+        if (item) return getItemHeight(item);
+      }
+      return estimateSize;
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [estimateSize, getItemHeight],
+  );
 
   // Use a ref to access items in getItemKey without creating a new function reference
   const itemsRef = useRef(items);

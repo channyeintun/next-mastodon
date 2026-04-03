@@ -12,6 +12,7 @@ import { useWindowScrollDirection } from '@/hooks/useScrollDirection';
 import { useTimelineHotkeys } from '@/hooks/useTimelineHotkeys';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { precomputeStatusHeights, getStatusHeight } from '@/lib/pretext';
 
 // Scroll restoration cache - per tab
 interface ScrollState {
@@ -82,6 +83,9 @@ export function ProfileTabContent({
 
     // Build mixed items array - memoized to prevent recreation
     const mixedItems = useMemo(() => {
+        // Pre-compute text heights via canvas — skips already-prepared ones.
+        if (statuses.length > 0) precomputeStatusHeights(statuses);
+
         const items: ProfileListItem[] = statuses.map((status) => ({
             type: 'status',
             data: status,
@@ -97,6 +101,7 @@ export function ProfileTabContent({
     const estimateSize = useCallback((index: number) => {
         const item = mixedItems[index];
         if (item?.type === 'endIndicator') return 60;
+        if (item?.type === 'status') return getStatusHeight(item.data);
         return 350;
     }, [mixedItems]);
 
