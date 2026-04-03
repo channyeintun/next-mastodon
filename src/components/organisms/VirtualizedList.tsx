@@ -170,7 +170,6 @@ export function VirtualizedList<T>({
       }
       return estimateSize;
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [estimateSize, getItemHeight],
   );
 
