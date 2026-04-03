@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
-import { LiquidGlassFilter } from '@/components/atoms';
+import React, { useState, useEffect } from 'react';
 import { useIsIOS } from '@/hooks/useIsIOS';
-import { NavigationLink } from './Navigation'; // We will export this from Navigation.tsx
+import { NavigationLink } from './Navigation';
+import { refractive } from '@hashintel/refractive';
 
 interface LiquidGlassBottomNavProps {
     bottomNavLinks: Array<{
@@ -16,95 +16,49 @@ interface LiquidGlassBottomNavProps {
 }
 
 export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBottomNavProps) {
-    const [dimensions, setDimensions] = useState({ width: 0, height: 56 });
-    const [itemWidth, setItemWidth] = useState(0);
     const [isPressed, setIsPressed] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const isIOS = useIsIOS();
 
-    const bgFilterId = 'liquid-glass-bottom-nav-bg';
-    const thumbFilterId = 'liquid-glass-bottom-nav-thumb';
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const pressScale = isPressed ? 1.2 : 1;
     const pressScaleY = isPressed ? 1.1 : 1;
 
     const activeIndex = bottomNavLinks.findIndex(link => link.href === pathname);
-
     const PILL_PADDING = 8;
-    // We keep itemWidth for the filter generation which needs exact pixels
-    const thumbWidth = itemWidth > 0 ? (itemWidth - (PILL_PADDING * 2)) : 0;
-
-    const pillRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (!pillRef.current) return;
-
-        const updateDimensions = () => {
-            if (pillRef.current) {
-                const width = pillRef.current.offsetWidth;
-                const height = pillRef.current.offsetHeight;
-                setDimensions({ width, height });
-                setItemWidth(width / bottomNavLinks.length);
-            }
-        };
-
-        updateDimensions();
-        const resizeObserver = new ResizeObserver(updateDimensions);
-        resizeObserver.observe(pillRef.current);
-        return () => resizeObserver.disconnect();
-    }, [bottomNavLinks.length]);
-
-
+    const itemCount = bottomNavLinks.length;
+    const itemPercentage = 100 / itemCount;
 
     const handlePointerDown = () => setIsPressed(true);
     const handlePointerUp = () => setIsPressed(false);
 
-    const itemCount = bottomNavLinks.length;
-    const itemPercentage = 100 / itemCount;
-
     return (
         <nav className="navigation-bottom" aria-label="Mobile navigation">
-            <div ref={pillRef} className="navigation-bottom-pill-wrapper">
-                {dimensions.width > 0 && !isIOS && (
-                    <LiquidGlassFilter
-                        id={bgFilterId}
-                        width={dimensions.width}
-                        height={dimensions.height}
-                        radius={28}
-                        bezelWidth={24}
-                        blur={0.3}
-                        scaleRatio={1.2}
-                        cornerRadius={1.0}
-                        shape="pill"
-                        bezelType="convex_squircle"
-                        specularOpacity={0.3}
-                        specularSaturation={1.2}
+            <div className="navigation-bottom-pill-wrapper">
+                {(!isIOS && mounted) ? (
+                    <refractive.div
+                        className="glass-pill"
+                        refraction={{
+                            radius: 28,
+                            bezelWidth: 24,
+                            blur: 1.0,
+                            specularOpacity: 0.4,
+                            specularAngle: 1
+                        }}
+                    />
+                ) : (
+                    <div
+                        className="glass-pill"
+                        style={{
+                            backdropFilter: 'blur(20px)',
+                            WebkitBackdropFilter: 'blur(20px)',
+                            borderRadius: 28,
+                        }}
                     />
                 )}
-
-                {thumbWidth > 0 && !isIOS && (
-                    <LiquidGlassFilter
-                        id={thumbFilterId}
-                        width={thumbWidth}
-                        height={48}
-                        radius={24}
-                        bezelWidth={16}
-                        blur={0.3}
-                        scaleRatio={0.8}
-                        cornerRadius={1.0}
-                        shape="pill"
-                        bezelType="lip"
-                        specularOpacity={0.4}
-                        specularSaturation={1.5}
-                    />
-                )}
-
-                <div
-                    className="glass-pill"
-                    style={{
-                        backdropFilter: isIOS ? 'blur(20px)' : `url(#${bgFilterId})`,
-                        WebkitBackdropFilter: isIOS ? 'blur(20px)' : `url(#${bgFilterId})`,
-                    }}
-                />
 
                 {activeIndex >= 0 && (
                     <div
@@ -114,7 +68,7 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
                             height: 48,
                             width: `${itemPercentage}%`,
                             top: '50%',
-                            marginTop: -24, // Vertically centered (48px height)
+                            marginTop: -24,
                             left: 0,
                             transform: `translateX(${activeIndex * 100}%)`,
                             zIndex: 2,
@@ -124,13 +78,14 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
                     >
                         <div
                             className="glass-thumb"
-                            key={activeIndex} // Trigger animation on index change
+                            key={activeIndex}
                             style={{
                                 width: `calc(100% - ${PILL_PADDING * 2}px)`,
-                                backdropFilter: isIOS ? 'blur(10px)' : `url(#${thumbFilterId})`,
-                                WebkitBackdropFilter: isIOS ? 'blur(10px)' : `url(#${thumbFilterId})`,
+                                backdropFilter: 'blur(10px)',
+                                WebkitBackdropFilter: 'blur(10px)',
                                 background: isPressed ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.18)',
                                 transform: `scale(${pressScale}, ${pressScaleY})`,
+                                borderRadius: 24,
                             }}
                         />
                     </div>

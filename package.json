@@ -17,6 +17,7 @@
     "@emoji-mart/data": "^1.2.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@hashintel/refractive": "^0.0.3",
     "@hookform/resolvers": "^5.2.2",
     "@tanstack/query-persist-client-core": "^5.91.15",
     "@tanstack/react-form": "^1.27.7",
