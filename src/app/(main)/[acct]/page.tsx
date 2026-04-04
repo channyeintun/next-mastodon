@@ -98,7 +98,13 @@ export default async function AccountPage({ params }: AccountPageProps) {
         notFound();
     }
 
-    // Manually set the query data (since we can't use the client API on server)
+    // Why setQueryData instead of prefetchQuery?
+    // prefetchQuery silently swallows errors, so we'd lose the ability to call
+    // notFound() above when the account doesn't exist. It also requires a queryFn
+    // that works on both server and client — but lookupAccountServer is server-only
+    // (direct API call), while the client uses an Axios instance with auth tokens.
+    // setQueryData gives us full control: we fetched above, checked existence, and
+    // now just populate the cache. Don't switch this to prefetchQuery.
     queryClient.setQueryData(queryKeys.accounts.lookup(acct), account);
     queryClient.setQueryData(queryKeys.accounts.detail(account.id), account);
 
