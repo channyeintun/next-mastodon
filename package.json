@@ -13,7 +13,7 @@
     "lint:fix": "eslint --fix ."
   },
   "dependencies": {
-    "@chenglou/pretext": "^0.0.4",
+    "@chenglou/pretext": "^0.0.6",
     "@emoji-mart/data": "^1.2.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
@@ -23,7 +23,7 @@
     "@tanstack/react-form": "^1.27.7",
     "@tanstack/react-query": "^5.90.16",
     "@tanstack/react-query-devtools": "^5.91.2",
-    "@tanstack/react-virtual": "^3.13.23",
+    "@tanstack/react-virtual": "^3.13.24",
     "@tiptap/core": "3.12.1",
     "@tiptap/extension-mention": "3.12.1",
     "@tiptap/extension-placeholder": "3.12.1",
