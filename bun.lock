@@ -9,7 +9,7 @@
         "@emoji-mart/data": "^1.2.1",
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.1",
-        "@hashintel/refractive": "^0.0.3",
+        "@hashintel/refractive": "^0.0.4",
         "@hookform/resolvers": "^5.2.2",
         "@tanstack/query-persist-client-core": "^5.100.5",
         "@tanstack/react-form": "^1.27.7",
@@ -187,7 +187,7 @@
 
     "@formatjs/intl-localematcher": ["@formatjs/intl-localematcher@0.5.10", "", { "dependencies": { "tslib": "2" } }, "sha512-af3qATX+m4Rnd9+wHcjJ4w2ijq+rAVP3CCinJQvFv1kgSu1W6jypUmvleJxcewdxmutM8dmIRZFxO/IQBZmP2Q=="],
 
-    "@hashintel/refractive": ["@hashintel/refractive@0.0.3", "", { "peerDependencies": { "react": "^19.0.0", "react-dom": "^19.0.0" } }, "sha512-f/7QK+6IiHyivl1RDHXme5VGhxindl7yOxU8MwU+gKqiYVgMjK0kiNPI/Rnc/EpHSPM6NZ9gkwwqdQ/lUz0dhQ=="],
+    "@hashintel/refractive": ["@hashintel/refractive@0.0.4", "", { "peerDependencies": { "react": "^19.0.0", "react-dom": "^19.0.0" } }, "sha512-Nzz8KK7cGAJE+uCB+EGCfKcJ237xSgscERkcD1DeUoN+3UzRMfPcnflWvssT/OPEJZp0zi+zMmJXb2/n/5LFVw=="],
 
     "@hookform/resolvers": ["@hookform/resolvers@5.2.2", "", { "dependencies": { "@standard-schema/utils": "^0.3.0" }, "peerDependencies": { "react-hook-form": "^7.55.0" } }, "sha512-A/IxlMLShx3KjV/HeTcTfaMxdwy690+L/ZADoeaTltLx+CVuzkeVIPuybK3jrRfw7YZnmdKsVVHAlEPIAEUNlA=="],
 
