@@ -575,10 +575,10 @@ GitHub configuration and workflows:
 
 **workflows/ci.yml** - Continuous Integration workflow:
 - Runs on pull requests and pushes to main branch
-- Executes linting (`npm run lint`) to catch code quality issues
-- Runs build (`npm run build`) to ensure the project compiles successfully
+- Executes linting (`bun run lint`) to catch code quality issues
+- Runs build (`bun run build`) to ensure the project compiles successfully
 - Blocks merging if either linting or building fails (requires branch protection rules)
-- Uses Node.js 20 with npm caching for faster builds
+- Uses Bun 1.3.14 with caching for faster builds
 
 **PULL_REQUEST_TEMPLATE.md** - Pull request template for contributors:
 - Structured template to guide contributors when submitting PRs
