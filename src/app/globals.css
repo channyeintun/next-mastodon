@@ -1024,7 +1024,9 @@ input[type="radio"] {
 
 
 .emoji-picker {
-  position: absolute;
+  /* Fixed so the picker escapes overflow clipping (e.g. the compose modal's
+     scrollable content); anchor positioning keeps it attached to the button */
+  position: fixed;
   position-anchor: --emoji-anchor;
   position-try: flip-block;
   position-area: top center;
