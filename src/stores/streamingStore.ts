@@ -90,8 +90,13 @@ export class StreamingStore {
         this.streamingUrl = streamingUrl
         this.accessToken = accessToken
 
-        // Clean up existing socket if any
+        // Clean up existing socket if any — detach handlers first so its
+        // onclose/onerror can't clobber the new connection's state
         if (this.socket) {
+            this.socket.onopen = null
+            this.socket.onmessage = null
+            this.socket.onerror = null
+            this.socket.onclose = null
             this.socket.close()
         }
 
@@ -161,6 +166,7 @@ export class StreamingStore {
             }
 
             socket.onerror = (error) => {
+                if (this.socket !== socket) return
                 console.error('[Streaming] WebSocket error:', error)
                 runInAction(() => {
                     this.status = 'error'
@@ -169,6 +175,7 @@ export class StreamingStore {
             }
 
             socket.onclose = (event) => {
+                if (this.socket !== socket) return
                 console.log('[Streaming] Connection closed:', event.code, event.reason)
 
                 const currentAttempts = this.reconnectAttempts

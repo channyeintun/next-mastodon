@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { usePrivacyPolicy, useInstance } from '@/api';
+import { sanitizeHtml } from '@/utils/sanitize';
 import { IconButton, TextSkeleton } from '@/components/atoms';
 
 export default function PrivacyPolicyPage() {
@@ -49,7 +50,7 @@ export default function PrivacyPolicyPage() {
                             </UpdatedAt>
                         )}
                         <PolicyContent
-                            dangerouslySetInnerHTML={{ __html: privacyPolicy.content }}
+                            dangerouslySetInnerHTML={{ __html: sanitizeHtml(privacyPolicy.content) }}
                         />
                     </>
                 )}

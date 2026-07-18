@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import type { CSSProperties, ReactElement } from 'react';
 import type { Emoji } from '@/types/mastodon';
+import { sanitizeHtml } from '@/utils/sanitize';
 
 // Styled components
 const EmojiImage = styled.img`
@@ -28,7 +29,7 @@ interface EmojiTextProps {
 export function EmojiText({ text, emojis, style, className, html = false }: EmojiTextProps) {
   if (!emojis || emojis.length === 0) {
     if (html) {
-      return <span style={style} className={className} dangerouslySetInnerHTML={{ __html: text }} />;
+      return <span style={style} className={className} dangerouslySetInnerHTML={{ __html: sanitizeHtml(text) }} />;
     }
     return <span style={style} className={className}>{text}</span>;
   }
@@ -41,7 +42,7 @@ export function EmojiText({ text, emojis, style, className, html = false }: Emoj
       const emojiImg = `<img src="${emoji.url}" alt=":${emoji.shortcode}:" title=":${emoji.shortcode}:" style="height: 1.25em; width: 1.25em; vertical-align: middle; object-fit: contain; display: inline-block; margin: 0 0.1em;" loading="lazy" />`;
       processedHtml = processedHtml.replace(shortcodePattern, emojiImg);
     });
-    return <span style={style} className={className} dangerouslySetInnerHTML={{ __html: processedHtml }} />;
+    return <span style={style} className={className} dangerouslySetInnerHTML={{ __html: sanitizeHtml(processedHtml) }} />;
   }
 
   // Split text by emoji shortcodes and replace with images

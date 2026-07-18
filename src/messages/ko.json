@@ -730,6 +730,7 @@
     "filterDeleted": "필터가 삭제되었습니다",
     "filterUpdated": "필터가 업데이트되었습니다",
     "postDeleted": "게시물이 삭제되었습니다.",
+    "postFailed": "게시물 게시에 실패했습니다.",
     "postPublished": "게시물이 게시되었습니다.",
     "postShared": "게시물이 공유되었습니다"
   },

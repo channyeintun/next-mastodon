@@ -5,6 +5,7 @@ import { useEffect, useMemo, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Emoji, Mention } from '@/types/mastodon';
 import { shortenUrl } from '@/utils/url';
+import { sanitizeHtml } from '@/utils/sanitize';
 
 interface StatusContentProps {
   html: string;
@@ -75,7 +76,7 @@ export function StatusContent({ html, emojis = [], mentions = [], style, classNa
       return `<a ${newAttributes}>${newContent}</a>`;
     });
 
-    return processed;
+    return sanitizeHtml(processed);
   }, [html, emojis]);
 
   // Create click handler with mentions in scope

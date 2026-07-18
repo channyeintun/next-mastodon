@@ -613,6 +613,9 @@ export function useCreateStatus() {
 
   return useMutation({
     mutationFn: (params: CreateStatusParams) => createStatus(params),
+    onError: () => {
+      toast.error(t('postFailed'))
+    },
     onSuccess: (data, params) => {
       // Invalidate home timeline to fetch new post
       queryClient.invalidateQueries({ queryKey: queryKeys.timelines.home() })
@@ -697,10 +700,14 @@ export function useDeleteStatus() {
 
 export function useUpdateStatus() {
   const queryClient = useQueryClient()
+  const t = useTranslations('toast');
 
   return useMutation({
     mutationFn: ({ id, params }: { id: string; params: CreateStatusParams }) =>
       updateStatus(id, params),
+    onError: () => {
+      toast.error(t('postFailed'))
+    },
     onSuccess: (data, { id }) => {
       // Update the status in cache
       queryClient.setQueryData<Status>(queryKeys.statuses.detail(id), data)
@@ -1028,11 +1035,13 @@ export function useVotePoll() {
         const poll = previousStatus.poll;
 
         // 3. Create optimistically updated poll
+        // Each selected option counts as one vote; the voter is counted once
         const updatedPoll: Poll = {
           ...poll,
           voted: true,
           own_votes: choices,
-          votes_count: poll.votes_count + 1, // Simple approximation
+          votes_count: poll.votes_count + choices.length,
+          voters_count: poll.voters_count != null ? poll.voters_count + 1 : poll.voters_count,
           options: poll.options.map((option, index) => {
             if (choices.includes(index)) {
               return {

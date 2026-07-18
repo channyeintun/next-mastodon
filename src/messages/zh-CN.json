@@ -730,6 +730,7 @@
     "filterDeleted": "过滤器已删除",
     "filterUpdated": "过滤器已更新",
     "postDeleted": "帖子已删除",
+    "postFailed": "帖子发布失败。",
     "postPublished": "帖子已发布",
     "postShared": "帖子已分享"
   },

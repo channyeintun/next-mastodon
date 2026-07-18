@@ -730,6 +730,7 @@
     "filterDeleted": "Filtro eliminado",
     "filterUpdated": "Filtro actualizado",
     "postDeleted": "Publicación eliminada.",
+    "postFailed": "No se pudo publicar la publicación.",
     "postPublished": "Publicación publicada.",
     "postShared": "Publicación compartida"
   },

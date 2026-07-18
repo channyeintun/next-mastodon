@@ -198,12 +198,6 @@ export const currentAccountOptions = () =>
     queryFn: ({ signal }) => verifyCredentials(signal),
   })
 
-export const accountStatusesOptions = (id: string, params?: TimelineParams) =>
-  queryOptions({
-    queryKey: queryKeys.accounts.statuses(id, params),
-    queryFn: ({ signal }) => getAccountStatuses(id, params, signal),
-  })
-
 export const infiniteAccountStatusesOptions = (id: string) =>
   infiniteQueryOptions({
     queryKey: queryKeys.accounts.statuses(id),
@@ -243,12 +237,6 @@ export const pinnedStatusesOptions = (id: string) =>
     queryFn: ({ signal }) => getPinnedStatuses(id, signal),
   })
 
-export const followersOptions = (id: string) =>
-  queryOptions({
-    queryKey: queryKeys.accounts.followers(id),
-    queryFn: ({ signal }) => getFollowers(id, undefined, signal),
-  })
-
 export const infiniteFollowersOptions = (id: string) =>
   infiniteQueryOptions({
     queryKey: queryKeys.accounts.followers(id),
@@ -259,12 +247,6 @@ export const infiniteFollowersOptions = (id: string) =>
     },
     getNextPageParam: (lastPage) => lastPage.nextMaxId,
     initialPageParam: undefined as string | undefined,
-  })
-
-export const followingOptions = (id: string) =>
-  queryOptions({
-    queryKey: queryKeys.accounts.following(id),
-    queryFn: ({ signal }) => getFollowing(id, undefined, signal),
   })
 
 export const infiniteFollowingOptions = (id: string) =>
@@ -298,12 +280,6 @@ export const relationshipsOptions = (ids: string[]) =>
   })
 
 // Bookmarks Options
-export const bookmarksOptions = (params?: TimelineParams) =>
-  queryOptions({
-    queryKey: queryKeys.bookmarks.all(params),
-    queryFn: ({ signal }) => getBookmarks(params, signal),
-  })
-
 export const infiniteBookmarksOptions = () =>
   infiniteQueryOptions({
     queryKey: queryKeys.bookmarks.all(),
@@ -416,15 +392,15 @@ export const mediaAttachmentOptions = (id: string) =>
   })
 
 // Notification Options
-export const notificationsOptions = (params?: NotificationParams) =>
-  queryOptions({
-    queryKey: queryKeys.notifications.list(params),
-    queryFn: ({ signal }) => getNotifications(params, signal),
-  })
-
 export const infiniteNotificationsOptions = (types?: NotificationType[]) =>
   infiniteQueryOptions({
-    queryKey: queryKeys.notifications.list({ types }),
+    // Only include params in the key when a filter is active, so the default
+    // list key matches queryKeys.notifications.list() used by the streaming
+    // handler (['notifications', 'list', undefined] and
+    // ['notifications', 'list', { types: undefined }] hash differently)
+    queryKey: types && types.length > 0
+      ? queryKeys.notifications.list({ types })
+      : queryKeys.notifications.list(),
     queryFn: ({ pageParam, signal }) => {
       const params: NotificationParams = { limit: 10 }
       if (pageParam) params.max_id = pageParam
@@ -776,13 +752,6 @@ export function useCurrentAccount() {
   })
 }
 
-export function useAccountStatuses(id: string, params?: TimelineParams) {
-  return useQuery({
-    ...accountStatusesOptions(id, params),
-    enabled: !!id,
-  })
-}
-
 export function useInfiniteAccountStatuses(id: string) {
   return useInfiniteQuery({
     ...infiniteAccountStatusesOptions(id),
@@ -807,23 +776,9 @@ export function usePinnedStatuses(id: string) {
   })
 }
 
-export function useFollowers(id: string) {
-  return useQuery({
-    ...followersOptions(id),
-    enabled: !!id,
-  })
-}
-
 export function useInfiniteFollowers(id: string) {
   return useInfiniteQuery({
     ...infiniteFollowersOptions(id),
-    enabled: !!id,
-  })
-}
-
-export function useFollowing(id: string) {
-  return useQuery({
-    ...followingOptions(id),
     enabled: !!id,
   })
 }
@@ -868,10 +823,6 @@ export function useFamiliarFollowers(accountId: string | undefined) {
 }
 
 // Bookmarks
-export function useBookmarks(params?: TimelineParams) {
-  return useQuery(bookmarksOptions(params))
-}
-
 export function useInfiniteBookmarks() {
   return useInfiniteQuery(infiniteBookmarksOptions())
 }
@@ -915,14 +866,6 @@ export function useInstance() {
 }
 
 // Notifications
-export function useNotifications(params?: NotificationParams) {
-  const authStore = useAuthStore()
-  return useQuery({
-    ...notificationsOptions(params),
-    enabled: authStore.isAuthenticated,
-  })
-}
-
 export function useInfiniteNotifications(types?: NotificationType[]) {
   const authStore = useAuthStore()
   return useInfiniteQuery({

@@ -80,7 +80,15 @@ api.interceptors.response.use(
             }
 
             const errorMessage = error.response.data?.error || `HTTP ${error.response.status}`
-            throw new Error(errorMessage)
+            // Keep response/status on the thrown error so callers can branch on
+            // HTTP status (e.g. the 404 handling for optional instance pages)
+            const wrappedError = new Error(errorMessage) as Error & {
+                response?: typeof error.response
+                status?: number
+            }
+            wrappedError.response = error.response
+            wrappedError.status = error.response.status
+            throw wrappedError
         }
         throw error
     }

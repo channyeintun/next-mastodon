@@ -730,6 +730,7 @@
     "filterCreated": "Filter created",
     "failedToDeleteFilter": "Failed to delete filter",
     "postDeleted": "Post deleted.",
+    "postFailed": "Failed to publish post.",
     "postPublished": "Post published.",
     "postShared": "Post shared."
   },

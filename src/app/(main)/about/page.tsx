@@ -3,6 +3,7 @@
 import { ArrowLeft, Mail, Shield, BookOpen, ExternalLink } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useInstance, useExtendedDescription } from '@/api';
+import { sanitizeHtml } from '@/utils/sanitize';
 import { IconButton, Avatar, TextSkeleton } from '@/components/atoms';
 import { useLocale } from '@/hooks/useLocale';
 import {
@@ -64,7 +65,7 @@ export default function AboutPage() {
               <TextSkeleton width="80%" height={16} />
             </>
           ) : extendedDescription?.content ? (
-            <DescriptionContent dangerouslySetInnerHTML={{ __html: extendedDescription.content }} />
+            <DescriptionContent dangerouslySetInnerHTML={{ __html: sanitizeHtml(extendedDescription.content) }} />
           ) : (
             <EmptyMessage>No extended description provided.</EmptyMessage>
           )}

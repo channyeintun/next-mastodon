@@ -730,6 +730,7 @@
     "filterDeleted": "ลบตัวกรองแล้ว",
     "filterUpdated": "อัปเดตตัวกรองแล้ว",
     "postDeleted": "ลบโพสต์แล้ว.",
+    "postFailed": "ไม่สามารถเผยแพร่โพสต์ได้",
     "postPublished": "โพสต์ถูกเผยแพร่แล้ว.",
     "postShared": "แชร์โพสต์แล้ว"
   },

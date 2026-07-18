@@ -730,6 +730,7 @@
     "filterDeleted": "Đã xóa bộ lọc",
     "filterUpdated": "Đã cập nhật bộ lọc",
     "postDeleted": "Đã xóa bài đăng.",
+    "postFailed": "Không thể đăng bài viết.",
     "postPublished": "Bài đăng đã được đăng.",
     "postShared": "Đã chia sẻ bài đăng"
   },

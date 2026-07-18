@@ -730,6 +730,7 @@
     "filterDeleted": "フィルターを削除しました",
     "filterUpdated": "フィルターを更新しました",
     "postDeleted": "投稿を削除しました",
+    "postFailed": "投稿の公開に失敗しました。",
     "postPublished": "投稿を公開しました",
     "postShared": "投稿を共有しました"
   },

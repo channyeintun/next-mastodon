@@ -20,18 +20,20 @@ export interface CookieOptions {
 
 /**
  * Helper to get the correct cookie domain based on the current environment.
- * For local development on localhost, we return undefined to allow port-based sharing.
- * For production, we return '.mastodon.website' to allow subdomain sharing.
+ * On the production domain we return '.mastodon.website' to allow subdomain
+ * sharing. Everywhere else (localhost, preview deployments, forks on other
+ * domains) we return undefined so a host-only cookie is set — browsers reject
+ * cookies whose Domain attribute doesn't match the current host.
  */
 export function getCookieDomain(): string | undefined {
     if (typeof window === 'undefined') return undefined;
 
     const hostname = window.location.hostname;
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        return undefined;
+    if (hostname === 'mastodon.website' || hostname.endsWith('.mastodon.website')) {
+        return '.mastodon.website';
     }
 
-    return '.mastodon.website';
+    return undefined;
 }
 
 /**

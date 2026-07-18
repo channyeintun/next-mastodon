@@ -41,13 +41,15 @@ export function useNotificationStream() {
             queryKeys.notifications.list()
         )
 
-        if (existingData?.pages) {
-            // Check if notification already exists
-            const exists = existingData.pages.some(page =>
+        // Check if notification already exists (e.g. re-delivered after a reconnect)
+        const isDuplicate = existingData?.pages
+            ? existingData.pages.some(page =>
                 page.data.some(n => n.id === notification.id)
             )
+            : false
 
-            if (!exists) {
+        if (existingData?.pages) {
+            if (!isDuplicate) {
                 // Prepend to first page
                 queryClient.setQueryData<InfiniteData<PaginatedResponse<Notification[]>>>(
                     queryKeys.notifications.list(),
@@ -63,13 +65,16 @@ export function useNotificationStream() {
         }
 
         // Optimistically increment unread count for immediate badge update
-        queryClient.setQueryData<{ count: number }>(
-            queryKeys.notifications.unreadCount(),
-            (old) => {
-                const currentCount = old?.count ?? 0
-                return { count: currentCount + 1 }
-            }
-        )
+        // (skip duplicates so re-delivered notifications don't inflate the badge)
+        if (!isDuplicate) {
+            queryClient.setQueryData<{ count: number }>(
+                queryKeys.notifications.unreadCount(),
+                (old) => {
+                    const currentCount = old?.count ?? 0
+                    return { count: currentCount + 1 }
+                }
+            )
+        }
     })
 
     // Set up notification handler

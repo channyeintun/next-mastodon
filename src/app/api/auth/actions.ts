@@ -7,11 +7,14 @@ import { cookies, headers } from 'next/headers'
  */
 async function getServerCookieDomain() {
     const headerList = await headers()
-    const host = headerList.get('host') || ''
-    if (host.includes('localhost') || host.includes('127.0.0.1')) {
-        return undefined
+    // Strip the port before matching (host header may be e.g. "localhost:9003")
+    const hostname = (headerList.get('host') || '').split(':')[0]
+    // Only set a Domain attribute on the production domain; browsers reject
+    // cookies whose Domain doesn't match the current host (previews, forks)
+    if (hostname === 'mastodon.website' || hostname.endsWith('.mastodon.website')) {
+        return '.mastodon.website'
     }
-    return '.mastodon.website'
+    return undefined
 }
 
 /**

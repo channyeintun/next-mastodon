@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTermsOfService, useInstance } from '@/api';
+import { sanitizeHtml } from '@/utils/sanitize';
 import { IconButton, TextSkeleton } from '@/components/atoms';
 
 export default function TermsOfServicePage() {
@@ -51,7 +52,7 @@ export default function TermsOfServicePage() {
                             </EffectiveDate>
                         )}
                         <TermsContent
-                            dangerouslySetInnerHTML={{ __html: termsOfService.content }}
+                            dangerouslySetInnerHTML={{ __html: sanitizeHtml(termsOfService.content) }}
                         />
                     </>
                 )}
