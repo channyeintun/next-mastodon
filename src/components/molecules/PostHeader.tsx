@@ -98,6 +98,12 @@ export function PostHeader({
 
             <ContentSection>
                 <HeaderRow>
+                    {/* Facebook's header shape: name on its own line, then a single
+                        muted meta line beneath it. The handle stays — unlike
+                        Facebook, a federated client needs it to disambiguate two
+                        people with the same display name on different instances —
+                        but it moves down into the meta line with the timestamp and
+                        visibility, so the name reads as the primary object. */}
                     <NameSection>
                         <ProfileLink href={`/@${account.acct}`} onClick={handleProfileClick}>
                             <div className="post-header-display-name text-truncate">
@@ -106,19 +112,23 @@ export function PostHeader({
                                     emojis={account.emojis}
                                 />
                             </div>
-                            <div className="post-header-handle text-truncate">
-                                @{account.acct}
-                            </div>
                         </ProfileLink>
+                        <div className="post-header-meta">
+                            <span className="post-header-handle text-truncate">
+                                @{account.acct}
+                            </span>
+                            <span aria-hidden="true">·</span>
+                            <TimeLink href={`/status/${statusId}`}>
+                                {formatRelativeTime(createdAt)}
+                            </TimeLink>
+                            <span aria-hidden="true">·</span>
+                            <VisibilityIcon title={visibility}>
+                                {VISIBILITY_ICONS[visibility]}
+                            </VisibilityIcon>
+                        </div>
                     </NameSection>
 
                     <MetaSection>
-                        <TimeLink href={`/status/${statusId}`}>
-                            {formatRelativeTime(createdAt)}
-                        </TimeLink>
-                        <VisibilityIcon title={visibility}>
-                            {VISIBILITY_ICONS[visibility]}
-                        </VisibilityIcon>
                         <div className="options-menu-btn">
                             <IconButton
                                 size="small"
@@ -302,14 +312,20 @@ const MetaSection = styled.div`
 
 const TimeLink = styled(Link)`
   text-decoration: none;
-  font-size: var(--font-size-0);
-  color: var(--text-2);
+  font-size: inherit;
+  color: inherit;
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const VisibilityIcon = styled.div`
-  color: var(--text-3);
+  color: inherit;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 `;
 
 const MenuDivider = styled.div`

@@ -1520,14 +1520,27 @@ input[type="radio"] {
 /* ====================================
    Post Header Component
    ==================================== */
+/* Facebook: 15px/600 name over a 13px muted meta line. */
 .post-header-display-name {
-  font-weight: var(--font-weight-6);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-body);
   color: var(--text-1);
 }
 
+.post-header-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--fs-secondary);
+  line-height: var(--lh-tight);
+  color: var(--secondary-text);
+  min-width: 0;
+}
+
 .post-header-handle {
-  font-size: var(--font-size-0);
-  color: var(--text-2);
+  color: var(--secondary-text);
+  min-width: 0;
 }
 
 /* ====================================
@@ -1872,7 +1885,7 @@ dialog::backdrop {
 /* Underline variant */
 .tabs--underline {
   position: relative;
-  border-bottom: 1px solid var(--surface-3);
+  border-bottom: 1px solid var(--divider);
   margin-bottom: var(--size-3);
 }
 
@@ -1887,25 +1900,27 @@ dialog::backdrop {
   justify-content: center;
   gap: var(--size-2);
   padding: var(--size-3) var(--size-2);
-  font-size: var(--font-size-1);
-  font-weight: var(--font-weight-5);
-  color: var(--text-2);
+  /* Facebook's tab: 15px, medium weight, secondary colour until active. */
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  color: var(--secondary-text);
   background: transparent;
   border: none;
   border-radius: 0;
   box-shadow: none;
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, background 0.2s ease;
   white-space: nowrap;
 }
 
 .tab--underline:hover {
   color: var(--text-1);
+  background: var(--hover-overlay);
 }
 
 .tab--underline.tab--active {
-  color: var(--blue-6);
-  font-weight: var(--font-weight-6);
+  color: var(--accent);
+  font-weight: var(--fw-semibold);
 }
 
 /* Sliding indicator using anchor positioning */
@@ -1913,7 +1928,7 @@ dialog::backdrop {
   position: absolute;
   bottom: -1px;
   height: 3px;
-  background: var(--blue-6);
+  background: var(--accent);
   border-radius: 3px 3px 0 0;
   position-anchor: --active-tab;
   left: anchor(left);

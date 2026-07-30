@@ -2,7 +2,7 @@
 
 import styled from '@emotion/styled';
 import { Card as CardType } from '@/types/mastodon';
-import { ExternalLink, FileText } from 'lucide-react';
+import { FileText } from 'lucide-react';
 import { openExternalUrl } from '@/utils/externalLink';
 import { safeHostname } from '@/utils/url';
 
@@ -30,36 +30,38 @@ export function LinkPreview({ card, style, className, wrapstodon = false }: Link
           </PlaceholderWrapper>
         )}
       </ImageBox>
-      <ContentBox>
+      <ContentBox $wrapstodon={wrapstodon}>
+        <Domain $wrapstodon={wrapstodon}>{safeHostname(card.url)}</Domain>
         <Title $wrapstodon={wrapstodon}>{card.title}</Title>
         {card.description && <Desc $wrapstodon={wrapstodon}>{card.description}</Desc>}
-        <Domain $wrapstodon={wrapstodon}>
-          <ExternalLink size={12} />
-          {safeHostname(card.url)}
-        </Domain>
       </ContentBox>
     </Card>
   );
 }
 
+/**
+ * Facebook's link attachment: the image sits full-bleed on top and the metadata
+ * runs underneath as a grey band — domain first in caps, then the headline.
+ * Previously this was a bordered, rounded, side-by-side card with the domain
+ * last, which read as a widget dropped into the post rather than part of it.
+ */
 const Card = styled.div<{ $wrapstodon?: boolean }>`
   display: flex;
-  justify-content: flex-start;
-  gap: var(--size-3);
-  border-radius: var(--radius-2);
+  flex-direction: column;
   overflow: hidden;
   cursor: pointer;
-  background: ${p => p.$wrapstodon ? 'rgba(0,0,0,0.5)' : 'var(--surface-2)'};
-  border: 1px solid ${p => p.$wrapstodon ? 'rgba(255,255,255,0.2)' : 'var(--surface-3)'};
-  &:hover { opacity: 0.9; }
+  background: transparent;
+  /* Full-bleed to the card edges, matching the media above it. */
+  margin-inline: calc(-1 * var(--size-4));
+  border-block: 1px solid ${p => p.$wrapstodon ? 'rgba(255,255,255,0.2)' : 'var(--media-inner-border)'};
 `;
 
 const ImageBox = styled.div<{ $wrapstodon?: boolean }>`
-  aspect-ratio: 1;
+  aspect-ratio: 1.91;
   flex-shrink: 0;
   align-self: stretch;
-  max-height: 150px;
-  min-width: 150px;
+  max-height: 280px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,14 +87,17 @@ const PlaceholderWrapper = styled.div`
 `;
 
 const ContentBox = styled.div<{ $wrapstodon?: boolean }>`
-  padding-block: var(--size-3);
+  padding: var(--size-2) var(--size-4);
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background: ${p => p.$wrapstodon ? 'rgba(0,0,0,0.5)' : 'var(--comment-bg)'};
 `;
 
 const Title = styled.div<{ $wrapstodon?: boolean }>`
-  font-weight: 600;
+  font-size: var(--fs-heading);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-semibold);
   color: ${p => p.$wrapstodon ? '#fff' : 'var(--text-1)'};
   overflow: hidden;
   text-overflow: ellipsis;
@@ -102,9 +107,10 @@ const Title = styled.div<{ $wrapstodon?: boolean }>`
 `;
 
 const Desc = styled.div<{ $wrapstodon?: boolean }>`
-  font-size: 13px;
-  color: ${p => p.$wrapstodon ? 'rgba(255,255,255,0.7)' : 'var(--text-2)'};
-  margin-top: 4px;
+  font-size: var(--fs-secondary);
+  line-height: var(--lh-tight);
+  color: ${p => p.$wrapstodon ? 'rgba(255,255,255,0.7)' : 'var(--secondary-text)'};
+  margin-top: 2px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -113,9 +119,10 @@ const Desc = styled.div<{ $wrapstodon?: boolean }>`
 `;
 
 const Domain = styled.div<{ $wrapstodon?: boolean }>`
-  font-size: 12px;
-  color: ${p => p.$wrapstodon ? 'rgba(255,255,255,0.6)' : 'var(--text-3)'};
-  margin-top: 4px;
+  font-size: var(--fs-secondary);
+  line-height: var(--lh-tight);
+  text-transform: uppercase;
+  color: ${p => p.$wrapstodon ? 'rgba(255,255,255,0.6)' : 'var(--secondary-text)'};
   display: flex;
   align-items: center;
   gap: 4px;
