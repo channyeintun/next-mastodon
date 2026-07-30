@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from 'next-intl/plugin';
+import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+
+/**
+ * Makes Cloudflare bindings (ASSETS, WORKER_SELF_REFERENCE, …) available during
+ * `next dev`, so local development sees the same env as the deployed Worker.
+ * No-op outside dev.
+ */
+initOpenNextCloudflareForDev();
 
 /**
  * Baseline security headers.

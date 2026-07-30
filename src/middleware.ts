@@ -16,7 +16,7 @@ const protectedRoutes = [
 const authRoutes = ['/auth/signin'];
 
 // Next.js middleware (or proxy API)
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Get auth state from cookies

@@ -38,6 +38,14 @@ yarn-error.log*
 # vercel
 .vercel
 
+# cloudflare / opennext
+.open-next
+.wrangler
+# local Worker vars — may hold secrets, never commit
+.dev.vars
+.dev.vars.*
+cloudflare-env.d.ts
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

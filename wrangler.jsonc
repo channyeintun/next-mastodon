@@ -1,0 +1,28 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "next-mastodon",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-03-25",
+  "compatibility_flags": [
+    // Required by OpenNext: Next's server code is Node-flavoured.
+    "nodejs_compat",
+    // Makes fetch() to your own hostname go back out through the edge rather
+    // than looping inside the isolate. OpenNext requires it, and it is also
+    // what keeps /api/proxy's outbound requests behaving like real internet
+    // traffic instead of same-worker shortcuts.
+    "global_fetch_strictly_public"
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "next-mastodon"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

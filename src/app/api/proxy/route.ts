@@ -1,4 +1,4 @@
-import { lookup } from 'node:dns/promises';
+import { resolve4, resolve6 } from 'node:dns/promises';
 import { NextRequest, NextResponse } from 'next/server';
 import { isPrivateHostname } from '@/utils/instanceUrl';
 
@@ -19,7 +19,9 @@ import { isPrivateHostname } from '@/utils/instanceUrl';
  * the validated address, which `fetch` cannot express.
  */
 
-// node:dns is required for the address check, so this route must not run on edge.
+// node:dns is required for the address check, so this route must not run on the
+// edge runtime. On Cloudflare Workers (via OpenNext) this runs in the Node
+// compatibility layer, which provides resolve4/resolve6 — see resolveAll below.
 export const runtime = 'nodejs';
 
 const MAX_REDIRECTS = 3;
@@ -71,15 +73,34 @@ async function validateTarget(rawUrl: string): Promise<URL | null> {
     if (url.username || url.password) return null;
     if (isPrivateHostname(url.hostname)) return null;
 
-    try {
-        const addresses = await lookup(url.hostname, { all: true });
-        if (addresses.length === 0) return null;
-        if (addresses.some(({ address }) => isPrivateHostname(address))) return null;
-    } catch {
-        return null;
-    }
+    const addresses = await resolveAll(url.hostname);
+    // Fail closed: an empty result means we could not prove the target is
+    // public, which is not the same as proving it is.
+    if (addresses.length === 0) return null;
+    if (addresses.some((address) => isPrivateHostname(address))) return null;
 
     return url;
+}
+
+/**
+ * Resolve every A and AAAA record for a hostname.
+ *
+ * Deliberately not `dns.lookup`: that is the one `node:dns` call Cloudflare
+ * Workers does not implement (it throws "Not implemented"), which would take
+ * the address check offline on Workers. `resolve4`/`resolve6` are supported
+ * there — served over DNS-over-HTTPS via 1.1.1.1 — and behave the same on Node,
+ * so this works on both runtimes.
+ *
+ * Each family is queried independently because a host with only A records makes
+ * the AAAA query reject, and vice versa; one missing family must not discard the
+ * addresses we did get.
+ */
+async function resolveAll(hostname: string): Promise<string[]> {
+    const [v4, v6] = await Promise.all([
+        resolve4(hostname).catch(() => [] as string[]),
+        resolve6(hostname).catch(() => [] as string[]),
+    ]);
+    return [...v4, ...v6];
 }
 
 /** Follow up to MAX_REDIRECTS hops, validating each Location. */

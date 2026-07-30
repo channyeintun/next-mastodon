@@ -340,7 +340,8 @@ next-mastodon/
 │   │   ├── url.ts            # URL display helpers (shortenUrl, safeHostname)
 │   │   ├── RAMDA.md          # Ramda functions documentation
 │   │   └── README.md
-│   └── proxy.ts              # Next.js middleware (route gating, named proxy in Next 16)
+│   └── middleware.ts         # Route gating. Deliberately the deprecated `middleware`
+│                             # convention, not Next 16's `proxy` — see Deployment below
 ├── .claude/                  # Claude Code configuration
 ├── .git/                     # Git repository
 ├── .github/                  # GitHub configuration
@@ -371,6 +372,8 @@ next-mastodon/
 ├── postcss.config.mjs        # PostCSS configuration
 ├── tsconfig.json             # TypeScript configuration
 ├── tsconfig.tsbuildinfo      # TypeScript incremental build info (gitignored)
+├── wrangler.jsonc            # Cloudflare Worker config (OpenNext build output)
+├── open-next.config.ts       # OpenNext adapter config
 └── vercel.json               # Vercel deployment configuration (Bun version)
 ```
 
@@ -752,6 +755,30 @@ Global styles using Open Props:
 TypeScript configuration:
 - Path alias: `@/*` → `./src/*`
 - Configured for Next.js and React 19
+
+### Deployment: Cloudflare Workers (OpenNext)
+
+`bun run cf:deploy` builds with `@opennextjs/cloudflare` and ships to Workers.
+`bun run cf:preview` runs the built Worker locally in workerd.
+
+Two constraints are load-bearing — changing either breaks the Workers build:
+
+1. **Route gating must stay in `src/middleware.ts`, not `src/proxy.ts`.**
+   Next 16 renamed the convention to `proxy` and made Proxy **Node-runtime
+   only** — `runtime` is not configurable there and setting it throws. OpenNext
+   cannot run Node middleware ("Node.js middleware is not currently supported").
+   The deprecated `middleware` convention still runs on the Edge runtime, which
+   OpenNext does support, so it is the only form that deploys. Running the
+   `middleware-to-proxy` codemod will break the Cloudflare build.
+
+2. **`/api/proxy` must not use `dns.lookup`.** It is the one `node:dns` call
+   Workers does not implement (it throws "Not implemented"), which would take
+   the SSRF address check offline. The route uses `resolve4`/`resolve6`, which
+   Workers serves over DNS-over-HTTPS and Node supports natively.
+
+`next.config.ts` also sets `experimental.useTypeScriptCli` for TypeScript 7 (see
+Linting toolchain above); that is unrelated to Cloudflare but required to build
+at all.
 
 ### `vercel.json`
 Vercel deployment configuration:
