@@ -46,12 +46,18 @@ const StyledButton = styled.button<StyledButtonProps>`
     `;
   }}
 
-  /* Variant styles */
+  /* Variant styles.
+     Each variant declares its own hover/active surface rather than sharing a
+     blanket opacity fade, which muddies text contrast as it dims. */
   ${({ $variant }) => {
     if ($variant === 'primary') {
       return `
         background: var(--blue-6);
         color: white;
+
+        &:hover:not(:disabled) {
+          background: var(--blue-7);
+        }
       `;
     }
     if ($variant === 'secondary') {
@@ -59,24 +65,64 @@ const StyledButton = styled.button<StyledButtonProps>`
         background: var(--surface-3);
         color: var(--text-1);
         border: 1px solid var(--surface-4);
+
+        &:hover:not(:disabled) {
+          background: var(--surface-4);
+          border-color: var(--text-3);
+        }
       `;
     }
     if ($variant === 'danger') {
       return `
         background: var(--red-6);
         color: white;
+
+        &:hover:not(:disabled) {
+          background: var(--red-7);
+        }
       `;
     }
     return `
       background: transparent;
       color: var(--text-2);
+
+      &:hover:not(:disabled) {
+        background: var(--surface-3);
+        color: var(--text-1);
+      }
     `;
   }}
+
+  /* Press feedback. Scale is safe here because the transform does not
+     participate in layout, so neighbouring buttons never shift. */
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* Coarse pointers (touch) need a 44px target to hit reliably. Applied as a
+     min-height so text-driven height still wins on larger buttons. */
+  @media (pointer: coarse) {
+    min-height: 44px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:active:not(:disabled) {
+      transform: none;
+    }
+  }
 `;
 
 const LoadingSpinner = styled.span`
-  width: 1em;
-  height: 1em;
+  /* !important beats the global .spinner sizing, whose single-class specificity
+     otherwise ties with Emotion's and resolves by stylesheet injection order. */
+  width: 1em !important;
+  height: 1em !important;
+  flex-shrink: 0;
 `;
 
 export function Button({
@@ -91,11 +137,14 @@ export function Button({
     <StyledButton
       {...props}
       disabled={disabled || isLoading}
+      aria-busy={isLoading || undefined}
       $variant={variant}
       $size={size}
       $isLoading={isLoading}
     >
-      {isLoading && <LoadingSpinner className="spinner" />}
+      {/* Decorative: aria-busy already announces the pending state, so the
+          spinner would otherwise be read as a second, meaningless node. */}
+      {isLoading && <LoadingSpinner className="spinner" aria-hidden="true" />}
       {children}
     </StyledButton>
   );

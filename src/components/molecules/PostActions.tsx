@@ -1,7 +1,9 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 import { useTranslations } from 'next-intl';
+import { useEffect, useRef, useState } from 'react';
 import {
   Heart,
   Repeat2,
@@ -25,6 +27,29 @@ interface PostActionsProps {
 const ICON_SIZE = 18;
 
 /**
+ * Returns a counter that increments whenever `active` flips false -> true,
+ * used as an animation `key` to replay the celebration effect.
+ *
+ * Deliberately ignores the value present on mount. Timelines here are
+ * virtualized, so cards mount and unmount as they scroll through the viewport;
+ * animating the incoming value would make every already-favourited post in the
+ * feed burst as it scrolled into view.
+ */
+function useActivationCount(active: boolean): number {
+  const [count, setCount] = useState(0);
+  const previous = useRef(active);
+
+  useEffect(() => {
+    if (active && !previous.current) {
+      setCount((current) => current + 1);
+    }
+    previous.current = active;
+  }, [active]);
+
+  return count;
+}
+
+/**
  * Presentation component for post action buttons
  * (reply, boost, favourite, bookmark, share).
  */
@@ -41,11 +66,19 @@ export function PostActions({
   onFavourite,
 }: PostActionsProps) {
   const t = useTranslations('actions');
+  const favouriteBursts = useActivationCount(favourited);
+  const reblogBursts = useActivationCount(reblogged);
+
   return (
     <Container>
       {/* Reply */}
       <ActionGroup>
-        <ActionButton onClick={onReply} title={t('reply')}>
+        <ActionButton
+          onClick={onReply}
+          title={t('reply')}
+          aria-label={t('reply')}
+          $accent="var(--blue-6)"
+        >
           <MessageCircle size={ICON_SIZE} />
         </ActionButton>
         <Count>{repliesCount}</Count>
@@ -57,10 +90,14 @@ export function PostActions({
           <ActionButton
             onMouseDown={onReblog}
             $isActive={reblogged}
-            $activeColor="var(--green-6)"
+            $accent="var(--green-6)"
+            aria-pressed={reblogged}
             title={reblogged ? t('undoBoost') : t('boost')}
+            aria-label={reblogged ? t('undoBoost') : t('boost')}
           >
-            <Repeat2 size={ICON_SIZE} />
+            <SpinIcon key={reblogBursts} $animate={reblogBursts > 0}>
+              <Repeat2 size={ICON_SIZE} />
+            </SpinIcon>
           </ActionButton>
           <BoostPopover className="boost-popover">
             <PopoverButton onMouseDown={onConfirmReblog} $isActive={reblogged}>
@@ -73,7 +110,9 @@ export function PostActions({
             </PopoverButton>
           </BoostPopover>
         </BoostContainer>
-        <Count>{reblogsCount}</Count>
+        <Count $isActive={reblogged} $accent="var(--green-6)">
+          {reblogsCount}
+        </Count>
       </ActionGroup>
 
       {/* Favourite */}
@@ -81,12 +120,22 @@ export function PostActions({
         <ActionButton
           onClick={onFavourite}
           $isActive={favourited}
-          $activeColor="var(--red-6)"
+          $accent="var(--red-6)"
+          aria-pressed={favourited}
           title={favourited ? t('unfavourite') : t('favourite')}
+          aria-label={favourited ? t('unfavourite') : t('favourite')}
         >
-          <Heart size={ICON_SIZE} fill={favourited ? 'currentColor' : 'none'} />
+          {/* Remounted via key so the CSS animation replays on every re-favourite */}
+          <PopIcon key={favouriteBursts} $animate={favouriteBursts > 0}>
+            <Heart size={ICON_SIZE} fill={favourited ? 'currentColor' : 'none'} />
+          </PopIcon>
+          {favouriteBursts > 0 && (
+            <Burst key={`burst-${favouriteBursts}`} aria-hidden="true" />
+          )}
         </ActionButton>
-        <Count>{favouritesCount}</Count>
+        <Count $isActive={favourited} $accent="var(--red-6)">
+          {favouritesCount}
+        </Count>
       </ActionGroup>
     </Container>
   );
@@ -107,7 +156,8 @@ const ActionGroup = styled.div`
   gap: var(--size-1);
 `;
 
-const ActionButton = styled.button<{ $isActive?: boolean; $activeColor?: string }>`
+const ActionButton = styled.button<{ $isActive?: boolean; $accent?: string }>`
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -117,22 +167,98 @@ const ActionButton = styled.button<{ $isActive?: boolean; $activeColor?: string 
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: ${({ $isActive, $activeColor }) => ($isActive && $activeColor ? $activeColor : 'var(--text-2)')};
+  color: ${({ $isActive, $accent }) => ($isActive && $accent ? $accent : 'var(--text-2)')};
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 
+  /* Each action carries its own hue on hover — reply blue, boost green,
+     favourite red — so the row reads as three distinct verbs rather than three
+     identical grey circles, and intent is legible before the click. */
   &:hover {
-    background: var(--surface-3);
+    background: ${({ $accent }) =>
+    ($accent
+      ? `color-mix(in oklab, ${$accent} 14%, transparent)`
+      : 'var(--surface-3)')};
+    color: ${({ $accent }) => $accent ?? 'var(--text-1)'};
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid
+      ${({ $accent }) => $accent ?? 'var(--focus-ring-color)'};
+    outline-offset: 1px;
   }
 
   &:active {
     transform: scale(0.95);
   }
+
+  /* Touch needs a 44px target. Safe to grow the real box here: three 44px
+     circles plus counts still fit a narrow post card, so nothing reflows. */
+  @media (pointer: coarse) {
+    width: 44px;
+    height: 44px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:active {
+      transform: none;
+    }
+  }
 `;
 
-const Count = styled.span`
+/* Squash before the pop: anticipation is what makes the tap feel physical
+   rather than like a plain scale-up. */
+const pop = keyframes`
+  0% { scale: 1; }
+  22% { scale: 0.82; }
+  52% { scale: 1.28; }
+  76% { scale: 0.96; }
+  100% { scale: 1; }
+`;
+
+const spin = keyframes`
+  0% { rotate: 0deg; scale: 1; }
+  45% { rotate: 200deg; scale: 1.16; }
+  100% { rotate: 360deg; scale: 1; }
+`;
+
+const burst = keyframes`
+  0% { scale: 0.45; opacity: 0.7; }
+  100% { scale: 1.9; opacity: 0; }
+`;
+
+const PopIcon = styled.span<{ $animate: boolean }>`
+  display: inline-flex;
+  animation: ${({ $animate }) => ($animate ? pop : 'none')} 420ms var(--ease-3);
+`;
+
+const SpinIcon = styled.span<{ $animate: boolean }>`
+  display: inline-flex;
+  animation: ${({ $animate }) => ($animate ? spin : 'none')} 480ms var(--ease-3);
+`;
+
+/* Ring that radiates out of the heart on activation. pointer-events: none so it
+   can never intercept a rapid second click (un-favourite). */
+const Burst = styled.span`
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--red-6);
+  pointer-events: none;
+  animation: ${burst} 520ms var(--ease-3) forwards;
+
+  /* Decorative only — the state change is conveyed by colour, fill and
+     aria-pressed, so suppressing it costs no information. */
+  @media (prefers-reduced-motion: reduce) {
+    display: none;
+  }
+`;
+
+const Count = styled.span<{ $isActive?: boolean; $accent?: string }>`
   font-size: var(--font-size-1);
-  color: var(--text-2);
+  color: ${({ $isActive, $accent }) => ($isActive && $accent ? $accent : 'var(--text-2)')};
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s ease;
   min-width: 16px;
 `;
 

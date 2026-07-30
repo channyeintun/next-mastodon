@@ -30,6 +30,25 @@ html {
   --surface-2: #252728;
   --poll-bar-bg: var(--blue-8);
   --poll-bar-bg-own: var(--blue-7);
+
+  /**
+   * Brand accent. Deliberately the same hue as --status-link-color so the whole
+   * app speaks one accent language (links, active states, focus rings, gradients).
+   *
+   * Open Props normalize reads `var(--brand, var(--link))` for outline-color,
+   * accent-color and caret-color, so defining --brand also themes focus rings
+   * and native form controls for free. Anchors keep `color: inherit` from the
+   * `a` rule below (specificity beats normalize's `:where(a[href])`).
+   */
+  --brand: #5AA7FF;
+  --brand-hover: #7DBCFF;
+  /* Low-alpha wash for tinted hover halos and selected rows */
+  --brand-subtle: color-mix(in oklab, var(--brand) 16%, transparent);
+
+  /* Focus ring — single source of truth for keyboard affordances */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color: var(--brand);
 }
 
 /* Light mode colors */
@@ -40,6 +59,11 @@ html {
   --surface-2: #fff;
   --poll-bar-bg: var(--blue-3);
   --poll-bar-bg-own: var(--blue-4);
+
+  /* 5.6:1 on white, 5.1:1 on --surface-1 — passes WCAG AA for text */
+  --brand: #0064D1;
+  --brand-hover: #0052AB;
+  --brand-subtle: color-mix(in oklab, var(--brand) 12%, transparent);
 }
 
 @media (max-width: 768px) {
@@ -120,6 +144,58 @@ a {
 
 input[type="radio"] {
   accent-color: var(--cyan-6);
+}
+
+/* ====================================
+   Keyboard focus affordance
+   ====================================
+   Open Props normalize only sets outline-*color* and leaves width/style to the
+   UA, which renders inconsistently over custom backgrounds. Declare the whole
+   ring here so every focusable element has one visible, predictable indicator.
+
+   :focus-visible (not :focus) keeps rings off mouse/touch interactions while
+   guaranteeing they appear for keyboard and screen-reader users. */
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  /* Normalize pushes non-active rings out by 5px, which detaches the ring from
+     round buttons and clips inside scroll containers. */
+  transition: outline-offset 145ms var(--ease-2);
+}
+
+:where(:not(:active)):focus-visible {
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Inputs draw their ring flush to the border so it reads as one control */
+:where(input, textarea, select, [contenteditable]):focus-visible {
+  outline-offset: 1px;
+}
+
+/* ====================================
+   Reduced motion
+   ====================================
+   Honour the OS "reduce motion" setting app-wide. Transforms and animations are
+   collapsed rather than removed outright: a near-instant transition still fires
+   transitionend, so components that sequence state off it keep working.
+
+   Scoped to :where() so component-level rules can still opt back in when motion
+   carries meaning (e.g. a loading spinner communicating that work is ongoing). */
+@media (prefers-reduced-motion: reduce) {
+
+  :where(*, *::before, *::after) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Indefinite loading indicators stay animated — they convey live status, and
+     freezing them reads as a hung UI. Slowed down to reduce vestibular load. */
+  :where(.spinner, [data-spinner], [role="progressbar"]) {
+    animation-duration: 1.2s !important;
+    animation-iteration-count: infinite !important;
+  }
 }
 
 /* Post Card - tablet viewport padding */

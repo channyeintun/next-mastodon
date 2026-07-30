@@ -37,28 +37,55 @@ const StyledIconButton = styled.button<StyledIconButtonProps>`
     `;
   }}
 
-  /* Variant styles */
+  /* Variant styles.
+     Hover shifts the surface instead of fading opacity — dimming a filled
+     button lowers icon contrast against the page exactly when the user is
+     aiming at it. */
   ${({ $variant }) => {
     if ($variant === 'primary') {
       return `
         background: var(--blue-6);
         color: white;
+
+        &:hover:not(:disabled) {
+          background: var(--blue-7);
+        }
       `;
     }
     if ($variant === 'danger') {
       return `
         background: var(--red-6);
         color: white;
+
+        &:hover:not(:disabled) {
+          background: var(--red-7);
+        }
       `;
     }
     return `
       background: transparent;
       color: var(--text-2);
+
+      &:hover:not(:disabled) {
+        background: var(--surface-3);
+        color: var(--text-1);
+      }
     `;
   }}
 
-  &:hover:not(:disabled) {
-    opacity: 0.8;
+  &:active:not(:disabled) {
+    transform: scale(0.92);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:active:not(:disabled) {
+      transform: none;
+    }
   }
 `;
 
