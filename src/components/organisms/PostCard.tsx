@@ -13,6 +13,7 @@ import {
   DeletePostModal,
   MediaModal,
   TranslateButton,
+  InlineReplyBox,
   ReportModal,
   FeedVideoPlayer,
 } from '@/components/molecules';
@@ -52,6 +53,8 @@ interface PostCardProps {
   id?: string;
   /** Current nesting depth for quote posts (internal use) */
   depth?: number;
+  /** Show Facebook-style inline reply box under the action bar */
+  showReplyBox?: boolean;
   /** Wrapstodon mode: transparent bg with light text colors for dark gradient */
   wrapstodon?: boolean;
   isFocused?: boolean;
@@ -72,6 +75,7 @@ export function PostCard({
   onDeleteSuccess,
   id,
   depth = 0,
+  showReplyBox = false,
   wrapstodon = false,
   isFocused = false,
 }: PostCardProps) {
@@ -420,6 +424,11 @@ export function PostCard({
             onFavourite={handleFavourite}
           />
         )}
+
+        {/* Facebook-style inline reply box. Off by default: mounting one per
+            card in a virtualized timeline is wasted work, so callers opt in
+            where a comment box actually belongs. */}
+        {showReplyBox && !hideActions && <InlineReplyBox status={displayStatus} />}
       </PostContent>
 
       {/* Edit History */}

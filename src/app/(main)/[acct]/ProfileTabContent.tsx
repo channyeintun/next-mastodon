@@ -213,6 +213,7 @@ export function ProfileTabContent({
                                     <PostCard
                                         status={item.data}
                                         isFocused={virtualRow.index === focusedIndex}
+                                        showReplyBox
                                         style={{ marginBottom: 'var(--size-3)' }}
                                     />
                                 </VirtualItemWrapper>

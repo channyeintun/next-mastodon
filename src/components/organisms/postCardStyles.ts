@@ -3,7 +3,9 @@ import { StatusContent, LinkPreview } from '@/components/molecules';
 import Link from 'next/link';
 
 export const PostContent = styled.div`
-  margin-bottom: var(--size-3);
+  /* No bottom margin: the Card's own padding already closes the card, and
+     stacking both left the space under the action bar visibly deeper than the
+     space above the header. */
 `;
 
 export const StyledStatusContent = styled(StatusContent)`
@@ -129,6 +131,13 @@ export const NestedQuoteLink = styled(Link)`
 export const TranslationContainer = styled.div`
   margin-top: var(--size-2);
   padding-top: var(--size-2);
+
+  /* TranslateButton returns null when the instance offers no translation for
+     this post, which left this wrapper as an empty div still contributing its
+     margin and padding — the unexplained gap under the action bar. */
+  &:empty {
+    display: none;
+  }
 `;
 
 export const BlurredBackground = styled.div<{ $url: string }>`

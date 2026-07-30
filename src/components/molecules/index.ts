@@ -69,3 +69,4 @@ export { SaveDraftConfirmationModal } from './SaveDraftConfirmationModal';
 export { DiscardChangesModal } from './DiscardChangesModal';
 export { FollowTagButton } from './FollowTagButton';
 export { AnnouncementsBanner } from './AnnouncementsBanner';
+export { InlineReplyBox } from './InlineReplyBox';

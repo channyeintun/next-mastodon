@@ -144,8 +144,8 @@ export function PostActions({
 
 
 /**
- * Facebook's action row: 44px tall, padded 0 4px, with a hairline above it
- * separating the actions from the post body.
+ * Facebook's action row: 44px tall, padded 0 4px. No rule above it — their feed
+ * posts run the actions straight under the text.
  */
 const Container = styled.div`
   display: flex;
@@ -154,7 +154,6 @@ const Container = styled.div`
   min-height: 44px;
   margin-top: var(--size-2);
   padding-inline: 4px;
-  border-top: 1px solid var(--divider);
 `;
 
 const ActionGroup = styled.div`
