@@ -127,12 +127,18 @@ export function AccountCardActions({
             }
         };
 
+        // Named so the cleanup can actually remove it — an inline listener with
+        // `{ once: true }` outlives the menu and fires on the next scroll, after
+        // this card may already be unmounted.
+        const closeMenu = () => setShowMenu(false);
+
         if (showMenu) {
             document.addEventListener('mousedown', handleClickOutside);
-            window.addEventListener('scroll', () => setShowMenu(false), { once: true });
+            window.addEventListener('scroll', closeMenu, { once: true });
         }
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
+            window.removeEventListener('scroll', closeMenu);
         };
     }, [showMenu]);
 

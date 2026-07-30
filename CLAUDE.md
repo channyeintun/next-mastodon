@@ -123,6 +123,16 @@ next-mastodon/
 │   │   │   │   └── signin/    # Sign in page
 │   │   │   │       └── page.tsx
 │   │   │   └── layout.tsx     # Auth layout wrapper
+│   │   ├── api/              # Server-side route handlers and server actions
+│   │   │   ├── auth/
+│   │   │   │   ├── actions.ts   # Server actions writing auth cookies (clientSecret is httpOnly)
+│   │   │   │   ├── callback/    # POST: OAuth token exchange (holds clientSecret server-side)
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── revoke/      # POST: token revocation on sign out
+│   │   │   │       └── route.ts
+│   │   │   └── proxy/          # GET: media proxy (SSRF-guarded, see Security invariants)
+│   │   │       └── route.ts
+│   │   ├── manifest.ts       # PWA manifest
 │   │   ├── globals.css       # Global styles with Open Props
 │   │   └── layout.tsx        # Root layout with providers
 │   ├── api/                  # Mastodon API client and TanStack Query
@@ -155,7 +165,7 @@ next-mastodon/
 │   │   ├── queryKeys.ts      # Query key factory for cache management
 │   │   └── index.ts          # API exports
 │   ├── components/           # Atomic design components (strict LOC limits enforced by ESLint)
-│   │   ├── atoms/            # Basic UI elements (max 120 LOC)
+│   │   ├── atoms/            # Basic UI elements (max 150 LOC)
 │   │   │   ├── Avatar.tsx
 │   │   │   ├── Badge.tsx
 │   │   │   ├── Button.tsx
@@ -184,7 +194,7 @@ next-mastodon/
 │   │   │   ├── TextSkeleton.tsx          # Text skeleton loader
 │   │   │   ├── TiptapEditor.tsx
 │   │   │   └── index.ts
-│   │   ├── molecules/        # Simple component combinations (max 200 LOC)
+│   │   ├── molecules/        # Simple component combinations (max 350 LOC)
 │   │   │   ├── AccountCard.tsx
 │   │   │   ├── AccountProfileSkeleton.tsx
 │   │   │   ├── AuthModalBridge.tsx
@@ -243,7 +253,7 @@ next-mastodon/
 │   │   │   ├── UserCardSkeleton.tsx      # User card skeleton loader
 │   │   │   ├── VisibilitySettingsModal.tsx
 │   │   │   └── index.ts
-│   │   ├── organisms/        # Complex components (max 350 LOC)
+│   │   ├── organisms/        # Complex components (max 500 LOC)
 │   │   │   ├── AuthGuard.tsx
 │   │   │   ├── ComposerPanel.tsx
 │   │   │   ├── ComposerPanelStyles.tsx   # Styled components for composer
@@ -292,6 +302,13 @@ next-mastodon/
 │   │       │   ├── Hashtag.ts          # Hashtag mark with click navigation
 │   │       │   └── MentionWithClick.ts # Enhanced mention with click navigation
 │   │       └── MentionSuggestion.tsx   # Mention autocomplete UI
+│   ├── constants/            # Shared layout constants
+│   │   └── layout.ts
+│   ├── i18n/                 # next-intl setup
+│   │   ├── config.ts         # Locale list, default locale, locale cookie name
+│   │   └── request.ts        # Server request config (locale from cookie, allowlisted)
+│   ├── messages/             # Translation catalogues (en is the source of truth)
+│   │   ├── en.json           # + de, es, fr, ja, ko, my, th, vi, zh-CN
 │   ├── schemas/              # Zod validation schemas
 │   │   ├── filterFormSchema.ts  # Filter form validation
 │   │   └── profileFormSchema.ts # Profile edit form validation
@@ -312,12 +329,18 @@ next-mastodon/
 │   │   ├── cookies.ts        # Cookie management utilities
 │   │   ├── counter.ts        # Mastodon-compatible character counting for compose
 │   │   ├── date.ts           # Centralized date formatting functions (date-fns)
+│   │   ├── device.ts         # User-agent device detection (SSR)
+│   │   ├── externalLink.ts   # Scheme-checked opening of API-provided URLs
 │   │   ├── fp.ts             # Ramda-based functional programming utilities
-│   │   ├── oauth.ts          # OAuth flow helpers
+│   │   ├── instanceUrl.ts    # Instance URL validation (SSRF guard, shared client/server)
+│   │   ├── keyboardUtils.ts  # Keyboard shortcut helpers
+│   │   ├── oauth.ts          # OAuth flow helpers (PKCE, authorization URL)
+│   │   ├── sanitize.ts       # DOMPurify wrapper for API-provided HTML
 │   │   ├── tiptapExtensions.ts  # Tiptap extension utilities
+│   │   ├── url.ts            # URL display helpers (shortenUrl, safeHostname)
 │   │   ├── RAMDA.md          # Ramda functions documentation
 │   │   └── README.md
-│   └── proxy.ts              # Proxy configuration
+│   └── proxy.ts              # Next.js middleware (route gating, named proxy in Next 16)
 ├── .claude/                  # Claude Code configuration
 ├── .git/                     # Git repository
 ├── .github/                  # GitHub configuration
@@ -327,6 +350,14 @@ next-mastodon/
 ├── .gitignore                # Git ignore rules
 ├── .next/                    # Next.js build output (gitignored)
 ├── .vscode/                  # VS Code configuration
+├── docs/                     # Additional documentation
+│   └── bun-patching-guide.md
+├── scripts/                  # Locale tooling (convert/sync/verify locales)
+│   ├── convert-locales.mjs
+│   ├── sync-locales.mjs
+│   └── verify-locales.mjs   # `bun run lint:locales`, enforced in CI
+├── browser-requirements.md   # Baseline browser feature requirements
+├── review.md                 # Previous codebase review (2026-07-19)
 ├── node_modules/             # Dependencies
 ├── buy-me-coffee.png         # Buy me a coffee badge image
 ├── CLAUDE.md                 # This file - project structure documentation
@@ -334,7 +365,7 @@ next-mastodon/
 ├── eslint.config.js          # ESLint configuration with CSS baseline linting
 ├── next-env.d.ts             # Next.js TypeScript declarations
 ├── next.config.ts            # Next.js configuration (with React Compiler)
-├── package-lock.json         # Lockfile
+├── bun.lock                  # Lockfile (Bun; CI installs with --frozen-lockfile)
 ├── package.json              # Dependencies and scripts (type: module)
 ├── postcss.config.mjs        # PostCSS configuration
 ├── tsconfig.json             # TypeScript configuration
@@ -395,11 +426,40 @@ Next.js App Router with file-based routing using route groups for different layo
 - **`/auth/signin`**: OAuth sign in
 - **`/auth/callback`**: OAuth callback handler
 
+**Server-side routes (`app/api/`)** — the only code in the app that runs with the
+httpOnly `clientSecret`:
+- **`POST /api/auth/callback`**: exchanges the OAuth `code` for an access token
+- **`POST /api/auth/revoke`**: revokes the access token on sign out
+- **`api/auth/actions.ts`**: server actions that set the auth cookies
+- **`GET /api/proxy?url=`**: media proxy for cross-origin fetches. No in-repo caller
+  today (it was added for an external side app); safe to delete if that consumer is gone
+
 **Special files:**
 - `layout.tsx`: Root layout with QueryProvider, StoreProvider, ThemeProvider, StreamingProvider, and VideoSyncProvider
 - `(main)/layout.tsx`: Main layout with navigation wrapper
 - `(auth)/layout.tsx`: Auth layout without navigation
 - `globals.css`: Global styles using Open Props
+
+### Security invariants
+
+Read these before touching auth, fetches, or HTML rendering:
+
+- **Instance HTML is untrusted.** The app is a third-party client for any
+  user-chosen instance, so status content, bios and instance pages go through
+  `sanitizeHtml()` (`src/utils/sanitize.ts`) before `dangerouslySetInnerHTML`.
+  Parsing such HTML with `innerHTML` also needs an inert document — see
+  `stripMentions` in `src/utils/conversationUtils.ts`.
+- **The `instanceURL` cookie is attacker-controlled** (not httpOnly). Anything
+  that turns it into a request target must pass it through
+  `sanitizeInstanceUrlForServer()` (`src/utils/instanceUrl.ts`) first:
+  `api/auth/callback`, `api/auth/revoke`, `lib/serverApi.ts`, `app/layout.tsx`.
+- **API-provided URLs may not be http(s).** Open them with `openExternalUrl()`
+  (`src/utils/externalLink.ts`), which enforces the scheme and `noopener`.
+- **`/api/proxy` must stay SSRF-guarded**: scheme allowlist, DNS-resolved
+  address check, per-redirect re-validation, media content types, size cap.
+- Security response headers (CSP `frame-ancestors`/`base-uri`/`object-src`,
+  `X-Frame-Options`, `Referrer-Policy`, `nosniff`) are set in `next.config.ts`.
+  A full `script-src` policy still needs per-request nonces.
 
 ### `/src/api/`
 Mastodon API client and TanStack Query integration with modular architecture:
@@ -621,15 +681,16 @@ ESLint configuration with CSS baseline linting and atomic design LOC limits:
 - **Ignored directories**: .next/, node_modules/, dist/, build/, out/, *.min.css
 
 **Atomic Design LOC Limits:**
-Enforces maximum lines of code (LOC) to maintain component simplicity:
-- **Atoms** (src/components/atoms/\*\*/\*.tsx): max 120 LOC
-  - max 50 LOC per function
-- **Molecules** (src/components/molecules/\*\*/\*.tsx): max 200 LOC
-  - max 80 LOC per function
-- **Organisms** (src/components/organisms/\*\*/\*.tsx): max 350 LOC
-  - max 80 LOC per function
-- **Pages** (src/app/\*\*/page.tsx, layout.tsx): max 300 LOC
+Enforces maximum lines of code (LOC) to maintain component simplicity. These are
+the values in `eslint.config.js` — blank lines and comments are not counted:
+- **Atoms** (src/components/atoms/\*\*/\*.tsx): max 150 LOC
   - max 100 LOC per function
+- **Molecules** (src/components/molecules/\*\*/\*.tsx): max 350 LOC
+  - max 250 LOC per function
+- **Organisms** (src/components/organisms/\*\*/\*.tsx): max 500 LOC
+  - max 400 LOC per function
+- **Pages** (src/app/\*\*/page.tsx, layout.tsx): max 300 LOC
+  - max 250 LOC per function
   - Pages should only orchestrate organisms, not contain presentational components
 
 These limits encourage:

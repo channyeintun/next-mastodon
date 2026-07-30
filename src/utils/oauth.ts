@@ -3,6 +3,8 @@
  * Implements PKCE (Proof Key for Code Exchange) for secure browser-based OAuth
  */
 
+import { isPrivateHostname, sanitizeInstanceUrl } from './instanceUrl'
+
 const APP_NAME = 'Mastodon'
 const REDIRECT_URI = typeof window !== 'undefined'
   ? `${window.location.origin}/auth/callback`
@@ -121,19 +123,24 @@ export function getAppName(): string {
 }
 
 /**
- * Normalize instance URL
+ * Normalize and validate an instance URL typed by the user.
+ *
+ * Throws when the value cannot be a public instance (non-https, credentials
+ * in the URL, loopback/private host) — the same rule the server applies before
+ * storing it, surfaced here so the sign-in form can explain the problem.
  */
 export function normalizeInstanceURL(url: string): string {
-  let normalized = url.trim().toLowerCase()
+  // Hosts are case-insensitive; a path is not, so only the host is lowercased
+  // (sanitizeInstanceUrl does that via the URL parser).
+  // When the app itself is served from localhost we're in development, so a
+  // locally hosted instance is a legitimate target.
+  const normalized = sanitizeInstanceUrl(url, {
+    allowLocal: typeof window !== 'undefined' && isPrivateHostname(window.location.hostname),
+  })
 
-  // Remove protocol if present
-  normalized = normalized.replace(/^https?:\/\//, '')
-
-  // Remove trailing slash
-  normalized = normalized.replace(/\/$/, '')
-
-  // Add https protocol
-  normalized = `https://${normalized}`
+  if (!normalized) {
+    throw new Error('Enter a valid instance domain, for example mastodon.social')
+  }
 
   return normalized
 }

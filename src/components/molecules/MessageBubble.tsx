@@ -7,6 +7,7 @@ import styled from '@emotion/styled'
 import { Avatar } from '@/components/atoms/Avatar'
 import { StatusContent } from '@/components/molecules/StatusContent'
 import { formatTimeAgo } from '@/utils/date'
+import { openExternalUrl } from '@/utils/externalLink'
 import type { Status, MediaAttachment } from '@/types/mastodon'
 
 interface MessageBubbleProps {
@@ -65,9 +66,7 @@ export function MessageBubble({ status, isOwn, stripMentions, showAvatar = true,
 
 function MediaItem({ media }: { media: MediaAttachment }) {
   const handleClick = () => {
-    if (media.url) {
-      window.open(media.url, '_blank')
-    }
+    openExternalUrl(media.url)
   }
 
   if (media.type === 'image' || media.type === 'gifv') {

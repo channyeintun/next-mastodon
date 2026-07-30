@@ -14,6 +14,7 @@ import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { Tabs, EmptyState, Button, Avatar, EmojiText } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
 import { flattenAndUniqById, flattenAndUniqByKey } from '@/utils/fp';
+import { openExternalUrl } from '@/utils/externalLink';
 import type { Status, Tag, TrendingLink, Field } from '@/types';
 import { useAuthStore } from '@/hooks/useStores';
 import { useQueryState, parseAsStringLiteral } from '@/hooks/useQueryState';
@@ -257,7 +258,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             renderItem={(link) => (
                                 <TrendingLinkCard link={link} style={{ marginBottom: 'var(--size-2)' }} />
                             )}
-                            onItemOpen={(link) => window.open(link.url, '_blank')}
+                            onItemOpen={(link) => openExternalUrl(link.url)}
                             getItemKey={(link) => link.url}
                             getMediaUrls={(link) => link.image ? [link.image] : []}
                             estimateSize={120}

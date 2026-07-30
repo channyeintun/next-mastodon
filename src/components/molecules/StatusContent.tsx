@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import type { Emoji, Mention } from '@/types/mastodon';
 import { shortenUrl } from '@/utils/url';
 import { sanitizeHtml } from '@/utils/sanitize';
+import { openExternalUrl } from '@/utils/externalLink';
 
 interface StatusContentProps {
   html: string;
@@ -148,7 +149,7 @@ export function StatusContent({ html, emojis = [], mentions = [], style, classNa
     // For other links, allow default behavior (open in new tab)
     if (link.href && !link.href.startsWith(window.location.origin)) {
       e.preventDefault();
-      window.open(link.href, '_blank', 'noopener,noreferrer');
+      openExternalUrl(link.href);
     }
   }, [mentions, router]);
 

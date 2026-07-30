@@ -4,6 +4,8 @@ import styled from '@emotion/styled';
 import { Card as CardType } from '@/types/mastodon';
 import { ExternalLink } from 'lucide-react';
 import { RiPagesLine } from 'react-icons/ri';
+import { openExternalUrl } from '@/utils/externalLink';
+import { safeHostname } from '@/utils/url';
 
 interface LinkPreviewProps {
   card: CardType;
@@ -15,7 +17,7 @@ interface LinkPreviewProps {
 export function LinkPreview({ card, style, className, wrapstodon = false }: LinkPreviewProps) {
   return (
     <Card
-      onClick={() => window.open(card.url, '_blank', 'noopener,noreferrer')}
+      onClick={() => openExternalUrl(card.url)}
       className={className}
       style={style}
       $wrapstodon={wrapstodon}
@@ -34,7 +36,7 @@ export function LinkPreview({ card, style, className, wrapstodon = false }: Link
         {card.description && <Desc $wrapstodon={wrapstodon}>{card.description}</Desc>}
         <Domain $wrapstodon={wrapstodon}>
           <ExternalLink size={12} />
-          {new URL(card.url).hostname}
+          {safeHostname(card.url)}
         </Domain>
       </ContentBox>
     </Card>

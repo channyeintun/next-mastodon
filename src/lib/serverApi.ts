@@ -8,14 +8,22 @@
 import axios from 'axios';
 import { cookies } from 'next/headers';
 import type { Account, Status } from '@/types/mastodon';
+import { sanitizeInstanceUrlForServer } from '@/utils/instanceUrl';
+
+const DEFAULT_INSTANCE_URL = 'https://mastodon.social';
 
 /**
  * Create an axios instance for server-side API calls.
  * Reads instanceURL and accessToken from cookies.
+ *
+ * The instanceURL cookie is client-writable, so it is validated before it
+ * becomes a request target — an unvalidated value would let a crafted cookie
+ * aim these server-side fetches at internal addresses.
  */
 async function getServerClient() {
     const cookieStore = await cookies();
-    const instanceURL = cookieStore.get('instanceURL')?.value || 'https://mastodon.social';
+    const instanceURL =
+        sanitizeInstanceUrlForServer(cookieStore.get('instanceURL')?.value) ?? DEFAULT_INSTANCE_URL;
     const accessToken = cookieStore.get('accessToken')?.value;
 
     const client = axios.create({

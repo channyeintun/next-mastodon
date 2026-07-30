@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
+import { sanitizeInstanceUrlForServer } from '@/utils/instanceUrl'
 
 /**
  * POST /api/auth/revoke
@@ -21,9 +22,10 @@ export async function POST(request: NextRequest) {
             )
         }
 
-        // Read auth data from cookies
+        // Read auth data from cookies. The instance URL is client-writable, so
+        // it is validated before it becomes an outbound request target.
         const cookieStore = await cookies()
-        const instanceURL = cookieStore.get('instanceURL')?.value
+        const instanceURL = sanitizeInstanceUrlForServer(cookieStore.get('instanceURL')?.value)
         const clientId = cookieStore.get('clientId')?.value
         const clientSecret = cookieStore.get('clientSecret')?.value
 

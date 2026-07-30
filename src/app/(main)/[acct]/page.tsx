@@ -13,20 +13,36 @@ interface AccountPageProps {
 }
 
 /**
+ * Decode the `[acct]` segment and require the `@username` shape.
+ * Returns null for anything else — including malformed percent-encoding, which
+ * makes `decodeURIComponent` throw and would otherwise surface as a 500 rather
+ * than a not-found page.
+ */
+function parseAcctParam(acctParam: string): string | null {
+    let decoded: string;
+    try {
+        decoded = decodeURIComponent(acctParam);
+    } catch {
+        return null;
+    }
+
+    return decoded.startsWith('@') ? decoded.slice(1) : null;
+}
+
+/**
  * Generate metadata for SEO and Open Graph cards.
  * This runs on the server for both direct visits and crawlers.
  */
 export async function generateMetadata({ params }: AccountPageProps): Promise<Metadata> {
     const { acct: acctParam } = await params;
-    const decodedAcct = decodeURIComponent(acctParam);
+    const acct = parseAcctParam(acctParam);
 
     const t = await getTranslations('account');
 
-    if (!decodedAcct.startsWith('@')) {
+    if (!acct) {
         return { title: t('notFound') };
     }
 
-    const acct = decodedAcct.slice(1);
     const account = await lookupAccountServer(acct);
 
     if (!account) {
@@ -67,15 +83,12 @@ export async function generateMetadata({ params }: AccountPageProps): Promise<Me
 export default async function AccountPage({ params }: AccountPageProps) {
     const { acct: acctParam } = await params;
 
-    // Decode and validate the acct parameter
-    const decodedAcct = decodeURIComponent(acctParam);
+    // Decode and validate the acct parameter — the route expects @username
+    const acct = parseAcctParam(acctParam);
 
-    // The route expects @username format
-    if (!decodedAcct.startsWith('@')) {
+    if (!acct) {
         notFound();
     }
-
-    const acct = decodedAcct.slice(1); // Remove @ prefix
 
     // Detect client-side navigation via RSC header
     // When navigating via Link/router, Next.js sends RSC request with this header

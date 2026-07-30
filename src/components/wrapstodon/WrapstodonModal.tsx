@@ -7,7 +7,7 @@
 
 import { useMemo, useCallback, useState } from 'react'
 import { useAnnualReportState, useAnnualReport, useInstance } from '@/api/queries'
-import { useGenerateAnnualReport } from '@/api/mutations'
+import { useAnnualReportGeneration } from '@/hooks/useAnnualReportGeneration'
 import { Wrapstodon } from '@/components/wrapstodon'
 import { Announcement } from '@/components/wrapstodon/Announcement'
 import { Spinner } from '@/components/atoms/Spinner'
@@ -44,23 +44,8 @@ export function WrapstodonModal({ onClose }: WrapstodonModalProps) {
         enabled: state === 'available' && !!wrapstodonYear,
     })
 
-    // Generate mutation
-    const generateMutation = useGenerateAnnualReport()
-
-    const handleGenerate = useCallback(() => {
-        if (!wrapstodonYear) return
-        generateMutation.mutate(wrapstodonYear, {
-            onSuccess: () => {
-                // Poll for state change
-                const interval = setInterval(() => {
-                    refetchState()
-                }, 2000)
-
-                // Stop polling after 30 seconds
-                setTimeout(() => clearInterval(interval), 30000)
-            },
-        })
-    }, [generateMutation, refetchState, wrapstodonYear])
+    // Generation + state polling (cleans itself up on unmount)
+    const { generate: handleGenerate } = useAnnualReportGeneration(wrapstodonYear, refetchState)
 
     const handleDismiss = useCallback(() => {
         setIsDismissed(true)

@@ -1,4 +1,19 @@
 /**
+ * Hostname of a URL for display, or an empty string when the value isn't a
+ * parseable absolute URL. API-provided URLs are not guaranteed to be valid, and
+ * a bare `new URL()` in a render path throws and takes the page down with it.
+ */
+export function safeHostname(href: string | null | undefined): string {
+  if (!href) return '';
+
+  try {
+    return new URL(href).hostname;
+  } catch {
+    return '';
+  }
+}
+
+/**
  * Shorten a URL for display (only if it's very long)
  * e.g., "https://www.example.com/some/long/path/article-name.html" -> "example.com/.../article-name.html"
  */

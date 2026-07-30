@@ -6,6 +6,27 @@ import { getCookie, deleteCookie } from '@/utils/cookies';
 import { useAuthStore } from '@/hooks/useStores';
 import { getRedirectURI, retrievePKCEData } from '@/utils/oauth';
 
+/**
+ * Reduce a stored redirect target to a safe same-origin path.
+ * Rejects absolute URLs, protocol-relative (`//host`) and backslash variants
+ * that browsers normalise to a host, plus malformed percent-encoding.
+ */
+function toSameOriginPath(rawPath: string | undefined): string {
+  if (!rawPath) return '/';
+
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(rawPath);
+  } catch {
+    return '/';
+  }
+
+  if (!decoded.startsWith('/')) return '/';
+  if (/^\/[/\\]/.test(decoded)) return '/';
+
+  return decoded;
+}
+
 function CallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -58,12 +79,14 @@ function CallbackContent() {
         authStore.setAccessToken(tokenData.access_token);
 
         // Get redirect path from cookie (set by middleware when accessing protected route)
-        const rawRedirectPath = await getCookie('authRedirect') || '/';
+        const rawRedirectPath = await getCookie('authRedirect');
         // Clear the redirect cookie
         await deleteCookie('authRedirect');
 
-        // Redirect to the intended page or home
-        router.push(decodeURIComponent(rawRedirectPath));
+        // Redirect to the intended page or home. The cookie is not httpOnly, so
+        // anything that can write it must not be able to turn this into an
+        // off-site redirect — only same-origin paths are accepted.
+        router.push(toSameOriginPath(rawRedirectPath));
       } catch (err) {
         console.error('OAuth callback error:', err);
         setError(err instanceof Error ? err.message : 'Authentication failed');

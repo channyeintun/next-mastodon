@@ -122,11 +122,42 @@ interface VirtualizedListProps<T> {
   getItemHeight?: (item: T) => number;
 }
 
-// Global cache for scroll restoration
-const scrollStateCache = new Map<string, {
+interface ScrollState {
   offset: number;
   measurements: VirtualItem[];
-}>();
+}
+
+/**
+ * Global cache for scroll restoration, bounded to the most recently used keys.
+ *
+ * Each entry holds a full measurements array (one entry per item ever measured),
+ * so an unbounded map would keep growing for every hashtag, list and profile
+ * timeline visited in a session. Map preserves insertion order, which is enough
+ * to evict the least recently used key.
+ */
+const MAX_SCROLL_STATES = 20;
+const scrollStateCache = new Map<string, ScrollState>();
+
+function readScrollState(key: string): ScrollState | undefined {
+  const state = scrollStateCache.get(key);
+  if (state) {
+    // Re-insert so this key counts as most recently used.
+    scrollStateCache.delete(key);
+    scrollStateCache.set(key, state);
+  }
+  return state;
+}
+
+function writeScrollState(key: string, state: ScrollState): void {
+  scrollStateCache.delete(key);
+  scrollStateCache.set(key, state);
+
+  while (scrollStateCache.size > MAX_SCROLL_STATES) {
+    const oldestKey = scrollStateCache.keys().next().value;
+    if (oldestKey === undefined) break;
+    scrollStateCache.delete(oldestKey);
+  }
+}
 
 /**
  * Reusable virtualized list component with infinite scroll and scroll restoration
@@ -158,7 +189,7 @@ export function VirtualizedList<T>({
 
   // Get saved scroll state if available
   const savedState = scrollRestorationKey
-    ? scrollStateCache.get(scrollRestorationKey)
+    ? readScrollState(scrollRestorationKey)
     : undefined;
 
   // Memoize properties passed to component to avoid virtualizer re-initialization
@@ -206,7 +237,7 @@ export function VirtualizedList<T>({
     // Save scroll state when scrolling stops
     onChange: (instance) => {
       if (scrollRestorationKey && !instance.isScrolling) {
-        scrollStateCache.set(scrollRestorationKey, {
+        writeScrollState(scrollRestorationKey, {
           offset: instance.scrollOffset || 0,
           measurements: instance.measurementsCache,
         });

@@ -1,6 +1,7 @@
 'use server'
 
 import { cookies, headers } from 'next/headers'
+import { sanitizeInstanceUrlForServer } from '@/utils/instanceUrl'
 
 /**
  * Helper to get cookie domain from headers
@@ -39,10 +40,18 @@ export async function storeClientSecret(clientSecret: string) {
  * Store instance URL (readable by client, not httpOnly)
  */
 export async function storeInstanceURL(instanceURL: string) {
+    // Everything downstream (token exchange, revocation, server-side API calls)
+    // turns this value into an outbound request, so reject anything that isn't
+    // a public https host before it is persisted.
+    const safeInstanceURL = sanitizeInstanceUrlForServer(instanceURL)
+    if (!safeInstanceURL) {
+        throw new Error('Invalid instance URL')
+    }
+
     const cookieStore = await cookies()
     const domain = await getServerCookieDomain()
 
-    cookieStore.set('instanceURL', instanceURL, {
+    cookieStore.set('instanceURL', safeInstanceURL, {
         httpOnly: false, // Client needs to read this
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',

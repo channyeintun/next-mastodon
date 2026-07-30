@@ -444,10 +444,18 @@ function updatePollInCaches(
   pollId: string,
   updatedPoll: Poll
 ) {
-  const updatePollInStatus = (status: Status) =>
-    status.poll?.id === pollId
-      ? { ...status, poll: updatedPoll }
-      : status
+  // A boosted poll lives on the inner `reblog`, and timelines cache the wrapper.
+  // Matching only `status.poll` would silently skip every boosted poll, leaving
+  // the vote invisible until the timeline refetches.
+  const updatePollInStatus = (status: Status): Status => {
+    if (status.poll?.id === pollId) {
+      return { ...status, poll: updatedPoll }
+    }
+    if (status.reblog?.poll?.id === pollId) {
+      return { ...status, reblog: { ...status.reblog, poll: updatedPoll } }
+    }
+    return status
+  }
 
   const updateStatuses = (statuses: Status[]) => statuses.map(updatePollInStatus)
 
@@ -503,11 +511,7 @@ function updatePollInCaches(
           ...page,
           data: {
             ...page.data,
-            statuses: page.data.statuses.map((status) =>
-              status.poll?.id === pollId
-                ? { ...status, poll: updatedPoll }
-                : status
-            ),
+            statuses: page.data.statuses.map(updatePollInStatus),
           },
         })),
       }
@@ -523,11 +527,7 @@ function updatePollInCaches(
         ...old,
         data: {
           ...old.data,
-          statuses: old.data.statuses.map((status) =>
-            status.poll?.id === pollId
-              ? { ...status, poll: updatedPoll }
-              : status
-          ),
+          statuses: old.data.statuses.map(updatePollInStatus),
         },
       }
     }
@@ -543,9 +543,7 @@ function updatePollInCaches(
     },
     (old) => {
       if (!Array.isArray(old)) return old
-      return old.map((status) =>
-        status.poll?.id === pollId ? { ...status, poll: updatedPoll } : status
-      )
+      return old.map(updatePollInStatus)
     }
   )
 
@@ -560,12 +558,8 @@ function updatePollInCaches(
     (old) => {
       if (!old || !('ancestors' in old)) return old
       return {
-        ancestors: old.ancestors.map((status) =>
-          status.poll?.id === pollId ? { ...status, poll: updatedPoll } : status
-        ),
-        descendants: old.descendants.map((status) =>
-          status.poll?.id === pollId ? { ...status, poll: updatedPoll } : status
-        ),
+        ancestors: old.ancestors.map(updatePollInStatus),
+        descendants: old.descendants.map(updatePollInStatus),
       }
     }
   )
@@ -835,10 +829,14 @@ export function useReblogStatus() {
         rollbackStatusInCaches(queryClient, context.id, context.previous)
       }
     },
-    onSuccess: (data) => {
-      // Update cache with actual server response
-      queryClient.setQueryData<Status>(queryKeys.statuses.detail(data.id), data)
-      updateStatusInCaches(queryClient, data.id, () => data)
+    onSuccess: (data, id) => {
+      // POST /reblog returns the *new boost wrapper*, whose id is the boost's,
+      // not the boosted status'. Keying the caches by `data.id` would file the
+      // server's counts under an id nothing reads, leaving the optimistic guess
+      // in place — so unwrap to the original status and key by the request id.
+      const original = data.reblog ?? data
+      queryClient.setQueryData<Status>(queryKeys.statuses.detail(id), original)
+      updateStatusInCaches(queryClient, id, () => original)
     },
   })
 }
