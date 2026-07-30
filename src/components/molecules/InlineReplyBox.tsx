@@ -1,14 +1,39 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import styled from '@emotion/styled';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
-import { Smile, Image as ImageIcon, SendHorizontal } from 'lucide-react';
+import { Smile, Image as ImageIcon, SendHorizontal, X } from 'lucide-react';
 import { useCreateStatus } from '@/api/mutations';
 import { useCurrentAccount } from '@/api/queries';
+import { useMediaUpload } from '@/hooks/useMediaUpload';
 import { useAuthStore } from '@/hooks/useStores';
 import { Avatar } from '@/components/atoms';
 import type { Status } from '@/types';
+import {
+  Row,
+  CollapsedPill,
+  CollapsedTools,
+  Field,
+  TextArea,
+  PickerLayer,
+  HiddenFileInput,
+  Thumbs,
+  Thumb,
+  RemoveThumb,
+  Toolbar,
+  Tools,
+  ToolButton,
+  SendButton,
+} from './InlineReplyBoxStyles';
+
+// Loaded on demand: emoji-mart plus the custom-emoji data is far too heavy to
+// pull into every post card that merely shows a collapsed pill.
+const EmojiPicker = dynamic(
+  () => import('@/components/organisms/EmojiPicker').then((m) => m.EmojiPicker),
+  { ssr: false }
+);
 
 interface InlineReplyBoxProps {
   status: Status;
@@ -34,7 +59,15 @@ export function InlineReplyBox({ status }: InlineReplyBoxProps) {
   const createStatus = useCreateStatus();
   const [expanded, setExpanded] = useState(false);
   const [text, setText] = useState('');
+  const [showEmoji, setShowEmoji] = useState(false);
+  const [pickerPos, setPickerPos] = useState<{ top: number; left: number } | null>(null);
+  // Caret to restore after an emoji insert, applied once React has committed
+  const pendingCaret = useRef<number | null>(null);
+  const emojiButtonRef = useRef<HTMLButtonElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const { media, handleMediaAdd, handleMediaRemove, clearMedia, isUploading } = useMediaUpload();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   // Signed-out visitors cannot reply, so the box would be a dead control.
   if (!authStore.isAuthenticated) return null;
@@ -55,16 +88,94 @@ export function InlineReplyBox({ status }: InlineReplyBoxProps) {
 
   const expand = () => setExpanded(true);
 
-  const collapseIfEmpty = () => {
-    if (!text.trim()) setExpanded(false);
+  /**
+   * Only collapse when focus actually leaves the box.
+   *
+   * Blurring on any focus change collapsed it whenever a tool button was
+   * clicked, which read as the buttons "toggling the two modes" instead of
+   * doing their job.
+   */
+  const handleBlur = (e: React.FocusEvent) => {
+    const next = e.relatedTarget as Node | null;
+    if (next && rootRef.current?.contains(next)) return;
+    if (!text.trim() && !showEmoji) setExpanded(false);
+  };
+
+  /**
+   * Position the picker from the button's viewport rect and portal it to body.
+   *
+   * It cannot live inside the card: virtualized rows are positioned with
+   * `transform`, which creates a stacking context, so an in-flow picker is
+   * painted underneath the following row no matter its z-index. Flips above the
+   * button when there is not enough room below.
+   */
+  useLayoutEffect(() => {
+    if (!showEmoji) { setPickerPos(null); return; }
+    const r = emojiButtonRef.current?.getBoundingClientRect();
+    if (!r) return;
+    const H = 435;
+    const below = window.innerHeight - r.bottom;
+    setPickerPos({
+      top: below > H ? r.bottom + 4 : Math.max(8, r.top - H - 4),
+      left: Math.min(r.left, window.innerWidth - 360),
+    });
+  }, [showEmoji]);
+
+  // Close on outside click or scroll, like any popover
+  useEffect(() => {
+    if (!showEmoji) return;
+    const close = (e: Event) => {
+      const t = e.target as Node;
+      if (rootRef.current?.contains(t)) return;
+      if ((t as HTMLElement)?.closest?.('[data-emoji-popover]')) return;
+      setShowEmoji(false);
+    };
+    document.addEventListener('mousedown', close);
+    window.addEventListener('scroll', () => setShowEmoji(false), { once: true, capture: true });
+    return () => document.removeEventListener('mousedown', close);
+  }, [showEmoji]);
+
+  const insertEmoji = (emoji: string) => {
+    const el = textareaRef.current;
+    const at = el?.selectionStart ?? text.length;
+    setText(text.slice(0, at) + emoji + text.slice(el?.selectionEnd ?? at));
+    setShowEmoji(false);
+    // Same reason focus is deferred on expand: a frame callback can run before
+    // React commits the new value, so setSelectionRange would target stale text.
+    pendingCaret.current = at + emoji.length;
+  };
+
+  useEffect(() => {
+    const pos = pendingCaret.current;
+    if (pos == null) return;
+    pendingCaret.current = null;
+    const el = textareaRef.current;
+    el?.focus();
+    el?.setSelectionRange(pos, pos);
+  }, [text]);
+
+  /**
+   * Uploads straight from the file picker.
+   *
+   * Deliberately not useMediaUpload's own handleFileChange: that routes images
+   * through the cropper, which is right for a profile picture but wrong for a
+   * comment attachment — and opening a modal from a button labelled "add media"
+   * is not what the control promises.
+   */
+  const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []).slice(0, 4 - media.length);
+    for (const file of files) await handleMediaAdd(file);
+    e.target.value = '';
   };
 
   const submit = () => {
     const body = text.trim();
-    if (!body || createStatus.isPending) return;
+    // Mastodon accepts a media-only status, so text alone is not required
+    if ((!body && media.length === 0) || createStatus.isPending || isUploading) return;
     createStatus.mutate(
       {
         status: body,
+        media_ids: media.length ? media.map((m) => m.id) : undefined,
         in_reply_to_id: status.id,
         // Replies inherit the parent's audience so a private thread stays private
         visibility: status.visibility,
@@ -72,6 +183,7 @@ export function InlineReplyBox({ status }: InlineReplyBoxProps) {
       {
         onSuccess: () => {
           setText('');
+          clearMedia();
           setExpanded(false);
         },
       }
@@ -84,13 +196,13 @@ export function InlineReplyBox({ status }: InlineReplyBoxProps) {
       e.preventDefault();
       submit();
     }
-    if (e.key === 'Escape') collapseIfEmpty();
+    if (e.key === 'Escape') setExpanded(false);
   };
 
-  const canSend = !!text.trim() && !createStatus.isPending;
+  const canSend = (!!text.trim() || media.length > 0) && !createStatus.isPending && !isUploading;
 
   return (
-    <Row onClick={(e) => e.stopPropagation()}>
+    <Row ref={rootRef} onClick={(e) => e.stopPropagation()}>
       <Avatar src={me?.avatar} alt={me?.display_name || ''} size="small" />
 
       {expanded ? (
@@ -100,20 +212,57 @@ export function InlineReplyBox({ status }: InlineReplyBoxProps) {
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKeyDown}
-            onBlur={collapseIfEmpty}
+            onBlur={handleBlur}
             placeholder={t('replyPlaceholder')}
             rows={1}
             disabled={createStatus.isPending}
           />
+          {media.length > 0 && (
+            <Thumbs>
+              {media.map((m) => (
+                <Thumb key={m.id}>
+                  <img src={m.preview_url ?? m.url ?? undefined} alt={m.description ?? ''} />
+                  <RemoveThumb
+                    type="button"
+                    aria-label={t('removeMedia')}
+                    onClick={() => handleMediaRemove(m.id)}
+                  >
+                    <X size={14} />
+                  </RemoveThumb>
+                </Thumb>
+              ))}
+            </Thumbs>
+          )}
+
           {/* Focused layout: tools drop below the text and a send button appears */}
           <Toolbar>
             <Tools>
-              <ToolButton type="button" aria-label={t('emoji')}>
+              <ToolButton
+                type="button"
+                aria-label={t('emoji')}
+                ref={emojiButtonRef}
+                aria-expanded={showEmoji}
+                onClick={() => setShowEmoji((v) => !v)}
+              >
                 <Smile size={18} />
               </ToolButton>
-              <ToolButton type="button" aria-label={t('media')}>
+              <ToolButton
+                type="button"
+                aria-label={t('media')}
+                onClick={() => fileRef.current?.click()}
+                disabled={media.length >= 4 || isUploading}
+              >
                 <ImageIcon size={18} />
               </ToolButton>
+              <HiddenFileInput
+                ref={fileRef}
+                type="file"
+                accept="image/*,video/*"
+                multiple
+                onChange={handleFiles}
+                tabIndex={-1}
+                aria-hidden="true"
+              />
             </Tools>
             <SendButton
               type="button"
@@ -125,6 +274,12 @@ export function InlineReplyBox({ status }: InlineReplyBoxProps) {
               <SendHorizontal size={18} />
             </SendButton>
           </Toolbar>
+          {showEmoji && pickerPos && createPortal(
+            <PickerLayer data-emoji-popover style={{ top: pickerPos.top, left: pickerPos.left }}>
+              <EmojiPicker onEmojiSelect={insertEmoji} onClose={() => setShowEmoji(false)} />
+            </PickerLayer>,
+            document.body
+          )}
         </Field>
       ) : (
         <CollapsedPill type="button" onClick={expand}>
@@ -138,119 +293,3 @@ export function InlineReplyBox({ status }: InlineReplyBoxProps) {
     </Row>
   );
 }
-
-const Row = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: var(--size-2);
-  padding-top: var(--size-2);
-`;
-
-const CollapsedPill = styled.button`
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--size-2);
-  height: 36px;
-  padding: 0 var(--size-3);
-  border: none;
-  box-shadow: none;
-  border-radius: var(--radius-round);
-  background: var(--comment-bg);
-  color: var(--secondary-text);
-  font-size: var(--fs-body);
-  text-align: start;
-  cursor: pointer;
-  transition: background 0.2s ease;
-
-  &:hover {
-    background: var(--hover-overlay);
-  }
-
-  &:focus-visible {
-    outline: var(--focus-ring-width) solid var(--focus-ring-color);
-    outline-offset: var(--focus-ring-offset);
-  }
-`;
-
-const CollapsedTools = styled.span`
-  display: flex;
-  align-items: center;
-  gap: var(--size-2);
-  color: var(--secondary-icon);
-  flex-shrink: 0;
-`;
-
-const Field = styled.div`
-  flex: 1;
-  min-width: 0;
-  background: var(--comment-bg);
-  border-radius: var(--radius-3);
-  padding: var(--size-2) var(--size-3);
-`;
-
-const TextArea = styled.textarea`
-  width: 100%;
-  border: none;
-  outline: none;
-  resize: none;
-  background: transparent;
-  color: var(--text-1);
-  font-family: inherit;
-  font-size: var(--fs-body);
-  line-height: var(--lh-body);
-  /* Grows with content instead of scrolling in a one-line box */
-  field-sizing: content;
-  max-height: 40vh;
-
-  &::placeholder {
-    color: var(--secondary-text);
-  }
-`;
-
-const Toolbar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: var(--size-1);
-`;
-
-const Tools = styled.div`
-  display: flex;
-  align-items: center;
-  gap: var(--size-1);
-`;
-
-const ToolButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border: none;
-  box-shadow: none;
-  border-radius: var(--radius-round);
-  background: transparent;
-  color: var(--secondary-icon);
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
-
-  &:hover {
-    background: var(--hover-overlay);
-    color: var(--primary-icon);
-  }
-
-  &:focus-visible {
-    outline: var(--focus-ring-width) solid var(--focus-ring-color);
-    outline-offset: var(--focus-ring-offset);
-  }
-`;
-
-const SendButton = styled(ToolButton) <{ $active: boolean }>`
-  color: ${({ $active }) => ($active ? 'var(--accent)' : 'var(--secondary-icon)')};
-  opacity: ${({ $active }) => ($active ? 1 : 0.5)};
-  cursor: ${({ $active }) => ($active ? 'pointer' : 'not-allowed')};
-`;

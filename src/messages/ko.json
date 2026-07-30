@@ -162,6 +162,7 @@
     "publish": "게시",
     "quoteDisabled": "Mastodon에서 작성된 '팔로워 전용' 게시물은 다른 사람이 인용할 수 없습니다.",
     "removeCW": "콘텐츠 경고 제거",
+    "removeMedia": "Remove attachment",
     "removeOption": "옵션 제거",
     "removePoll": "투표 제거",
     "removeSchedule": "예약 제거",

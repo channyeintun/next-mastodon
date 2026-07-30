@@ -101,7 +101,8 @@ export function ProfileTabContent({
     const estimateSize = useCallback((index: number) => {
         const item = mixedItems[index];
         if (item?.type === 'endIndicator') return 60;
-        if (item?.type === 'status') return getStatusHeight(item.data);
+        // This list renders the inline reply box, so the estimate must include it
+        if (item?.type === 'status') return getStatusHeight(item.data, { withReplyBox: true });
         return 350;
     }, [mixedItems]);
 

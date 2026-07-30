@@ -162,6 +162,7 @@
     "publish": "Publicar",
     "quoteDisabled": "Las publicaciones para seguidores creadas en Mastodon no pueden ser citadas por otros.",
     "removeCW": "Quitar advertencia de contenido",
+    "removeMedia": "Remove attachment",
     "removeOption": "Quitar opción",
     "removePoll": "Quitar encuesta",
     "removeSchedule": "Quitar programación",

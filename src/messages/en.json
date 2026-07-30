@@ -335,7 +335,8 @@
     },
     "replyingTo": "Replying to {name}",
     "emoji": "Emoji",
-    "media": "Add media"
+    "media": "Add media",
+    "removeMedia": "Remove attachment"
   },
   "explore": {
     "title": "Explore",

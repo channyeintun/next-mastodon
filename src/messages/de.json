@@ -162,6 +162,7 @@
     "publish": "Veröffentlichen",
     "quoteDisabled": "Beiträge nur für Follower, die auf Mastodon verfasst wurden, können nicht von anderen zitiert werden.",
     "removeCW": "Inhaltswarnung entfernen",
+    "removeMedia": "Remove attachment",
     "removeOption": "Option entfernen",
     "removePoll": "Umfrage entfernen",
     "removeSchedule": "Planung entfernen",

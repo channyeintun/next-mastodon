@@ -162,6 +162,7 @@
     "publish": "Đăng",
     "quoteDisabled": "Các bài đăng chỉ dành cho người theo dõi trên Mastodon không thể bị trích dẫn bởi người khác.",
     "removeCW": "Gỡ bỏ cảnh báo",
+    "removeMedia": "Remove attachment",
     "removeOption": "Gỡ bỏ lựa chọn",
     "removePoll": "Gỡ bỏ bình chọn",
     "removeSchedule": "Hủy hẹn giờ",

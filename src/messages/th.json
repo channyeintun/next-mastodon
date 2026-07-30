@@ -162,6 +162,7 @@
     "publish": "เผยแพร่",
     "quoteDisabled": "โพสต์สำหรับผู้ติดตามเท่านั้นบน Mastodon ไม่สามารถอ้างอิงโดยผู้อื่นได้",
     "removeCW": "นำคำเตือนเนื้อหาออก",
+    "removeMedia": "Remove attachment",
     "removeOption": "นำตัวเลือกออก",
     "removePoll": "นำการสำรวจออก",
     "removeSchedule": "ยกเลิกการตั้งเวลา",

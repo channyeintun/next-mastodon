@@ -58,6 +58,14 @@ const POST_CARD_OVERHEAD = 140;
  */
 const CW_OVERHEAD = 44;
 
+/**
+ * Height of the collapsed inline reply box: a 36px pill plus the row's 8px
+ * top padding. Only added when the caller renders one, so lists without it are
+ * unaffected. Without this the estimate runs short on every card, which shows
+ * up as scrollbar drift and imprecise restore before rows are measured.
+ */
+const REPLY_BOX_OVERHEAD = 44;
+
 // ---------------------------------------------------------------------------
 // Caches
 // ---------------------------------------------------------------------------
@@ -181,7 +189,10 @@ function estimatePollHeight(status: Status): number {
  * Falls back to a reasonable default (250px) if the status hasn't been
  * pre-computed yet.
  */
-export function getStatusHeight(status: Status): number {
+export function getStatusHeight(
+  status: Status,
+  options?: { withReplyBox?: boolean }
+): number {
   const displayStatus = status.reblog ?? status;
   const id = displayStatus.id;
 
@@ -209,6 +220,9 @@ export function getStatusHeight(status: Status): number {
 
   // Quoted post (rough estimate)
   if (displayStatus.quote?.quoted_status) totalHeight += 120;
+
+  // Inline reply box, when the list renders one
+  if (options?.withReplyBox) totalHeight += REPLY_BOX_OVERHEAD;
 
   return Math.round(totalHeight);
 }

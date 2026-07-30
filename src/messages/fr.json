@@ -162,6 +162,7 @@
     "publish": "Publier",
     "quoteDisabled": "Les publications réservées aux abonnés sur Mastodon ne peuvent pas être citées par les autres.",
     "removeCW": "Retirer l'avertissement de contenu",
+    "removeMedia": "Remove attachment",
     "removeOption": "Supprimer l'option",
     "removePoll": "Supprimer le sondage",
     "removeSchedule": "Annuler la programmation",

@@ -162,6 +162,7 @@
     "publish": "发布",
     "quoteDisabled": "在 Mastodon 上发布的“仅关注者”帖子不能被他人引用。",
     "removeCW": "移除内容警告",
+    "removeMedia": "Remove attachment",
     "removeOption": "移除选项",
     "removePoll": "移除投票",
     "removeSchedule": "移除定时",
