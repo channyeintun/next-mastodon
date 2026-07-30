@@ -19,6 +19,7 @@ const StyledIconButton = styled.button<StyledIconButtonProps>`
   padding: 0;
   border: none;
   border-radius: 50%;
+  box-shadow: none;
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   transition: all 0.2s ease;
   opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};

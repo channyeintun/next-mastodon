@@ -21,7 +21,8 @@ const StyledButton = styled.button<StyledButtonProps>`
   gap: var(--size-2);
   border: none;
   /* Facebook: 8px radius, 600 weight, and labels that never wrap. */
-  border-radius: var(--radius-2);
+  border-radius: var(--btn-radius);
+  box-shadow: none;
   font-weight: var(--fw-semibold);
   white-space: nowrap;
   cursor: ${({ disabled, $isLoading }) => (disabled || $isLoading ? 'not-allowed' : 'pointer')};

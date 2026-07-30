@@ -24,7 +24,8 @@ interface PostActionsProps {
   onFavourite: (e: React.MouseEvent) => void;
 }
 
-const ICON_SIZE = 18;
+// Facebook's action-bar glyphs are 20px.
+const ICON_SIZE = 20;
 
 /**
  * Returns a counter that increments whenever `active` flips false -> true,
@@ -142,12 +143,18 @@ export function PostActions({
 }
 
 
+/**
+ * Facebook's action row: 44px tall, padded 0 4px, with a hairline above it
+ * separating the actions from the post body.
+ */
 const Container = styled.div`
   display: flex;
   align-items: center;
-  gap: var(--size-4);
-  margin-top: var(--size-3);
-  padding-top: var(--size-2);
+  gap: var(--size-2);
+  min-height: 44px;
+  margin-top: var(--size-2);
+  padding-inline: 4px;
+  border-top: 1px solid var(--divider);
 `;
 
 const ActionGroup = styled.div`
@@ -161,13 +168,19 @@ const ActionButton = styled.button<{ $isActive?: boolean; $accent?: string }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  /* 44x32, matching Facebook — wider than tall, so the hover surface reads as
+     a control rather than a dot. */
+  width: 44px;
+  height: 32px;
   padding: 0;
   border: none;
-  border-radius: 50%;
+  border-radius: var(--btn-radius);
+  /* Open Props' buttons.min.css puts a drop shadow on every <button>. It was
+     invisible on the old 50% circle but outlines a rounded rect at this radius,
+     and Facebook's action buttons carry no shadow at all. */
+  box-shadow: none;
   background: transparent;
-  color: ${({ $isActive, $accent }) => ($isActive && $accent ? $accent : 'var(--text-2)')};
+  color: ${({ $isActive, $accent }) => ($isActive && $accent ? $accent : 'var(--secondary-icon)')};
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 
@@ -192,10 +205,9 @@ const ActionButton = styled.button<{ $isActive?: boolean; $accent?: string }>`
     transform: scale(0.95);
   }
 
-  /* Touch needs a 44px target. Safe to grow the real box here: three 44px
-     circles plus counts still fit a narrow post card, so nothing reflows. */
+  /* 32px is under the 44px touch minimum, so grow the box on coarse pointers.
+     The row is already 44px tall, so this changes nothing structurally. */
   @media (pointer: coarse) {
-    width: 44px;
     height: 44px;
   }
 
@@ -255,8 +267,8 @@ const Burst = styled.span`
 `;
 
 const Count = styled.span<{ $isActive?: boolean; $accent?: string }>`
-  font-size: var(--font-size-1);
-  color: ${({ $isActive, $accent }) => ($isActive && $accent ? $accent : 'var(--text-2)')};
+  font-size: var(--fs-secondary);
+  color: ${({ $isActive, $accent }) => ($isActive && $accent ? $accent : 'var(--secondary-text)')};
   font-variant-numeric: tabular-nums;
   transition: color 0.2s ease;
   min-width: 16px;
