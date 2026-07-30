@@ -23,9 +23,11 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
 
   const cardStyle: CSSProperties = {
     background: 'var(--surface-2)',
-    borderRadius: 'var(--radius-3)',
+    // Facebook's card: 12px radius, one hairline shadow, no border.
+    borderRadius: 'var(--card-radius)',
+    boxShadow: 'var(--card-shadow)',
     padding: paddingMap[padding],
-    transition: 'all 0.2s ease',
+    transition: 'box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease',
     cursor: onClick ? 'pointer' : 'default',
     scrollMarginTop: 'calc(var(--size-4) * 2 + var(--size-9) + 1px)',
     ...style,

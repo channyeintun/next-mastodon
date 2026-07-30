@@ -44,11 +44,11 @@ const StyledIconButton = styled.button<StyledIconButtonProps>`
   ${({ $variant }) => {
     if ($variant === 'primary') {
       return `
-        background: var(--blue-6);
+        background: var(--accent);
         color: white;
 
         &:hover:not(:disabled) {
-          background: var(--blue-7);
+          background: var(--accent-hover);
         }
       `;
     }
@@ -64,11 +64,11 @@ const StyledIconButton = styled.button<StyledIconButtonProps>`
     }
     return `
       background: transparent;
-      color: var(--text-2);
+      color: var(--secondary-icon);
 
       &:hover:not(:disabled) {
-        background: var(--surface-3);
-        color: var(--text-1);
+        background: var(--hover-overlay);
+        color: var(--primary-icon);
       }
     `;
   }}

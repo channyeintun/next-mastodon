@@ -188,8 +188,15 @@ export function PostCard({
       '--link': '#a78bfa',
     } as CSSProperties
     : {
-      border: depth > 0 ? '1px solid var(--surface-3)' : 'none',
-      boxShadow: depth > 0 ? 'var(--shadow-1)' : 'none',
+      // Facebook draws a quoted/attached post as a bordered panel with no
+      // shadow, so it reads as embedded rather than as a second floating card.
+      ...(depth > 0
+        ? {
+          border: '1px solid var(--divider)',
+          boxShadow: 'none',
+          background: 'transparent',
+        }
+        : {}),
       ...(style || {}),
     };
   // No longer using JS-based color extraction due to CORS issues

@@ -19,18 +19,22 @@ import type { Status } from '@/types';
 
 /**
  * Canvas font shorthand for post content measurement.
+ *
+ * Must track the computed font of StatusContent, or the virtualizer's height
+ * estimates drift from what actually renders. Post copy is the system UI face
+ * at 15px, matching Facebook, which ships no webfont.
+ *
  * Deliberately omits `system-ui` because pretext documents that system-ui
- * resolves to a different optical variant on macOS canvas vs DOM.
- * Using named fallbacks gives consistent results.
+ * resolves to a different optical variant on macOS canvas vs DOM. Using named
+ * fallbacks gives consistent results.
  */
 const POST_FONT = '15px -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif';
 
 /**
- * CSS line-height for body text. Open Props --font-lineheight-3 = 1.5.
- * At 15px font-size → 22.5px, but browsers round to 23px in practice.
- * We use 22.5 to match the CSS computed value as closely as possible.
+ * CSS line-height for post body text: 20px, matching --lh-body and Facebook's
+ * 15px/20px setting. Must stay in step with StatusContent or estimates drift.
  */
-const POST_LINE_HEIGHT = 22.5;
+const POST_LINE_HEIGHT = 20;
 
 /**
  * Available width for text content inside a PostCard.

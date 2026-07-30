@@ -177,8 +177,10 @@ export function StatusContent({ html, emojis = [], mentions = [], style, classNa
 // Styled components
 const ContentContainer = styled.div`
   color: var(--text-1);
-  font-size: 0.9375rem;
-  line-height: 1.5;
+  /* Facebook sets post copy at 15px/20px. No measure cap — their text runs the
+     full card width, which is what keeps the column feeling dense. */
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
   word-break: break-word;
 `;
 
@@ -187,10 +189,15 @@ const ContentWrapper = styled.div`
 
   p {
     font-size: inherit;
-    margin-bottom: 22px;
+    /* Facebook separates paragraphs by one blank line box (20px). */
+    margin-bottom: var(--lh-body);
     white-space: pre-wrap;
     unicode-bidi: plaintext;
-    line-height: normal;
+    /* Was "normal" (~1.2), which crowded multi-line posts and disagreed with
+       the line-height lib/pretext.ts assumes when it pre-computes card heights
+       for the virtualizer. Both now say 20px. */
+    line-height: var(--lh-body);
+    max-inline-size: none;
   }
 
   p:last-child {

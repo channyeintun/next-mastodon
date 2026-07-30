@@ -21,7 +21,35 @@ html {
   --app-max-width: 1200px;
   --app-sidebar-width: 280px;
   --app-bottom-nav-height: 90px;
+  /**
+   * System stack, matching Facebook's own: they ship no webfont, so text
+   * renders in the reader's native UI face at native hinting. That is the main
+   * reason their feed feels "native" rather than branded, and it costs zero
+   * bytes and has no swap.
+   */
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
+
+  /**
+   * Type scale, measured off facebook.com. Deliberately tight — four sizes and
+   * three weights carry the entire product, which is what keeps a dense feed
+   * from looking noisy.
+   *
+   *   17/600  section headings
+   *   15/600  author names, emphasis
+   *   15/400  body and post copy      (line-height 20px = 1.333, not 1.5)
+   *   13/600  button labels
+   *   13/400  timestamps, meta
+   *   12/400  smallest meta
+   */
+  --fs-meta: 12px;
+  --fs-secondary: 13px;
+  --fs-body: 15px;
+  --fs-heading: 17px;
+  --lh-tight: 16px;
+  --lh-body: 20px;
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
   /* Status content link color - adapts to light/dark mode */
   --status-link-color: #5AA7FF;
   /* Custom theme colors - dark mode defaults */
@@ -42,6 +70,11 @@ html {
    */
   --brand: #5AA7FF;
   --brand-hover: #7DBCFF;
+  /* Facebook uses one blue for links (--blue-link, above) and a second, more
+     saturated one for primary actions. Keeping them separate is why their
+     buttons read as controls rather than as large links. */
+  --accent: #0866FF;
+  --accent-hover: #0A7CFF;
   /* Low-alpha wash for tinted hover halos and selected rows */
   --brand-subtle: color-mix(in oklab, var(--brand) 16%, transparent);
 
@@ -49,13 +82,36 @@ html {
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
   --focus-ring-color: var(--brand);
+
+  /**
+   * Surface and elevation, read off facebook.com's own custom properties.
+   * --surface-1/-2 above already matched their --web-wash/--card-background
+   * exactly, so these fill in the parts that were missing.
+   *
+   * The card is defined by a 12px radius and one hairline shadow — no border.
+   * A border plus a soft glow reads heavier than their feed and makes a long
+   * scroll feel busier than it is.
+   */
+  --card-radius: 12px;
+  --card-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
+
+  --secondary-text: #B0B3B8;
+  --secondary-icon: #B0B3B8;
+  --primary-icon: #E2E5E9;
+  --divider: #3E4042;
+  --hover-overlay: rgb(255 255 255 / 0.1);
+  --btn-secondary-bg: rgb(255 255 255 / 0.1);
+  --btn-secondary-hover: rgb(255 255 255 / 0.15);
+  --comment-bg: #333334;
+  --popover-bg: #3B3C3E;
+  --media-inner-border: rgb(255 255 255 / 0.05);
 }
 
 /* Light mode colors */
 [data-theme="light"] {
   --status-link-color: #0064D1;
   --text-1: #080809;
-  --surface-1: #f2f4f7;
+  --surface-1: #F0F2F5;
   --surface-2: #fff;
   --poll-bar-bg: var(--blue-3);
   --poll-bar-bg-own: var(--blue-4);
@@ -63,7 +119,24 @@ html {
   /* 5.6:1 on white, 5.1:1 on --surface-1 — passes WCAG AA for text */
   --brand: #0064D1;
   --brand-hover: #0052AB;
+  --accent: #0866FF;
+  --accent-hover: #0056D6;
   --brand-subtle: color-mix(in oklab, var(--brand) 12%, transparent);
+
+  /* Facebook's light palette. Their shadow is a touch wider and much fainter
+     here — the dark value reads as a smudge on a pale surface. */
+  --card-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
+
+  --secondary-text: #65676B;
+  --secondary-icon: #65676B;
+  --primary-icon: #080809;
+  --divider: #CED0D4;
+  --hover-overlay: rgb(0 0 0 / 0.05);
+  --btn-secondary-bg: #E4E6EB;
+  --btn-secondary-hover: #D8DADF;
+  --comment-bg: #F0F2F5;
+  --popover-bg: #FFFFFF;
+  --media-inner-border: rgb(0 0 0 / 0.06);
 }
 
 @media (max-width: 768px) {
@@ -80,6 +153,9 @@ body {
   line-height: var(--font-lineheight-3);
   background: var(--surface-1);
   color: var(--text-1);
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 
@@ -89,33 +165,34 @@ h3,
 h4,
 h5,
 h6 {
-  line-height: var(--font-lineheight-1);
-  font-weight: var(--font-weight-9);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.01em;
   text-wrap: balance;
 }
 
+/* Facebook tops out around 20px for page titles and 17px for section headers.
+   The previous fluid scale ran to 2rem+, which dwarfed the 15px feed beneath
+   it — the headline competed with the content instead of labelling it. */
 h1 {
-  font-size: var(--font-size-fluid-3);
+  font-size: 20px;
+  font-weight: var(--fw-semibold);
+  line-height: 24px;
 }
 
 h2 {
-  font-size: var(--font-size-fluid-2);
+  font-size: var(--fs-heading);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-body);
 }
 
-h3 {
-  font-size: var(--font-size-fluid-1);
-}
-
-h4 {
-  font-size: var(--font-size-5);
-}
-
-h5 {
-  font-size: var(--font-size-4);
-}
-
+h3,
+h4,
+h5,
 h6 {
-  font-size: var(--font-size-3);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-body);
 }
 
 p {

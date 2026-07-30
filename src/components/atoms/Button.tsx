@@ -20,8 +20,10 @@ const StyledButton = styled.button<StyledButtonProps>`
   justify-content: center;
   gap: var(--size-2);
   border: none;
+  /* Facebook: 8px radius, 600 weight, and labels that never wrap. */
   border-radius: var(--radius-2);
-  font-weight: var(--font-weight-6);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
   cursor: ${({ disabled, $isLoading }) => (disabled || $isLoading ? 'not-allowed' : 'pointer')};
   transition: all 0.2s ease;
   opacity: ${({ disabled, $isLoading }) => (disabled || $isLoading ? 0.6 : 1)};
@@ -31,18 +33,18 @@ const StyledButton = styled.button<StyledButtonProps>`
     if ($size === 'small') {
       return `
         padding: var(--size-1) var(--size-3);
-        font-size: var(--font-size-0);
+        font-size: var(--fs-secondary);
       `;
     }
     if ($size === 'large') {
       return `
         padding: var(--size-3) var(--size-5);
-        font-size: var(--font-size-2);
+        font-size: var(--fs-body);
       `;
     }
     return `
       padding: var(--size-2) var(--size-4);
-      font-size: var(--font-size-1);
+      font-size: var(--fs-secondary);
     `;
   }}
 
@@ -52,23 +54,21 @@ const StyledButton = styled.button<StyledButtonProps>`
   ${({ $variant }) => {
     if ($variant === 'primary') {
       return `
-        background: var(--blue-6);
+        background: var(--accent);
         color: white;
 
         &:hover:not(:disabled) {
-          background: var(--blue-7);
+          background: var(--accent-hover);
         }
       `;
     }
     if ($variant === 'secondary') {
       return `
-        background: var(--surface-3);
+        background: var(--btn-secondary-bg);
         color: var(--text-1);
-        border: 1px solid var(--surface-4);
 
         &:hover:not(:disabled) {
-          background: var(--surface-4);
-          border-color: var(--text-3);
+          background: var(--btn-secondary-hover);
         }
       `;
     }
@@ -84,10 +84,10 @@ const StyledButton = styled.button<StyledButtonProps>`
     }
     return `
       background: transparent;
-      color: var(--text-2);
+      color: var(--secondary-text);
 
       &:hover:not(:disabled) {
-        background: var(--surface-3);
+        background: var(--hover-overlay);
         color: var(--text-1);
       }
     `;
