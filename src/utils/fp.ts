@@ -159,7 +159,10 @@ export const getMatchingStatus = (statusId: string) => (status: Status): Status 
   cond([
     [(s: Status) => s.id === statusId, identity],
     [(s: Status) => s.reblog?.id === statusId, (s: Status) => s.reblog!],
-    [T, () => undefined]
+    // Takes the (unused) status argument so every branch shares one arity.
+    // A zero-arg fallback makes TS 7 infer the whole cond as `() => ...` and
+    // then reject the one-arg branches above it.
+    [T, (_s: Status) => undefined]
   ])(status)
 
 /**

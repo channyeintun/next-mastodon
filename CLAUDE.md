@@ -164,7 +164,7 @@ next-mastodon/
 │   │   ├── queries.ts        # TanStack Query hooks for data fetching
 │   │   ├── queryKeys.ts      # Query key factory for cache management
 │   │   └── index.ts          # API exports
-│   ├── components/           # Atomic design components (strict LOC limits enforced by ESLint)
+│   ├── components/           # Atomic design components (strict LOC limits enforced by oxlint)
 │   │   ├── atoms/            # Basic UI elements (max 150 LOC)
 │   │   │   ├── Avatar.tsx
 │   │   │   ├── Badge.tsx
@@ -362,7 +362,8 @@ next-mastodon/
 ├── buy-me-coffee.png         # Buy me a coffee badge image
 ├── CLAUDE.md                 # This file - project structure documentation
 ├── README.md                 # Project readme
-├── eslint.config.js          # ESLint configuration with CSS baseline linting
+├── .oxlintrc.json            # oxlint config (TS/TSX rules + atomic design LOC limits)
+├── eslint.config.js          # ESLint configuration (CSS baseline linting only)
 ├── next-env.d.ts             # Next.js TypeScript declarations
 ├── next.config.ts            # Next.js configuration (with React Compiler)
 ├── bun.lock                  # Lockfile (Bun; CI installs with --frozen-lockfile)
@@ -658,20 +659,35 @@ GitHub configuration and workflows:
 Dependencies and scripts:
 - **Type**: ES module (`"type": "module"`)
 - **Main dependencies**: Next.js 16, React 19, TanStack Query, MobX, Tiptap, Open Props, @emotion/styled, @emotion/react, cropperjs/react-cropper (image cropping)
-- **Dev dependencies**: ESLint, @eslint/css (CSS baseline linting)
+- **Dev dependencies**: oxlint (TS/TSX linting), ESLint + @eslint/css (CSS baseline linting), TypeScript 7
 - **Styling approach**: Emotion styled components (replaces inline styles for better maintainability and performance)
 - **Scripts**:
   - `dev`: Start development server with Turbopack
   - `build`: Build for production
   - `start`: Start production server
-  - `lint`: Run ESLint on all files
+  - `lint`: Typecheck, then oxlint on TS/TSX, then ESLint on CSS (what CI runs)
+  - `lint:ts`: Run oxlint on TS/TSX only
   - `lint:css`: Run ESLint on CSS files only
-  - `lint:fix`: Run ESLint with auto-fix
+  - `lint:fix`: Auto-fix with oxlint, then ESLint
 
-### `eslint.config.js`
-ESLint configuration with CSS baseline linting and atomic design LOC limits:
+### Linting toolchain
 
-**CSS Linting:**
+Linting is split across two tools, because **typescript-eslint cannot run on
+TypeScript 7** — the native compiler no longer exposes the JS compiler API it
+needs, and it throws on startup rather than degrading. See
+[typescript-eslint#10940](https://github.com/typescript-eslint/typescript-eslint/issues/10940).
+
+- **`.oxlintrc.json` — oxlint, for TS/TSX.** Parses TypeScript with its own Rust
+  parser, so it is unaffected by the TS 7 break. Carries the atomic-design LOC
+  limits and unused-variable/import rules.
+- **`eslint.config.js` — ESLint, for CSS only.** @eslint/css has no TypeScript
+  dependency, so baseline CSS checking stays here.
+
+Also note `next.config.ts` sets `experimental.useTypeScriptCli`, which makes
+Next's build-time type check shell out to the `tsc` CLI instead of the compiler
+API. This is required on TS 7 for the same reason.
+
+**CSS Linting (`eslint.config.js`):**
 - **@eslint/css plugin**: Official ESLint CSS language plugin
 - **Baseline checking**: Warns when using CSS features not widely available
 - **CSS Rules**:
@@ -682,7 +698,7 @@ ESLint configuration with CSS baseline linting and atomic design LOC limits:
 
 **Atomic Design LOC Limits:**
 Enforces maximum lines of code (LOC) to maintain component simplicity. These are
-the values in `eslint.config.js` — blank lines and comments are not counted:
+the values in `.oxlintrc.json` — blank lines and comments are not counted:
 - **Atoms** (src/components/atoms/\*\*/\*.tsx): max 150 LOC
   - max 100 LOC per function
 - **Molecules** (src/components/molecules/\*\*/\*.tsx): max 350 LOC
@@ -770,7 +786,7 @@ Vercel deployment configuration:
 - **Lazy Loading**: Dynamic imports for heavy components (EmojiPicker, MediaModal)
 
 ### Developer Experience
-- **Atomic Design**: Strict component hierarchy with ESLint-enforced LOC limits
+- **Atomic Design**: Strict component hierarchy with oxlint-enforced LOC limits
 - **Type Safety**: Full TypeScript coverage with Zod schema validation
 - **Functional Programming**: Ramda utilities for data transformation pipelines
 - **Emotion Styled Components**: CSS-in-JS with transient props ($variant, $size)

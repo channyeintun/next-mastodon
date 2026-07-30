@@ -29,6 +29,16 @@ const nextConfig: NextConfig = {
   /* config options here */
   output: 'standalone',
   reactCompiler: true,
+  experimental: {
+    /**
+     * TypeScript 7 is the native (Go) compiler and no longer exposes the
+     * JS compiler API that Next's built-in type check calls into. This makes
+     * Next shell out to the `tsc` CLI instead, which TS 7 does still ship.
+     * Required as long as `typescript` is on 7.x — remove it if the toolchain
+     * ever moves back to a 6.x line.
+     */
+    useTypeScriptCli: true,
+  },
   headers: async () => [
     {
       source: '/sw.js',

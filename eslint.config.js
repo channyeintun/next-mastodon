@@ -1,10 +1,17 @@
 import css from "@eslint/css";
-import tsParser from "@typescript-eslint/parser";
-import tsPlugin from "@typescript-eslint/eslint-plugin";
-import unusedImports from "eslint-plugin-unused-imports";
 
+/**
+ * ESLint is scoped to CSS only.
+ *
+ * TypeScript/TSX linting moved to oxlint (see .oxlintrc.json), which parses TS
+ * with its own Rust parser. typescript-eslint hard-throws on TypeScript 7 —
+ * it requires the JS compiler API that the native compiler no longer exposes —
+ * so keeping it here would break linting entirely. Tracking issue for their
+ * TS >=7.1 support: https://github.com/typescript-eslint/typescript-eslint/issues/10940
+ *
+ * @eslint/css has no such dependency, so baseline CSS checking stays here.
+ */
 export default [
-  // Ignore patterns
   {
     ignores: [
       ".next/**",
@@ -14,37 +21,6 @@ export default [
       "out/**",
       "*.min.css",
     ]
-  },
-  // TypeScript files configuration
-  {
-    files: ["src/**/*.ts", "src/**/*.tsx"],
-    languageOptions: {
-      parser: tsParser,
-      parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
-    },
-    plugins: {
-      "@typescript-eslint": tsPlugin,
-      "unused-imports": unusedImports,
-    },
-    rules: {
-      "@typescript-eslint/no-unused-vars": "off",
-      "unused-imports/no-unused-imports": "error",
-      "unused-imports/no-unused-vars": [
-        "error",
-        {
-          "vars": "all",
-          "varsIgnorePattern": "^_",
-          "args": "after-used",
-          "argsIgnorePattern": "^_",
-        },
-      ],
-    },
   },
   // Lint CSS files for baseline compatibility
   {
@@ -60,81 +36,5 @@ export default [
         available: "widely"
       }]
     },
-  },
-  // Atomic Design - LOC limits for atoms
-  {
-    files: ["src/components/atoms/**/*.tsx"],
-    languageOptions: {
-      parser: tsParser,
-    },
-    rules: {
-      "max-lines": ["error", {
-        max: 150,
-        skipBlankLines: true,
-        skipComments: true
-      }],
-      "max-lines-per-function": ["error", {
-        max: 100,
-        skipBlankLines: true,
-        skipComments: true
-      }]
-    }
-  },
-  // Atomic Design - LOC limits for molecules
-  {
-    files: ["src/components/molecules/**/*.tsx"],
-    languageOptions: {
-      parser: tsParser,
-    },
-    rules: {
-      "max-lines": ["error", {
-        max: 350,
-        skipBlankLines: true,
-        skipComments: true
-      }],
-      "max-lines-per-function": ["error", {
-        max: 250,
-        skipBlankLines: true,
-        skipComments: true
-      }]
-    }
-  },
-  // Atomic Design - LOC limits for organisms
-  {
-    files: ["src/components/organisms/**/*.tsx"],
-    languageOptions: {
-      parser: tsParser,
-    },
-    rules: {
-      "max-lines": ["error", {
-        max: 500,
-        skipBlankLines: true,
-        skipComments: true
-      }],
-      "max-lines-per-function": ["error", {
-        max: 400,
-        skipBlankLines: true,
-        skipComments: true
-      }]
-    }
-  },
-  // Pages should only orchestrate organisms
-  {
-    files: ["src/app/**/page.tsx", "src/app/**/layout.tsx"],
-    languageOptions: {
-      parser: tsParser,
-    },
-    rules: {
-      "max-lines": ["error", {
-        max: 300,
-        skipBlankLines: true,
-        skipComments: true
-      }],
-      "max-lines-per-function": ["error", {
-        max: 250,
-        skipBlankLines: true,
-        skipComments: true
-      }]
-    }
   },
 ];
