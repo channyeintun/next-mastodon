@@ -243,7 +243,19 @@ const SearchInput = styled.input<{ $hasValue: boolean }>`
   background: var(--surface-2);
   color: var(--text-1);
   height: 44px;
-  &:focus { outline: none; border-color: var(--blue-7); }
+  outline: none;
+
+  /* Matches the Input atom: border shift plus a ring, since 1px against
+     --surface-5 is easy to miss. Pointer users keep the border shift because
+     this is a text field. */
+  &:focus-visible {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px var(--brand-subtle);
+  }
+
+  &:focus:not(:focus-visible) {
+    border-color: var(--brand);
+  }
 `
 
 const ClearButton = styled(IconButton)`

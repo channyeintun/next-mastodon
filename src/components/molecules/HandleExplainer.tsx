@@ -100,13 +100,14 @@ const Username = styled.div`
   margin-bottom: var(--size-2);
 `;
 
+/* Resets the UA/Open Props <details> chrome. No outline reset here: <details>
+   is not a Tab stop — its <summary> is, and that keeps the global ring. */
 const StyledDetails = styled.details`
   background: none;
   padding: 0;
   margin: 0;
   border: none;
   box-shadow: none;
-  outline: none;
 `;
 
 const ServerBadge = styled.summary`

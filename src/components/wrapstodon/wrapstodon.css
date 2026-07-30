@@ -433,7 +433,12 @@
    Wrapstodon Modal Styles
    ==================================== */
 
-/* Dialog override for wrapstodon modal */
+/* Dialog override for wrapstodon modal.
+
+   The outline reset is intentional and stays: this <dialog> is a transparent
+   shell with no chrome of its own, so the ring showModal() would draw when it
+   takes initial focus would float around empty space rather than mark a
+   control. Every interactive element inside keeps its own ring. */
 dialog:has(.wrapstodon-modal-wrapper) {
     max-width: min(95vw, 640px);
     max-height: 90dvh;

@@ -169,10 +169,18 @@ export const CommentTextarea = styled.textarea`
   font-family: inherit;
   resize: vertical;
   min-height: 100px;
+  outline: none;
 
-  &:focus {
-    outline: none;
-    border-color: var(--blue-6);
+  /* Matches the TextArea atom: border shift plus a ring, since 1px against
+     --surface-3 is easy to miss. Pointer users keep the border shift because
+     this is a text field. */
+  &:focus-visible {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px var(--brand-subtle);
+  }
+
+  &:focus:not(:focus-visible) {
+    border-color: var(--brand);
   }
 `;
 

@@ -564,6 +564,15 @@ input[type="radio"] {
   position: relative;
 }
 
+/* The contenteditable is a bare text region with no border of its own, so a
+   ring drawn on it would hug the raw text. The affordance is hoisted to
+   .compose-editor-area, the rounded box the user reads as the field — see the
+   :focus-within rule there. Suppressing it here is what makes that possible:
+   the UA draws its own ring on :focus for editing hosts. */
+.tiptap-editor-editable:focus {
+  outline: none;
+}
+
 .tiptap-editor-body {
   padding: var(--size-3);
 }
@@ -1022,13 +1031,24 @@ input[type="radio"] {
   border-radius: var(--radius-2);
 }
 
+/* Carries the focus ring for the contenteditable inside it, which suppresses
+   its own (see .tiptap-editor-editable:focus above). The editor is the only
+   focusable descendant, so :focus-within means "the editor has focus".
+
+   :focus-within rather than :focus-visible: editing hosts match
+   :focus-visible on pointer clicks too, so the two behave alike here, and
+   :focus-within is the one that reaches a parent. */
+.compose-editor-area:focus-within {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
 /* Customizing Tiptap to look more native/clean */
 .compose-editor-area .ProseMirror {
   min-height: 200px;
   padding: 0;
   /* Remove padding from contenteditable */
   line-height: normal;
-  outline: none;
 }
 
 /* Placeholder alignment handled by base absolute style at top: 0; left: 0 */
@@ -2334,6 +2354,9 @@ details[open] .details-chevron {
   margin-inline-end: 5px !important;
 }
 
+/* Strips sonner's default button chrome so the action reads as a text link.
+   The focus outline is deliberately not part of that reset — this is a real
+   button, and it is often the only way to undo what the toast is reporting. */
 [data-sonner-toast] [data-button] {
   background: none !important;
   color: var(--blue-4) !important;
@@ -2342,7 +2365,7 @@ details[open] .details-chevron {
   border: none !important;
   border-bottom: none !important;
   box-shadow: none !important;
-  outline: none !important;
+  border-radius: var(--radius-1) !important;
   padding: 0 !important;
   cursor: pointer !important;
   text-decoration: none !important;
@@ -2352,7 +2375,17 @@ details[open] .details-chevron {
 [data-sonner-toast] [data-button]:focus {
   text-decoration: underline !important;
   box-shadow: none !important;
-  outline: none !important;
+}
+
+/* The underline above is shared with hover, so it cannot by itself say where
+   keyboard focus is.
+
+   Colour is --blue-4, matching the button label, rather than the usual
+   --focus-ring-color: the toast is dark in both themes, and --brand resolves
+   to a dark blue under [data-theme="light"] that all but disappears on it. */
+[data-sonner-toast] [data-button]:focus-visible {
+  outline: var(--focus-ring-width) solid var(--blue-4) !important;
+  outline-offset: var(--focus-ring-offset) !important;
 }
 
 /* Hide the default sonner icons since we use a minimal style */

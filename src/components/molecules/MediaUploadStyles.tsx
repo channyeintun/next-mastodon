@@ -87,13 +87,19 @@ export const AltTextarea = styled.textarea`
   margin-bottom: var(--size-3);
   min-height: 80px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  
-  &:focus {
-    outline: none;
-    border-color: var(--blue-6);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  outline: none;
+
+  /* Was already a visible ring, but hardcoded — routed through the shared
+     tokens so it tracks the theme like the Input and TextArea atoms. */
+  &:focus-visible {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px var(--brand-subtle);
   }
-  
+
+  &:focus:not(:focus-visible) {
+    border-color: var(--brand);
+  }
+
   &::placeholder {
     color: var(--text-3);
   }

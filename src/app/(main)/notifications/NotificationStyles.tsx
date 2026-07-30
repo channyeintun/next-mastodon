@@ -25,7 +25,10 @@ export const NotificationSettingsToggle = styled.button`
     padding: var(--size-2);
     background: transparent;
     border: none;
-    outline: none;
+    /* Invisible at rest (no background or border); it shapes the focus ring. */
+    border-radius: var(--radius-2);
+    /* Suppresses the Open Props button shadow only — the focus ring below is
+       what tells keyboard users where they are. */
     box-shadow: none;
     color: var(--text-2);
     cursor: pointer;
@@ -35,8 +38,9 @@ export const NotificationSettingsToggle = styled.button`
         color: var(--brand);
     }
 
-    &:focus {
-        outline: none;
+    &:focus-visible {
+        outline: var(--focus-ring-width) solid var(--focus-ring-color);
+        outline-offset: var(--focus-ring-offset);
     }
 `;
 

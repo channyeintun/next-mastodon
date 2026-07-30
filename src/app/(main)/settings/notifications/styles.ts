@@ -96,10 +96,18 @@ export const PolicySelect = styled.select`
     font-size: var(--font-size-1);
     min-width: 120px;
     cursor: pointer;
+    outline: none;
 
-    &:focus {
-        outline: none;
-        border-color: var(--blue-6);
+    /* Matches the Input atom: border shift plus a ring, since 1px against
+       --surface-4 is easy to miss. Pointer users keep the border shift, which
+       is the only signal an open select gives back on the closed control. */
+    &:focus-visible {
+        border-color: var(--brand);
+        box-shadow: 0 0 0 3px var(--brand-subtle);
+    }
+
+    &:focus:not(:focus-visible) {
+        border-color: var(--brand);
     }
 
     @media (max-width: 500px) {
