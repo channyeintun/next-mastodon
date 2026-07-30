@@ -554,3 +554,40 @@ dialog:has(.wrapstodon-modal-wrapper)::backdrop {
         width: 100%;
     }
 }
+
+/* ====================================
+   Keyboard focus on the Wrapstodon surface
+   ====================================
+   Wrapstodon paints its own palette whatever the app theme is, so the shared
+   --focus-ring-color from globals.css lands wrong here — and wrong in both
+   directions. Under [data-theme="light"] it resolves to #0064D1, which sits at
+   2.8:1 on the announcement's purple wash and all but vanishes on the modal's
+   gradient buttons. But a plain light ring is no better, because this surface
+   is not uniformly dark: --gradient-29 washes pale lavender (#bfb3ff) across
+   the card's top-right corner, directly under the close button, and pale blue
+   across the bottom-left, under the archetype box. White reads at 1.9:1 there.
+
+   The two constraints don't overlap — nothing clears 3:1 against both the
+   #bfb3ff corners and the #17063b boxes — so the ring is two-tone: the white
+   outline that --focus-ring-color drives, plus a dark companion ring painted
+   just outside it. The outline paints over the box-shadow, so the ring reads
+   as dark / white / dark and one of the two tones contrasts wherever on the
+   gradient it happens to land.
+
+   .wrapstodon-modal-wrapper is listed alongside .theme-dark because the modal's
+   loading and message screens sit on the same backdrop without carrying the
+   palette class. */
+:is(.theme-dark, .wrapstodon-modal-wrapper) :focus-visible {
+    --focus-ring-color: #fff;
+
+    box-shadow: 0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-offset) + 1px) rgb(from var(--color-bg-primary, #17063b) r g b / 90%);
+}
+
+/* .wrapstodon-box draws its hairline with box-shadow, which the companion ring
+   above would otherwise replace. The archetype box is focusable (tabIndex=0),
+   so it needs both. */
+:is(.theme-dark, .wrapstodon-modal-wrapper) .wrapstodon-box:focus-visible {
+    box-shadow:
+        inset 0 0 0 1px rgb(from var(--color-text-primary) r g b / 20%),
+        0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-offset) + 1px) rgb(from var(--color-bg-primary, #17063b) r g b / 90%);
+}
