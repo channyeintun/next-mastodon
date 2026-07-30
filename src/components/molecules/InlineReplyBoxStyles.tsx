@@ -54,11 +54,21 @@ export const Field = styled.div`
   background: var(--comment-bg);
   border-radius: var(--radius-3);
   padding: var(--size-2) var(--size-3);
+
+  /* The pill, not the bare textarea, is the control the user sees, so it takes
+     the ring. Scoped to the textarea rather than :focus-within because this
+     also wraps the toolbar and the thumbnail remove buttons, each of which
+     brings its own ring — :focus-within would draw two at once. */
+  &:has(> textarea:focus-visible) {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
 `;
 
 export const TextArea = styled.textarea`
   width: 100%;
   border: none;
+  /* The Field wrapper above draws the ring for this input. */
   outline: none;
   resize: none;
   background: transparent;

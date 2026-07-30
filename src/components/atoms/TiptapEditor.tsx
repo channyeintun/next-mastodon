@@ -78,8 +78,12 @@ export function TiptapEditor({
 
   const editorProps = useMemo(() => ({
     attributes: {
+      /* No inline `outline: none` here. An inline style outranks every
+         stylesheet, so it left the contenteditable with no keyboard focus
+         indicator that CSS could restore. The ring now lives on
+         .compose-editor-area in globals.css, which has the rounded box the
+         user reads as the field. */
       class: 'tiptap-editor-editable',
-      style: 'outline: none;',
       ...(ariaLabel ? { 'aria-label': ariaLabel } : {}),
     },
     transformPastedText(text: string) {

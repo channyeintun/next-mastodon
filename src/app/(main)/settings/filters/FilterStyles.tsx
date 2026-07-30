@@ -1,6 +1,28 @@
 'use client';
 
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+
+/* Shared focus affordance for the form controls below, mirroring the Input and
+   TextArea atoms: the 1px border shift alone is easy to miss against
+   --surface-3, so the ring carries the cue. Pointer users keep the border shift
+   because these are text fields, where losing it on click would read as dead.
+
+   Declared explicitly rather than leaning on the global :focus-visible rule —
+   Emotion injects these class rules after globals.css, and at equal specificity
+   the later rule wins. */
+const fieldFocus = css`
+  outline: none;
+
+  &:focus-visible {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px var(--brand-subtle);
+  }
+
+  &:focus:not(:focus-visible) {
+    border-color: var(--brand);
+  }
+`;
 
 export const FiltersContainer = styled.div`
   max-width: 680px;
@@ -174,10 +196,7 @@ export const FormInput = styled.input`
   font-size: var(--font-size-1);
   color: var(--text-1);
 
-  &:focus {
-    outline: none;
-    border-color: var(--brand);
-  }
+  ${fieldFocus}
 
   &::placeholder {
     color: var(--text-3);
@@ -194,10 +213,7 @@ export const FormSelect = styled.select`
   color: var(--text-1);
   cursor: pointer;
 
-  &:focus {
-    outline: none;
-    border-color: var(--brand);
-  }
+  ${fieldFocus}
 `;
 
 export const CheckboxGroup = styled.div`
@@ -291,10 +307,7 @@ export const KeywordInput = styled.input`
   font-size: var(--font-size-1);
   color: var(--text-1);
 
-  &:focus {
-    outline: none;
-    border-color: var(--brand);
-  }
+  ${fieldFocus}
 
   &::placeholder {
     color: var(--text-3);

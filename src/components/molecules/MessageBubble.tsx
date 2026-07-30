@@ -132,11 +132,18 @@ const MessageContent = styled.div<{ $isOwn: boolean }>`
   flex-direction: column;
   gap: var(--size-1);
   align-items: ${props => props.$isOwn ? 'flex-end' : 'flex-start'};
-  outline: none;
+  border-radius: var(--radius-3);
 
   &:focus .message-timestamp {
     opacity: 1;
     max-height: 20px;
+  }
+
+  /* This carries tabIndex={0}, so it is a Tab stop. Revealing the timestamp is
+     too subtle to serve as the only cue that focus landed here. */
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
   }
 `
 

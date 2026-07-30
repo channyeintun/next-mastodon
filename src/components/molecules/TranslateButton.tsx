@@ -124,18 +124,26 @@ const TranslateLink = styled.button`
   cursor: pointer;
   transition: all 0.15s ease;
   font-family: inherit;
-  outline: none;
+  /* Shapes the focus ring around this borderless, text-only button. */
+  border-radius: var(--radius-1);
 
   &:hover:not(:disabled) {
     color: var(--text-1);
     text-decoration: underline;
     box-shadow: none;
-    outline: none;
   }
 
-  &:focus, &:active, &:focus-visible {
-    outline: none;
+  /* Only the Open Props button shadow is suppressed here. The outline is the
+     sole focus affordance this control has — hover's underline does not fire
+     for keyboard users, so removing it left the button invisible on Tab. */
+  &:focus, &:active {
     box-shadow: none;
+  }
+
+  &:focus-visible {
+    box-shadow: none;
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
   }
 
   &:disabled {
