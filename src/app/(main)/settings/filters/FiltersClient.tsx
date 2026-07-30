@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Plus, Trash2, Edit } from 'lucide-react';
+import { Plus, Trash2, Edit } from 'lucide-react';
 import { useFilters } from '@/api/queries';
 import { useDeleteFilter } from '@/api/mutations';
-import { IconButton, Button, Card, TextSkeleton } from '@/components/atoms';
+import { BackButton, Button, Card, TextSkeleton } from '@/components/atoms';
 import { toast } from 'sonner';
 import type { Filter } from '@/types/mastodon';
 import { useTranslations } from 'next-intl';
@@ -28,8 +28,6 @@ import {
 } from './FilterStyles';
 
 // Labels maps removed, will use translations directly
-
-
 
 // Helper component to translate expiration
 function ExpirationText({ expiresAt }: { expiresAt: string | null }) {
@@ -136,7 +134,6 @@ function FilterCardItem({ filter }: { filter: Filter }) {
 }
 
 export function FiltersClient() {
-    const router = useRouter();
     const { data: filters, isLoading, error } = useFilters();
     const t = useTranslations('settings.filtersPage');
 
@@ -144,9 +141,7 @@ export function FiltersClient() {
         return (
             <FiltersContainer>
                 <FiltersHeader>
-                    <IconButton onClick={() => router.back()}>
-                        <ArrowLeft size={20} />
-                    </IconButton>
+                    <BackButton />
                     <FiltersTitle>{t('title')}</FiltersTitle>
                 </FiltersHeader>
                 <Card padding="medium">
@@ -162,9 +157,7 @@ export function FiltersClient() {
         return (
             <FiltersContainer>
                 <FiltersHeader>
-                    <IconButton onClick={() => router.back()}>
-                        <ArrowLeft size={20} />
-                    </IconButton>
+                    <BackButton />
                     <FiltersTitle>{t('title')}</FiltersTitle>
                 </FiltersHeader>
                 <Card padding="medium">
@@ -179,9 +172,7 @@ export function FiltersClient() {
     return (
         <FiltersContainer>
             <FiltersHeader>
-                <IconButton onClick={() => router.back()}>
-                    <ArrowLeft size={20} />
-                </IconButton>
+                <BackButton />
                 <FiltersTitle>{t('title')}</FiltersTitle>
                 <Link href="/settings/filters/new" style={{ marginLeft: 'auto' }}>
                     <Button size="small">

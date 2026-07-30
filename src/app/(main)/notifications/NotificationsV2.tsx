@@ -1,12 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useMemo, useState } from 'react';
-import { Bell, Filter } from 'lucide-react';
+import { Bell, CheckCheck, ChevronsDownUp, ChevronsUpDown, Filter, XCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { BiExpandVertical, BiCollapseVertical } from 'react-icons/bi';
-import { IoCheckmarkDoneSharp } from 'react-icons/io5';
-import { TiDelete } from 'react-icons/ti';
 import { GroupedNotificationCard, NotificationSkeletonList } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { Button, Tabs } from '@/components/atoms';
@@ -162,7 +159,7 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
                         onClick={() => setIsSettingsOpen(!isSettingsOpen)}
                         aria-label="Toggle settings"
                     >
-                        {isSettingsOpen ? <BiCollapseVertical size={20} /> : <BiExpandVertical size={20} />}
+                        {isSettingsOpen ? <ChevronsDownUp size={20} /> : <ChevronsUpDown size={20} />}
                     </NotificationSettingsToggle>
                 </NotificationTitleRow>
             </NotificationHeaderContainer>
@@ -175,11 +172,11 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
                         <NotificationSettingsSectionTitle>{t('actions.title')}</NotificationSettingsSectionTitle>
                         <NotificationActionsRow>
                             <Button variant="ghost" size="small" onClick={handleMarkAsRead} disabled={allGroups.length === 0}>
-                                <IoCheckmarkDoneSharp size={16} />
+                                <CheckCheck size={16} />
                                 {t('actions.markAllRead')}
                             </Button>
                             <Button variant="ghost" size="small" onClick={handleClearAll} disabled={allGroups.length === 0}>
-                                <TiDelete size={16} />
+                                <XCircle size={16} />
                                 {t('actions.clearAll')}
                             </Button>
                         </NotificationActionsRow>

@@ -1,9 +1,8 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { ArrowLeft, Plus, List } from 'lucide-react';
+import { Plus, List } from 'lucide-react';
 import { useLists, useCreateList, useUpdateList, useDeleteList } from '@/api';
-import { IconButton } from '@/components/atoms';
+import { BackButton, IconButton } from '@/components/atoms';
 import { useTranslations } from 'next-intl';
 import { ListItemSkeleton } from '@/components/molecules';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
@@ -11,7 +10,6 @@ import { ListModalContent, DeleteConfirmModalContent, ListItem } from './ListCom
 import type { List as ListType, CreateListParams, UpdateListParams } from '@/types';
 
 export default function ListsPage() {
-    const router = useRouter();
     const t = useTranslations('lists');
     const { openModal, closeModal } = useGlobalModal();
     const { data: lists, isLoading } = useLists();
@@ -73,9 +71,7 @@ export default function ListsPage() {
                 position: 'sticky', top: 0, background: 'var(--surface-1)', zIndex: 10,
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)' }}>
-                    <IconButton onClick={() => router.back()}>
-                        <ArrowLeft size={20} />
-                    </IconButton>
+                    <BackButton />
                     <div>
                         <h1 style={{ fontSize: 'var(--font-size-4)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                             <List size={22} />

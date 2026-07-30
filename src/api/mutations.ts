@@ -62,10 +62,15 @@ import {
   generateAnnualReport,
   deleteSuggestion,
   type PaginatedResponse,
+  followTag,
+  unfollowTag,
+  dismissAnnouncement,
+  addAnnouncementReaction,
+  removeAnnouncementReaction
 } from './client'
 import { queryKeys } from './queryKeys'
 import { findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
-import type { Account, CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams, UpdateNotificationPolicyV1Params, CreatePushSubscriptionParams, UpdatePushSubscriptionParams, CreateFilterParams, UpdateFilterParams, CreateReportParams } from '../types/mastodon'
+import type { Account, CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams, UpdateNotificationPolicyV1Params, CreatePushSubscriptionParams, UpdatePushSubscriptionParams, CreateFilterParams, UpdateFilterParams, CreateReportParams, Tag, Announcement } from '../types/mastodon'
 import { useRouter } from 'next/navigation'
 
 // Annual Report (Wrapstodon) mutations
@@ -1872,6 +1877,93 @@ export function useDeleteSuggestion() {
     onSettled: () => {
       // Invalidate to ensure consistency
       queryClient.invalidateQueries({ queryKey: queryKeys.suggestions.all() })
+    },
+  })
+}
+
+
+// ============================================================================
+// HASHTAGS
+// ============================================================================
+
+/**
+ * Follow / unfollow a hashtag.
+ *
+ * Optimistically flips `following` on the cached tag so the button responds
+ * immediately, and rolls back if the request fails. The home timeline is
+ * invalidated on settle because following a tag changes what it returns.
+ */
+function useTagFollowMutation(action: (name: string) => Promise<Tag>, nextFollowing: boolean) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (name: string) => action(name),
+    onMutate: async (name: string) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.tags.detail(name) })
+      const previous = queryClient.getQueryData<Tag>(queryKeys.tags.detail(name))
+      if (previous) {
+        queryClient.setQueryData<Tag>(queryKeys.tags.detail(name), { ...previous, following: nextFollowing })
+      }
+      return { previous }
+    },
+    onError: (_err, name, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(queryKeys.tags.detail(name), context.previous)
+      }
+    },
+    onSettled: (_data, _err, name) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.tags.detail(name) })
+      queryClient.invalidateQueries({ queryKey: queryKeys.tags.followed() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.timelines.home() })
+    },
+  })
+}
+
+export function useFollowTag() {
+  return useTagFollowMutation(followTag, true)
+}
+
+export function useUnfollowTag() {
+  return useTagFollowMutation(unfollowTag, false)
+}
+
+
+// ============================================================================
+// ANNOUNCEMENTS
+// ============================================================================
+
+export function useDismissAnnouncement() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => dismissAnnouncement(id),
+    onMutate: async (id: string) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.announcements.all })
+      const previous = queryClient.getQueryData<Announcement[]>(queryKeys.announcements.list())
+      // Drop it locally so the banner disappears immediately
+      queryClient.setQueryData<Announcement[]>(
+        queryKeys.announcements.list(),
+        (old) => old?.filter((a) => a.id !== id)
+      )
+      return { previous }
+    },
+    onError: (_err, _id, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(queryKeys.announcements.list(), context.previous)
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.announcements.all })
+    },
+  })
+}
+
+export function useAnnouncementReaction() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, name, active }: { id: string; name: string; active: boolean }) =>
+      active ? removeAnnouncementReaction(id, name) : addAnnouncementReaction(id, name),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.announcements.all })
     },
   })
 }

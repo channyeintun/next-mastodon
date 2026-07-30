@@ -2,12 +2,12 @@
 
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, MessageSquareQuote } from 'lucide-react';
+import { MessageSquareQuote } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useStatus, useInfiniteStatusQuotes } from '@/api';
 import { PostCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
 import { PostCard, VirtualizedList } from '@/components/organisms';
-import { IconButton, Button, EmptyState } from '@/components/atoms';
+import { BackButton, Button, EmptyState } from '@/components/atoms';
 import { flattenPages } from '@/utils/fp';
 import type { Status } from '@/types';
 
@@ -74,9 +74,7 @@ export default function QuotesPage({
                 zIndex: 10,
                 flexShrink: 0,
             }}>
-                <IconButton onClick={() => router.back()}>
-                    <ArrowLeft size={20} />
-                </IconButton>
+                <BackButton />
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                     <MessageSquareQuote size={20} style={{ color: 'var(--blue-6)' }} />
                     <div>

@@ -84,6 +84,13 @@
     "unmuteConversation": "会話のミュートを解除",
     "unpin": "プロフィールの固定を解除"
   },
+  "announcements": {
+    "addReaction": "Add reaction",
+    "dismiss": "Dismiss",
+    "fromInstance": "Announcement from {instance}",
+    "showAll": "Show {count} more",
+    "title": "Announcements"
+  },
   "common": {
     "addMedia": "メディアを追加",
     "back": "戻る",
@@ -94,6 +101,7 @@
     "done": "完了",
     "dontShowAgain": "今後表示しない",
     "loading": "読み込み中...",
+    "moreOptions": "More options",
     "next": "次へ",
     "open": "開く",
     "remove": "削除",
@@ -108,14 +116,20 @@
   },
   "composer": {
     "addContentWarning": "コンテンツ警告を追加",
-    "createTutorial": "チュートリアルを作成",
     "addEmoji": "絵文字を追加",
     "addMedia": "メディアを追加",
     "addOption": "選択肢を追加",
     "addPoll": "アンケートを追加",
     "charCount": "残り{count}文字",
+    "createTutorial": "チュートリアルを作成",
     "cwLabel": "コンテンツ警告",
     "cwPlaceholder": "警告内容を入力...",
+    "discardChanges": {
+      "cancel": "編集を続ける",
+      "discard": "破棄",
+      "message": "変更を破棄してもよろしいですか？この操作は取り消せません。",
+      "title": "変更を破棄しますか？"
+    },
     "duration": {
       "1d": "1日",
       "1h": "1時間",
@@ -152,18 +166,13 @@
     "reply": "返信",
     "replyPlaceholder": "返信を投稿",
     "replyTo": "Reply to @{acct}",
+    "replyingTo": "Replying to {name}",
     "reschedule": "予約変更",
     "saveDraft": {
       "discard": "下書きを削除",
       "message": "今破棄すると、この投稿は失われます。",
       "save": "下書きとして保存",
       "title": "この投稿を下書きとして保存しますか？"
-    },
-    "discardChanges": {
-      "cancel": "編集を続ける",
-      "discard": "破棄",
-      "message": "変更を破棄してもよろしいですか？この操作は取り消せません。",
-      "title": "変更を破棄しますか？"
     },
     "schedule": "予約",
     "scheduleHelp": "投稿はこの日時に自動的に公開されます。",
@@ -264,6 +273,15 @@
       "tags": "タグ"
     },
     "title": "見つける"
+  },
+  "hashtag": {
+    "follow": "Follow",
+    "followError": "Could not update hashtag",
+    "followedTags": "Followed hashtags",
+    "following": "Following",
+    "noFollowedTags": "You haven't followed any hashtags yet",
+    "noFollowedTagsHint": "Posts from hashtags you follow appear in your home timeline.",
+    "unfollow": "Unfollow"
   },
   "imageCropper": {
     "flipHorizontal": "水平反転",

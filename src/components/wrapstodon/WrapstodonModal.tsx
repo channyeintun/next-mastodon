@@ -11,7 +11,7 @@ import { useAnnualReportGeneration } from '@/hooks/useAnnualReportGeneration'
 import { Wrapstodon } from '@/components/wrapstodon'
 import { Announcement } from '@/components/wrapstodon/Announcement'
 import { Spinner } from '@/components/atoms/Spinner'
-import { GiRingedPlanet } from 'react-icons/gi'
+import { RingedPlanetIcon } from '@/components/atoms/RingedPlanetIcon'
 import './wrapstodon.css'
 
 interface WrapstodonModalProps {
@@ -86,7 +86,7 @@ export function WrapstodonModal({ onClose }: WrapstodonModalProps) {
         return (
             <div className="wrapstodon-modal-wrapper">
                 <div className="wrapstodon-modal-message">
-                    <GiRingedPlanet size={48} className="wrapstodon-modal-icon dimmed" />
+                    <RingedPlanetIcon size={48} className="wrapstodon-modal-icon dimmed" />
                     <h2>Wrapstodon not available</h2>
                     <p>Wrapstodon is not available on this instance yet.</p>
                     <button className="wrapstodon-modal-button" onClick={onClose}>
@@ -102,7 +102,7 @@ export function WrapstodonModal({ onClose }: WrapstodonModalProps) {
         return (
             <div className="wrapstodon-modal-wrapper">
                 <div className="wrapstodon-modal-message">
-                    <GiRingedPlanet size={48} className="wrapstodon-modal-icon dimmed" />
+                    <RingedPlanetIcon size={48} className="wrapstodon-modal-icon dimmed" />
                     <h2>Wrapstodon not available</h2>
                     <p>
                         {state === 'ineligible'
@@ -161,7 +161,7 @@ export function WrapstodonModal({ onClose }: WrapstodonModalProps) {
     return (
         <div className="wrapstodon-modal-wrapper">
             <div className="wrapstodon-modal-message">
-                <GiRingedPlanet size={48} className="wrapstodon-modal-icon dimmed" />
+                <RingedPlanetIcon size={48} className="wrapstodon-modal-icon dimmed" />
                 <h2>Something went wrong</h2>
                 <p>We couldn&apos;t load your Wrapstodon. Please try again later.</p>
                 <button className="wrapstodon-modal-button" onClick={onClose}>

@@ -84,6 +84,13 @@
     "unmuteConversation": "စကားပြောမှုကို အသံပြန်ဖွင့်ရန်",
     "unpin": "ပရိုဖိုင်တွင် ပင်ဖြုတ်ရန်"
   },
+  "announcements": {
+    "addReaction": "Add reaction",
+    "dismiss": "Dismiss",
+    "fromInstance": "Announcement from {instance}",
+    "showAll": "Show {count} more",
+    "title": "Announcements"
+  },
   "common": {
     "addMedia": "မီဒီယာ ထည့်ရန်",
     "back": "နောက်သို့",
@@ -94,6 +101,7 @@
     "done": "ပြီးပါပြီ",
     "dontShowAgain": "နောက်တစ်ကြိမ် မပြပါနှင့်",
     "loading": "ဖွင့်နေသည်...",
+    "moreOptions": "More options",
     "next": "ရှေ့သို့",
     "open": "ဖွင့်ရန်",
     "remove": "ဖယ်ရှားရန်",
@@ -108,14 +116,20 @@
   },
   "composer": {
     "addContentWarning": "အကြောင်းအရာ သတိပေးချက် ထည့်ရန်",
-    "createTutorial": "ကုဒ်သင်ခန်းစာ ဖန်တီးရန်",
     "addEmoji": "အီမိုဂျီ ထည့်ရန်",
     "addMedia": "မီဒီယာ ထည့်ရန်",
     "addOption": "ရွေးချယ်စရာ ထည့်ရန်",
     "addPoll": "မဲပေးခြင်း ထည့်ရန်",
     "charCount": "နောက်ထပ် စာလုံး {count} လုံ",
+    "createTutorial": "ကုဒ်သင်ခန်းစာ ဖန်တီးရန်",
     "cwLabel": "အကြောင်းအရာ သတိပေးချက်",
     "cwPlaceholder": "သတိပေးချက်ကို ဤနေရာတွင် ရေးပါ...",
+    "discardChanges": {
+      "cancel": "ဆက်လက်ပြင်ဆင်ရန်",
+      "discard": "ပယ်ဖျက်မည်",
+      "message": "ပြောင်းလဲမှုများကို ပယ်ဖျက်ရန် သေချာပါသလား? ဤလုပ်ဆောင်ချက်ကို ပြန်ပြင်၍မရပါ။",
+      "title": "ပြောင်းလဲမှုများကို ပယ်ဖျက်မလား?"
+    },
     "duration": {
       "1d": "၁ ရက်",
       "1h": "၁ နာရီ",
@@ -152,18 +166,13 @@
     "reply": "ပြန်စာ",
     "replyPlaceholder": "ပြန်စာရေးရန်",
     "replyTo": "@{acct} ကို ပြန်စာရေးရန်",
+    "replyingTo": "Replying to {name}",
     "reschedule": "အချိန်ပြန်သတ်မှတ်ရန်",
     "saveDraft": {
       "discard": "မူကြမ်းကို ဖျက်ရန်",
       "message": "ယခု ပယ်ဖျက်လိုက်ပါက ဤပို့စ် ပျောက်ဆုံးသွားပါလိမ့်မည်။",
       "save": "မူကြမ်းအဖြစ် သိမ်းဆည်းရန်",
       "title": "ဤပို့စ်ကို မူကြမ်းအဖြစ် သိမ်းဆည်းမလား?"
-    },
-    "discardChanges": {
-      "cancel": "ဆက်လက်ပြင်ဆင်ရန်",
-      "discard": "ပယ်ဖျက်မည်",
-      "message": "ပြောင်းလဲမှုများကို ပယ်ဖျက်ရန် သေချာပါသလား? ဤလုပ်ဆောင်ချက်ကို ပြန်ပြင်၍မရပါ။",
-      "title": "ပြောင်းလဲမှုများကို ပယ်ဖျက်မလား?"
     },
     "schedule": "အချိန်သတ်မှတ်ရန်",
     "scheduleHelp": "ဤအချိန်တွင် ပို့စ်ကို အလိုအလျောက် တင်ပေးမည်ဖြစ်သည်၊၊",
@@ -264,6 +273,15 @@
       "tags": "တဂ်များ"
     },
     "title": "လေ့လာရန်"
+  },
+  "hashtag": {
+    "follow": "Follow",
+    "followError": "Could not update hashtag",
+    "followedTags": "Followed hashtags",
+    "following": "Following",
+    "noFollowedTags": "You haven't followed any hashtags yet",
+    "noFollowedTagsHint": "Posts from hashtags you follow appear in your home timeline.",
+    "unfollow": "Unfollow"
   },
   "imageCropper": {
     "flipHorizontal": "ဘေးတိုက် လှန်ရန်",

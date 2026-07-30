@@ -66,6 +66,9 @@ import {
   getTrendingTags,
   getTrendingLinks,
   getMediaAttachment,
+  getTag,
+  getFollowedTags,
+  getAnnouncements
 } from './client'
 import { queryKeys } from './queryKeys'
 import type { TimelineParams, SearchParams, NotificationParams, GroupedNotificationParams, ConversationParams, NotificationRequestParams, NotificationType, Account } from '../types/mastodon'
@@ -1332,5 +1335,57 @@ export function useSuggestions(params?: { limit?: number }) {
   return useQuery({
     ...suggestionsOptions(params),
     enabled: authStore.isAuthenticated,
+  })
+}
+
+
+// ============================================================================
+// HASHTAGS
+// ============================================================================
+
+/**
+ * A single hashtag, including whether the current user follows it.
+ *
+ * Only fetched when signed in: `following` is meaningless for anonymous
+ * visitors, and the endpoint requires a token.
+ */
+export function useTag(name: string) {
+  const authStore = useAuthStore()
+  return useQuery({
+    queryKey: queryKeys.tags.detail(name),
+    queryFn: ({ signal }) => getTag(name, signal),
+    enabled: !!name && authStore.isAuthenticated,
+    staleTime: 60_000,
+  })
+}
+
+/** Hashtags the current user follows. */
+export function useFollowedTags() {
+  const authStore = useAuthStore()
+  return useQuery({
+    queryKey: queryKeys.tags.followed(),
+    queryFn: ({ signal }) => getFollowedTags({ limit: 100 }, signal),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+
+// ============================================================================
+// ANNOUNCEMENTS
+// ============================================================================
+
+/**
+ * Instance announcements.
+ *
+ * Only unread ones are returned (`with_dismissed` defaults to false), so the
+ * result doubles as "what should I show the user right now".
+ */
+export function useAnnouncements() {
+  const authStore = useAuthStore()
+  return useQuery({
+    queryKey: queryKeys.announcements.list(),
+    queryFn: ({ signal }) => getAnnouncements(undefined, signal),
+    enabled: authStore.isAuthenticated,
+    staleTime: 5 * 60_000,
   })
 }

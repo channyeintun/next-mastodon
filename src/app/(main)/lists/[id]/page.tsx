@@ -3,9 +3,9 @@
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, List, Users, Settings } from 'lucide-react';
+import { List, Users, Settings } from 'lucide-react';
 import { useList, useInfiniteListTimeline } from '@/api';
-import { IconButton } from '@/components/atoms';
+import { BackButton, IconButton } from '@/components/atoms';
 import { PostCard } from '@/components/organisms';
 import { PostCardSkeleton, PostCardSkeletonList, PageHeaderSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
@@ -55,9 +55,7 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
                         borderBottom: '1px solid var(--surface-3)',
                     }}
                 >
-                    <IconButton onClick={() => router.back()}>
-                        <ArrowLeft size={20} />
-                    </IconButton>
+                    <BackButton />
                     <h1 style={{ fontSize: 'var(--font-size-4)' }}>List not found</h1>
                 </div>
                 <div style={{ display: 'grid', placeItems: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
@@ -94,9 +92,7 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)' }}>
-                    <IconButton onClick={() => router.back()}>
-                        <ArrowLeft size={20} />
-                    </IconButton>
+                    <BackButton />
                     <div
                         style={{
                             width: 40,

@@ -2,8 +2,7 @@
 
 import styled from '@emotion/styled';
 import { Card as CardType } from '@/types/mastodon';
-import { ExternalLink } from 'lucide-react';
-import { RiPagesLine } from 'react-icons/ri';
+import { ExternalLink, FileText } from 'lucide-react';
 import { openExternalUrl } from '@/utils/externalLink';
 import { safeHostname } from '@/utils/url';
 
@@ -27,7 +26,7 @@ export function LinkPreview({ card, style, className, wrapstodon = false }: Link
           <img src={card.image} alt={card.title} />
         ) : (
           <PlaceholderWrapper>
-            <RiPagesLine size={48} />
+            <FileText size={48} />
           </PlaceholderWrapper>
         )}
       </ImageBox>

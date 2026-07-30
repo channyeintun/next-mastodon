@@ -1,9 +1,9 @@
 'use client';
 
 import Link, { useLinkStatus } from 'next/link';
+import { RingedPlanetIcon } from '@/components/atoms';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { WrapstodonModal } from '@/components/wrapstodon/WrapstodonModal';
-import { GiRingedPlanet } from 'react-icons/gi';
 import React from 'react';
 
 export interface NavigationLinkProps {
@@ -76,7 +76,7 @@ export function WrapstodonButton({ year, highlight, textBadge }: WrapstodonButto
       aria-label={`Wrapstodon ${year}`}
     >
       <div className="navigation-link-icon">
-        <GiRingedPlanet style={{ fontSize: 24, width: 24, height: 24, minWidth: 24, minHeight: 24, flexShrink: 0 }} />
+        <RingedPlanetIcon style={{ fontSize: 24, width: 24, height: 24, minWidth: 24, minHeight: 24, flexShrink: 0 }} />
       </div>
       <span className="navigation-link-label">Wrapstodon {year}</span>
       {textBadge && <span className="badge-text">{textBadge}</span>}

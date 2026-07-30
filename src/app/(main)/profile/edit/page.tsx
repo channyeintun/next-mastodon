@@ -4,10 +4,10 @@ import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowLeft } from 'lucide-react';
+// (lucide icons removed);
 import { useTranslations } from 'next-intl';
 import { useCurrentAccount, useUpdateAccount } from '@/api';
-import { Button, IconButton } from '@/components/atoms';
+import { BackButton, Button } from '@/components/atoms';
 import {
     ImageCropper,
     ProfileEditorSkeleton,
@@ -188,9 +188,7 @@ export default function ProfileEditPage() {
                 gap: 'var(--size-3)',
                 marginBottom: 'var(--size-5)',
             }}>
-                <IconButton onClick={() => router.back()}>
-                    <ArrowLeft size={20} />
-                </IconButton>
+                <BackButton />
                 <h1 style={{
                     fontSize: 'var(--font-size-4)',
                     fontWeight: 'var(--font-weight-6)',

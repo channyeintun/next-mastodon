@@ -84,6 +84,13 @@
     "unmuteConversation": "Ne plus masquer la conversation",
     "unpin": "Désépingler du profil"
   },
+  "announcements": {
+    "addReaction": "Add reaction",
+    "dismiss": "Dismiss",
+    "fromInstance": "Announcement from {instance}",
+    "showAll": "Show {count} more",
+    "title": "Announcements"
+  },
   "common": {
     "addMedia": "Ajouter un média",
     "back": "Retour",
@@ -94,6 +101,7 @@
     "done": "Terminé",
     "dontShowAgain": "Ne plus afficher",
     "loading": "Chargement...",
+    "moreOptions": "More options",
     "next": "Suivant",
     "open": "Ouvrir",
     "remove": "Retirer",
@@ -108,14 +116,20 @@
   },
   "composer": {
     "addContentWarning": "Ajouter un avertissement",
-    "createTutorial": "Créer un tutoriel",
     "addEmoji": "Ajouter un emoji",
     "addMedia": "Ajouter un média",
     "addOption": "Ajouter une option",
     "addPoll": "Ajouter un sondage",
     "charCount": "{count} caractères restants",
+    "createTutorial": "Créer un tutoriel",
     "cwLabel": "Avertissement de contenu",
     "cwPlaceholder": "Écrivez votre avertissement ici...",
+    "discardChanges": {
+      "cancel": "Continuer l'édition",
+      "discard": "Abandonner",
+      "message": "Voulez-vous vraiment abandonner vos modifications ? Cette action est irréversible.",
+      "title": "Abandonner les modifications ?"
+    },
     "duration": {
       "1d": "1 jour",
       "1h": "1 heure",
@@ -152,18 +166,13 @@
     "reply": "Répondre",
     "replyPlaceholder": "Publiez votre réponse",
     "replyTo": "Reply to @{acct}",
+    "replyingTo": "Replying to {name}",
     "reschedule": "Reprogrammer",
     "saveDraft": {
       "discard": "Supprimer le brouillon",
       "message": "Si vous abandonnez maintenant, vous perdrez ce post.",
       "save": "Enregistrer le brouillon",
       "title": "Enregistrer ce post en tant que brouillon ?"
-    },
-    "discardChanges": {
-      "cancel": "Continuer l'édition",
-      "discard": "Abandonner",
-      "message": "Voulez-vous vraiment abandonner vos modifications ? Cette action est irréversible.",
-      "title": "Abandonner les modifications ?"
     },
     "schedule": "Programmer",
     "scheduleHelp": "La publication sera automatiquement publiée à cette date.",
@@ -264,6 +273,15 @@
       "tags": "Tags"
     },
     "title": "Explorer"
+  },
+  "hashtag": {
+    "follow": "Follow",
+    "followError": "Could not update hashtag",
+    "followedTags": "Followed hashtags",
+    "following": "Following",
+    "noFollowedTags": "You haven't followed any hashtags yet",
+    "noFollowedTagsHint": "Posts from hashtags you follow appear in your home timeline.",
+    "unfollow": "Unfollow"
   },
   "imageCropper": {
     "flipHorizontal": "Retourner horizontalement",

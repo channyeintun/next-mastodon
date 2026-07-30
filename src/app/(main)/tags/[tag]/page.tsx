@@ -1,13 +1,13 @@
 'use client';
 
 import { use } from 'react';
-import { useRouter } from 'next/navigation';
-import { ArrowLeft, Hash } from 'lucide-react';
+import { Hash } from 'lucide-react';
 import { useInfiniteHashtagTimeline } from '@/api';
 import { PostCard } from '@/components/organisms';
 import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { IconButton } from '@/components/atoms';
+import { BackButton } from '@/components/atoms';
+import { FollowTagButton } from '@/components/molecules/FollowTagButton';
 import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';
 
@@ -17,8 +17,6 @@ export default function HashtagPage({
   params: Promise<{ tag: string }>;
 }) {
   const { tag } = use(params);
-  const router = useRouter();
-
   // Decode URL parameter
   const decodedTag = decodeURIComponent(tag);
 
@@ -52,9 +50,7 @@ export default function HashtagPage({
             alignItems: 'center',
             gap: 'var(--size-3)',
           }}>
-            <IconButton onClick={() => router.back()}>
-              <ArrowLeft size={20} />
-            </IconButton>
+            <BackButton />
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -104,22 +100,25 @@ export default function HashtagPage({
           alignItems: 'center',
           gap: 'var(--size-3)',
         }}>
-          <IconButton onClick={() => router.back()}>
-            <ArrowLeft size={20} />
-          </IconButton>
+          <BackButton />
           <div style={{
             display: 'flex',
             alignItems: 'center',
             gap: 'var(--size-2)',
+            minWidth: 0,
           }}>
-            <Hash size={24} style={{ color: 'var(--indigo-6)' }} />
-            <h1 style={{
+            <Hash size={24} style={{ color: 'var(--indigo-6)', flexShrink: 0 }} />
+            <h1 className="text-truncate" style={{
               fontSize: 'var(--font-size-4)',
               fontWeight: 'var(--font-weight-6)',
               color: 'var(--text-1)',
             }}>
               {decodedTag}
             </h1>
+          </div>
+          {/* Pushed to the trailing edge so the title can use the space it needs */}
+          <div style={{ marginInlineStart: 'auto', flexShrink: 0 }}>
+            <FollowTagButton tag={decodedTag} />
           </div>
         </div>
       </div>

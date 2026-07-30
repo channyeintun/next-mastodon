@@ -5,14 +5,14 @@ import { SCROLL_ANCHOR_OFFSET } from '@/constants/layout';
 
 import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+// (lucide icons removed);
 import { useStatus, useStatusContext } from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
 import { useScrollAnchor } from '@/hooks/useScrollAnchor';
 import { useDynamicBottomSpacer } from '@/hooks/useDynamicBottomSpacer';
 import { PostCard } from '@/components/organisms';
 import { PostCardSkeleton, StatusStats } from '@/components/molecules';
-import { Button, IconButton } from '@/components/atoms';
+import { BackButton, Button } from '@/components/atoms';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
 import { useTimelineHotkeys } from '@/hooks/useTimelineHotkeys';
 import { useTranslations } from 'next-intl';
@@ -85,9 +85,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
     return (
       <Container className="mobile-bottom-padding">
         <Header>
-          <IconButton onClick={() => router.back()}>
-            <ArrowLeft size={20} />
-          </IconButton>
+          <BackButton />
           <Title>{t('title')}</Title>
         </Header>
         <div className="virtualized-list-container">
@@ -120,9 +118,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
     <Container className="mobile-bottom-padding">
       {/* Sticky header */}
       <Header ref={headerRef}>
-        <IconButton onClick={() => router.back()}>
-          <ArrowLeft size={20} />
-        </IconButton>
+        <BackButton />
         <Title>{t('title')}</Title>
       </Header>
 
@@ -170,7 +166,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
         <ContentBelowMain ref={contentBelowRef}>
           {/* Reply Composer */}
           {authStore.isAuthenticated && (
-            <ReplyComposerContainer>
+            <ReplyComposerContainer data-reply-composer>
               <ComposerPanel
                 key={`reply-${status.id}`}
                 initialVisibility={status.visibility}

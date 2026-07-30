@@ -1,12 +1,11 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import { BackButton } from '@/components/atoms';
+// (lucide icons removed);
 import { useTranslations } from 'next-intl';
 import AuthGuard from '@/components/organisms/AuthGuard';
 import { useSearchParams } from 'next/navigation';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
-import { IconButton } from '@/components/atoms/IconButton';
 import { useStatus, useStatusSource, useMediaAttachments } from '@/api';
 import type { Visibility } from '@/components/molecules/VisibilitySettingsModal';
 
@@ -15,7 +14,6 @@ import type { Visibility } from '@/components/molecules/VisibilitySettingsModal'
  * Supports edit mode via ?edit_status_id=xxx query param.
  */
 export default function ComposePage() {
-  const router = useRouter();
   const t = useTranslations('composer');
   const searchParams = useSearchParams();
   const quotedStatusId = searchParams.get('quoted_status_id') || undefined;
@@ -24,11 +22,13 @@ export default function ComposePage() {
   const mention = searchParams.get('mention') || undefined;
   const text = searchParams.get('text') || undefined;
   const editStatusId = searchParams.get('edit_status_id') || undefined;
+  const inReplyToId = searchParams.get('in_reply_to') || undefined;
   const mediaIds = searchParams.get('media_ids')?.split(',') || [];
 
   // Fetch status and source when editing
   const { data: editStatus, isLoading: isLoadingStatus, error: statusError } = useStatus(editStatusId || '');
   const { data: editSource, isLoading: isLoadingSource, error: sourceError } = useStatusSource(editStatusId || '');
+  const { data: replyTarget } = useStatus(inReplyToId || '');
 
   // Fetch media attachments for cases like sharing from Next Editor
   const { data: attachments, isLoading: isLoadingMedia } = useMediaAttachments(mediaIds);
@@ -56,7 +56,7 @@ export default function ComposePage() {
       : undefined;
 
   // Create a unique key that changes when params change to force remount
-  const composerKey = [quotedStatusId, scheduledStatusId, visibility, mention, text, editStatusId, ...mediaIds].filter(Boolean).join('-') || 'default';
+  const composerKey = [quotedStatusId, scheduledStatusId, visibility, mention, text, editStatusId, inReplyToId, ...mediaIds].filter(Boolean).join('-') || 'default';
 
   // Determine title
   const getTitle = () => {
@@ -70,9 +70,7 @@ export default function ComposePage() {
       <div className="compose-page-container mobile-bottom-padding">
         <div className="compose-card">
           <div className="compose-header">
-            <IconButton onClick={() => router.back()}>
-              <ArrowLeft size={24} />
-            </IconButton>
+            <BackButton size={24} />
             <h1 style={{ fontSize: 'var(--font-size-4)', fontWeight: 'var(--font-weight-7)' }}>
               {getTitle()}
             </h1>
@@ -101,11 +99,14 @@ export default function ComposePage() {
               statusId={editStatus?.id}
               quotedStatusId={quotedStatusId}
               scheduledStatusId={scheduledStatusId}
-              initialVisibility={isEditMode ? editStatus?.visibility : visibility}
+              initialVisibility={isEditMode ? editStatus?.visibility : (visibility ?? (inReplyToId ? replyTarget?.visibility : undefined))}
               initialContent={initialContent}
               initialSpoilerText={isEditMode ? (editSource?.spoiler_text || editStatus?.spoiler_text) : undefined}
               initialSensitive={isEditMode ? editStatus?.sensitive : undefined}
               initialMedia={initialMedia}
+              inReplyToId={inReplyToId}
+              isReply={!!inReplyToId}
+              mentionPrefix={inReplyToId ? replyTarget?.account?.acct : undefined}
             />
           )}
         </div>

@@ -1,8 +1,7 @@
 'use client';
 
 import { formatJoinDate } from '@/utils/date';
-import { Calendar, ExternalLink, Lock } from 'lucide-react';
-import { FaRobot } from 'react-icons/fa6';
+import { Bot, Calendar, ExternalLink, Lock } from 'lucide-react';
 import { ProfileStats, ProfileBio, ProfileFields, ProfileActionButtons, HandleExplainer, FamiliarFollowers } from '@/components/molecules';
 import { Avatar, Button, EmojiText } from '@/components/atoms';
 import type { Account, Relationship } from '@/types';
@@ -85,7 +84,7 @@ export function ProfileHeader({
                 <NameSection>
                     <DisplayName itemProp="name">
                         <EmojiText text={account.display_name || account.username} emojis={account.emojis} />
-                        {account.bot && <FaRobot size={18} color="var(--text-2)" />}
+                        {account.bot && <Bot size={18} color="var(--text-2)" />}
                         {account.locked && <LockIcon><Lock size={14} /></LockIcon>}
                     </DisplayName>
                     <HandleExplainer username={account.username} server={new URL(account.url).hostname} />

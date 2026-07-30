@@ -113,6 +113,12 @@ export { search } from './search'
 // Trends
 export { getTrendingStatuses, getTrendingTags, getTrendingLinks } from './trends'
 
+// Hashtags
+export { getTag, followTag, unfollowTag, getFollowedTags } from './tags'
+
+// Announcements
+export { getAnnouncements, dismissAnnouncement, addAnnouncementReaction, removeAnnouncementReaction } from './announcements'
+
 // Media
 export { uploadMedia, updateMedia, getMediaAttachment } from './media'
 

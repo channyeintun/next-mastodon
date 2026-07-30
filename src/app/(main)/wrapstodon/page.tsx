@@ -131,7 +131,7 @@ export default function WrapstodonPage() {
         return (
             <div className="min-h-screen flex flex-col">
                 <header className="flex items-center gap-3 p-4 border-b border-primary">
-                    <Link href="/" className="p-2 rounded-full hover:bg-secondary transition-colors">
+                    <Link href="/" aria-label="Back" className="p-2 rounded-full hover:bg-secondary transition-colors">
                         <ArrowLeft size={20} />
                     </Link>
                     <h1 className="text-lg font-semibold">Wrapstodon</h1>

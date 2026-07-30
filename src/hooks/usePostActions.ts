@@ -232,11 +232,24 @@ export function usePostActions(status: Status, onDeleteClick?: (postId: string) 
       e.preventDefault();
       e.stopPropagation();
     }
-    if (window.location.pathname !== `/status/${displayStatus.id}`) {
-      // Pre-populate status cache before navigation to avoid refetch
-      queryClient.setQueryData(queryKeys.statuses.detail(displayStatus.id), displayStatus);
-      router.push(`/status/${displayStatus.id}`);
+
+    // On the status page the inline composer is already on screen, so focus it
+    // rather than stacking a modal on top of it.
+    if (window.location.pathname === `/status/${displayStatus.id}`) {
+      document
+        .querySelector<HTMLElement>('[data-reply-composer] [contenteditable="true"]')
+        ?.focus();
+      return;
     }
+
+    // Pre-populate the cache so the composer can render reply context without refetching
+    queryClient.setQueryData(queryKeys.statuses.detail(displayStatus.id), displayStatus);
+
+    // Client-side navigation hits the /compose intercepting route, which renders
+    // the composer as a modal over the current view. The timeline stays mounted
+    // underneath, so scroll position and loaded pages survive — the previous
+    // behaviour pushed a full status page and lost both.
+    router.push(`/compose?in_reply_to=${displayStatus.id}`);
   };
 
   const toggleCWContent = () => setShowCWContent((prev) => !prev);

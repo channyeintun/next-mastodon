@@ -84,6 +84,13 @@
     "unmuteConversation": "Stummschaltung für Gespräch aufheben",
     "unpin": "Vom Profil lösen"
   },
+  "announcements": {
+    "addReaction": "Add reaction",
+    "dismiss": "Dismiss",
+    "fromInstance": "Announcement from {instance}",
+    "showAll": "Show {count} more",
+    "title": "Announcements"
+  },
   "common": {
     "addMedia": "Medien hinzufügen",
     "back": "Zurück",
@@ -94,6 +101,7 @@
     "done": "Fertig",
     "dontShowAgain": "Nicht mehr anzeigen",
     "loading": "Wird geladen...",
+    "moreOptions": "More options",
     "next": "Weiter",
     "open": "Öffnen",
     "remove": "Entfernen",
@@ -108,14 +116,20 @@
   },
   "composer": {
     "addContentWarning": "Inhaltswarnung hinzufügen",
-    "createTutorial": "Tutorial erstellen",
     "addEmoji": "Emoji hinzufügen",
     "addMedia": "Medien hinzufügen",
     "addOption": "Option hinzufügen",
     "addPoll": "Umfrage hinzufügen",
     "charCount": "{count} Zeichen übrig",
+    "createTutorial": "Tutorial erstellen",
     "cwLabel": "Inhaltswarnung",
     "cwPlaceholder": "Warnung hier schreiben...",
+    "discardChanges": {
+      "cancel": "Weiter bearbeiten",
+      "discard": "Verwerfen",
+      "message": "Bist du sicher, dass du deine Änderungen verwerfen möchtest? Dies kann nicht rückgängig gemacht werden.",
+      "title": "Änderungen verwerfen?"
+    },
     "duration": {
       "1d": "1 Tag",
       "1h": "1 Stunde",
@@ -152,18 +166,13 @@
     "reply": "Antworten",
     "replyPlaceholder": "Antwort verfassen",
     "replyTo": "Reply to @{acct}",
+    "replyingTo": "Replying to {name}",
     "reschedule": "Umplanen",
     "saveDraft": {
       "discard": "Entwurf löschen",
       "message": "Wenn du jetzt abbrichst, geht dieser Beitrag verloren.",
       "save": "Als Entwurf speichern",
       "title": "Diesen Beitrag als Entwurf speichern?"
-    },
-    "discardChanges": {
-      "cancel": "Weiter bearbeiten",
-      "discard": "Verwerfen",
-      "message": "Bist du sicher, dass du deine Änderungen verwerfen möchtest? Dies kann nicht rückgängig gemacht werden.",
-      "title": "Änderungen verwerfen?"
     },
     "schedule": "Planen",
     "scheduleHelp": "Der Beitrag wird automatisch zu diesem Zeitpunkt veröffentlicht.",
@@ -264,6 +273,15 @@
       "tags": "Tags"
     },
     "title": "Entdecken"
+  },
+  "hashtag": {
+    "follow": "Follow",
+    "followError": "Could not update hashtag",
+    "followedTags": "Followed hashtags",
+    "following": "Following",
+    "noFollowedTags": "You haven't followed any hashtags yet",
+    "noFollowedTagsHint": "Posts from hashtags you follow appear in your home timeline.",
+    "unfollow": "Unfollow"
   },
   "imageCropper": {
     "flipHorizontal": "Horizontal spiegeln",

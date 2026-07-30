@@ -1,9 +1,8 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+// (lucide icons removed);
 import {
   useAccountWithCache,
   useInfiniteAccountStatusesWithFilters,
@@ -20,7 +19,7 @@ import {
 } from '@/api';
 
 import { AccountProfileSkeleton } from '@/components/molecules';
-import { Button, IconButton, Tabs } from '@/components/atoms';
+import { BackButton, Button, Tabs } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
 import { useRef } from 'react';
 import { flattenAndUniqById } from '@/utils/fp';
@@ -53,7 +52,6 @@ interface AccountPageClientProps {
  * When navigating client-side, data is prepopulated via setQueryData.
  */
 export function AccountPageClient({ acct }: AccountPageClientProps) {
-  const router = useRouter();
   const t = useTranslations('account');
 
   // TanStack Query - will use cache if hydrated or prepopulated
@@ -141,7 +139,7 @@ export function AccountPageClient({ acct }: AccountPageClientProps) {
     return (
       <PageContainer>
         <FixedBackButton>
-          <IconButton onClick={() => router.back()}><ArrowLeft size={20} /></IconButton>
+          <BackButton />
         </FixedBackButton>
         <AccountProfileSkeleton />
       </PageContainer>
@@ -175,7 +173,7 @@ export function AccountPageClient({ acct }: AccountPageClientProps) {
   return (
     <PageContainer>
       <FixedBackButton>
-        <IconButton onClick={() => router.back()}><ArrowLeft size={20} /></IconButton>
+        <BackButton />
       </FixedBackButton>
       <div>
         {showLimitedProfile ? (

@@ -84,6 +84,13 @@
     "unmuteConversation": "대화 뮤트 해제",
     "unpin": "프로필에서 고정 해제"
   },
+  "announcements": {
+    "addReaction": "Add reaction",
+    "dismiss": "Dismiss",
+    "fromInstance": "Announcement from {instance}",
+    "showAll": "Show {count} more",
+    "title": "Announcements"
+  },
   "common": {
     "addMedia": "미디어 추가",
     "back": "뒤로",
@@ -94,6 +101,7 @@
     "done": "완료",
     "dontShowAgain": "다시 표시 안 함",
     "loading": "로딩 중...",
+    "moreOptions": "More options",
     "next": "다음",
     "open": "열기",
     "remove": "제거",
@@ -108,14 +116,20 @@
   },
   "composer": {
     "addContentWarning": "콘텐츠 경고 추가",
-    "createTutorial": "튜토리얼 만들기",
     "addEmoji": "이모지 추가",
     "addMedia": "미디어 추가",
     "addOption": "옵션 추가",
     "addPoll": "투표 추가",
     "charCount": "{count}자 남음",
+    "createTutorial": "튜토리얼 만들기",
     "cwLabel": "콘텐츠 경고",
     "cwPlaceholder": "여기에 경고 내용을 작성하세요...",
+    "discardChanges": {
+      "cancel": "계속 편집하기",
+      "discard": "취소",
+      "message": "변경사항을 취소하시겠습니까？ 이 작업은 되돌릴 수 없습니다。",
+      "title": "변경사항을 취소하시겠습니까？"
+    },
     "duration": {
       "1d": "1일",
       "1h": "1시간",
@@ -152,18 +166,13 @@
     "reply": "답글",
     "replyPlaceholder": "답글을 작성하세요",
     "replyTo": "Reply to @{acct}",
+    "replyingTo": "Replying to {name}",
     "reschedule": "예약 수정",
     "saveDraft": {
       "discard": "임시 저장 삭제",
       "message": "지금 취소하면 게시물이 삭제됩니다.",
       "save": "임시 저장",
       "title": "이 게시물을 임시 보관함에 저장하시겠습니까?"
-    },
-    "discardChanges": {
-      "cancel": "계속 편집하기",
-      "discard": "취소",
-      "message": "변경사항을 취소하시겠습니까？ 이 작업은 되돌릴 수 없습니다。",
-      "title": "변경사항을 취소하시겠습니까？"
     },
     "schedule": "예약",
     "scheduleHelp": "게시물은 이 시간에 자동으로 게시됩니다.",
@@ -264,6 +273,15 @@
       "tags": "태그"
     },
     "title": "탐색"
+  },
+  "hashtag": {
+    "follow": "Follow",
+    "followError": "Could not update hashtag",
+    "followedTags": "Followed hashtags",
+    "following": "Following",
+    "noFollowedTags": "You haven't followed any hashtags yet",
+    "noFollowedTagsHint": "Posts from hashtags you follow appear in your home timeline.",
+    "unfollow": "Unfollow"
   },
   "imageCropper": {
     "flipHorizontal": "좌우 반전",

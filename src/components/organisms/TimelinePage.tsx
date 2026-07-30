@@ -11,6 +11,7 @@ import { precomputeStatusHeights, getStatusHeight } from '@/lib/pretext';
 import { PostCard } from './PostCard';
 import { SuggestionsSection } from './SuggestionsSection';
 import { PostCardSkeletonList, PostCardSkeleton, ProfilePillSkeleton } from '@/components/molecules';
+import { AnnouncementsBanner } from '@/components/molecules/AnnouncementsBanner';
 import {
     EmojiText,
     Button,
@@ -333,6 +334,11 @@ export const TimelinePage = observer(() => {
                     {t('newPosts', { count: newPostsCount })}
                 </NewPostsPill>
             )}
+
+            {/* Instance announcements. Deliberately outside the virtualizer:
+                it measures from listRef via scrollMargin, so content above the
+                list is accounted for, but content inside it is not. */}
+            <AnnouncementsBanner />
 
             {/* Virtualized List */}
             <div ref={listRef}>

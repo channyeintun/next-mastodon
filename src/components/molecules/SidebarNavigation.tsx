@@ -5,10 +5,9 @@ import { usePathname } from 'next/navigation';
 import { Home, PenSquare, Search, Settings, Bell, List, TrendingUp, Mail } from 'lucide-react';
 // lucide-react v1 dropped its brand icons, so the GitHub mark now comes from
 // react-icons, which this codebase already uses for brand/logo glyphs.
-import { FaGithub } from 'react-icons/fa6';
 import { useTranslations } from 'next-intl';
 import { useInstance, useUnreadNotificationCount, useNotificationMarker } from '@/api';
-import { CircleSkeleton, TextSkeleton } from '@/components/atoms';
+import { CircleSkeleton, GithubIcon, TextSkeleton } from '@/components/atoms';
 import { useStores } from '@/hooks/useStores';
 import { observer } from 'mobx-react-lite';
 import { NavigationLink, WrapstodonButton } from './Navigation';
@@ -127,7 +126,7 @@ export const SidebarNavigation = observer(({ isAuthenticated, instanceURL }: Sid
                     className="navigation-sidebar-link"
                 >
                     <div className="navigation-link-icon">
-                        <FaGithub size={24} />
+                        <GithubIcon size={24} />
                     </div>
                     <span className="navigation-link-label">{t('sourceCode')}</span>
                 </a>

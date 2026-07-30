@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useScheduledStatuses, useDeleteScheduledStatus } from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
-import { Card, Button, IconButton } from '@/components/atoms';
-import { ArrowLeft, Calendar, Trash2, Edit2, Clock } from 'lucide-react';
+import { BackButton, Button, Card } from '@/components/atoms';
+import { Calendar, Trash2, Edit2, Clock } from 'lucide-react';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { ScheduledCardSkeletonList } from '@/components/molecules';
 import { flattenPages } from '@/utils/fp';
@@ -135,9 +135,7 @@ export default function ScheduledStatusesPage() {
                 gap: 'var(--size-3)',
                 flexShrink: 0
             }}>
-                <IconButton onClick={() => router.back()}>
-                    <ArrowLeft size={20} />
-                </IconButton>
+                <BackButton />
                 <div>
                     <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
                         {t('title')}

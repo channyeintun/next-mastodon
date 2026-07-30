@@ -4,8 +4,8 @@ import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowLeft, Plus, X } from 'lucide-react';
-import { IconButton, Button, Card } from '@/components/atoms';
+import { Plus, X } from 'lucide-react';
+import { BackButton, Button, Card, IconButton } from '@/components/atoms';
 import { useCreateFilter, useUpdateFilter } from '@/api/mutations';
 import { toast } from 'sonner';
 import type { Filter, FilterContext, FilterAction, FilterKeywordParams } from '@/types/mastodon';
@@ -187,9 +187,7 @@ export function FilterForm({ filter, isEdit = false }: FilterFormProps) {
     return (
         <FiltersContainer>
             <FiltersHeader>
-                <IconButton onClick={() => router.back()}>
-                    <ArrowLeft size={20} />
-                </IconButton>
+                <BackButton />
                 <FiltersTitle>{isEdit ? 'Edit filter' : 'New filter'}</FiltersTitle>
             </FiltersHeader>
 

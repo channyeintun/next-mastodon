@@ -84,6 +84,13 @@
     "unmuteConversation": "Bỏ ẩn cuộc hội thoại",
     "unpin": "Bỏ ghim khỏi hồ sơ"
   },
+  "announcements": {
+    "addReaction": "Add reaction",
+    "dismiss": "Dismiss",
+    "fromInstance": "Announcement from {instance}",
+    "showAll": "Show {count} more",
+    "title": "Announcements"
+  },
   "common": {
     "addMedia": "Thêm đa phương tiện",
     "back": "Quay lại",
@@ -94,6 +101,7 @@
     "done": "Xong",
     "dontShowAgain": "Không hiển thị lại",
     "loading": "Đang tải...",
+    "moreOptions": "More options",
     "next": "Tiếp theo",
     "open": "Mở",
     "remove": "Gỡ bỏ",
@@ -108,14 +116,20 @@
   },
   "composer": {
     "addContentWarning": "Thêm cảnh báo nội dung",
-    "createTutorial": "Tạo hướng dẫn",
     "addEmoji": "Thêm biểu tượng",
     "addMedia": "Thêm đa phương tiện",
     "addOption": "Thêm lựa chọn",
     "addPoll": "Thêm bình chọn",
     "charCount": "còn {count} ký tự",
+    "createTutorial": "Tạo hướng dẫn",
     "cwLabel": "Cảnh báo nội dung",
     "cwPlaceholder": "Viết cảnh báo của bạn ở đây...",
+    "discardChanges": {
+      "cancel": "Tiếp tục chỉnh sửa",
+      "discard": "Hủy bỏ",
+      "message": "Bạn có chắc chắn muốn hủy bỏ các thay đổi không? Hành động này không thể hoàn tác.",
+      "title": "Hủy bỏ thay đổi?"
+    },
     "duration": {
       "1d": "1 ngày",
       "1h": "1 giờ",
@@ -152,18 +166,13 @@
     "reply": "Trả lời",
     "replyPlaceholder": "Viết câu trả lời của bạn",
     "replyTo": "Reply to @{acct}",
+    "replyingTo": "Replying to {name}",
     "reschedule": "Đổi giờ",
     "saveDraft": {
       "discard": "Xóa bản nháp",
       "message": "Nếu bạn hủy bây giờ, bạn sẽ mất bài đăng này.",
       "save": "Lưu làm bản nháp",
       "title": "Lưu bài đăng này vào bản nháp?"
-    },
-    "discardChanges": {
-      "cancel": "Tiếp tục chỉnh sửa",
-      "discard": "Hủy bỏ",
-      "message": "Bạn có chắc chắn muốn hủy bỏ các thay đổi không? Hành động này không thể hoàn tác.",
-      "title": "Hủy bỏ thay đổi?"
     },
     "schedule": "Hẹn giờ",
     "scheduleHelp": "Bài đăng sẽ được tự động đăng vào thời gian này.",
@@ -264,6 +273,15 @@
       "tags": "Thẻ"
     },
     "title": "Khám phá"
+  },
+  "hashtag": {
+    "follow": "Follow",
+    "followError": "Could not update hashtag",
+    "followedTags": "Followed hashtags",
+    "following": "Following",
+    "noFollowedTags": "You haven't followed any hashtags yet",
+    "noFollowedTagsHint": "Posts from hashtags you follow appear in your home timeline.",
+    "unfollow": "Unfollow"
   },
   "imageCropper": {
     "flipHorizontal": "Lật ngang",

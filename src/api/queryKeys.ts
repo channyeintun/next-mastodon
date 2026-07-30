@@ -57,6 +57,19 @@ export const queryKeys = {
     all: (query: string, type?: string) => ['search', query, type] as const,
   },
 
+  // Announcements
+  announcements: {
+    all: ['announcements'] as const,
+    list: (params?: object) => ['announcements', params] as const,
+  },
+
+  // Hashtags
+  tags: {
+    all: ['tags'] as const,
+    detail: (name: string) => ['tags', name] as const,
+    followed: (params?: object) => ['tags', 'followed', params] as const,
+  },
+
   // Trends
   trends: {
     statuses: (params?: object) => ['trends', 'statuses', params] as const,

@@ -99,7 +99,8 @@
     "backToTop": "Back to top",
     "open": "Open",
     "addMedia": "Add media",
-    "send": "Send"
+    "send": "Send",
+    "moreOptions": "More options"
   },
   "media": {
     "sensitive": "Click to view sensitive content"
@@ -331,7 +332,8 @@
       "message": "If you discard now, you'll lose your changes.",
       "discard": "Discard",
       "cancel": "Cancel"
-    }
+    },
+    "replyingTo": "Replying to {name}"
   },
   "explore": {
     "title": "Explore",
@@ -748,5 +750,21 @@
     "continued_thread": "Continued thread",
     "replied_to": "Replied to <link>{name}</link>",
     "replied_in_thread": "Replied in thread"
+  },
+  "hashtag": {
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "following": "Following",
+    "followedTags": "Followed hashtags",
+    "noFollowedTags": "You haven't followed any hashtags yet",
+    "noFollowedTagsHint": "Posts from hashtags you follow appear in your home timeline.",
+    "followError": "Could not update hashtag"
+  },
+  "announcements": {
+    "title": "Announcements",
+    "fromInstance": "Announcement from {instance}",
+    "dismiss": "Dismiss",
+    "showAll": "Show {count} more",
+    "addReaction": "Add reaction"
   }
 }

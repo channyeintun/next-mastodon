@@ -3,16 +3,15 @@
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock, List, Settings2, TrendingUp, Search, Bell, Filter, Info } from 'lucide-react';
+import { LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock, List, Settings2, TrendingUp, Search, Bell, Filter, Info } from 'lucide-react';
 import { useCurrentAccount, useInstance, useAnnualReportState, prefillAccountCache } from '@/api';
-import { Button, IconButton, Card, Avatar, EmojiText, CircleSkeleton, TextSkeleton } from '@/components/atoms';
+import { Avatar, BackButton, Button, Card, CircleSkeleton, EmojiText, RingedPlanetIcon, TextSkeleton } from '@/components/atoms';
 import { ThemeSelector } from '@/components/molecules';
 import { useAuthStore } from '@/hooks/useStores';
 import { useQueryClient } from '@tanstack/react-query';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { WrapstodonModal } from '@/components/wrapstodon/WrapstodonModal';
 import { LogoutConfirmationModal } from '@/components/molecules/LogoutConfirmationModal';
-import { GiRingedPlanet } from 'react-icons/gi';
 import { Languages } from 'lucide-react';
 import Select from 'react-select';
 import { useLocale } from '@/hooks/useLocale';
@@ -170,9 +169,7 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
         gap: 'var(--size-3)',
         marginBottom: 'var(--size-5)',
       }}>
-        <IconButton onClick={() => router.back()}>
-          <ArrowLeft size={20} />
-        </IconButton>
+        <BackButton />
         <h1 style={{
           fontSize: 'var(--font-size-4)',
           fontWeight: 'var(--font-weight-6)',
@@ -277,7 +274,7 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
               className="settings-link mobile-only wrapstodon-highlight"
               style={{ width: '100%', textAlign: 'left' }}
             >
-              <GiRingedPlanet size={20} className="settings-link-icon" />
+              <RingedPlanetIcon size={20} className="settings-link-icon" />
               Wrapstodon {wrapstodonYear}
               {annualReportState?.state === 'available' && (
                 <span style={{

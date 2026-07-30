@@ -1,11 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Bell, Filter } from 'lucide-react';
+import { Bell, CheckCheck, ChevronsDownUp, ChevronsUpDown, Filter, XCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { BiExpandVertical, BiCollapseVertical } from 'react-icons/bi';
-import { IoCheckmarkDoneSharp } from 'react-icons/io5';
-import { TiDelete } from 'react-icons/ti';
 import { NotificationCard, NotificationSkeletonList } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { Button, Tabs, type TabItem } from '@/components/atoms';
@@ -143,7 +140,7 @@ export function NotificationsV1({ streamingStatus }: NotificationsV1Props) {
                         onClick={() => setIsSettingsOpen(!isSettingsOpen)}
                         aria-label="Toggle settings"
                     >
-                        {isSettingsOpen ? <BiCollapseVertical size={20} /> : <BiExpandVertical size={20} />}
+                        {isSettingsOpen ? <ChevronsDownUp size={20} /> : <ChevronsUpDown size={20} />}
                     </NotificationSettingsToggle>
                 </NotificationTitleRow>
             </NotificationHeaderContainer>
@@ -156,11 +153,11 @@ export function NotificationsV1({ streamingStatus }: NotificationsV1Props) {
                         <NotificationSettingsSectionTitle>Actions</NotificationSettingsSectionTitle>
                         <NotificationActionsRow>
                             <Button variant="ghost" size="small" onClick={handleMarkAsRead} disabled={allNotifications.length === 0}>
-                                <IoCheckmarkDoneSharp size={16} />
+                                <CheckCheck size={16} />
                                 Mark all as read
                             </Button>
                             <Button variant="ghost" size="small" onClick={handleClearAll} disabled={allNotifications.length === 0}>
-                                <TiDelete size={16} />
+                                <XCircle size={16} />
                                 Clear all
                             </Button>
                         </NotificationActionsRow>

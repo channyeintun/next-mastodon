@@ -122,6 +122,8 @@ export function PostHeader({
                         <div className="options-menu-btn">
                             <IconButton
                                 size="small"
+                                aria-label={tCommon('moreOptions')}
+                                aria-haspopup="menu"
                                 onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();

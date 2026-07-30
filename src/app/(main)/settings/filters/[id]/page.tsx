@@ -1,10 +1,9 @@
 'use client';
 
 import { use } from 'react';
-import { useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+// (lucide icons removed);
 import { useFilter } from '@/api/queries';
-import { IconButton, Card, TextSkeleton } from '@/components/atoms';
+import { BackButton, Card, TextSkeleton } from '@/components/atoms';
 import { FilterForm } from '../FilterForm';
 import { FiltersContainer, FiltersHeader, FiltersTitle, EmptyState } from '../FilterStyles';
 
@@ -14,16 +13,13 @@ interface EditFilterPageProps {
 
 export default function EditFilterPage({ params }: EditFilterPageProps) {
     const { id } = use(params);
-    const router = useRouter();
     const { data: filter, isLoading, error } = useFilter(id);
 
     if (isLoading) {
         return (
             <FiltersContainer>
                 <FiltersHeader>
-                    <IconButton onClick={() => router.back()}>
-                        <ArrowLeft size={20} />
-                    </IconButton>
+                    <BackButton />
                     <FiltersTitle>Edit filter</FiltersTitle>
                 </FiltersHeader>
                 <Card padding="medium">
@@ -40,9 +36,7 @@ export default function EditFilterPage({ params }: EditFilterPageProps) {
         return (
             <FiltersContainer>
                 <FiltersHeader>
-                    <IconButton onClick={() => router.back()}>
-                        <ArrowLeft size={20} />
-                    </IconButton>
+                    <BackButton />
                     <FiltersTitle>Edit filter</FiltersTitle>
                 </FiltersHeader>
                 <Card padding="medium">

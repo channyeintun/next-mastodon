@@ -84,6 +84,13 @@
     "unmuteConversation": "Dejar de silenciar conversación",
     "unpin": "Desfijar del perfil"
   },
+  "announcements": {
+    "addReaction": "Add reaction",
+    "dismiss": "Dismiss",
+    "fromInstance": "Announcement from {instance}",
+    "showAll": "Show {count} more",
+    "title": "Announcements"
+  },
   "common": {
     "addMedia": "Añadir multimedia",
     "back": "Atrás",
@@ -94,6 +101,7 @@
     "done": "Hecho",
     "dontShowAgain": "No mostrar de nuevo",
     "loading": "Cargando...",
+    "moreOptions": "More options",
     "next": "Siguiente",
     "open": "Abrir",
     "remove": "Quitar",
@@ -108,14 +116,20 @@
   },
   "composer": {
     "addContentWarning": "Añadir advertencia de contenido",
-    "createTutorial": "Crear tutorial",
     "addEmoji": "Añadir emoji",
     "addMedia": "Añadir multimedia",
     "addOption": "Añadir opción",
     "addPoll": "Añadir encuesta",
     "charCount": "{count} caracteres restantes",
+    "createTutorial": "Crear tutorial",
     "cwLabel": "Advertencia de contenido",
     "cwPlaceholder": "Escribe tu advertencia aquí...",
+    "discardChanges": {
+      "cancel": "Seguir editando",
+      "discard": "Descartar",
+      "message": "¿Estás seguro de que quieres descartar los cambios? Esto no se puede deshacer.",
+      "title": "¿Descartar cambios?"
+    },
     "duration": {
       "1d": "1 día",
       "1h": "1 hora",
@@ -152,18 +166,13 @@
     "reply": "Responder",
     "replyPlaceholder": "Publica tu respuesta",
     "replyTo": "Reply to @{acct}",
+    "replyingTo": "Replying to {name}",
     "reschedule": "Reprogramar",
     "saveDraft": {
       "discard": "Eliminar borrador",
       "message": "Si la descartas ahora, perderás esta publicación.",
       "save": "Guardar como borrador",
       "title": "¿Guardar esta publicación como borrador?"
-    },
-    "discardChanges": {
-      "cancel": "Seguir editando",
-      "discard": "Descartar",
-      "message": "¿Estás seguro de que quieres descartar los cambios? Esto no se puede deshacer.",
-      "title": "¿Descartar cambios?"
     },
     "schedule": "Programar",
     "scheduleHelp": "La publicación se publicará automáticamente en este momento.",
@@ -264,6 +273,15 @@
       "tags": "Etiquetas"
     },
     "title": "Explorar"
+  },
+  "hashtag": {
+    "follow": "Follow",
+    "followError": "Could not update hashtag",
+    "followedTags": "Followed hashtags",
+    "following": "Following",
+    "noFollowedTags": "You haven't followed any hashtags yet",
+    "noFollowedTagsHint": "Posts from hashtags you follow appear in your home timeline.",
+    "unfollow": "Unfollow"
   },
   "imageCropper": {
     "flipHorizontal": "Voltear horizontal",

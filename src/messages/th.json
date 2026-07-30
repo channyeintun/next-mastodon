@@ -84,6 +84,13 @@
     "unmuteConversation": "เปิดการแจ้งเตือนการสนทนา",
     "unpin": "เลิกปักหมุดจากโปรไฟล์"
   },
+  "announcements": {
+    "addReaction": "Add reaction",
+    "dismiss": "Dismiss",
+    "fromInstance": "Announcement from {instance}",
+    "showAll": "Show {count} more",
+    "title": "Announcements"
+  },
   "common": {
     "addMedia": "เพิ่มสื่อ",
     "back": "กลับ",
@@ -94,6 +101,7 @@
     "done": "เสร็จสิ้น",
     "dontShowAgain": "ไม่ต้องแสดงอีก",
     "loading": "กำลังโหลด...",
+    "moreOptions": "More options",
     "next": "ถัดไป",
     "open": "เปิด",
     "remove": "นำออก",
@@ -108,14 +116,20 @@
   },
   "composer": {
     "addContentWarning": "เพิ่มคำเตือนเนื้อหา",
-    "createTutorial": "สร้างบทเรียน",
     "addEmoji": "เพิ่มอิโมจิ",
     "addMedia": "เพิ่มสื่อ",
     "addOption": "เพิ่มตัวเลือก",
     "addPoll": "เพิ่มการสำรวจ",
     "charCount": "เหลืออีก {count} อักขระ",
+    "createTutorial": "สร้างบทเรียน",
     "cwLabel": "คำเตือนเนื้อหา",
     "cwPlaceholder": "เขียนคำเตือนของคุณที่นี่...",
+    "discardChanges": {
+      "cancel": "แก้ไขต่อ",
+      "discard": "ละทิ้ง",
+      "message": "คุณแน่ใจหรือไม่ว่าต้องการละทิ้งการเปลี่ยนแปลง? การดำเนินการนี้ไม่สามารถย้อนคืนได้",
+      "title": "ละทิ้งการเปลี่ยนแปลง?"
+    },
     "duration": {
       "1d": "1 วัน",
       "1h": "1 ชั่วโมง",
@@ -152,18 +166,13 @@
     "reply": "ตอบกลับ",
     "replyPlaceholder": "เขียนการตอบกลับของคุณ",
     "replyTo": "Reply to @{acct}",
+    "replyingTo": "Replying to {name}",
     "reschedule": "ตั้งเวลาใหม่",
     "saveDraft": {
       "discard": "ลบแบบร่าง",
       "message": "หากคุณละทิ้งตอนนี้ คุณจะสูญเสียโพสต์นี้",
       "save": "บันทึกเป็นแบบร่าง",
       "title": "บันทึกโพสต์นี้เป็นแบบร่างหรือไม่?"
-    },
-    "discardChanges": {
-      "cancel": "แก้ไขต่อ",
-      "discard": "ละทิ้ง",
-      "message": "คุณแน่ใจหรือไม่ว่าต้องการละทิ้งการเปลี่ยนแปลง? การดำเนินการนี้ไม่สามารถย้อนคืนได้",
-      "title": "ละทิ้งการเปลี่ยนแปลง?"
     },
     "schedule": "ตั้งเวลา",
     "scheduleHelp": "โพสต์จะถูกเผยแพร่โดยอัตโนมัติตามเวลานี้",
@@ -264,6 +273,15 @@
       "tags": "แท็ก"
     },
     "title": "สำรวจ"
+  },
+  "hashtag": {
+    "follow": "Follow",
+    "followError": "Could not update hashtag",
+    "followedTags": "Followed hashtags",
+    "following": "Following",
+    "noFollowedTags": "You haven't followed any hashtags yet",
+    "noFollowedTagsHint": "Posts from hashtags you follow appear in your home timeline.",
+    "unfollow": "Unfollow"
   },
   "imageCropper": {
     "flipHorizontal": "พลิกแนวนอน",

@@ -26,10 +26,12 @@ export default function ComposeInterceptPage() {
     const mention = searchParams.get('mention') || undefined;
     const text = searchParams.get('text') || undefined;
     const editStatusId = searchParams.get('edit_status_id') || undefined;
+    const inReplyToId = searchParams.get('in_reply_to') || undefined;
     const mediaIds = searchParams.get('media_ids')?.split(',') || [];
 
     // Fetch status and source when editing
     const { data: editStatus, isLoading: isLoadingStatus, error: statusError } = useStatus(editStatusId || '');
+    const { data: replyTarget } = useStatus(inReplyToId || '');
     const { data: editSource, isLoading: isLoadingSource, error: sourceError } = useStatusSource(editStatusId || '');
 
     // Fetch media attachments for cases like sharing from Next Editor
@@ -58,11 +60,15 @@ export default function ComposeInterceptPage() {
             : undefined;
 
     // Create a unique key that changes when params change to force remount
-    const composerKey = [quotedStatusId, scheduledStatusId, visibility, mention, text, editStatusId, ...mediaIds].filter(Boolean).join('-') || 'default';
+    const composerKey = [quotedStatusId, scheduledStatusId, visibility, mention, text, editStatusId, inReplyToId, ...mediaIds].filter(Boolean).join('-') || 'default';
+
+    // Prefill the mention of whoever is being replied to, matching Mastodon's behaviour
+    const replyTargetName = replyTarget?.account?.display_name || replyTarget?.account?.acct || '';
 
     // Determine title
     const getTitle = () => {
         if (isEditMode) return t('editPost');
+        if (inReplyToId) return t('replyingTo', { name: replyTargetName });
         if (visibility === 'direct') return t('newMessage');
         return t('newPost');
     };
@@ -100,11 +106,14 @@ export default function ComposeInterceptPage() {
                         statusId={editStatus?.id}
                         quotedStatusId={quotedStatusId}
                         scheduledStatusId={scheduledStatusId}
-                        initialVisibility={isEditMode ? editStatus?.visibility : visibility}
+                        initialVisibility={isEditMode ? editStatus?.visibility : (visibility ?? (inReplyToId ? replyTarget?.visibility : undefined))}
                         initialContent={initialContent}
                         initialSpoilerText={isEditMode ? (editSource?.spoiler_text || editStatus?.spoiler_text) : undefined}
                         initialSensitive={isEditMode ? editStatus?.sensitive : undefined}
                         initialMedia={initialMedia}
+                        inReplyToId={inReplyToId}
+                        isReply={!!inReplyToId}
+                        mentionPrefix={inReplyToId ? replyTarget?.account?.acct : undefined}
                     />
                 )}
             </ComposeModal>

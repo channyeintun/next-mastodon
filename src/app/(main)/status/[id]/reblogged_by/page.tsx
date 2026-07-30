@@ -3,12 +3,12 @@
 import { use } from 'react';
 import { indexBy, prop } from 'ramda';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Repeat2 } from 'lucide-react';
+import { Repeat2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useStatus, useInfiniteRebloggedBy, useRelationships } from '@/api';
 import { AccountCard, AccountCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { IconButton, Button, EmptyState } from '@/components/atoms';
+import { BackButton, Button, EmptyState } from '@/components/atoms';
 import { flattenPages } from '@/utils/fp';
 import type { Account } from '@/types';
 
@@ -81,9 +81,7 @@ export default function RebloggedByPage({
                 zIndex: 10,
                 flexShrink: 0,
             }}>
-                <IconButton onClick={() => router.back()}>
-                    <ArrowLeft size={20} />
-                </IconButton>
+                <BackButton />
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                     <Repeat2 size={20} style={{ color: 'var(--green-6)' }} />
                     <div>

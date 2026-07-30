@@ -67,3 +67,5 @@ export { FeedVideoPlayer } from './FeedVideoPlayer';
 export { ModalVideoPlayer } from './ModalVideoPlayer';
 export { SaveDraftConfirmationModal } from './SaveDraftConfirmationModal';
 export { DiscardChangesModal } from './DiscardChangesModal';
+export { FollowTagButton } from './FollowTagButton';
+export { AnnouncementsBanner } from './AnnouncementsBanner';

@@ -1,13 +1,12 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { ArrowLeft, Search as SearchIcon, X } from 'lucide-react';
+import { Search as SearchIcon, X } from 'lucide-react';
 import { useSearch, useInfiniteSearch } from '@/api';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
 import { SearchHistory } from '@/components/molecules';
 import { SearchContent } from '@/components/organisms';
-import { Input, IconButton } from '@/components/atoms';
+import { BackButton, IconButton, Input } from '@/components/atoms';
 import { useQueryState, parseAsStringLiteral } from '@/hooks/useQueryState';
 import { useTranslations } from 'next-intl';
 
@@ -15,7 +14,6 @@ type TabType = 'all' | 'accounts' | 'statuses' | 'hashtags';
 const VALID_TABS = ['all', 'accounts', 'statuses', 'hashtags'] as const;
 
 export default function SearchPage() {
-  const router = useRouter();
   const t = useTranslations('search');
   const { history, addToHistory, removeFromHistory, clearHistory } = useSearchHistory();
 
@@ -98,9 +96,7 @@ export default function SearchPage() {
         borderBottom: '1px solid var(--surface-3)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)', marginBottom: 'var(--size-4)' }}>
-          <IconButton onClick={() => router.back()}>
-            <ArrowLeft size={20} />
-          </IconButton>
+          <BackButton />
           <h1 style={{ fontSize: 'var(--font-size-4)' }}>{t('title')}</h1>
         </div>
 

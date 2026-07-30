@@ -1,10 +1,9 @@
 'use client';
 
 import { use, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { ArrowLeft, List, UserPlus, X } from 'lucide-react';
+import { List, UserPlus, X } from 'lucide-react';
 import { useList, useListAccounts, useInfiniteFollowing, useCurrentAccount, useSearch, useAddAccountsToList, useRemoveAccountsFromList } from '@/api';
-import { IconButton, Spinner } from '@/components/atoms';
+import { BackButton, IconButton, Spinner } from '@/components/atoms';
 import { AccountCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { flattenPages } from '@/utils/fp';
@@ -12,7 +11,6 @@ import { AddMembersPanel, MemberItem } from './MemberComponents';
 import type { Account } from '@/types';
 
 export default function ListMembersPage({ params }: { params: Promise<{ id: string }> }) {
-    const router = useRouter();
     const resolvedParams = use(params);
     const listId = resolvedParams.id;
 
@@ -53,7 +51,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
         return (
             <div style={{ maxWidth: '680px', margin: '0 auto' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)', padding: 'var(--size-4)', borderBottom: '1px solid var(--surface-3)' }}>
-                    <IconButton onClick={() => router.back()}><ArrowLeft size={20} /></IconButton>
+                    <BackButton />
                     <h1 style={{ fontSize: 'var(--font-size-4)' }}>List not found</h1>
                 </div>
             </div>
@@ -69,7 +67,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
                 position: 'sticky', top: 0, background: 'var(--surface-1)', zIndex: 10,
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)' }}>
-                    <IconButton onClick={() => router.back()}><ArrowLeft size={20} /></IconButton>
+                    <BackButton />
                     <div>
                         <h1 style={{ fontSize: 'var(--font-size-4)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                             <List size={20} />{list.title}

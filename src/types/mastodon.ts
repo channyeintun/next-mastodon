@@ -888,3 +888,35 @@ export interface Suggestion {
   sources: string[]
   account: Account
 }
+
+// ============================================================================
+// ANNOUNCEMENTS
+// ============================================================================
+
+export interface AnnouncementReaction {
+  name: string
+  count: number
+  /** Present only for authenticated requests. */
+  me?: boolean
+  /** Set when the reaction is a custom emoji rather than Unicode. */
+  url?: string
+  static_url?: string
+}
+
+export interface Announcement {
+  id: string
+  /** HTML from the instance — must go through sanitizeHtml() before render. */
+  content: string
+  starts_at: string | null
+  ends_at: string | null
+  all_day: boolean
+  published_at: string
+  updated_at: string
+  /** Absent for anonymous requests. */
+  read?: boolean
+  mentions: Array<{ id: string; username: string; url: string; acct: string }>
+  statuses: Array<{ id: string; url: string }>
+  tags: Array<{ name: string; url: string }>
+  emojis: Emoji[]
+  reactions: AnnouncementReaction[]
+}

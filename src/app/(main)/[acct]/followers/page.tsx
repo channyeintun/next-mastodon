@@ -2,14 +2,14 @@
 
 import { use } from 'react';
 import { indexBy, prop } from 'ramda';
-import { useRouter, notFound } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+// (lucide icons removed);
 import { useTranslations } from 'next-intl';
 import { useAccountWithCache, useInfiniteFollowers, useRelationships, useCurrentAccount } from '@/api';
 import { AccountCard, AccountCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { IconButton, EmojiText, Button, EmptyState } from '@/components/atoms';
+import { BackButton, Button, EmojiText, EmptyState } from '@/components/atoms';
 import { flattenPages } from '@/utils/fp';
 import type { Account } from '@/types';
 
@@ -20,8 +20,6 @@ export default function FollowersPage({
 }) {
     const { acct: acctParam } = use(params);
     const decodedAcct = decodeURIComponent(acctParam);
-    const router = useRouter();
-
     if (!decodedAcct.startsWith('@')) {
         notFound();
     }
@@ -91,9 +89,7 @@ export default function FollowersPage({
                 zIndex: 10,
                 flexShrink: 0,
             }}>
-                <IconButton onClick={() => router.back()}>
-                    <ArrowLeft size={20} />
-                </IconButton>
+                <BackButton />
                 <div>
                     <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
                         {t('followersPage.title')}
