@@ -12,6 +12,17 @@
     // traffic instead of same-worker shortcuts.
     "global_fetch_strictly_public"
   ],
+  // Custom domain. The apex is served by the Worker directly, so the zone
+  // `mastodon.website` has to be active in this same Cloudflare account —
+  // Workers cannot attach a custom domain to a zone it does not hold. Deploying
+  // while the zone is missing fails the deploy, so this line and the nameserver
+  // cutover at the registrar go together.
+  "routes": [
+    {
+      "pattern": "mastodon.website",
+      "custom_domain": true
+    }
+  ],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
